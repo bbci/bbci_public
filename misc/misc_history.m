@@ -17,7 +17,8 @@ function ht = misc_history(obj)
 %  date:          date the function was executed
 %
 %  All named function arguments also appear as fields except for the object
-%  that is modified (e.g. the EEG struct).
+%  that is modified (e.g. the EEG struct).exit
+
 %  
 %
 % Note: misc_history saves all arguments passed to functions unless they
