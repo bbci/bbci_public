@@ -47,6 +47,7 @@ function dat= proc_filt(dat, varargin)
 %
 % 04-2010 David List, Michael Tangermann  - z,p,k functionality
 
+dat.history = misc_history(dat);
 
 if size(varargin,2) == 1
   varargin= cat(2, varargin, {1});

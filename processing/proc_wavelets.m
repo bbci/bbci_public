@@ -1,4 +1,4 @@
-function [dat info] = proc_wavelets(dat,varargin)
+function dat  = proc_wavelets(dat,varargin)
 % PROC_WAVELETS -  calculates the continuous wavelet transform for a
 % specified range of scales. (Wavelet coefficients are obtained in Fourier
 % space.
@@ -41,7 +41,7 @@ function [dat info] = proc_wavelets(dat,varargin)
 % Author: Matthias Treder (2010,2012)
 
 dat.history = misc_history(dat);
-if numel(varargin)>0 && ~ischar(varargin{1})
+if numel(varargin)>0 && ~isvector(varargin{1})
   freq = varargin{1};
   varargin(1) = [];
 else
@@ -58,11 +58,11 @@ if nargin==0,
 end
 
 opt= opt_proplistToStruct(varargin{:});
-opt= opt_setDefaults(opt, props);
+[opt,isdefault] = opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 misc_checkType('dat','STRUCT(x fs)');
 misc_checkType('dat.fs','!DOUBLE[1]');
-misc_checkType('dat.x','DOUBLE[- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]');  % accept about everything except row vectors
+misc_checkType('dat.x','DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]');  % accept about everything except row vectors
 
 %% Prepare
 clear pi
