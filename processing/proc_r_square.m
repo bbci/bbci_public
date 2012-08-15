@@ -30,6 +30,7 @@ function fv= proc_r_square(fv, varargin)
 % SEE  proc_t_scaled, proc_r_values
 
 % 03-03 Benjamin Blankertz
+fv = misc_history(fv);
 
 
 if length(varargin)>0 & isstruct(varargin{1}),

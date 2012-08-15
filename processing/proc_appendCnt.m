@@ -39,6 +39,7 @@ function [cnt, mrk]= proc_appendCnt(cnt, cnt2, mrk, mrk2, varargin)
 % ??-200? Benjamin Blankertz
 % 06-2012 Johannes Hoehne   - Updated the help documentation & probs
 
+cnt = misc_history(cnt);
 
 props= {'channelwise',          0       'BOOL'};
 

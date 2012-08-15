@@ -24,6 +24,7 @@ function fv_rval= proc_auc_values(fv)
 %
 % stefan.haufe@tu-berlin.de, 2012
 % 07-2012 Johannes Hoehne   - Updated the help documentation & probs
+fv = misc_history(fv);
 
 misc_checkType('fv', 'STRUCT(x clab fs)');
 

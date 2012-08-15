@@ -17,6 +17,7 @@ function dat= proc_commonMedianReference(dat, refChans, rerefChans)
 % SEE scalpChannels, chanind
 
 % Author: Benjamin Blankertz
+dat = misc_history(dat);
 
 
 if ~exist('refChans','var') | isempty(refChans),

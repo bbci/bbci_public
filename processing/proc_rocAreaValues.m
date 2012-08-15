@@ -22,6 +22,7 @@ function fv_roc= proc_rocAreaValues(fv, varargin)
 % proc_r_values, proc_r_squared_signed, proc_t_values
 
 % Author(s): Benjamin Blankertz, Feb 2006
+fv = misc_history(fv);
 
 
 props= {'multiclassPolicy' 'pairwise' 'CHAR'};

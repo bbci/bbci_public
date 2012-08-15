@@ -55,8 +55,7 @@ function [epo, complete]= proc_segmentation(cnt, mrk, ival, varargin)
 % 02-2009 Benjamin Blankertz
 % 06-2012 Martijn Schreuder   - Updated the help documentation
 
-
-
+cnt = misc_history(cnt);
 
 
 props= {'CLab'                       '*'       'CHAR|CELL{CHAR}'

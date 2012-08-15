@@ -27,7 +27,7 @@ function out= proc_linearDerivation(dat, A, varargin)
 %        Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
 
-dat.history = misc_history(dat);
+dat = misc_history(dat);
 misc_checkType('dat',  'STRUCT(x clab)');
 misc_checkType('A', sprintf('DOUBLE[%i -]', size(dat.x,2)));
 

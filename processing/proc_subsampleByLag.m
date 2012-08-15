@@ -18,6 +18,7 @@ function [dat, mrk]= proc_subsampleByLag(dat, lag, mrk)
 %
 
 % bb, ida.first.fhg.de
+dat = misc_history(dat);
 
 
 iv= ceil(lag/2):lag:size(dat.x,1);

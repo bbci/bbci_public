@@ -23,6 +23,7 @@ function out= proc_z_score(epo, varargin)
 
 % Author(s): Benjamin Blankertz, long time ago
 %            Andreas Ziehe, November 2007
+epo = misc_history(epo);
 
 props= {'policy'  'mean'     'CHAR'
         'classes' 'ALL'      'CHAR'

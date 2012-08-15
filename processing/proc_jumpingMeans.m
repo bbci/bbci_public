@@ -21,6 +21,7 @@ function dat= proc_jumpingMeans(dat, nSamples, nMeans)
 % SEE proc_jumpingMedians
 
 % bb, ida.first.fhg.de
+dat = misc_history(dat);
 
 
 [T, nChans, nMotos]= size(dat.x);

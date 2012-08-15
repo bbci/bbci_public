@@ -1,4 +1,4 @@
-function [epo, ev]= proc_selectClasses(epo, varargin);
+function [epo, ev]= proc_selectClasses(epo, varargin)
 %PROC_SELECTCLASSES - select only a subset of the avialble classes
 %
 %Synopsis:
@@ -29,8 +29,7 @@ function [epo, ev]= proc_selectClasses(epo, varargin);
 
 % Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
-
-
+epo = misc_history(epo);
 
 clInd= getClassIndices(epo, varargin{:});
 ev= find(any(epo.y(clInd,:)==1,1));

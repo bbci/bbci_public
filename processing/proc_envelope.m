@@ -25,6 +25,7 @@ function dat= proc_envelope(dat, varargin)
 % Author(s): Benjamin Blankertz
 % added channelwise option by Claudia
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
+dat = misc_history(dat);
 
 props= {'envelopMethod'     'hilbert'
         'movAvgMethod'      'centered'

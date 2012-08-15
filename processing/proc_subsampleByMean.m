@@ -15,6 +15,7 @@ function [dat, mrk]= proc_subsampleByMean(dat, nSamples, mrk)
 % Reduce the sampling rate by subsampling with the mean.
 %
 %SEE proc_jumpingMeans
+dat = misc_history(dat);
 
 dat= proc_jumpingMeans(dat, nSamples);
 

@@ -1,9 +1,9 @@
-function obj = misc_history_apply(obj,ht)
-%MISC_HISTORY_RECALL - Applies a function call recorded in a history struct
-%                      to an object.
+function obj = misc_applyHistory(obj,ht)
+%MISC_APPLYHISTORY  - Applies function call(s) recorded in a history struct
+%                     to an object.
 %
 %Synopsis:
-%  MISC_HISTORY(OBJ,HT)
+%  MISC_APPLYHISTORY(OBJ,HT)
 %
 %Arguments:
 %  OBJ:     struct with neuro data, or montage, or marker
@@ -20,17 +20,16 @@ function obj = misc_history_apply(obj,ht)
 
 % Matthias Treder 2012
 
+misc_checkType('obj',  'STRUCT')
 misc_checkType('ht',  'CELL|STRUCT')
 
 if isstruct(ht), ht = {ht}; end;
 
-% target = {'cnt' 'mnt' 'mrk' 'dat' 'epo'};
-target = {'cnt' 'dat' 'epo'};
-
-
 for ii=1:numel(ht)
   call = ht{ii};
-  obj_idx = find(ismember(call.fcn_params,target));
+  % Find the parameter that corresponds to the object
+  % the object is the only entry not listed as a separate field
+  obj_idx = find(~ismember(call.fcn_params,fieldnames(call))); 
   nnamed= numel(call.fcn_params);
   nvarargin = sum(cell2mat(regexp(fieldnames(call),'^varargin\d*$')));
   params = cell(nnamed+nvarargin,1);

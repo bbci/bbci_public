@@ -15,6 +15,7 @@ function dat= proc_variance(dat, nSections, calc_std)
 % works for cnt and epo structures.
 %
 % Benjamin Blankertz
+dat = misc_history(dat);
 
 if ~exist('nSections','var'), nSections=1; end
 if ischar(nSections) & strcmpi(nSections,'std'),

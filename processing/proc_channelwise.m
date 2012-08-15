@@ -20,6 +20,7 @@ function dat = proc_channelwise(epo, fcn, varargin);
 % Guido Dornhege, 23/02/05
 %  + modifications by Benjamin
 % $Id: proc_channelwise.m,v 1.4 2007/09/24 10:16:34 neuro_cvs Exp $
+epo = misc_history(epo);
 
 chan= 1:size(epo.x,2);
 if iscell(fcn),

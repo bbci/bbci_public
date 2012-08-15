@@ -35,6 +35,7 @@ function fv_rval= proc_r_values(fv, varargin)
 
 
 % Benjamin Blankertz
+fv = misc_history(fv);
 
 props= { 'tolerateNans',       0,          'BOOL|DOUBLE'
          'valueForConst',     NaN,        'DOUBLE'

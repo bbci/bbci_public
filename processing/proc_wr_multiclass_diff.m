@@ -32,6 +32,7 @@ function fv_out= proc_wr_multiclass_diff(fv, diff_fnc, varargin)
 
 % 10-2010 Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
+fv = misc_history(fv);
 
 props= {'policy'                       'pairwise'       'CHAR'};
 

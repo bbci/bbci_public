@@ -31,6 +31,7 @@ function [out, W]= proc_localAverageReference(dat, mnt, varargin)
 %  proc_commonAverageReference, proc_laplacian, getElectrodePositions
 
 % Author: Benjamin Blankertz
+dat = misc_history(dat);
 
 props= { 'radius'       0.8     'DOUBLE[1]'
          'clab'         '*'     'CHAR|CELL{CHAR}'

@@ -22,6 +22,8 @@ function [dat, mrk] = proc_resample(dat, target_fs, varargin)
 % Sven Daehne, 06-2011
 
 % dummy mrk
+dat = misc_history(dat);
+
 mrk = [];
 mrk.pos = 0;
 

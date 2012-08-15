@@ -10,6 +10,8 @@ function fv= proc_appendSamples(fv1, fv2)
 %Returns:
 %   fv      - updated feature vector
 %
+fv1 = misc_history(fv1);
+
 
 nd= max(ndims(fv1.x), ndims(fv2.x));
 sz1= [size(fv1.x), ones(1,nd-ndims(fv1.x))];

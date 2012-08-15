@@ -31,6 +31,7 @@ function out= proc_average(epo, varargin)
 
 
 %%
+epo = misc_history(epo);
 
 props= {  'policy'   'mean' 'CHAR(mean nanmean median)'
           'classes' 'ALL'   'CHAR'

@@ -39,8 +39,8 @@ function dat  = proc_wavelets(dat,varargin)
 % See also PROC_SPECTROGRAM.
 
 % Author: Matthias Treder (2010,2012)
+dat = misc_history(dat);
 
-dat.history = misc_history(dat);
 if numel(varargin)>0 && ~isvector(varargin{1})
   freq = varargin{1};
   varargin(1) = [];

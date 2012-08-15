@@ -24,6 +24,7 @@ function [varargout]= proc_laplacian(dat, varargin)
 
 %        Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
+dat = misc_history(dat);
 
 props= {'clab'       '*'
         'ignoreClab' {'E*'}

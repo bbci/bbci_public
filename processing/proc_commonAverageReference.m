@@ -19,6 +19,7 @@ function dat= proc_commonAverageReference(dat, refChans, rerefChans)
 % SEE scalpChannels, chanind
 
 % bb, ida.first.fhg.de
+dat = misc_history(dat);
 
 
 if ~exist('refChans','var') | isempty(refChans),

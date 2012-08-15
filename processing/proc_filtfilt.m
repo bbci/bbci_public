@@ -47,7 +47,7 @@ function dat= proc_filtfilt(dat,varargin)
 % based on a looted script from matlab central (filtfilthd.m)
 %
 %See also proc_filt.
-
+dat = misc_history(dat);
 
 if size(varargin,2) == 1
   varargin= cat(2, varargin, {1});

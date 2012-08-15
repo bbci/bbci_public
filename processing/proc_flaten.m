@@ -20,6 +20,7 @@ function dat= proc_flaten(dat, varargin)
 % added support for single trial flatening (Martijn)
 %
 % bb, ida.first.fhg.de
+dat = misc_history(dat);
 
 
 props= { 'force_flaten'   0    'BOOL'};

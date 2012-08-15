@@ -133,7 +133,7 @@ elseif str_matchesHead('CHAR', typeDefinition),
   ok= ischar(variable);
   spec= typeDefinition(length('CHAR')+1:end);
   if ok,
-    if strcmp(spec([1 end]), '()'),
+    if ~isempty(spec) && strcmp(spec([1 end]), '()'),
         allowedValues = textscan(spec(2:end-1), '%s');
         if ~any(strcmpi(variable,allowedValues{1}));        
           ok = 0;

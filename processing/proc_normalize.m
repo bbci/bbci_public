@@ -23,7 +23,7 @@ function [fv, opt]= proc_normalize(fv, varargin)
 %      fv   - struct of scaled feature vectors
 %      opt  - as input but with new field .scale
 %
-% normalizion of data. The 'policy' defines what kind of normaization is
+% normalizion of data. The 'policy' defines what kind of normalization is
 % done: unit variance (''std'' - default), normalize abs(max-value) to 1
 % (''max'') or euclidean norm to 1 (''norm'').
 % You can use the short form fv= proc_normalize(fv, <policy>).
@@ -36,12 +36,10 @@ function [fv, opt]= proc_normalize(fv, varargin)
 
 % 09-03 Benjamin Blankertz
 % 02-05 Anton Schwaighofer
-
-
+fv = misc_history(fv);
 
 props= { 'policy'  'std'    'CHAR'
          'dim'      2       'INT'};
-
 if nargin==0,
   fv = props; return
 end

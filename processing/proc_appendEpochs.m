@@ -20,6 +20,7 @@ function epo= proc_appendEpochs(epo, epo_append, mrk, mrk_append)
 % does NOT work for jittered epochs!!!
 %
 % SEE  makeEpochs, proc_appendCnt, proc_appendChannels
+epo = misc_history(epo);
 
 if iscell(epo),
   Cepo= epo;

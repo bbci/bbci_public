@@ -24,6 +24,7 @@ function dat= proc_appendChannels(dat, dat_append,varargin)
 %        Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
 
+dat = misc_history(dat);
 
 if isempty(dat)
     dat = dat_append;

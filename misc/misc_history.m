@@ -1,4 +1,4 @@
-function ht = misc_history(obj)
+function obj = misc_history(obj)
 %MISC_HISTORY - Records the history of BBCI toolbox function calls that
 %               affected the object.
 %
@@ -9,17 +9,16 @@ function ht = misc_history(obj)
 %  OBJ:     struct with neuro data, or montage, or marker
 %
 %Returns:
-%  HT:      history, an array of structs with the following fields:
+%  OBJ:     struct with extra history entry in the substruct .history with
+%           the following fields:
 % 
 %  fcn:           function handle
-%  fcn_params:    names of named function parameters
-%  varargin1,...: optional arguments
+%  fcn_params:    names of named function parameters.
+%  varargin:      optional arguments
 %  date:          date the function was executed
 %
 %  All named function arguments also appear as fields except for the object
-%  that is modified (e.g. the EEG struct).exit
-
-%  
+%  that is modified (e.g. the EEG struct).
 %
 % Note: misc_history saves all arguments passed to functions unless they
 % exceed a certain byte size.
@@ -27,6 +26,12 @@ function ht = misc_history(obj)
 % See also: misc_history_recall
 
 % Matthias Treder 2012
+
+global BBCI_HISTORY
+
+if ~isempty(BBCI_HISTORY) && BBCI_HISTORY==0
+  return
+end
 
 maxSize = 10*1000*1000;   % max byte size of arguments saved in history
 
@@ -47,7 +52,7 @@ ht{N}.fcn = eval(['@' ST(1).name]);
 
 % Find labels of function parameters (arguments)
 code = (evalc(['type ' ST(1).name])); % get function code
-expr = ['^\s*function s*\[*\s*(\w+|\s*)*\]*\s*=\s*' ST(1).name '\s*\((\w+|\s+|,)*\)'];
+expr = ['^\s*function s*\[*\s*(\w+|\s*|,)*\]*\s*=\s*' ST(1).name '\s*\((\w+|\s+|,)*\)'];
 token = regexpi(code,expr,'tokens');
 token = strrep(token{1}{end},' ','');  % remove whitespace
 token = regexp(token,',','split');   % split arguments by commas
@@ -68,6 +73,7 @@ end
 
 % Get optional arguments (varargin)
 if any(ismember(token,'varargin'))
+%   ht{N}.varargin = evalin('caller','varargin');
   va = evalin('caller','varargin');
   for ii=1:numel(va)
       ht{N}.(sprintf('varargin%d',ii)) = va{ii};
@@ -75,3 +81,4 @@ if any(ismember(token,'varargin'))
 end
 
 ht{N}.date= datestr(now,0);
+obj.history = ht;

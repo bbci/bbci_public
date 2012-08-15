@@ -44,7 +44,7 @@ function [dat, varargout]= proc_csp_auto(dat, varargin)
 %See also demos/demo_validate_csp
 
 % Author(s): Benjamin Blankertz
-
+dat = misc_history(dat);
 
 props= { 'patterns'     3           'INT'
          'score'        'medianvar' 'CHAR'

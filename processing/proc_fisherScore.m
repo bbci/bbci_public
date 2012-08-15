@@ -20,6 +20,7 @@ function fv_fscore= proc_fisherScore(fv, varargin)
 % Only standard case is tested.
 
 % Author(s): Benjamin Blankertz
+fv = misc_history(fv);
 
 props= { 'tolerate_nans'   0    'BOOL'};
 

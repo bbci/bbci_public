@@ -16,6 +16,7 @@ function dat= proc_filterbank(dat, filt_b, filt_a)
 % SEE online_filterbank, butters
 
 % bb, ida.first.fhg.de
+dat = misc_history(dat);
 
 if ~iscell(filt_b),
   error('should be a cell');

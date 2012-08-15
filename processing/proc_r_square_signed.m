@@ -31,6 +31,7 @@ function fv= proc_r_square_signed(fv, varargin)
 % SEE  proc_t_scaled, proc_r_values, proc_r_square
 
 % bb 03/2003, ida.first.fhg.de
+fv = misc_history(fv);
 
 if length(varargin)>0 & isstruct(varargin{1}),
   fv2= varargin{1};
