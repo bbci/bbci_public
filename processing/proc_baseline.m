@@ -36,7 +36,7 @@ function dat= proc_baseline(dat, ival, varargin)
 
 dat = misc_history(dat);
 
-props= {'pos'      'beginning'  'CHAR'
+props= {'pos'      'beginning'  'CHAR(beginning end)'
         'classwise'     0       'BOOL'   
         'trialwise'     1       'BOOL'
         'channelwise'   0       'BOOL'};
@@ -46,6 +46,7 @@ if nargin==0,
 end
 
 misc_checkType('dat', 'STRUCT(x clab)'); 
+misc_checkType('ival','DOUBLE[2]'); 
 
 if length(varargin)==1,
   opt= struct('pos', varargin{1});

@@ -1,8 +1,8 @@
-function fv_rval= proc_r_values(fv, varargin)
-%PROC_R_VALUES - Computes the r-value for each feature
+function fv_rval= proc_rValues(fv, varargin)
+%PROC_RVALUES - Computes the r-value for each feature
 %
 %Synopsis:
-% FV_RVAL= proc_r_values(FVL, 'Property',Value, ...)
+% FV_RVAL= proc_rValues(FVL, 'Property',Value, ...)
 %
 %Arguments:
 % FV - data structure of feature vectors

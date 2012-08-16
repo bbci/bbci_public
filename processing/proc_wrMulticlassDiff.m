@@ -1,9 +1,9 @@
-function fv_out= proc_wr_multiclass_diff(fv, diff_fnc, varargin)
-%PROC_WR_MULTICLASS_DIFF - Wrapper function for multi-class differences
+function fv_out= proc_wrMulticlassDiff(fv, diff_fnc, varargin)
+%PROC_WRMULTICLASSDIFF - Wrapper function for multi-class differences
 %
 %Synopsis:
-% FV_OUT= proc_wr_multiclass_diff(FV, FCN, <POLICY>)
-% FV_OUT= proc_wr_multiclass_diff(FV, FCN, <OPT>)
+% FV_OUT= proc_wrMulticlassDiff(FV, FCN, <POLICY>)
+% FV_OUT= proc_wrMulticlassDiff(FV, FCN, <OPT>)
 %
 %Arguments:
 % FV: Feature vector structure
@@ -34,7 +34,7 @@ function fv_out= proc_wr_multiclass_diff(fv, diff_fnc, varargin)
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
 fv = misc_history(fv);
 
-props= {'policy'                       'pairwise'       'CHAR'};
+props= {'policy'  'pairwise' '!CHAR'};
 
 if nargin==0,
   fv_out = props; return

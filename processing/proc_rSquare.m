@@ -1,8 +1,8 @@
-function fv= proc_r_square(fv, varargin)
-%PROC_R_SQUARE - computes r^2 values (measeure for discriminance)
+function fv= proc_rSquare(fv, varargin)
+%PROC_RSQUARE - computes r^2 values (measeure for discriminance)
 %
 %Synopsis:
-% fv_rsqu= proc_r_square(fv, <opt>)
+% fv_rsqu= proc_rSquare(fv, <opt>)
 %
 %Arguments:
 %   fv  - data structure of feature vectors

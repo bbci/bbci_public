@@ -1,9 +1,9 @@
-function fv= proc_r_square_signed(fv, varargin)
-%PROC_R_SQUARE_SIGNED - computes signed r^2 values (measure for discriminance)
+function fv= proc_rSquareSigned(fv, varargin)
+%PROC_RSQUARESIGNED - computes signed r^2 values (measure for discriminance)
 %
 %Synopsis:
-%fv_rsqu= proc_r_square_signed(fv, <opt>)
-%fv_rsqu= proc_r_square_signed(fv, fv2, <opt>)
+%fv_rsqu= proc_rSquareSigned(fv, <opt>)
+%fv_rsqu= proc_rSquareSigned(fv, fv2, <opt>)
 %
 %Arguments:
 %   fv  - data structure of feature vectors
