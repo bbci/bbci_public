@@ -8,10 +8,10 @@ function [fv, opt]= proc_normalize(fv, varargin)
 %     fv    - struct of feature vectors
 % 
 %     opt  struct and/or property/value list of properties
-%      .policy - 'std' (default), 'max', 'norm', 'nanstd'. max : normalizing abs-max 
+%      .Policy - 'std' (default), 'max', 'norm', 'nanstd'. max : normalizing abs-max 
 %                to 1, norm: normalizing euclidean norm to 1,
 %                std: normalizing std to 1.
-%      .dim    - dimension along which fv should be normalized,
+%      .Dim    - dimension along which fv should be normalized,
 %                1 is normalizing each sample (feature vector),
 %                2 is normalizing each feature dimension of fv (default).
 %      .scale  - vector by which fv is scaled. Typically this is calculated
@@ -23,7 +23,7 @@ function [fv, opt]= proc_normalize(fv, varargin)
 %      fv   - struct of scaled feature vectors
 %      opt  - as input but with new field .scale
 %
-% normalizion of data. The 'policy' defines what kind of normaization is
+% normalizion of data. The 'Policy' defines what kind of normaization is
 % done: unit variance (''std'' - default), normalize abs(max-value) to 1
 % (''max'') or euclidean norm to 1 (''norm'').
 % You can use the short form fv= proc_normalize(fv, <policy>).
@@ -37,10 +37,8 @@ function [fv, opt]= proc_normalize(fv, varargin)
 % 09-03 Benjamin Blankertz
 % 02-05 Anton Schwaighofer
 
-
-
-props= { 'policy'  'std'    'CHAR'
-         'dim'      2       'INT'};
+props= { 'Policy'  'std'    '!CHAR(std max norm nanstd)'
+         'Dim'      2       'INT'};
 
 if nargin==0,
   fv = props; return
@@ -48,7 +46,7 @@ end
 
 misc_checkType('fv', 'STRUCT(x)'); 
 if length(varargin)==1 & ischar(varargin{1}),
-  opt= struct('policy', varargin{1});
+  opt= struct('Policy', varargin{1});
 else
   opt= opt_proplistToStruct(varargin{:});
 end
@@ -57,22 +55,22 @@ opt_checkProplist(opt, props);
 
 sz= size(fv.x);
 
-if isfield(opt, 'scale'),
+if isfield(opt, 'Scale'),
   ssz= sz;
-  ssz(opt.dim)= 1;
+  ssz(opt.Dim)= 1;
   if ~isequal(size(opt.scale), ssz),
     error('size of opt.scale does not match fv');
   end
 else
-  switch(opt.policy),
+  switch(opt.Policy),
    case 'std',
-    opt.scale= std(fv.x, 0, opt.dim);
+    opt.scale= std(fv.x, 0, opt.Dim);
    case 'norm',
-    opt.scale= sqrt(sum(fv.x.^2, opt.dim));
+    opt.scale= sqrt(sum(fv.x.^2, opt.Dim));
    case 'max',
-    opt.scale= max(abs(fv.x), [], opt.dim);
+    opt.scale= max(abs(fv.x), [], opt.Dim);
    case 'nanstd',
-    opt.scale= nanstd(fv.x, 0, opt.dim);
+    opt.scale= nanstd(fv.x, 0, opt.Dim);
   end
   iz= find(opt.scale==0);
   opt.scale(iz)= 1;
@@ -80,14 +78,14 @@ else
 end
 
 %% scaling that works with more than 2 dimensions
-rep_sz= ones(1, max(length(sz), opt.dim));
-rep_sz(opt.dim)= sz(opt.dim);
+rep_sz= ones(1, max(length(sz), opt.Dim));
+rep_sz(opt.Dim)= sz(opt.Dim);
 
 fv.x= fv.x .* repmat(opt.scale, rep_sz);
 
 
 %% scaling that works only with 2 dimensions
-%srt= [opt.dim 3-opt.dim)];
+%srt= [opt.Dim 3-opt.Dim)];
 %xx= permute(fv.x, srt);
 %xx= xx * diag(opt.scale);
 %fv.x= ipermute(xx, srt);

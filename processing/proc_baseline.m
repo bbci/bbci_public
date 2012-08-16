@@ -35,7 +35,7 @@ function dat= proc_baseline(dat, ival, varargin)
 % Matthias Treder Aug 2010: Added time-frequency data support
 
 
-props= {'pos'      'beginning'  'CHAR'
+props= {'pos'      'beginning'  'CHAR(beginning end)'
         'classwise'     0       'BOOL'   
         'trialwise'     1       'BOOL'
         'channelwise'   0       'BOOL'};
@@ -45,6 +45,7 @@ if nargin==0,
 end
 
 misc_checkType('dat', 'STRUCT(x clab)'); 
+misc_checkType('ival','DOUBLE[2]'); 
 
 if length(varargin)==1,
   opt= struct('pos', varargin{1});

@@ -24,6 +24,8 @@ function dat= proc_appendChannels(dat, dat_append,varargin)
 %        Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
 
+misc_checkType('dat', 'STRUCT(x clab)'); 
+misc_checkType('dat_append', 'STRUCT(x clab)');
 
 if isempty(dat)
     dat = dat_append;

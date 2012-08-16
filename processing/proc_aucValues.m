@@ -1,8 +1,8 @@
-function fv_rval= proc_auc_values(fv)
-%PROC_AUC_VALUES - Computes the area under the curve (AUC) score for each feature
+function fv_rval= proc_aucValues(fv)
+%PROC_AUCVALUES - Computes the area under the curve (AUC) score for each feature
 %
 %Synopsis:
-% FV_AUC= proc_auc_values(FVL)
+% FV_AUC= proc_aucValues(FVL)
 %
 %Arguments:
 % FV - data structure of feature vectors
