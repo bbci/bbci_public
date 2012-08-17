@@ -90,18 +90,19 @@ props= {'CLab'              ''      'CHAR|CELL{CHAR}'
         'LinearDerivation'  []      'STRUCT'
         'TargetFormat'      'bbci'  'CHAR'
         'Verbose'           1       'BOOL'};
+
 props_readBVmarkers= file_readBVmarkers;
 props_readBVheader= file_readBVheader;
-props= opt_catProps(props, props_readBVmarkers, props_readBVheader);
+all_props= opt_catProps(props, props_readBVmarkers, props_readBVheader);
 
 if nargin==0,
-  varargout= {props};
+  varargout= {all_props};
   return
 end
 
 opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
+opt_checkProplist(opt, all_props);
 
 misc_checkType('file', 'CHAR|CELL{CHAR}');
 
