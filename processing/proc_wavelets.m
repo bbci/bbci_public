@@ -68,7 +68,6 @@ misc_checkType('dat.x','DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]');  % accept ab
 clear pi
 
 dt = 1/dat.fs;  % time resolution (determined by sampling frequency)
-e = exp(1);  % Euler's number
 
 % Prepare output stuff
 info = struct();
@@ -89,6 +88,7 @@ dat.x = zeros([N length(opt.Freq) siz]);
 % [ and normalization ..]
 switch(opt.Mother)
   case 'morlet'
+    e = exp(1);
     psi0 = 'pi^(-1/4) * (w>0) .* e.^(-((s*w-opt.w0).^2)/2)'; % Mother wavelet
     scf = '(opt.w0+sqrt(2+opt.w0^2))/(4*pi*f)'; % How to obtain scale as a function of Fourier frequency  
 end
