@@ -19,13 +19,14 @@ function H= plot_channel(epo, clab, varargin)
 %
 % See plot_channel2D and plot_channel3D for more infos on plotting.
 
-if nargin==0
-    fprintf('\nPlease type\n\n   plot_channel2D\n\nfor 2D data plotting or\n\n   plot_channel3D\n\nfor 3D data plotting.\n\n')
-    return
+
+if nargin==0,
+  H= opt_catProps(plot_channel2D, plot_channel3D);
+  return
 end
 
 if getDataDimension(epo)==2
-  H = plot_channel2D(epo,clab,varargin{:});
+  H= plot_channel2D(epo, clab, varargin{:});
 else
-  H = plot_channel3D(epo,clab,varargin{:});
+  H= plot_channel3D(epo, clab, varargin{:});
 end

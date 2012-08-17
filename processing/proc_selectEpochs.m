@@ -34,9 +34,10 @@ end
 
 misc_checkType('epo', 'STRUCT(x clab fs)');
 
-if mod(length(varargin),2) == 0
+if mod(length(varargin),2)==1,
   if isequal(idx, 'not'),
-    idx= setdiff(1:size(epo.y,2), exclude);
+    idx= setdiff(1:size(epo.y,2), varargin{1});
+    varargin= varargin(2:end);
   else
     error('if 3rd argument is given, the 2nd must be ''not''');
   end

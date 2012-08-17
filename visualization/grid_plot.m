@@ -57,35 +57,37 @@ function H= grid_plot(epo, mnt, varargin)
 
 % Author(s): Benjamin Blankertz, Feb 2003 & Mar 2005
 
-props = {'YDir',                            'normal',               'CHAR';
-         'XUnit',                           'ms',                   'CHAR';
-         'YUnit',                           '\muV',                 'CHAR';
-         'TightenBorder',                   0.03,                   'DOUBLE';
-         'Axes',                            [],                     'DOUBLE';
-         'AxisType',                        'box',                  'CHAR';
-         'Box',                             'on',                   'CHAR';
-         'ShiftAxesUp',                     [],                     'DOUBLE';
-         'ShrinkAxes',                      [1 1],                  'DOUBLE[1-2]';
-         'OversizePlot',                    1,                      'BOOL';
-         'ScalePolicy',                     'auto',                 'CHAR';
-         'ScaleUpperLimit',                 inf,                    'DOUBLE';
-         'ScaleLowerLimit',                 0,                      'DOUBLE';
-         'LegendVerticalAlignment',         'middle',               'CHAR';
-         'XTickAxes',                       '*',                    'CHAR';
-         'FigureColor',                     [0.8 0.8 0.8],          'DOUBLE[3]';
-         'TitleDir',                        'horizontal',           'CHAR';
-         'AxisTitleHorizontalAlignment',    'center',               'CHAR';
-         'AxisTitleVerticalAlignment',      'top',                  'CHAR';
-         'AxisTitleColor',                  'k',                    'CHAR[1]|DOUBLE[3]';
-         'AxisTitleFontSize',               get(gca,'FontSize'),    'DOUBLE'
-         'AxisTitleFontWeight',             'normal',               'CHAR';
-         'AxisTitleLayout',                 'oneline',              'CHAR';
-         'ScaleShowOrientation',            1,                      'BOOL';
-         'GridOverPatches',                 1,                      'BOOL';
-         'HeadMode',                        0,                      'BOOL';
-         'HeadModeSpec',                    {'LineProperties',{'LineWidth',5, 'Color',0.7*[1 1 1]}},     'STRUCT|CELL';
-         'Nirs',                            0,                      'BOOL';
-         'PlotStd',                         0,                      'BOOL'};
+props= {'YDir',                           'normal',               'CHAR';
+        'XUnit',                          'ms',                   'CHAR';
+        'YUnit',                          '\muV',                 'CHAR';
+        'TightenBorder',                  0.03,                   'DOUBLE';
+        'Axes',                           [],                     'DOUBLE';
+        'AxisType',                       'box',                  'CHAR';
+        'Box',                            'on',                   'CHAR';
+        'ShiftAxesUp',                    [],                     'DOUBLE';
+        'ShrinkAxes',                     [1 1],                  'DOUBLE[1-2]';
+        'OversizePlot',                   1,                      'BOOL';
+        'ScalePolicy',                    'auto',                 'CHAR';
+        'ScaleUpperLimit',                inf,                    'DOUBLE';
+        'ScaleLowerLimit',                0,                      'DOUBLE';
+        'LegendVerticalAlignment',        'middle',               'CHAR';
+        'XTickAxes',                      '*',                    'CHAR';
+        'FigureColor',                    [0.8 0.8 0.8],          'DOUBLE[3]';
+        'TitleDir',                       'horizontal',           'CHAR';
+        'AxisTitleHorizontalAlignment',   'center',               'CHAR';
+        'AxisTitleVerticalAlignment',     'top',                  'CHAR';
+        'AxisTitleColor',                 'k',                    'CHAR[1]|DOUBLE[3]';
+        'AxisTitleFontSize',              get(gca,'FontSize'),    'DOUBLE'
+        'AxisTitleFontWeight',            'normal',               'CHAR';
+        'AxisTitleLayout',                'oneline',              'CHAR';
+        'ScaleShowOrientation',           1,                      'BOOL';
+        'GridOverPatches',                1,                      'BOOL';
+        'HeadMode',                       0,                      'BOOL';
+        'HeadModeSpec',                   {'LineProperties',{'LineWidth',5, 'Color',0.7*[1 1 1]}},     'STRUCT|CELL';
+        'Nirs',                           0,                      'BOOL';
+        'YLim',                           [],                     'DOUBLE[2]';
+        'PlotStd',                        0,                      'BOOL'};
+
 props_channel = plot_channel2D;
 props_addScale = grid_addScale;
 
@@ -140,7 +142,7 @@ end
 if isdefault.YUnit && isfield(epo, 'YUnit'),
   opt.YUnit= epo.YUnit;
 end
-if isfield(opt, 'YLim'),
+if ~isempty(opt.YLim),
   if ~isdefault.ScalePolicy,
     warning('opt.YLim overrides opt.ScalePolicy');
   end
@@ -223,7 +225,7 @@ if isempty(opt.Axes),
 end
 set(gcf, 'Color',opt.FigureColor);
 
-DisplayChannels= find(ismember(strhead(mnt.clab), strhead(epo.clab)));
+DisplayChannels= find(ismember(strtok(mnt.clab), strtok(epo.clab)));
 if isfield(mnt, 'box'),
   DisplayChannels= intersect(DisplayChannels, find(~isnan(mnt.box(1,1:end-1))));
 end

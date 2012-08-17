@@ -14,11 +14,15 @@ function opt_checkProplist(opt, props, varargin)
 %
 %Description:
 %  This function checks whether all fields of OPT occur in the list of
-%  property names of PROPSPEC and throws an error otherwise.
+%  property names of PROPSPEC and throws an error otherwise. This check
+%  is case-insensitive.
 %  If PROPSPEC contains a third column of (type definitions), the values
 %  in OPT are checked to match them, see opt_checkTypes.
 %
-%See also opt_checkTypes.
+%  Type checking can be switched off (and on again) by the function
+%  bbci_typechecking which is useful for time critical operations.
+%
+%See also opt_checkTypes, bbci_typechecking.
 %
 %Examples:
 %  props= {'LineWidth', 2, 'DOUBLE[1]'; 'Color', 'k', 'CHAR|DOUBLE[3]'}
@@ -33,11 +37,14 @@ function opt_checkProplist(opt, props, varargin)
 %  opt_checkProplist(opt, props)
 
 % 06-2012 Benjamin Blankertz
+global BBCI_TYPECHECKING
 
+if ~BBCI_TYPECHECKING, return; end
 
 props_all= cat(1, props, varargin{:});
 fn= fieldnames(opt);
-unknown_fields= setdiff(fieldnames(opt), props_all(:,1));
+isknown= ismember(upper(fn), upper(props_all(:,1)));
+unknown_fields= fn(~isknown);
 if ~isempty(unknown_fields),
   error('unexpected properties: %s.', vec2str(unknown_fields));
 end

@@ -62,7 +62,8 @@ function H= plot_channel2D(epo, clab, varargin)
 %
 %See also grid_plot.
 
-% Author(s): Benjamin Blankertz, Sep 2000 / Feb 2005
+% 02-2005 Benjamin Blankertz
+
 
 props = {'AxisType',                        'box',                  'CHAR';
          'Legend',                          1,                      'BOOL';
@@ -74,6 +75,9 @@ props = {'AxisType',                        'box',                  'CHAR';
          'XUnit',                           '[ms]',                 'CHAR';
          'YUnit',                           '[\muV]',               'CHAR';
          'UnitDispPolicy',                  'label',                'CHAR';
+         'XUnitDispPolicy',                 'label',                'CHAR';
+         'YUnitDispPolicy',                 'label',                'CHAR';
+         'YLim',                            [],                     'DOUBLE[2]';
          'YLimPolicy',                      'tight',                'CHAR';
          'RefCol',                          0.75,                   'DOUBLE';
          'RefVSize',                        0.05,                   'DOUBLE';
@@ -84,6 +88,10 @@ props = {'AxisType',                        'box',                  'CHAR';
          'ZeroLineTickLength',              3,                      'DOUBLE';
          'Reset',                           1,                      'BOOL';
          'LineWidth',                       2,                      'DOUBLE';
+         'LineStyle',                       '',                     'CHAR';
+         'LineStyleOrder',                  {},                     'CELL{CHAR}'
+         'LineWidthOrder',                  [],                     'DOUBLE'
+         'LineSpecOrder',                   {},                     'CELL'
          'ChannelLineStyleOrder',           {'-','--','-.',':'},    'CELL{CHAR}'
          'Title',                           1,                      'BOOL';
          'TitleColor',                      'k',                    'CHAR';
@@ -102,14 +110,13 @@ props = {'AxisType',                        'box',                  'CHAR';
          'PlotStd',                         0,                      'BOOL';
          'StdLineSpec',                     '--',                   'CHAR';
          'OversizePlot',                    1,                      'DOUBLE'};
-%         'YLim',                            [],                     'DOUBLE[2]';
+
 if nargin==0,
   H= props; return
 end
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
-
 opt_checkProplist(opt, props);
 
 [opt, isdefault]= ...
@@ -134,9 +141,9 @@ chan= chanind(epo, clab);
 nChans= length(chan);
 nClasses= size(epo.y, 1);
 if nChans==0,
-  error('channel not found'); 
+  error('channel ''%s'' not found', clab); 
 elseif nChans>1,
-  if isfield(opt, 'LineStyleOrder'),
+  if ~isempty(opt.LineStyleOrder),
     error('do not use opt.LineStyleOrder when plotting multi channel');
   end
   opt_plot= {'Reset',1, 'XZeroLine',0, 'YZeroLine',0, 'Title',0, ...
@@ -220,7 +227,7 @@ if strcmpi(opt.AxisType, 'cross'),  %% other default values for 'cross'
                             'GridOverPatches', 0, ...
                             'xColor', [1 1 1]*0.999, ...
                             'yColor', [1 1 1]*0.999);
-  %% *0.999 is used, since Matlab prints XColor white as black.
+  %% *0.999 is used, since Matlab prints XColor [1 1 1] as black.
 end
 if isequal(opt.ColorOrder,'rainbow'),
   ColorOrder_hsv= [(0.5:nClasses)'/nClasses ones(nClasses,1)*[1 0.85]];
@@ -228,7 +235,7 @@ if isequal(opt.ColorOrder,'rainbow'),
 else
   opt.ColorOrder= opt.ColorOrder(1:min([nClasses size(opt.ColorOrder,1)]),:);
 end
-[AxesStyle, lineStyle]= opt_extractPlotStyles(opt);
+[axesStyle, lineStyle]= opt_extractPlotStyles(rmfield(opt,{'YLim','LineStyleOrder'}));
 [opt, isdefault]= set_defaults(opt, ...
                   'LineStyleOrder', {}, ...
                   'LineWidthOrder', [], ...
@@ -266,7 +273,7 @@ H.ax= gca;
 if opt.Reset,
   cla('reset');
 end
-set(H.ax, AxesStyle{:});
+set(H.ax, axesStyle{:});
 hold on;      %% otherwise axis properties like ColorOrder are lost
 H.plot= plot(epo.t, squeeze(epo.x(:,chan,:)));
 if length(lineStyle)>0,
@@ -275,7 +282,7 @@ end
 for ii= 1:length(opt.LineSpecOrder),
   set(H.plot(ii), opt.LineSpecOrder{ii}{:});
 end
-if isfield(opt, 'YLim'),
+if ~isempty(opt.YLim),
   yLim= opt.YLim;
 else
   if ismember('|',opt.YLimPolicy),
@@ -306,7 +313,7 @@ if opt.PlotStd,
   end
 end
 
-set(H.ax, AxesStyle{:});
+set(H.ax, axesStyle{:});
 hold off;
 xLim= epo.t([1 end]);
 set(H.ax, 'xLim', xLim);
@@ -381,7 +388,7 @@ switch(lower(opt.YUnitDispPolicy)),
 end
 
 if opt.Legend,
-  H.leg= legend(H.plot, epo.ClassName, opt.LegendPos);
+  H.leg= legend(H.plot, epo.className, opt.LegendPos);
 else
   H.leg= NaN;
 end

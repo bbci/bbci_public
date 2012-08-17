@@ -199,7 +199,7 @@ end
 
 %  set(gcf, 'Color',opt.FigureColor);
 
-DisplayChannels= find(ismember(strhead(mnt.clab), strhead(epo.clab)));
+DisplayChannels= find(ismember(strtok(mnt.clab), strtok(epo.clab)));
 %  if isfield(mnt, 'box'),
 %    DisplayChannels= intersect(DisplayChannels, find(~isnan(mnt.box(1,1:end-1))));
 %  end

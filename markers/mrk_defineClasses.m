@@ -5,11 +5,14 @@ function mrk= mrk_defineClasses(mk, classDef, varargin)
 % MRK_OUT= mrk_defineClasses(MRK_IN, CLASS_DEF, <OPT>)
 %
 %Arguments:
-% MRK_IN: Marker structure as received by eegfile_loadBV
+% MRK_IN: Marker structure as received by file_readBVmarkers.
+%  MarkerFormat can be numeric or string.
 % CLASS_DEF: Class array of size {2 x nClasses}. The first row
 %  specifies the markers of each class, each cell being either
-%  a cell array of strings or a vector of integers. The second
-%  row specifies the class names, each cell begin a string.
+%  a cell array of strings (for MarkerFormat='string') or a vector
+%  of integers (for MarkerFormat='numeric').
+%  The second row specifies the class names, each cell begin a string.
+%  (If the second row does not exist, generic class names are defined.)
 % OPT: struct or property/value list of optional properties:
 %  'RemoveVoidClasses': Void classes are removed from the list of classes,
 %     default 0.
@@ -21,10 +24,12 @@ function mrk= mrk_defineClasses(mk, classDef, varargin)
 %     (fields 'y' and 'className')
 %
 %Example:
-% [cnt,mk]= eegfile_loadBV('Gabriel_01_07_24/selfpaced1sGabriel');
+% file= 'Gabriel_01_07_24/selfpaced1sGabriel';
+% [cnt,mk]= eegfile_readBV(file);
 % classDef= {[65 70], [74 192]; 'left','right'};
 % mrk= mrk_defineClasses(mk, classDef);
 %
+% [cnt,mk]= eegfile_readBV(file, 'MarkerFormat','string');
 % classDef= {{'S 65','S 70'},{'S 74', 'S192'}; 'left','right'}
 % mrk= mrk_defineClasses(mk, classDef);
 % %% does the same
@@ -46,31 +51,27 @@ opt_checkProplist(opt, props);
 misc_checkType('mk', 'STRUCT(time)');
 misc_checkType('classDef', 'CELL');
 
-%iS= ~apply_cellwise2(regexp(mk.type, 'Stimulus'),'isempty');
-%iR= ~apply_cellwise2(regexp(mk.type, 'Response'),'isempty');
-iS= ~cellfun(@isempty, regexp(mk.type, 'Stimulus'));
-iR= ~cellfun(@isempty, regexp(mk.type, 'Response'));
-valid= find(iS|iR);
-sgn= iS-iR;
-mrk.time= mk.time(valid);
-mrk_desc= cellfun(@(x)(str2double(x(2:end))), mk.desc(valid));
-mrk.desc= sgn(valid) .* mrk_desc;
-
 nClasses= size(classDef,2);
-nEvents= length(valid);
-mrk.y= zeros(nClasses, nEvents);
+mrk= struct('time', mk.time);
+mrk.y= zeros(nClasses, numel(mrk.time));
 for cc= 1:nClasses,
   if isnumeric(classDef{1,cc}),
-    mrk.y(cc,:)= ismember(mrk.desc, classDef{1,cc});
+    % vector as in {[10 11], [20:26];  'target', 'nontarget'}
+    mrk.y(cc,:)= ismember(mk.desc, classDef{1,cc});
   elseif iscell(classDef{1,cc}),
-    mrk.y(cc,:)= ismember(mk.desc(valid), classDef{1,cc});
+    % cell of strings as in {{'S 10','S 11'}, {'S 20','S 21'};
+    %                        'target',        'nontarget'}
+    mrk.y(cc,:)= ismember(mk.desc, classDef{1,cc});
   else
-    mrk.y(cc,:)= ismember(mk.desc(valid), classDef(1,cc));
+    % single string as in {'S10', 'S20';  'target', 'nontarget'}
+    mrk.y(cc,:)= ismember(mk.desc, classDef(1,cc));
   end
 end
 
 if size(classDef,1)>1,
   mrk.className= classDef(2,:);
+else
+  mrk.className= cprintf('class %d', 1:nClasses);
 end
 
 if ~opt.KeepAllMarkers,

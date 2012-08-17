@@ -29,10 +29,7 @@ function out= proc_average(epo, varargin)
 % Benjamin Blankertz
 
 
-
-%%
 epo = misc_history(epo);
-
 props= {  'policy'   'mean' 'CHAR(mean nanmean median)'
           'classes' 'ALL'   'CHAR'
           'std'      0      'BOOL'  };
@@ -84,7 +81,7 @@ if max(sum(epo.y,2))==1,
   return;
 end
 
-out= copy_struct(epo, 'not', 'x','y','className');
+out= epo;
 %  clInd= find(ismember(epo.className, classes));
 %% the command above would not keep the order of the classes in cell 'ev'
 evInd= cell(1,nClasses);

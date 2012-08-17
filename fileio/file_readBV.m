@@ -76,7 +76,7 @@ function [varargout] = file_readBV(file, varargin)
 %               - There was an bug in the check for the lag
 
 
-global EEG_RAW_DIR
+global BBCI_RAW_DIR
 
 props= {'CLab'              ''      'CHAR|CELL{CHAR}'
         'Fs'                'raw'   'CHAR|DOUBLE'
@@ -90,17 +90,19 @@ props= {'CLab'              ''      'CHAR|CELL{CHAR}'
         'LinearDerivation'  []      'STRUCT'
         'TargetFormat'      'bbci'  'CHAR'
         'Verbose'           1       'BOOL'};
+
 props_readBVmarkers= file_readBVmarkers;
 props_readBVheader= file_readBVheader;
+all_props= opt_catProps(props, props_readBVmarkers, props_readBVheader);
 
 if nargin==0,
-  H= opt_catProps(props, props_readBVmarkers, props_readBVheader); 
+  varargout= {all_props};
   return
 end
 
 opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
+opt_checkProplist(opt, all_props);
 
 misc_checkType('file', 'CHAR|CELL{CHAR}');
 
@@ -122,12 +124,12 @@ if ~iscell(file)
 end
 
 fileNames = cell(1,length(file));
-% use EEG_RAW_DIR as default dir
+% use BBCI_RAW_DIR as default dir
 for filePos = 1:length(file)
   if isabsolutepath(file{filePos}(1)),
     fileNames{filePos}= file{filePos};
   else
-    fileNames{filePos} = fullfile(EEG_RAW_DIR, file{filePos});
+    fileNames{filePos} = fullfile(BBCI_RAW_DIR, file{filePos});
   end
 end
 
@@ -224,7 +226,7 @@ nChans= length(cnt.clab);
 % sampling rate
 if ~isempty(opt.IvalSa),
   if ~isdefault.Start || ~isdefault.MaxLen,
-    error('specify either <ivalSa> or <Start/MaxLen> but not both');
+    error('specify either <IvalSa> or <Start/MaxLen> but not both');
   end
   skip= opt.IvalSa(1)-1;
   maxlen = diff(opt.IvalSa)+1;
@@ -359,7 +361,7 @@ for filePos = firstFileToRead:lastFileToRead
     opt_mrk= opt_substruct(opt, props_readBVmarkers(:,1));
     curmrk= file_readBVmarkers(fileNames{filePos}, opt_mrk);
     % find markers in the loaded interval
-    inival= find(curmrk.time >= (skip+1)/cnt.fs*1000 & ...
+    inival= find(curmrk.time > skip/cnt.fs*1000 & ...
                  curmrk.time <= (skip+maxlen)/cnt.fs*1000);
     curmrk= mrk_selectEvents(curmrk, inival);
     %let the markers start at zero

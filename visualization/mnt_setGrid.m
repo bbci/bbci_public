@@ -36,13 +36,13 @@ if ~isstruct(mnt),
 end
 
 grid= getGrid(displayMontage);
-if ~any(ismember(strhead(mnt.clab), grid)),
+if ~any(ismember(strtok(mnt.clab), grid)),
   return;
 end
 
 %w_cm= warning('query', 'bci:missing_channels');
 %warning('off', 'bci:missing_channels');
-clab= cat(2, strhead(mnt.clab), {'legend','scale'});
+clab= cat(2, strtok(mnt.clab), {'legend','scale'});
 nChans= length(clab);
 mnt.box= zeros(2, nChans);
 mnt.box_sz= ones(2, nChans);

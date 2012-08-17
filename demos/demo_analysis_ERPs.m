@@ -1,12 +1,11 @@
 file= 'VPibv_10_11_02/calibration_CenterSpellerMVEP_VPibv';
 
 %% Load data
-hdr= eegfile_readBVheader([file '*']);
+hdr= file_readBVheader([file '*']);
 Wps= [42 49]/hdr.fs*2;
 [n, Ws]= cheb2ord(Wps(1), Wps(2), 3, 40);
 [filt.b, filt.a]= cheby2(n, 50, Ws);
-[cnt, mrk_orig]= eegfile_readBV([file '*'], 'fs',100, ...
-                                'filt',filt);
+[cnt, mrk_orig]= file_readBV([file '*'], 'Fs',100, 'Filt',filt);
 
 %% Marker struct
 stimDef= {[31:46], [11:26];
@@ -29,7 +28,7 @@ grd= sprintf(['scale,_,F5,F3,Fz,F4,F6,_,legend\n' ...
               'T7,C5,C3,C1,Cz,C2,C4,C6,T8\n' ...
               'P7,P5,P3,P1,Pz,P2,P4,P6,P8\n' ...
               'PO9,PO7,PO3,O1,Oz,O2,PO4,PO8,PO10']);
-mnt= getElectrodePositions(cnt.clab);
+mnt= get_electrodePositions(cnt.clab);
 mnt= mnt_setGrid(mnt, grd);
 
 % Define some settings
@@ -52,8 +51,8 @@ cnt= proc_filtfilt(cnt, b);
 epo= proc_segmentation(cnt, mrk, disp_ival);
   
 % Artifact rejection based on maxmin difference criterion on frontal chans
-epo= proc_rejectArtifactsMaxMin(epo, crit_maxmin, ...
-            'clab',crit_clab, 'ival',crit_ival, 'verbose',1);
+epo= proc_rejectArtifactsMaxMin(epo, crit_maxmin, 'Clab',crit_clab, ...
+                                'Ival',crit_ival, 'Verbose',1);
 
 % Baseline subtraction, and calculation of a measure of discriminability
 epo= proc_baseline(epo, ref_ival);
@@ -66,24 +65,24 @@ constraint= ...
        {1, [200 350], {'P3-4','CP3-4','C3-4'}, [200 400]}, ...
        {1, [400 500], {'P3-4','CP3-4','C3-4'}, [350 600]}};
 [ival_scalps, nfo]= ...
-    select_time_intervals(epo_r, 'visualize', 1, 'visu_scalps', 1, ...
-                          'title', untex(file), ...
-                          'clab',{'not','E*'}, ...
-                          'constraint', constraint);
+    select_time_intervals(epo_r, 'Visualize', 1, 'VisuScalps', 1, ...
+                          'Title', untex(file), ...
+                          'Clab',{'not','E*'}, ...
+                          'Constraint', constraint);
 printFigure('r_matrix', [18 13]);
 ival_scalps= visutil_correctIvalsForDisplay(ival_scalps, 'fs',epo.fs);
 
 fig_set(3)
-H= grid_plot(epo, mnt, defopt_erps, 'colorOrder',colOrder);
+H= grid_plot(epo, mnt, defopt_erps, 'ColorOrder',colOrder);
 grid_addBars(epo_r, 'h_scale',H.scale);
 %printFigure(['erp'], [19 12]);
 
 fig_set(2);
-H= scalpEvolutionPlusChannel(epo, mnt, clab, ival_scalps, defopt_scalp_erp2, ...
-                             'colorOrder',colOrder);
+H= plot_scalpEvolutionPlusChannel(epo, mnt, clab, ival_scalps, defopt_scalp_erp, ...
+                             'ColorOrder',colOrder);
 grid_addBars(epo_r);
 %printFigure(['erp_topo'], [20  4+5*size(epo.y,1)]);
 
 fig_set(4, 'shrink',[1 2/3]);
-scalpEvolutionPlusChannel(epo_r, mnt, clab, ival_scalps, defopt_scalp_r2);
+plot_scalpEvolutionPlusChannel(epo_r, mnt, clab, ival_scalps, defopt_scalp_r);
 %printFigure(['erp_topo_r'], [20 9]);
