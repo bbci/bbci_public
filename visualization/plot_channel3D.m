@@ -51,37 +51,37 @@ function H= plot_channel3D(epo, clab, varargin)
 
 % Author(s): Matthias Treder Aug 2010
 
-props = {'AxisType',                        'box',                  'CHAR';
-         'YDir',                            'normal',               'CHAR';
-         'XGrid',                           'on',                   'CHAR';
-         'YGrid',                           'on',                   'CHAR';
-         'Box',                             'on',                   'CHAR';
-         'XUnit',                           '[ms]',                 'CHAR';
-         'YUnit',                           '[\muV]',               'CHAR';
-         'FreqLim',                         [1 size(epo.x,1)],      'DOUBLE[2]';
-         'PlotRef',                         0,                      'BOOL';
-         'RefCol',                          0.75,                   'DOUBLE';
-         'RefLineStyle',                    '-',                    'CHAR';
-         'RefLineWidth',                    2,                      'DOUBLE';
-         'RefYPos',                         [],                     'DOUBLE';
-         'RefWhisker',                      [],                     'DOUBLE';
-         'ZeroLine',                        1,                      'DOUBLE';
-         'ZeroLineColor',                   0.5*[1 1 1],            'DOUBLE[3]';
-         'ZeroLineStyle',                   '-',                    'CHAR';
-         'LineWidth',                       2,                      'DOUBLE';
-         'ChannelLineStyleOrder',           {'-','--','-.',':'},    'CELL{CHAR}'
-         'Title',                           1,                      'BOOL';
-         'TitleColor',                      'k',                    'CHAR';
-         'TitleFontSize',                   get(gca,'FontSize'),    'DOUBLE';
-         'TitleFontWeight',                 'normal',               'CHAR';
-         'YTitle',                          [],                     'DOUBLE';
-         'SmallSetup',                      0,                      'BOOL';
-         'MultichannelTitleOpts',           {},                     'STRUCT';
-         'Colormap',                        'jet',                  'CHAR|DOUBLE[- 3]'
-         'CLim',                            [],                     'DOUBLE[2]';
-         'CLimPolicy',                      'normal',               'CHAR';
-         'GridOverPatches',                 1,                      'BOOL';
-         'OversizePlot',                    1,                      'DOUBLE'};
+props = {'AxisType',                  'box',                  'CHAR';
+         'YDir',                      'normal',               'CHAR';
+         'XGrid',                     'on',                   'CHAR';
+         'YGrid',                     'on',                   'CHAR';
+         'Box',                       'on',                   'CHAR';
+         'XUnit',                     '[ms]',                 'CHAR';
+         'YUnit',                     '[\muV]',               'CHAR';
+         'FreqLim',                   [],                     'DOUBLE[2]';
+         'PlotRef',                   0,                      'BOOL';
+         'RefCol',                    0.75,                   'DOUBLE';
+         'RefLineStyle',              '-',                    'CHAR';
+         'RefLineWidth',              2,                      'DOUBLE';
+         'RefYPos',                   [],                     'DOUBLE';
+         'RefWhisker',                [],                     'DOUBLE';
+         'ZeroLine',                  1,                      'DOUBLE';
+         'ZeroLineColor',             0.5*[1 1 1],            'DOUBLE[3]';
+         'ZeroLineStyle',             '-',                    'CHAR';
+         'LineWidth',                 2,                      'DOUBLE';
+         'ChannelLineStyleOrder',     {'-','--','-.',':'},    'CELL{CHAR}'
+         'Title',                     1,                      'BOOL';
+         'TitleColor',                'k',                    'CHAR';
+         'TitleFontSize',             get(gca,'FontSize'),    'DOUBLE';
+         'TitleFontWeight',           'normal',               'CHAR';
+         'YTitle',                    [],                     'DOUBLE';
+         'SmallSetup',                0,                      'BOOL';
+         'MultichannelTitleOpts',     {},                     'STRUCT';
+         'Colormap',                  'jet',                  'CHAR|DOUBLE[- 3]'
+         'CLim',                      [],                     'DOUBLE[2]';
+         'CLimPolicy',                'normal',               'CHAR';
+         'GridOverPatches',           1,                      'BOOL';
+         'OversizePlot',              1,                      'DOUBLE'};
 
 if nargin==0,
   H= props; return
@@ -89,11 +89,14 @@ end
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
-
 opt_checkProplist(opt, props);
 
-if ~isfield(opt,'FreqLim') && isfield(epo,'wave_FreqLim')
-  opt.FreqLim = [epo.wave_FreqLim(1) epo.wave_FreqLim(end)];
+if isdefault.FreqLim,
+  if isfield(epo,'wave_FreqLim')
+    opt.FreqLim= [epo.wave_FreqLim(1) epo.wave_FreqLim(end)];
+  else
+    opt.FreqLim= [1 size(epo.x,1)];
+  end
 end
 
 if max(sum(epo.y,2))>1,

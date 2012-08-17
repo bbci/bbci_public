@@ -63,30 +63,27 @@ function [ival, nfo, X_rem,H]= select_time_intervals(epo_r, varargin)
 %            07-12 Johannes Hoehne, modified documentation and parameter
 %            naming
 
-construction_warning(mfilename);
 
-
-
-props= { 'nIvals'               5
-         'sign'                 0
-         'scoreFactorForMax'    3
-         'rRelThreshold'        0.5
-         'cThreshold'           0.75
-         'clab'                 '*'
-         'scalpChannelsOnly'    0
-         'clabPickPeak'         '*'
-         'ivalPickPeak'         []
-         'ivalMax'              []
-         'minWidth'             []
-         'sort'                 0
-         'visualize'            0
-         'visuScalps'           0
-         'optVisu'              []
-         'title'                ''
-         'mnt'                  getElectrodePositions(epo_r.clab)
-         'constraint'           {}
-         'intersampleTiming'    0
-         'verbose'              1 };
+props= { 'NIvals'               5
+         'Sign'                 0
+         'ScoreFactorForMax'    3
+         'RRelThreshold'        0.5
+         'CThreshold'           0.75
+         'Clab'                 '*'
+         'ScalpChannelsOnly'    0
+         'ClabPickPeak'         '*'
+         'IvalPickPeak'         []
+         'IvalMax'              []
+         'MinWidth'             []
+         'Sort'                 0
+         'Visualize'            0
+         'VisuScalps'           0
+         'OptVisu'              []
+         'Title'                ''
+         'Mnt'                  get_electrodePositions(epo_r.clab)
+         'Constraint'           {}
+         'IntersampleTiming'    0
+         'Verbose'              1 };
 
 if nargin==0,
   ival = props; return
@@ -101,53 +98,53 @@ opt= opt_proplistToStruct(varargin{:});
 opt_checkProplist(opt, props);
 
 
-if opt.scalpChannelsOnly,
-  scalpchans= intersect(strhead(epo_r.clab), scalpChannels);
+if opt.ScalpChannelsOnly,
+  scalpchans= intersect(strtok(epo_r.clab), scalpChannels);
   if length(scalpchans) < length(epo_r.clab),
-    if isequal(opt.clab, '*'),
-      opt.clab= clab_in_preserved_order(epo_r, scalpchans);
+    if isequal(opt.Clab, '*'),
+      opt.Clab= clab_in_preserved_order(epo_r, scalpchans);
     else
-      selchans= epo_r.clab(chanind(epo_r, opt.clab));
-      opt.clab= clab_in_preserved_order(epo_r, ...
+      selchans= epo_r.clab(chanind(epo_r, opt.Clab));
+      opt.Clab= clab_in_preserved_order(epo_r, ...
                                         intersect(selchans, scalpChannels));
     end
   end
   % in recursive calls we do not need to do this again
-  opt.scalpChannelsOnly= 0;
+  opt.ScalpChannelsOnly= 0;
 end
 
-if ~isequal(opt.clab, '*'),
-  epo_r= proc_selectChannels(epo_r, opt.clab);
+if ~isequal(opt.Clab, '*'),
+  epo_r= proc_selectChannels(epo_r, opt.Clab);
   % in recursive calls we do not need to do this again
-  opt.clab= '*';
+  opt.Clab= '*';
 end
 
 % save original score-matrix for visualization
 X_memo= epo_r.x;
 
 % delete scores where nothing should be selected
-if ~isempty(opt.ivalMax),
-  idx_keep= getIvalIndices(opt.ivalMax, epo_r);
+if ~isempty(opt.IvalMax),
+  idx_keep= getIvalIndices(opt.IvalMax, epo_r);
   idx_rm= setdiff(1:size(epo_r.x,1), idx_keep);
   epo_r.x(idx_rm,:)= 0;
 end
 
-if ~isempty(opt.constraint),
-  constraint= opt.constraint;
-  opt.constraint= [];
-  if opt.nIvals<length(constraint),
-    opt.nIvals= length(constraint);
+if ~isempty(opt.Constraint),
+  constraint= opt.Constraint;
+  opt.Constraint= [];
+  if opt.NIvals<length(constraint),
+    opt.NIvals= length(constraint);
   end
-  for ii= 1:opt.nIvals,
+  for ii= 1:opt.NIvals,
     if ii<=length(constraint),
       this_constraint= constraint{ii};
     else
-      this_constraint= {opt.sign, opt.ivalPickPeak, opt.clabPickPeak};
+      this_constraint= {opt.Sign, opt.IvalPickPeak, opt.ClabPickPeak};
     end
     if length(this_constraint)<3,
-      opt.clab= '*';
+      opt.Clab= '*';
     else
-      opt.clab= this_constraint{3};
+      opt.Clab= this_constraint{3};
     end
     tmp_r= epo_r;
     if length(this_constraint)>=4,
@@ -172,27 +169,27 @@ if ~isempty(opt.constraint),
     end
   end
   epo_r.x= X_memo;
-  if opt.sort,
+  if opt.Sort,
     [so,si]= sort(ival(:,1));
     ival= ival(si,:);
   end
-  if opt.visualize,
+  if opt.Visualize,
     H=visualize_score_matrix(epo_r, nfo, opt);
   else H=[];
   end
   return;
 end
 
-if opt.verbose,
-  nonscalp= setdiff(strhead(epo_r.clab), scalpChannels);
+if opt.Verbose,
+  nonscalp= setdiff(strtok(epo_r.clab), scalpChannels);
   if ~isempty(nonscalp),
     warning(['Presumably non-scalp channel(s) found: ' vec2str(nonscalp)]);
   end
 end
 
-if opt.nIvals>1,
+if opt.NIvals>1,
   ii= 0;
-  while ii<opt.nIvals,
+  while ii<opt.NIvals,
     ii= ii+1;
     [tmp_ival, tmp_nfo, X_rem]= ...
         select_time_intervals(epo_r, opt, ...
@@ -206,11 +203,11 @@ if opt.nIvals>1,
       epo_r.x= X_rem;
     end
   end
-  if opt.sort,
+  if opt.Sort,
     [so,si]= sort(ival(:,1));
     ival= ival(si,:);
   end
-  if opt.visualize,
+  if opt.Visualize,
     epo_r.x= X_memo;
     H= visualize_score_matrix(epo_r, nfo, opt);
   else 
@@ -219,18 +216,18 @@ if opt.nIvals>1,
   return;
 end
 
-cidx= chanind(epo_r, opt.clabPickPeak);
+cidx= chanind(epo_r, opt.ClabPickPeak);
 X0= epo_r.x(:,cidx);
 T= size(X0,1);
 score= zeros(1, T);
 Xpos= max(X0, 0);
 Xneg= min(X0, 0);
 for tt= 1:T,
-  sp= mean(Xpos(tt,:)) + max(Xpos(tt,:)) * opt.scoreFactorForMax;
-  sn= mean(Xneg(tt,:)) + min(Xneg(tt,:)) * opt.scoreFactorForMax;
-  if opt.sign==0,
+  sp= mean(Xpos(tt,:)) + max(Xpos(tt,:)) * opt.ScoreFactorForMax;
+  sn= mean(Xneg(tt,:)) + min(Xneg(tt,:)) * opt.ScoreFactorForMax;
+  if opt.Sign==0,
     score(tt)= sp - sn;
-  elseif opt.sign>0,
+  elseif opt.Sign>0,
     score(tt)= sp;
   else
     score(tt)= -sn;
@@ -239,10 +236,10 @@ end
 clear Xpos Xneg
 
 nfo.score= score;
-if isempty(opt.ivalPickPeak),
+if isempty(opt.IvalPickPeak),
   pick_idx= 1:length(score);
 else
-  pick_idx= getIvalIndices(opt.ivalPickPeak, epo_r);
+  pick_idx= getIvalIndices(opt.IvalPickPeak, epo_r);
 end
 [nfo.peak_val, t0]= max(nfo.score(pick_idx));
 ti= pick_idx(t0);
@@ -250,7 +247,7 @@ ti= pick_idx(t0);
 ci= cidx(ci0);
 
 if nfo.peak_val==0,
-  % This can only happen, if opt.sign is specified, but no r-values of
+  % This can only happen, if opt.Sign is specified, but no r-values of
   % that sign exist (or all r-values are 0).
   ival= [NaN NaN];
   X_rem= epo_r.x;
@@ -263,7 +260,7 @@ nfo.peak_time= epo_r.t(ti);
 lti= enlarge_interval(epo_r.x, ti, -1, opt, nfo);
 uti= enlarge_interval(epo_r.x, ti, 1, opt, nfo);
 ival= epo_r.t([lti uti]);
-if opt.intersampleTiming,
+if opt.IntersampleTiming,
   ival(:,1)= ival(:,1) - 1000/epo_r.fs/2;
   ival(:,2)= ival(:,2) + 1000/epo_r.fs/2;
 end
@@ -274,13 +271,13 @@ if nargout>2,
   X_rem([lti:uti],:)= 0;
 end
 
-if opt.verbose>1,
+if opt.Verbose>1,
   fprintf('r-square max (%.3g) spotted in %s at %.0f ms\n', ...
           nfo.peak_val, nfo.peak_clab, nfo.peak_time);
   fprintf('selected time interval [%.0f %.0f] ms\n', ival);
 end
 
-if opt.visualize,
+if opt.Visualize,
   epo_r.x= X_memo;
   H= visualize_score_matrix(epo_r, nfo, opt);
 else
@@ -295,7 +292,7 @@ return
 function H= visualize_score_matrix(epo_r, nfo, opt)
 
 [optVisu, isdefault]= ...
-    set_defaults(opt.optVisu, ...
+    set_defaults(opt.OptVisu, ...
                  'clf', 1, ...
                  'colormap', cmap_posneg(51), ...
                  'markClab', {'Fz','FCz','Cz','CPz','Pz','Oz'}, ...
@@ -306,14 +303,14 @@ function H= visualize_score_matrix(epo_r, nfo, opt)
 %  scalp channels first, ordered from frontal to occipital (as returned
 %  by function scalpChannels),
 %  then non-scalp channels
-clab= clab_in_preserved_order(scalpChannels, strhead(epo_r.clab));
+clab= clab_in_preserved_order(scalpChannels, strtok(epo_r.clab));
 clab_nonscalp= clab_in_preserved_order(epo_r, ...
-                       setdiff(strhead(epo_r.clab), scalpChannels));
+                       setdiff(strtok(epo_r.clab), scalpChannels));
 epo_r= proc_selectChannels(epo_r, cat(2, clab, clab_nonscalp)); 
 clf;
 colormap(optVisu.colormap);
-if opt.visuScalps,
-  if isempty(opt.title),
+if opt.VisuScalps,
+  if isempty(opt.Title),
     subplotxl(2, 1, 1, [0.05 0 0.01], [0.06 0 0.1]);
   else
     subplotxl(2, 1, 1, [0.05 0 0.05], [0.06 0 0.1]);
@@ -345,26 +342,26 @@ for ii= 1:numel(nfo),
                       'color',[0 0.5 0], 'LineWidth',0.5);
   end
 end
-if ~isempty(opt.title),
-  H.title= axis_title(opt.title, 'vpos',0, 'verticalAlignment','bottom', ...
+if ~isempty(opt.Title),
+  H.title= axis_title(opt.Title, 'vpos',0, 'verticalAlignment','bottom', ...
                       'fontWeight','bold', 'fontSize',16, ...
                       'color',0.3*[1 1 1], ...
                       optVisu.titleProp{:});
 end
 
 %set(H.ax_overlay, 'Visible','off');
-if opt.visuScalps,
+if opt.VisuScalps,
   nIvals= numel(nfo);
   for ii= 1:nIvals,
     H.ax_scalp(ii)= subplotxl(2, nIvals, nIvals + ii);
   end
   ival_scalps= visutil_correctIvalsForDisplay(cat(1,nfo.ival), 'fs',epo_r.fs);
-  H.h_scalp= scalpEvolution(epo_r, opt.mnt, round(ival_scalps), defopt_scalp_r, ...
-                            'subplot', H.ax_scalp, ...
-                            'ivalColor', [0 0 0], ...
-                            'globalCLim', 1, ...
-                            'scalePos','none',...
-                            'extrapolate', 0);
+  H.h_scalp= plot_scalpEvolution(epo_r, opt.Mnt, round(ival_scalps), defopt_scalp_r, ...
+                            'Subplot', H.ax_scalp, ...
+                            'IvalColor', [0 0 0], ...
+                            'GlobalCLim', 1, ...
+                            'ScalePos','none',...
+                            'Extrapolate', 0);
   delete(H.h_scalp.text);
 end
 
@@ -375,7 +372,7 @@ return;
 
 function bti= enlarge_interval(X, ti, di, opt, nfo)
 
-r_thr= nfo.peak_val * opt.rRelThreshold;
+r_thr= nfo.peak_val * opt.RRelThreshold;
 top_row= X(ti,:);
 bti= ti;
 goon= 1;
@@ -383,7 +380,7 @@ while goon && bti>1 && bti<size(X,1),
   bti= bti + di;
   if any(X(bti,:)),
     corr_with_toprow= nccorrcoef(top_row, X(bti,:));
-    goon= nfo.score(bti) > r_thr & corr_with_toprow > opt.cThreshold;
+    goon= nfo.score(bti) > r_thr & corr_with_toprow > opt.CThreshold;
   else
     goon= 0;
   end

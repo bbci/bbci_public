@@ -75,7 +75,7 @@ if opt.doBandpass,
   cnt= proc_channelwise(cnt, opt.clab, 'filt', b, a);
 end
 
-fv= cntToEpo(cnt, mrk, ival, 'clab',opt.clab, 'mtsp','before');
+fv= proc_segmentation(cnt, mrk, ival, 'Clab',opt.clab);
 nEvents= size(fv.x,3);
 fv= proc_variance(fv);
 V= squeeze(fv.x);
@@ -211,7 +211,7 @@ if opt.doUnstabChans,
 end
 
 rClab= fv.clab(rClab);
-mrk= mrk_chooseEvents(mrk, 'not', rTrials);
+mrk= mrk_select(mrk, 'not', rTrials);
 
 if opt.verbose && ~isempty(rTrials),
   fprintf('%d artifact trials removed due to variance criterion.\n', ...

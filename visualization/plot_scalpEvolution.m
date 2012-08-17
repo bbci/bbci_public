@@ -27,11 +27,11 @@ function H= plot_scalpEvolution(erp, mnt, ival, varargin)
 %
 %See also plot_scalpEvolutionPlusChannel, plot_scalpPatterns, plot_scalp.
 
-% blanker@first.fhg.de 01/2005
+% 01-2005 Benjamin Blankertz
+
 
 props= {'PrintIval',    0,  'BOOL';
-        'PlotChannel',  1,  'BOOL'};
-    
+        'PlotChannel',  1,  'BOOL'};    
 props_scalpEvolutionPlusChannel= plot_scalpEvolutionPlusChannel;
 
 if nargin==0,

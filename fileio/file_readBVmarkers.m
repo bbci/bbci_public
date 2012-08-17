@@ -30,7 +30,7 @@ function [Mrk, fs]= file_readBVmarkers(mrkName, varargin)
 
 global EEG_RAW_DIR
 
-props= {'MarkerFormat'   'string'   'CHAR'};
+props= {'MarkerFormat'   'numeric'   'CHAR(string numeric)'};
 
 if nargin==0,
   Mrk= props; return
@@ -58,7 +58,7 @@ if skip<=length(s)
 end 
 opt_read= {'delimiter',',', 'headerlines',skip-1};
 
-[mrkno,Mrk.type,Mrk.desc,pos,Mrk.length,Mrk.chan,Mrk.clock]= ...
+[mrkno, M_type, M_desc, pos, M_length, M_chan, M_clock]= ...
     textread([fullName '.vmrk'], 'Mk%u=%s%s%u%u%u%s', opt_read{:});
 
 keyword= 'SamplingInterval';
@@ -69,15 +69,16 @@ fs= 1000000/sscanf(s{ii}, [keyword '=%f']);
 Mrk.time= pos'/fs*1000;
 % Round time to micro seconds
 % Mrk.time= round(Mrk.time*1000)/1000;
-Mrk.event.desc= Mrk.desc';
-Mrk.event.type= Mrk.type';
-Mrk.event.length= Mrk.length';
-Mrk.event.chan= Mrk.chan';
-Mrk.event.clock= Mrk.clock';
+
+Mrk.desc= M_desc';
+Mrk.event.type= M_type';
+Mrk.event.length= M_length';
+Mrk.event.chan= M_chan';
+Mrk.event.clock= M_clock';
 Mrk.fs= fs;
 
 if strcmp(opt.MarkerFormat, 'numeric'),
-  [toe,idx]= marker_mapping_SposRneg(Mrk.event.desc);
-  Mrk.event.desc= zeros(size(Mrk.event.desc));
-  Mrk.event.desc(idx)= toe;
+  [toe,idx]= marker_mapping_SposRneg(Mrk.desc);
+  Mrk.desc= zeros(size(Mrk.desc));
+  Mrk.desc(idx)= toe;
 end

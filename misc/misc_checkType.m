@@ -54,7 +54,10 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %    nonempty values, prepend '!' to the type specification (such as
 %    '!CHAR'.
 %
-%See also opt_checkTypes.
+%  Type checking can be switched off (and on again) by the function
+%  bbci_typechecking which is useful for time critical operations.
+%
+%See also opt_checkTypes, bbci_typechecking.
 %
 %Examples:
 %  vec= 1:5;
@@ -70,7 +73,7 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %  colormap= rand(21, 4);
 %  misc_checkType('colormap', 'DOUBLE[- 3]')
 %
-%  linecolor= 'green';
+%  linecolor= 'green';   % allowed would be 'g' or [0 1 0]
 %  misc_checkType('linecolor', 'CHAR[1]|DOUBLE[3]')
 %
 %  cnt= struct('x',randn(1000,2), 'clab',{'C3','C4'});
@@ -83,6 +86,8 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 
 % 06-2012 Benjamin Blankertz
 
+
+if ~BBCI_TYPECHECKING, return; end
 
 if nargin<4,
   toplevel= 1;
@@ -132,12 +137,12 @@ elseif str_matchesHead('BOOL', typeDefinition),
 elseif str_matchesHead('CHAR', typeDefinition),
   ok= ischar(variable);
   spec= typeDefinition(length('CHAR')+1:end);
-  if ok,
+  if ok && ~isempty(spec),
     if strcmp(spec([1 end]), '()'),
         allowedValues = textscan(spec(2:end-1), '%s');
         if ~any(strcmpi(variable,allowedValues{1}));        
           ok = 0;
-          msg= sprintf('Invalid value ''%s'' of variable ''%s''. Allowed values: %s', ...
+          msg= sprintf('Invalid value ''%s'' of variable ''%s''. Allowed are only the strings: %s', ...
                variable, propname, spec(2:end-1));
         end
     else

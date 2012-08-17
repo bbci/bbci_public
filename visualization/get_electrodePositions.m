@@ -40,14 +40,14 @@ if ischar(varargin{1}),
   x= posSystem.x;
   y= posSystem.y;
   z= posSystem.z;
-  elab= posSystem.Clab;
+  elab= posSystem.clab;
 elseif isstruct(varargin{1}),
   posSystem= varargin{1};
   displayMontage= {varargin{2:end}};
   x= posSystem.x;
   y= posSystem.y;
   z= posSystem.z;
-  elab= posSystem.Clab;
+  elab= posSystem.clab;
 elseif nargin==5 | (nargin==4 & ~ischar(varargin{3})),
   elab= Clab;
   [x,y,z]= deal(varargin{1:3});
@@ -108,7 +108,7 @@ radius = 1.3;
 %radius= 1.9;
 mnt.x= mnt.x/radius;
 mnt.y= mnt.y/radius;
-mnt.Clab= Clab;
+mnt.clab= Clab;
 
 if ~isempty(displayMontage),
   mnt= mnt_setGrid(mnt, displayMontage{:});

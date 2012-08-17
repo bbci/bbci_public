@@ -54,7 +54,7 @@ props= {'LineWidth',       3,                 'DOUBLE[1]';
         'LegendPos',       'Best',            'CHAR'};
 
 props_scalpPattern= plot_scalpPattern;
-props_channel= plot_channel2D;
+props_channel= plot_channel;
 
 if nargin==0,
   H= opt_catProps(props, props_scalpPattern, props_channel);
@@ -116,7 +116,7 @@ end
 
 nIvals= size(ival,1);
 nColors= size(opt.IvalColor,1);
-nClasses= length(erp.ClassName);
+nClasses= length(erp.className);
 
 if isempty(opt.Subplot),
   clf;
@@ -124,7 +124,7 @@ end
 set(gcf, 'Color',opt.FigureColor);
 
 subplot_Offset= 0;
-if opt.PlotChannel,
+if opt.PlotChannel && ~isempty(clab),
   if ~isempty(opt.SubplotChannel),
     H.ax_erp= opt.SubplotChannel;
     get_backAxes(H.ax_erp);
@@ -154,7 +154,7 @@ if opt.PlotChannel,
     end
     % Check matlab version for downward compatability
     if str2double(strtok(version,'.'))<7
-      H.leg= legend(hhh.plot, erp.ClassName, opt.LegendPos);
+      H.leg= legend(hhh.plot, erp.className, opt.LegendPos);
     else
       % check if LegendPos is integer
       if isnumeric(opt.LegendPos)
@@ -172,7 +172,7 @@ if opt.PlotChannel,
       else
         loc = opt.LegendPos;
       end
-      H.leg= legend(hhh.plot, erp.ClassName, 'Location',loc);
+      H.leg= legend(hhh.plot, erp.className, 'Location',loc);
     end
   end
 end
@@ -240,7 +240,7 @@ for cc= 1:nClasses,
   pos= get(H.scalp(cc,end).ax, 'position');
   yy= pos(2)+0.5*pos(4);
   H.background= get_backgroundAxis;
-  H.text(cc)= text(0.01, yy, erp.ClassName{cc});
+  H.text(cc)= text(0.01, yy, erp.className{cc});
   set(H.text(cc), 'verticalAli','top', ...
                   'horizontalAli','center', ...
                   'rotation',90, ...
