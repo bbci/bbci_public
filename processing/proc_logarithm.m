@@ -1,4 +1,4 @@
-function dat= proc_logarithm(dat);
+function dat= proc_logarithm(dat)
 %PROC_LORARITHM - computes the natural logarithm
 %
 %Synopsis:

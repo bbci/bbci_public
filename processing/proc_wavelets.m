@@ -40,7 +40,6 @@ function [dat info] = proc_wavelets(dat,varargin)
 
 % Author: Matthias Treder (2010,2012)
 
-dat.history = misc_history(dat);
 if numel(varargin)>0 && ~ischar(varargin{1})
   freq = varargin{1};
   varargin(1) = [];

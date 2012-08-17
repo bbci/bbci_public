@@ -139,15 +139,15 @@ elseif str_matchesHead('CHAR', typeDefinition),
   spec= typeDefinition(length('CHAR')+1:end);
   if ok && ~isempty(spec),
     if strcmp(spec([1 end]), '()'),
-        allowedValues = textscan(spec(2:end-1), '%s');
-        if ~any(strcmpi(variable,allowedValues{1}));        
-          ok = 0;
-          msg= sprintf('Invalid value ''%s'' of variable ''%s''. Allowed are only the strings: %s', ...
-               variable, propname, spec(2:end-1));
-        end
+      allowedValues = textscan(spec(2:end-1), '%s');
+      if ~any(strcmpi(variable,allowedValues{1}));        
+        ok = 0;
+        msg= sprintf('Invalid value ''%s'' of variable ''%s''. Allowed are only the strings: %s', ...
+                     variable, propname, spec(2:end-1));
+      end
     else
         [ok, msg]= size_check(variable, typeDefinition(length('CHAR')+1:end), ...
-                          propname);
+                              propname);
     end
   end
 elseif str_matchesHead('FUNC', typeDefinition),

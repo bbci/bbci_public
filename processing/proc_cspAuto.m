@@ -1,9 +1,9 @@
-function [dat, varargout]= proc_csp_auto(dat, varargin)
-%PROC_CSP_AUTO - Common Spatial Pattern Analysis with Auto Filter Selection
+function [dat, varargout]= proc_cspAuto(dat, varargin)
+%PROC_CSPAUTO - Common Spatial Pattern Analysis with Auto Filter Selection
 %
 %Synopsis:
-% [DAT, CSP_W, CSP_EIG, CSP_A]= proc_csp_auto(DAT, <OPT>);
-% [DAT, CSP_W, CSP_EIG, CSP_A]= proc_csp_auto(DAT, NPATS);
+% [DAT, CSP_W, CSP_EIG, CSP_A]= proc_cspAuto(DAT, <OPT>);
+% [DAT, CSP_W, CSP_EIG, CSP_A]= proc_cspAuto(DAT, NPATS);
 %
 %Arguments:
 % DAT    - data structure of epoched data

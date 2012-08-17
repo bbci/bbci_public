@@ -1,18 +1,18 @@
-function out= proc_z_score(epo, varargin)
-%PROC_Z_SCORE - calculates the (pseudo) z-score or normal score
+function out= proc_zScore(epo, varargin)
+%PROC_ZSCORE - calculates the (pseudo) z-score or normal score
 %               as a dimensionless quantity (for two classes only)
 %
 %Synopsis:
-% EPO= proc_zscore(EPO, <OPT>)
-% EPO= proc_zscore(EPO, CLASSES)
+% EPO= proc_zScore(EPO, <OPT>)
+% EPO= proc_zScore(EPO, CLASSES)
 %
 %Arguments:
 % EPO -      data structure of epoched data
 %            (can handle more than 3-dimensional data, the average is
 %            calculated across the last dimension)
 % OPT struct or property/value list of optional arguments:
-%  .policy - 'mean' (default), 'nanmean', or 'median'
-%  .classes - classes of which the average is to be calculated,
+%  .Policy - 'mean' (default), 'nanmean', or 'median'
+%  .Classes - classes of which the average is to be calculated,
 %            names of classes (strings in a cell array), or 'ALL' (default)
 %
 %Returns:
@@ -24,9 +24,9 @@ function out= proc_z_score(epo, varargin)
 % Author(s): Benjamin Blankertz, long time ago
 %            Andreas Ziehe, November 2007
 
-props= {'policy'  'mean'     'CHAR'
-        'classes' 'ALL'      'CHAR'
-        'std'     1          'BOOL'};
+props= {'Policy'  'mean'     '!CHAR(mean nanmean median)'
+        'Classes' 'ALL'      '!CHAR'
+        'Std'     1          'BOOL'};
 
 if nargin==0,
   out = props; return
@@ -47,7 +47,7 @@ if ~isfield(epo, 'y'),
   epo.className= {'all'};
 end
 
-if isequal(opt.classes, 'ALL'),
+if isequal(opt.Classes, 'ALL'),
   classes= epo.className;
 end
 if ischar(classes), classes= {classes}; end
@@ -74,7 +74,7 @@ end
 
 sz= size(epo.x);
 out.x= zeros(prod(sz(1:end-1)), nClasses);
-if opt.std,
+if opt.Std,
   out.std= zeros(prod(sz(1:end-1)), nClasses);
   if exist('mrk_addIndexedField')==2,
     %% The following line is only to be executed if the BBCI Toolbox
@@ -87,7 +87,7 @@ out.className= classes;
 out.N= zeros(1, nClasses);
 epo.x= reshape(epo.x, [prod(sz(1:end-1)) sz(end)]);
 for ic= 1:nClasses,
-  switch(lower(opt.policy)),  %% alt: feval(opt.policy, ...)
+  switch(lower(opt.Policy)),  %% alt: feval(opt.Policy, ...)
    case 'mean',
     out.x(:,ic)= mean(epo.x(:,evInd{ic}), 2);
    case 'nanmean',
@@ -97,8 +97,8 @@ for ic= 1:nClasses,
    otherwise,
     error('unknown policy');
   end
-  if opt.std,
-    if strcmpi(opt.policy,'nanmean'),
+  if opt.Std,
+    if strcmpi(opt.Policy,'nanmean'),
       out.std(:,ic)= nanstd(epo.x(:,evInd{ic}), 0, 2);
     else
       out.std(:,ic)= std(epo.x(:,evInd{ic}), 0, 2);
@@ -108,7 +108,7 @@ for ic= 1:nClasses,
 end
 
 out.x= reshape(out.x, [sz(1:end-1) nClasses]);
-if opt.std,
+if opt.Std,
 %comtute standard deviation
   out.std= reshape(out.std, [sz(1:end-1) nClasses]);
 %compute z-scores
