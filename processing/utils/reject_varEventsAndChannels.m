@@ -211,7 +211,7 @@ if opt.doUnstabChans,
 end
 
 rClab= fv.clab(rClab);
-mrk= mrk_select(mrk, 'not', rTrials);
+mrk= mrk_selectEvents(mrk, 'not', rTrials);
 
 if opt.verbose && ~isempty(rTrials),
   fprintf('%d artifact trials removed due to variance criterion.\n', ...

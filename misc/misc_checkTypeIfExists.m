@@ -8,6 +8,8 @@ function misc_checkTypeIfExists(propname, typeDefinition)
 %function does not throw an error, if the specified variable does not exist.
 
 
+global BBCI_TYPECHECKING
+
 if ~BBCI_TYPECHECKING, return; end
 
 misc_checkType('propname', 'CHAR');

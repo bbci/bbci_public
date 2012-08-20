@@ -11,7 +11,7 @@ function mnt= get_electrodePositions(clab, varargin)
 % MNT:  Struct for electrode montage
 %   .x     - x coordiante of electrode positions
 %   .y     - y coordinate of electrode positions
-%   .Clab  - channel labels
+%   .clab  - channel labels
 %
 %See also mnt_setGrid
 
@@ -21,8 +21,8 @@ function mnt= get_electrodePositions(clab, varargin)
 
 % kraulem 08.09.2003
 
-if ~exist('Clab','var'),
-  [d,d,d,Clab]= calc_pos_ext_10_10;
+if ~exist('clab','var'),
+  [d,d,d,clab]= calc_pos_ext_10_10;
 end
 if nargin<=1 | isempty(varargin{1}),
   varargin{1}= calc_pos_ext_10_10;
@@ -49,11 +49,11 @@ elseif isstruct(varargin{1}),
   z= posSystem.z;
   elab= posSystem.clab;
 elseif nargin==5 | (nargin==4 & ~ischar(varargin{3})),
-  elab= Clab;
+  elab= clab;
   [x,y,z]= deal(varargin{1:3});
   displayMontage= {varargin{4:end}};
 else
-  elab= Clab;
+  elab= clab;
   [x,y,z]= abr2xyz(varargin{1:2});
   displayMontage= {varargin{3:end}};
 end
@@ -92,12 +92,12 @@ cx = x.*stretch./norm;
 cy = y.*stretch./norm;
 pos2d = [cx(:) cy(:)];
 
-nChans= length(Clab);
+nChans= length(clab);
 mnt.x= NaN*ones(nChans, 1);
 mnt.y= NaN*ones(nChans, 1);
 mnt.pos_3d= NaN*ones(3, nChans);
 for ei= 1:nChans,
-  ii= chanind(elab, Clab{ei});
+  ii= chanind(elab, clab{ei});
   if ~isempty(ii),
     mnt.x(ei)= pos2d(ii, 1);
     mnt.y(ei)= pos2d(ii, 2);
@@ -108,7 +108,7 @@ radius = 1.3;
 %radius= 1.9;
 mnt.x= mnt.x/radius;
 mnt.y= mnt.y/radius;
-mnt.clab= Clab;
+mnt.clab= clab;
 
 if ~isempty(displayMontage),
   mnt= mnt_setGrid(mnt, displayMontage{:});

@@ -88,7 +88,7 @@ props = {'AxisType',                        'box',                  'CHAR';
          'ZeroLineTickLength',              3,                      'DOUBLE';
          'Reset',                           1,                      'BOOL';
          'LineWidth',                       2,                      'DOUBLE';
-         'LineStyle',                       '',                     'CHAR';
+         'LineStyle',                       '-',                    'CHAR';
          'LineStyleOrder',                  {},                     'CELL{CHAR}'
          'LineWidthOrder',                  [],                     'DOUBLE'
          'LineSpecOrder',                   {},                     'CELL'
@@ -190,17 +190,17 @@ if isequal(opt.Title, 1),
   opt.Title= epo.clab(chan);
 end
 if opt.SmallSetup,
-  if ~isfield(opt, 'xTickLabel') & ~isfield(opt, 'xTickLabelMode'),
-    if isfield(opt, 'xTick') | ...
-          (isfield(opt, 'xTickMode') & strcmp(opt.xTickMode,'auto')),
+  if ~isfield(opt, 'xTickLabel') && ~isfield(opt, 'xTickLabelMode'),
+    if isfield(opt, 'xTick') || ...
+          (isfield(opt, 'xTickMode') && strcmp(opt.xTickMode,'auto')),
       opt.xTickLabelMode= 'auto';
     else
       opt.xTickLabel= [];
     end
   end
-  if ~isfield(opt, 'yTickLabel') & ~isfield(opt, 'yTickLabelMode'),
-    if isfield(opt, 'yTick') | ...
-          (isfield(opt, 'yTickMode') & strcmp(opt.yTickMode,'auto')),
+  if ~isfield(opt, 'yTickLabel') && ~isfield(opt, 'yTickLabelMode'),
+    if isfield(opt, 'yTick') || ...
+          (isfield(opt, 'yTickMode') && strcmp(opt.yTickMode,'auto')),
       opt.yTickLabelMode= 'auto';
     else
       opt.yTickLabel= [];
@@ -210,16 +210,16 @@ if opt.SmallSetup,
     opt.LineWidth= 0.5;
   end
 end
-if isdefault.XUnit & isfield(epo, 'XUnit'),
+if isdefault.XUnit && isfield(epo, 'XUnit'),
   opt.XUnit= ['[' epo.XUnit ']'];
 end
-if isdefault.YUnit & isfield(epo, 'YUnit'),
+if isdefault.YUnit && isfield(epo, 'YUnit'),
   opt.YUnit= ['[' epo.YUnit ']'];
 end
 if strcmpi(opt.YUnitDispPolicy, 'lasttick'),
   opt.YUnit= strrep(opt.YUnit, '\mu','u');
 end
-if strcmpi(opt.AxisType, 'cross'),  %% other default values for 'cross'
+if strcmpi(opt.AxisType, 'cross'),  % other default values for 'cross'
   [opt,isdefault]= ...
       opt_overrideIfDefault(opt, isdefault, ...
                             'XGrid', 'off', ...
@@ -227,7 +227,7 @@ if strcmpi(opt.AxisType, 'cross'),  %% other default values for 'cross'
                             'GridOverPatches', 0, ...
                             'xColor', [1 1 1]*0.999, ...
                             'yColor', [1 1 1]*0.999);
-  %% *0.999 is used, since Matlab prints XColor [1 1 1] as black.
+  % *0.999 is used, since Matlab prints XColor [1 1 1] as black.
 end
 if isequal(opt.ColorOrder,'rainbow'),
   ColorOrder_hsv= [(0.5:nClasses)'/nClasses ones(nClasses,1)*[1 0.85]];
@@ -372,7 +372,7 @@ switch(lower(opt.XUnitDispPolicy)),
  case 'lasttick',
   setLastXTickLabel(opt.XUnit);
  case 'none',
-  %% Not a lot to do here ...
+  % Not a lot to do here ...
  otherwise,
   error('XUnitDispPolicy unknown');
 end
@@ -382,7 +382,7 @@ switch(lower(opt.YUnitDispPolicy)),
  case 'lasttick',
   setLastYTickLabel(opt.YUnit);
  case 'none',
-  %% Not a lot to do here ...
+  % Not a lot to do here ...
  otherwise,
   error('YUnitDispPolicy unknown');
 end

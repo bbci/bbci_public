@@ -28,7 +28,7 @@ function fv= proc_rSquareSigned(fv, varargin)
 % of how much variance of the joint distribution can be explained by
 % class membership.
 %
-% SEE  proc_t_scaled, proc_r_values, proc_r_square
+% SEE  proc_TTest, proc_rValues, proc_rSquare
 
 % bb 03/2003, ida.first.fhg.de
 
@@ -45,7 +45,7 @@ if length(varargin)>0 & isstruct(varargin{1}),
   clear fv2;
 end
 
-fv= proc_r_values(fv, varargin{:});
+fv= proc_rValues(fv, varargin{:});
 fv.x= fv.x .* abs(fv.x);
 for cc= 1:length(fv.className),
   fv.className{cc}= ['sgn r^2' fv.className{cc}(2:end)];
