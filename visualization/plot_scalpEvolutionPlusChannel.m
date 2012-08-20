@@ -61,6 +61,13 @@ if nargin==0,
   return
 end
 
+% With input argument erp, we know it better
+if getDataDimension(erp)==2
+  props_channel= plot_channel2D;
+else
+  props_channel= plot_channel3D;
+end
+
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props, props_scalpPattern, props_channel);

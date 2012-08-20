@@ -1,14 +1,19 @@
-function fv_out= proc_wrMulticlassDiff(fv, diff_fnc, varargin)
-%PROC_WRMULTICLASSDIFF - Wrapper function for multi-class differences
+function fv_out= procutil_multiclassDiff(fv, diff_fnc, varargin)
+%PROCUTIL_MULTICLASSDIFF - Wrapper function for multi-class differences
+%
+%Description: This function is a wrapper function that is used within
+%  other functions that calculate a sort of difference between two
+%  classes. PROCUTIL_MULTICLASSDIFF is used to apply those calling
+%  functions to binary pairs of (combinations of) classes.
 %
 %Synopsis:
-% FV_OUT= proc_wrMulticlassDiff(FV, FCN, <POLICY>)
-% FV_OUT= proc_wrMulticlassDiff(FV, FCN, <OPT>)
+% FV_OUT= procutil_multiclassDiff(FV, FCN, <POLICY>)
+% FV_OUT= procutil_multiclassDiff(FV, FCN, <OPT>)
 %
 %Arguments:
 % FV: Feature vector structure
 % FCN: Function which is called for pairwise differences
-%      (this is typically the callind function).
+%      (this is typically the calling function).
 %      The function can either be a string (then the function is called
 %      without additional arguments), or a cell {FCN_NAME, FCN_PARAMS}
 %      
@@ -21,25 +26,19 @@ function fv_out= proc_wrMulticlassDiff(fv, diff_fnc, varargin)
 %Returns:
 % FV_OUT: Feature vector structure of roc values.
 %
-%Example:
-%  [cnt, mrk]= eegfile_readBV(some_file);   %load EEG-data in BV-format
-%  mrk= mrk_defineClasses(mrk, {1, 2, 3; 'class1','class2', 'class3'}); 
-%  epo= proc_segmentation(cnt, mrk, [-200 800], 'CLab', {'Fz','Cz','Pz'});
-%  epo_roc = proc_wr_multiclass_diff(epo, @proc_rocAreaValues, 'policy', 'each-against-rest');
-%
 %See also:
-% proc_rocAreaValues, proc_r_values, proc_r_squared_signed, proc_t_values
+% proc_rocAreaValues, proc_rValues, proc_rSquaredSigned, proc_tValues
 
 % 10-2010 Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
 fv = misc_history(fv);
 
-props= {'policy'  'pairwise' '!CHAR'};
+
+props= {'policy'  'pairwise'  'DOUBLE[- 2]|CHAR(pairwise each-against-last each-against-rest)'};
 
 if nargin==0,
-  fv_out = props; return
+  fv_out= props; return
 end
-
 
 if length(varargin)==1 && ~isstruct(varargin{1}),
   opt= struct('policy', varargin{1});
@@ -58,7 +57,7 @@ if ischar(opt.policy),
   switch(opt.policy),
    case 'pairwise'
     opt.policy= nchoosek(1:size(fv.y,1), 2);
-   case {'all-against-last', 'each-against-last'},
+   case 'each-against-last',
     ni= size(fv.y,1)-1;
     opt.policy= [[1:ni]' (ni+1)*ones(ni,1)];
   end

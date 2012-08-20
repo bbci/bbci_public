@@ -1,4 +1,4 @@
-function out= proc_dBaverage(epo, varargin)
+function out= proc_dBAverage(epo, varargin)
 %PROC_DBAVERAGE - Classwise calculated averages for dB-scaled features
 %
 %This functions is exactly used as proc_average. It should be used
@@ -6,15 +6,19 @@ function out= proc_dBaverage(epo, varargin)
 %proc_spectrum in the default setting 'scaling', 'dB').
 epo = misc_history(epo);
 
+
 if nargin==0,
-  out = 'see parameters of ''proc_average'' '; return
+  out= proc_average; return;
 end
 
-out= copy_struct(epo, 'not','x','yUnit');
+out= epo;
 %% scale back
 out.x= 10.^(epo.x/10);
+out= rmfield(out, 'yUnit');  % otherwise we will enter an infinite recursion
+
 %% average
 out= proc_average(out, varargin{:});
+
 %% re-convert to dB
 out.x= 10*log10(out.x);
 out.yUnit= 'dB';

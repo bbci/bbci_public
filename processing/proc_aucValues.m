@@ -20,11 +20,12 @@ function fv_rval= proc_aucValues(fv)
 %  epo_auc = proc_auc_values(epo);
 %
 %
-%See also:  proc_t_scaled, proc_r_square, proc_r_values, proc_wr_multiclass_diff
-%
+%See also:  proc_tTest, proc_rSquare, proc_rValues
+
 % stefan.haufe@tu-berlin.de, 2012
 % 07-2012 Johannes Hoehne   - Updated the help documentation & probs
 fv = misc_history(fv);
+
 
 misc_checkType('fv', 'STRUCT(x clab fs)');
 

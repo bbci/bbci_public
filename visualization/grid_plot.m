@@ -238,9 +238,9 @@ if opt.Nirs==1
         pos1=strfind(epo.clab{i},'_');
         epo1.clab{i}=['S' epo.clab{i}(1:pos1-1) '|D' epo.clab{i}(pos1+1:end)];
     end
-    axestitle=apply_cellwise(epo1.clab(idx), 'sprintf');
+    axestitle= epo1.clab(idx);
 else
-    axestitle= apply_cellwise(epo.clab(idx), 'sprintf');
+    axestitle= epo.clab(idx);
 end
 
 %w_cm= warning('query', 'bci:missing_channels');

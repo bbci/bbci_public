@@ -37,6 +37,8 @@ function opt_checkProplist(opt, props, varargin)
 %  opt_checkProplist(opt, props)
 
 % 06-2012 Benjamin Blankertz
+
+
 global BBCI_TYPECHECKING
 
 if ~BBCI_TYPECHECKING, return; end

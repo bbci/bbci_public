@@ -50,8 +50,7 @@ opt_checkProplist(opt, props);
 
 %% delegate a special case:
 if isfield(epo, 'yUnit') && isequal(epo.yUnit, 'dB'),
-% warning('Using ''proc_dBaverage''. In future this warning will be skipped.');
-  out= proc_dBaverage(epo, varargin{:});
+  out= proc_dBAverage(epo, varargin{:});
   return;
 end
 

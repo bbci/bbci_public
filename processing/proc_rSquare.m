@@ -27,7 +27,7 @@ function fv= proc_rSquare(fv, varargin)
 % of how much variance of the joint distribution can be explained by
 % class membership.
 %
-% SEE  proc_t_scaled, proc_r_values
+% SEE  proc_tTest, proc_rValues
 
 % 03-03 Benjamin Blankertz
 fv = misc_history(fv);
@@ -46,7 +46,7 @@ if length(varargin)>0 & isstruct(varargin{1}),
   clear fv2;
 end
 
-fv= proc_r_values(fv, varargin{:});
+fv= proc_rValues(fv, varargin{:});
 fv.x= fv.x.^2;
 for cc= 1:length(fv.className),
   fv.className{cc}= ['r^2' fv.className{cc}(2:end)];

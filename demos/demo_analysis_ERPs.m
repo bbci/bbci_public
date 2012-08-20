@@ -56,7 +56,7 @@ epo= proc_rejectArtifactsMaxMin(epo, crit_maxmin, 'Clab',crit_clab, ...
 
 % Baseline subtraction, and calculation of a measure of discriminability
 epo= proc_baseline(epo, ref_ival);
-epo_r= proc_r_square_signed(epo);
+epo_r= proc_rSquareSigned(epo);
 
 % Select some discriminative intervals, with constraints to find N2, P2, P3 like components.
 fig_set(1);

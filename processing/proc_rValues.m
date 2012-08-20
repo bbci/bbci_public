@@ -26,20 +26,20 @@ function fv_rval= proc_rValues(fv, varargin)
 % property 'valueForConst').
 %
 %Examples:
-%  [cnt, mrk]= eegfile_readBV(some_file);   %load EEG-data in BV-format
+%  [cnt, mrk]= file_readBV(some_file);   %load EEG-data in BV-format
 %  mrk= mrk_defineClasses(mrk, {1, 2; 'target','nontarget'}); 
 %  epo= proc_segmentation(cnt, mrk, [-200 800], 'CLab', {'Fz','Cz','Pz'});
-%  epo_r = proc_r_values(epo);
+%  epo_r = proc_rValues(epo);
 %
-%See also:  proc_t_scaled, proc_r_square, proc_wr_multiclass_diff
-
+%See also:  proc_tTest, proc_rSquare
 
 % Benjamin Blankertz
 fv = misc_history(fv);
 
-props= { 'tolerateNans',       0,          'BOOL|DOUBLE'
-         'valueForConst',     NaN,        'DOUBLE'
-         'multiclassPolicy',   'pairwise', 'CHAR'  };
+
+props= { 'tolerateNans',      0,           'BOOL|DOUBLE'
+         'valueForConst',     NaN,         'DOUBLE'
+         'multiclassPolicy',  'pairwise',  'CHAR'  };
 
 if nargin==0,
   fv_rval= props; return
@@ -53,7 +53,7 @@ opt_checkProplist(opt, props);
 
 
 if size(fv.y,1)>2,
-  fv_rval= proc_wr_multiclass_diff(fv, {'r_values',opt}, ...
+  fv_rval= procutil_multiclassDiff(fv, {'rValues',opt}, ...
                                    opt.multiclassPolicy);
   return;
 elseif size(fv.y,1)==1,
