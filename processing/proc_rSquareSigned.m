@@ -30,7 +30,6 @@ function fv= proc_rSquareSigned(fv, varargin)
 %
 % SEE  proc_TTest, proc_rValues, proc_rSquare
 
-% bb 03/2003, ida.first.fhg.de
 
 if length(varargin)>0 & isstruct(varargin{1}),
   fv2= varargin{1};
