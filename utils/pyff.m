@@ -88,7 +88,7 @@ persistent ACQ_STARTED
 
 props = {'Os',                    'win',            '!CHAR(win unix)';
          'ReplaceHtmlEntities',   1,                '!BOOL';
-         'Parport',               IO_ADDR,               'DOUBLE[1]';
+         'Parport',               IO_ADDR,          'DOUBLE[1]';
          'A',                     [],               'CHAR';
          'Gui',                   0,                'BOOL';
          'L',                     'debug',          'CHAR';
@@ -174,10 +174,9 @@ end
 
 switch(opt.Os)
   case 'win'
-    opt= set_defaults(opt, 'Dir','D:\svn\pyff\src');
+    opt= opt_setDefaults(opt, {'Dir','D:\svn\pyff\src'});
   case 'unix'
-    opt= set_defaults(opt, 'Dir','~/svn/pyff/src');
-    opt = opt_overrideIfDefault(opt,isdefault,'Bvplugin',0);
+    opt= opt_setDefaults(opt, {'Dir','~/svn/pyff/src'; 'BVplugin',0});
 end
 
 if isempty(opt.TodayDir), 	opt.TodayDir = '';end
