@@ -42,7 +42,7 @@ end
 if length(varargin)==1,
   opt= struct('appendix', varargin{1});
 else
-  opt= propertylist2struct(varargin{:});
+  opt= opt_proplistToStruct(varargin{:});
 end
 
 [opt, isdefault]= opt_setDefaults(opt, props);
