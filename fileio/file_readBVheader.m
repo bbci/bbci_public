@@ -32,7 +32,7 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-misc_checkType('hdrName', 'CHAR|CELL{CHAR}');
+misc_checkType(hdrName, 'CHAR|CELL{CHAR}');
 
 if ischar(hdrName) && ismember('*', hdrName),
   tmpName= get_filelist(hdrName, 'ext','vhdr');

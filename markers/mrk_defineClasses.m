@@ -48,8 +48,8 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-misc_checkType('mk', 'STRUCT(time)');
-misc_checkType('classDef', 'CELL');
+misc_checkType(mk, 'STRUCT(time)');
+misc_checkType(classDef, 'CELL');
 
 nClasses= size(classDef,2);
 mrk= struct('time', mk.time);

@@ -10,7 +10,7 @@ function out= pyff_loadSettings(file)
 %Output:
 % OUT: Struct containing all variables of the JSON file as fields.
 
-misc_checkType('file','!CHAR');
+misc_checkType(file,'!CHAR');
 
 global BCI_DIR
 

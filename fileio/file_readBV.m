@@ -104,7 +104,7 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, all_props);
 
-misc_checkType('file', 'CHAR|CELL{CHAR}');
+misc_checkType(file, 'CHAR|CELL{CHAR}');
 
 if ~isempty(opt.Ival),
   if ~isdefault.Start || ~isdefault.MaxLen,

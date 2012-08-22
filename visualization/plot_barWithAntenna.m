@@ -61,8 +61,8 @@ if nargin==0,
   dat= props; return
 end
 
-misc_checkType('y','!DOUBLE[- -]');
-misc_checkType('y_sem','!DOUBLE[- -]');
+misc_checkType(y,'!DOUBLE[- -]');
+misc_checkType(y_sem,'!DOUBLE[- -]');
 opt= propertylist2struct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);

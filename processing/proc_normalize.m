@@ -45,7 +45,7 @@ if nargin==0,
   fv = props; return
 end
 
-misc_checkType('fv', 'STRUCT(x)'); 
+misc_checkType(fv, 'STRUCT(x)'); 
 if length(varargin)==1 & ischar(varargin{1}),
   opt= struct('Policy', varargin{1});
 else

@@ -41,8 +41,8 @@ end
 
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props, props_getIvalIndices);
-misc_checkType('dat', 'STRUCT(x fs)'); 
-misc_checkType('ival','DOUBLE[2]'); 
+misc_checkType(dat, 'STRUCT(x fs)'); 
+misc_checkType(ival,'DOUBLE[2]'); 
 
 %%                
 if length(ival)==1 || isequal(opt.Pos, 'relative'),

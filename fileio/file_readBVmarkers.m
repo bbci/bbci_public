@@ -40,7 +40,7 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-misc_checkType('mrkName', 'CHAR');
+misc_checkType(mrkName, 'CHAR');
 
 if fileutil_isAbsolutePath(mrkName),
   fullName= mrkName;

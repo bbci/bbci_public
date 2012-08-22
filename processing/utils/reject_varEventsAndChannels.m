@@ -60,9 +60,9 @@ if nargin==0,
   mrk = props; return
 end
 
-misc_checkType('cnt', 'STRUCT(x clab)'); 
-misc_checkType('mrk', 'STRUCT(time)'); 
-misc_checkType('ival', 'DOUBLE[2]'); 
+misc_checkType(cnt, 'STRUCT(x clab)'); 
+misc_checkType(mrk, 'STRUCT(time)'); 
+misc_checkType(ival, 'DOUBLE[2]'); 
 
 opt= opt_proplistToStruct(varargin{:});
 

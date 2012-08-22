@@ -45,7 +45,7 @@ if nargin==0,
   fv_rval= props; return
 end
 
-misc_checkType('fv', 'STRUCT(x y)');
+misc_checkType(fv, 'STRUCT(x y)');
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);

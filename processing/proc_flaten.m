@@ -28,7 +28,7 @@ props= { 'force_flaten'   0    'BOOL'};
 if nargin==0,
   dat = props; return
 end
-misc_checkType('dat', 'STRUCT(x)'); 
+misc_checkType(dat, 'STRUCT(x)'); 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);

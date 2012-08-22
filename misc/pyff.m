@@ -106,7 +106,7 @@ if nargin==0,
   dat= props; return
 end
 
-misc_checkType('command','CHAR(startup init set setint setdir play refresh stop quit loadSettings saveSettings)');
+misc_checkType(command,'CHAR(startup init set setint setdir play refresh stop quit loadSettings saveSettings)');
 
 %% Case-dependent check of parameters
 switch(command)
@@ -118,7 +118,7 @@ switch(command)
     narginchk(2,2);
     feedback = varargin{1};
     opt=[];
-    misc_checkType('feedback','!CHAR');
+    misc_checkType(feedback,'!CHAR');
     ACQ_STARTED= 0;
     
   case 'setdir'
@@ -148,7 +148,7 @@ switch(command)
     narginchk(2,2);
     opt=[];
     filename = varargin{1};
-    misc_checkType('filename','!CHAR');
+    misc_checkType(filename,'!CHAR');
     settings_file= [filename '.json'];
     if ~any(ismember('/\', settings_file)),
       settings_file= [TODAY_DIR settings_file];

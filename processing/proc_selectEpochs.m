@@ -32,7 +32,7 @@ if nargin==0,
   epo= props; return
 end
 
-misc_checkType('epo', 'STRUCT(x clab fs)');
+misc_checkType(epo, 'STRUCT(x clab fs)');
 
 if mod(length(varargin),2)==1,
   if isequal(idx, 'not'),

@@ -39,7 +39,7 @@ if nargin==0,
 end
 
 
-misc_checkType('epo', 'STRUCT(x clab y)'); 
+misc_checkType(epo, 'STRUCT(x clab y)'); 
 if nargin==2
   opt.classes = varargin{:};
 else

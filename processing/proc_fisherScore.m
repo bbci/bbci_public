@@ -27,7 +27,7 @@ props= { 'tolerate_nans'   0    'BOOL'};
 if nargin==0,
   fv_fscore = props; return
 end
-misc_checkType('fv', 'STRUCT(x clab y)'); 
+misc_checkType(fv, 'STRUCT(x clab y)'); 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);

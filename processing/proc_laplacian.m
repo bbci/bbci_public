@@ -44,7 +44,7 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 % opt_checkProplist(opt, props);
 
-misc_checkType('dat', 'STRUCT(x clab)');
+misc_checkType(dat, 'STRUCT(x clab)');
 
 if ~iscell(opt.ignoreClab),
   opt.ignoreClab= {opt.ignoreClab};

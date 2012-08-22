@@ -20,8 +20,8 @@ function obj = misc_applyHistory(obj,ht)
 
 % Matthias Treder 2012
 
-misc_checkType('obj',  'STRUCT')
-misc_checkType('ht',  'CELL|STRUCT')
+misc_checkType(obj,  'STRUCT')
+misc_checkType(ht,  'CELL|STRUCT')
 
 if isstruct(ht), ht = {ht}; end;
 

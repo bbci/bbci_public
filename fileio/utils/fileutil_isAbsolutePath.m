@@ -6,6 +6,6 @@ function bool= fileutil_isAbsolutePath(file)
 %
 % Returns: 1 (absolute path) or 0 (relative path)
 %
-misc_checkType('file','!CHAR');
+misc_checkType(file,'!CHAR');
 
 bool= (isunix &&  file(1)==filesep) || (ispc && file(2)==':');

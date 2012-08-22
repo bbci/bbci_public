@@ -68,8 +68,8 @@ if nargin==0,
   ival = props; return
 end
 
-misc_checkType('erd', 'STRUCT(x clab)'); 
-misc_checkType('mrk', 'STRUCT(time)'); 
+misc_checkType(erd, 'STRUCT(x clab)'); 
+misc_checkType(mrk, 'STRUCT(time)'); 
 
 opt= opt_proplistToStruct(varargin{:});
 

@@ -33,7 +33,7 @@ if nargin==0,
   out = props; return
 end
 
-misc_checkType('epo', 'STRUCT(x clab)'); 
+misc_checkType(epo, 'STRUCT(x clab)'); 
 
 opt= opt_proplistToStruct(varargin{:});
 

@@ -3,7 +3,7 @@ function [mrk, ev]= mrk_removeVoidClasses(mrk)
 %
 % requires a field 'y' containing the class labels in mrk.
 
-misc_checkType('mrk', 'STRUCT(time y)');
+misc_checkType(mrk, 'STRUCT(time y)');
 
 nonvoidClasses= find(any(mrk.y,2));
 if length(nonvoidClasses)<size(mrk.y,1),

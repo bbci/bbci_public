@@ -45,8 +45,8 @@ if nargin==0,
   dat = props; return
 end
 
-misc_checkType('dat', 'STRUCT(x clab)'); 
-misc_checkType('ival','DOUBLE[2]'); 
+misc_checkType(dat, 'STRUCT(x clab)'); 
+misc_checkType(ival,'DOUBLE[2]'); 
 
 if length(varargin)==1,
   opt= struct('pos', varargin{1});

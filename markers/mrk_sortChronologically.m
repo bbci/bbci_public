@@ -29,7 +29,7 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-misc_checkType('mrk', 'STRUCT(time)');
+misc_checkType(mrk, 'STRUCT(time)');
 
 if opt.Classwise,
   nClasses= size(mrk.y,1);

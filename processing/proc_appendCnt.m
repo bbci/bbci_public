@@ -47,8 +47,8 @@ if nargin==0,
   cnt = props; return
 end
 
-misc_checkType('cnt', 'STRUCT(x clab fs)|CELL(STRUCT)'); 
-misc_checkType('cnt2', 'STRUCT(x clab fs)|CELL(STRUCT)');
+misc_checkType(cnt, 'STRUCT(x clab fs)|CELL(STRUCT)'); 
+misc_checkType(cnt2, 'STRUCT(x clab fs)|CELL(STRUCT)');
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);

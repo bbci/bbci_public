@@ -27,7 +27,7 @@ function fv_rval= proc_aucValues(fv)
 fv = misc_history(fv);
 
 
-misc_checkType('fv', 'STRUCT(x clab fs)');
+misc_checkType(fv, 'STRUCT(x clab fs)');
 
 sz= size(fv.x);
 fv.x= reshape(fv.x, [prod(sz(1:end-1)), sz(end)]);

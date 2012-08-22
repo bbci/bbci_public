@@ -36,8 +36,8 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-misc_checkType('mrk', 'STRUCT(time)');
-misc_checkType('ev', 'CHAR|INT');
+misc_checkType(mrk, 'STRUCT(time)');
+misc_checkType(ev, 'CHAR|INT');
 
 if nargin==1 || (ischar(ev) && strcmpi(ev,'VALID')),
   ev= find(any(mrk.y,1));

@@ -22,7 +22,7 @@ function T= struct_copyFields(T, S, fld_list)
 % 08-2012 Benjamin Blankertz
 
 
-misc_checkType('T', 'STRUCT');
+misc_checkType(T, 'STRUCT');
 
 if nargin<3 && ~isstruct(S),
   % T= struct_copyFields(S, <FLD_LIST>)
@@ -30,7 +30,7 @@ if nargin<3 && ~isstruct(S),
   return;
 end
 
-misc_checkType('S', 'STRUCT');
+misc_checkType(S, 'STRUCT');
 misc_checkTypeIfExists('fld_list', 'CHAR|CELL{CHAR}');
 
 

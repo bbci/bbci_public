@@ -43,7 +43,7 @@ if nargin==0,
   out = props; return
 end
 
-misc_checkType('dat', 'STRUCT(x clab y)'); 
+misc_checkType(dat, 'STRUCT(x clab y)'); 
 if length(varargin)==1 & isnumeric(varargin{1}),
   opt= struct('radius', varargin{1});
 else

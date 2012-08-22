@@ -89,7 +89,7 @@ if nargin==0,
   ival = props; return
 end
 
-misc_checkType('epo_r', 'STRUCT(x)'); 
+misc_checkType(epo_r, 'STRUCT(x)'); 
 
 
 opt= opt_proplistToStruct(varargin{:});

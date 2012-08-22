@@ -59,7 +59,7 @@ if nargin==0,
   dat = props; return
 end
 
-misc_checkType('dat', 'STRUCT(x clab y)'); 
+misc_checkType(dat, 'STRUCT(x clab y)'); 
 if length(varargin)==1 & isnumeric(varargin{1}),
   opt= struct('patterns', varargin{1});
 else
