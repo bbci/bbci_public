@@ -42,7 +42,7 @@ opt_checkProplist(opt, props);
 
 misc_checkType('mrkName', 'CHAR');
 
-if isabsolutepath(mrkName),
+if fileutil_isAbsolutePath(mrkName),
   fullName= mrkName;
 else
   fullName= fullfile(EEG_RAW_DIR, mrkName);

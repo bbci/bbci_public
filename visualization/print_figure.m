@@ -66,7 +66,7 @@ else
            'paperUnits','centimeters', 'paperPosition',opt.paperSize);
 end
 
-if isabsolutepath(file),
+if fileutil_isAbsolutePath(file),
   fullName= file;
 else
   fullName= [fullfile(opt.folder, opt.prefix) file];

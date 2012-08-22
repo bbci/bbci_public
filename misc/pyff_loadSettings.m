@@ -21,7 +21,7 @@ end
 if ~ismember('.', file),
   file= strcat(file, '.json');
 end
-if ~isabsolutepath(file),
+if ~fileutil_isAbsolutePath(file),
   file= strcat([BCI_DIR 'acquisition/setups/'], file);
 end
 

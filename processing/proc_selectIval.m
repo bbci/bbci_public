@@ -27,11 +27,11 @@ props= {'Pos'      'beginning'  '!CHAR(beginning end relative)'
 props_getIvalIndices= procutil_getIvalIndices;
 
 if nargin==0,
-  dat= opt_catProps(props, props_getIvalIndies);
+  dat= opt_catProps(props, props_getIvalIndices);
   return
 end
 
-if length(varargin)==1 & ~isstruct(varargin{1}),
+if length(varargin)==1 && ~isstruct(varargin{1}),
   opt= strukt('Pos', varargin{1});
 else
   opt= opt_proplistToStruct(varargin{:});
@@ -43,7 +43,7 @@ misc_checkType('dat', 'STRUCT(x fs)');
 misc_checkType('ival','DOUBLE[2]'); 
 
 %%                
-if length(ival)==1 | isequal(opt.Pos, 'relative'),
+if length(ival)==1 || isequal(opt.Pos, 'relative'),
   msec= ival;
   switch(lower(opt.Pos)),
    case 'beginning',
@@ -56,13 +56,13 @@ if length(ival)==1 | isequal(opt.Pos, 'relative'),
     error('unknown position indicator');
   end
 else
-  opt_x= opt_substruct(opt, props_getIvalIndies(:,1));
+  opt_x= opt_substruct(opt, props_getIvalIndices(:,1));
   iv= procutil_getIvalIndices(ival, dat, opt_x);
 end
 
 out= copy_struct(dat, 'not','x');
 sz= size(dat.x);
-if isfield(dat, 'dim') & length(dat.dim)>1,
+if isfield(dat, 'dim') && length(dat.dim)>1,
   %% first dimension of dat.x comprises different 'virtual' dimensions
   %% that have been clashed
   xx= reshape(dat.x, [dat.dim sz(2:end)]);

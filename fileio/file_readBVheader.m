@@ -73,7 +73,7 @@ if iscell(hdrName),
   return;
 end
 
-if isabsolutepath(hdrName),
+if fileutil_isAbsolutePath(hdrName),
   fullName= hdrName;
 else
   global EEG_RAW_DIR
