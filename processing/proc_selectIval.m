@@ -22,6 +22,8 @@ function [out, iv]= proc_selectIval(dat, ival, varargin)
 % OUT  dat  - updated data structure
 
 
+dat= misc_history(dat);
+
 props= {'Pos'      'beginning'  '!CHAR(beginning end relative)'
         'Dim'       1           '!INT' };
 props_getIvalIndices= procutil_getIvalIndices;
@@ -60,7 +62,7 @@ else
   iv= procutil_getIvalIndices(ival, dat, opt_x);
 end
 
-out= copy_struct(dat, 'not','x');
+out= dat;
 sz= size(dat.x);
 if isfield(dat, 'dim') && length(dat.dim)>1,
   %% first dimension of dat.x comprises different 'virtual' dimensions

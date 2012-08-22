@@ -13,8 +13,8 @@ function dat= proc_variance(dat, nSections, calc_std)
 %Description
 % calculate the variance in 'nSections' equally spaced intervals.
 % works for cnt and epo structures.
-%
-% Benjamin Blankertz
+
+
 dat = misc_history(dat);
 
 if ~exist('nSections','var'), nSections=1; end
