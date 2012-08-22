@@ -21,19 +21,20 @@ function [out, iv]= proc_selectIval(dat, ival, varargin)
 %  
 % OUT  dat  - updated data structure
 
-% bb, ida.first.fhg.de
 
 props= {'Pos'      'beginning'  '!CHAR(beginning end relative)'
         'Dim'       1           '!INT' };
-      
+props_getIvalIndices= procutil_getIvalIndices;
+
 if nargin==0,
-  dat= props; return
+  dat= opt_catProps(props, props_getIvalIndies);
+  return
 end
 
 if length(varargin)==1 & ~isstruct(varargin{1}),
   opt= strukt('Pos', varargin{1});
 else
-  opt= propertylist2struct(varargin{:});
+  opt= opt_proplistToStruct(varargin{:});
 end
 
 [opt, isdefault]= opt_setDefaults(opt, props);
@@ -55,7 +56,8 @@ if length(ival)==1 | isequal(opt.Pos, 'relative'),
     error('unknown position indicator');
   end
 else
-  iv= getIvalIndices(ival, dat, opt);
+  opt_x= opt_substruct(opt, props_getIvalIndies(:,1));
+  iv= procutil_getIvalIndices(ival, dat, opt_x);
 end
 
 out= copy_struct(dat, 'not','x');

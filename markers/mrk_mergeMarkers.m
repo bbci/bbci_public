@@ -9,8 +9,8 @@ function mrk= mrk_mergeMarkers(mrk1, mrk2, varargin)
 % MRK= mrk_mergeMarkers(MRK1, MRK2, ...)
 
 
-misc_checkType(mrk1, 'STRUCT(time)');
-misc_checkType(mrk2, 'STRUCT(time)');
+misc_checkType('mrk1', 'STRUCT(time)');
+misc_checkType('mrk2', 'STRUCT(time)');
 
 if isempty(mrk1),
   mrk= mrk2;
