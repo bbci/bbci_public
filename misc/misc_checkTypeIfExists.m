@@ -12,8 +12,8 @@ global BBCI_TYPECHECKING
 
 if ~BBCI_TYPECHECKING, return; end
 
-misc_checkType('propname', 'CHAR');
-misc_checkType('typeDefinition', 'CHAR');
+misc_checkType(propname, 'CHAR');
+misc_checkType(typeDefinition, 'CHAR');
 
 exists= evalin('caller', ['exist('' propname '', ''var'')']);
 if exists,

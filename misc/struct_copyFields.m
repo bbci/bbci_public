@@ -19,6 +19,8 @@ function T= struct_copyFields(T, S, fld_list)
 %Returns:
 %  T:  STRUCT with specified fields from S inserted
 
+% 08-2012 Benjamin Blankertz
+
 
 misc_checkType('T', 'STRUCT');
 

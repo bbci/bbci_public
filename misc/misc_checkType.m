@@ -2,13 +2,15 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %MISC_CHECKTYPE - Check the type of a variable
 %
 %Synopsis:
-%  misc_checkType(VARNAME, TYPEDEF)
-%  misc_checkType(VARIABLE, TYPEDEF, VARNAME)
+%  misc_checkType(VARIABLE, TYPEDEF)
+%
+%As an alternative (intended for internal use only)
+%  misc_checkType(EXPRESSION, TYPEDEF, VARNAME)
 %
 %Arguments:
-%  VARNAME:  CHAR - Name of the variable that is to be checked.
-%  VARIABLE: Variable that is to be checked
-%  TYPEDEF:  CHAR - Specification of type, see below.
+%  VARIABLE:   Variable that is to be checked
+%  TYPEDEF:    CHAR - Specification of type, see below.
+%  EXPRESSION: Input that has no name (-> it's value is checked)   
 %
 %Returns:
 %  nothing (throws an error in case of violation)
@@ -52,7 +54,7 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %    operator '|' (example 'CHAR|DOUBLE[3]' for a color specification).
 %    By default, the empty value is always accepted. In order to force
 %    nonempty values, prepend '!' to the type specification (such as
-%    '!CHAR'.
+%    '!CHAR').
 %
 %  Type checking can be switched off (and on again) by the function
 %  bbci_typechecking which is useful for time critical operations.
@@ -61,28 +63,27 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %
 %Examples:
 %  vec= 1:5;
-%  misc_checkType('vec', 'DOUBLE')
-%  misc_checkType(1:5, 'DOUBLE', 'vec')
-%  misc_checkType('vec', 'DOUBLE[4]')
-%  misc_checkType('vec', 'DOUBLE[- 5]')
-%  misc_checkType(vec', 'DOUBLE[- 5]', 'vec')
-%  misc_checkType(zeros(2,2), 'DOUBLE[-]')
+%  misc_checkType(vec, 'DOUBLE')
+%  misc_checkType(1:5, 'DOUBLE', 'vec')  % alternative use (mainly internal)
+%  misc_checkType(vec, 'DOUBLE[4]')
+%  misc_checkType(vec, 'DOUBLE[- 5]')
+%  misc_checkType(vec, 'DOUBLE[- 5]')
 %
 %  colormap= hot(21);
-%  misc_checkType('colormap', 'DOUBLE[- 3]')
+%  misc_checkType(colormap, 'DOUBLE[- 3]')
 %  colormap= rand(21, 4);
-%  misc_checkType('colormap', 'DOUBLE[- 3]')
+%  misc_checkType(colormap, 'DOUBLE[- 3]')
 %
 %  linecolor= 'green';   % allowed would be 'g' or [0 1 0]
-%  misc_checkType('linecolor', 'CHAR[1]|DOUBLE[3]')
+%  misc_checkType(linecolor, 'CHAR[1]|DOUBLE[3]')
 %
 %  cnt= struct('x',randn(1000,2), 'clab',{'C3','C4'});
-%  misc_checkType('cnt', 'STRUCT(x fs clab)')
+%  misc_checkType(cnt, 'STRUCT(x fs clab)')
 %
 %  clab= cprintf('C%d', 1:6)
-%  misc_checkType('clab', 'CELL{CHAR}')
+%  misc_checkType(clab, 'CELL{CHAR}')
 %  clab{end}= 3.14;
-%  misc_checkType('clab', 'CELL{CHAR}')
+%  misc_checkType(clab, 'CELL{CHAR}')
 
 % 06-2012 Benjamin Blankertz
 
@@ -95,25 +96,37 @@ if nargin<4,
   toplevel= 1;
 end
 if nargin<3,
-  if ~ischar(variable),
-    error('If no third argument is given, the first one must be CHAR');
+  propname= inputname(1);
+  if isempty(propname),
+    error('First argument must be a variable, or a third must be provided.');
   end
-  propname= variable;
-  variable= evalin('caller', propname);
 end
 
-always_allow_empty= 1;
-if ~isempty(typeDefinition) && typeDefinition(1)=='!',
-  always_allow_empty= 0;
-  typeDefinition(1)= [];
-end
+ok= [];
 msg= '';
-if isempty(typeDefinition) || (isempty(variable) && always_allow_empty),
+if isempty(typeDefinition),
   ok= 1;
 elseif ismember('|', typeDefinition),
   ii= min(find(typeDefinition=='|'));
   ok= or(misc_checkType(variable, typeDefinition(1:ii-1), propname, 0), ...
       misc_checkType(variable, typeDefinition(ii+1:end), propname, 0));
+else
+  allow_empty= 1;
+  if typeDefinition(1)=='!',
+    allow_empty= 0;
+    typeDefinition(1)= [];
+  end
+end
+
+if ~isempty(ok),
+  % type check was already performed
+elseif isempty(variable) && allow_empty,
+  ok= 1;
+elseif isempty(variable) && ~allow_empty,
+  ok= 0;
+  msg= sprintf(['Type error: variable ''%s'' must not be empty ' ... 
+                '(expected type is !%s)'], ...
+                 propname, typeDefinition);
 elseif str_matchesHead('DOUBLE', typeDefinition),
   ok= isnumeric(variable);
   if ok,

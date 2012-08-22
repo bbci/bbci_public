@@ -23,9 +23,10 @@ function obj = misc_history(obj)
 % Note: misc_history saves all arguments passed to functions unless they
 % exceed a certain byte size.
 %
-% See also: misc_history_recall
+%See also: misc_applyHistory
 
-% Matthias Treder 2012
+% 08-2012 Matthias Treder
+
 
 global BBCI_HISTORY
 
