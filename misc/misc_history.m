@@ -60,7 +60,8 @@ token = regexp(token,',','split');   % split arguments by commas
 ht{N}.fcn_params = setdiff(token,'varargin','stable');
 
 % Get argument values for named arguments
-for ii=1:numel(token)
+nActualArguments= evalin('caller', 'nargin');
+for ii=1:min(numel(token), nActualArguments),
     if ~strcmp(token{ii},'varargin') && ~strcmp(token{ii},objname)
         s=evalin('caller',['whos(''' token{ii} ''')']);  % Get size of variable
         if s.bytes > maxSize

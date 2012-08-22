@@ -44,7 +44,7 @@ end
 
 eee= erp;
 if nargin>=3 & ~isempty(ival) & ~any(isnan(ival)),
-  eee= proc_selectIval(eee, ival, 'ival_policy','minimal');
+  eee= proc_selectIval(eee, ival, 'IvalPolicy','minimal');
 end
 if ~isempty(opt.Class),
   eee= proc_selectClasses(eee, opt.Class);

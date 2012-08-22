@@ -74,7 +74,7 @@ ival_scalps= visutil_correctIvalsForDisplay(ival_scalps, 'fs',epo.fs);
 
 fig_set(3)
 H= grid_plot(epo, mnt, defopt_erps, 'ColorOrder',colOrder);
-grid_addBars(epo_r, 'h_scale',H.scale);
+grid_addBars(epo_r, 'HScale',H.scale);
 %printFigure(['erp'], [19 12]);
 
 fig_set(2);

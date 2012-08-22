@@ -26,8 +26,8 @@ if nargin==0,
   iv= props; return
 end
 
-misc_checkType(ival, 'DOUBLE[- 2]');
-misc_checkType(dat, '!DOUBLE[1]|STRUCT(fs t)');
+misc_checkType('ival', 'DOUBLE[- 2]');
+misc_checkType('dat', '!DOUBLE[1]|STRUCT(fs t)');
 
 if length(varargin)==1 & ~isstruct(varargin{1}),
   opt= strukt('Dim', varargin{1});
@@ -35,7 +35,7 @@ else
   opt= opt_proplistToStruct(varargin{:});
 end
 opt= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props, props_scalp);
+opt_checkProplist(opt, props);
 
 if size(ival,1)>1,
   iv= [];
@@ -47,7 +47,7 @@ if size(ival,1)>1,
 end
 
 if isstruct(dat),
-  if isfield(dat, 'dim') & &length(dat.dim)>1,
+  if isfield(dat, 'dim') && length(dat.dim)>1,
     %% first dimension of dat.x comprises different 'virtual' dimensions
     %% that have been clashed
     dati= struct('fs', dat.fs);
