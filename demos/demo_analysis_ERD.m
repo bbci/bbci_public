@@ -22,6 +22,7 @@ mnt= get_electrodePositions(cnt.clab);
 mnt= mnt_setGrid(mnt, grd);
 
 colOrder= [245 159 0; 0 150 200]/255;
+clab= {'C3','C4'};
 ival_erd= [-1000 500];
 band_erd= [11 14];
 ival_scalps= -800:200:200;
