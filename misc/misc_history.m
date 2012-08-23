@@ -18,7 +18,9 @@ function obj = misc_history(obj)
 %  date:          date the function was executed
 %
 %  All named function arguments also appear as fields except for the object
-%  that is modified (e.g. the EEG struct).
+%  that is modified (e.g. the EEG struct). The latter appears in the
+%  parameter list as 'obj'. (note: to avoid confusion proc_ functions
+%  should not have another parameter called 'obj')
 %
 % Note: misc_history saves all arguments passed to functions unless they
 % exceed a certain byte size.
@@ -58,27 +60,40 @@ token = regexpi(code,expr,'tokens');
 token = strrep(token{1}{end},' ','');  % remove whitespace
 token = regexp(token,',','split');   % split arguments by commas
 
+% Remove params that have not been used (nargin < number of params)
+nActualArguments= evalin('caller', 'nargin');
+if nActualArguments < numel(token)
+  token(nActualArguments+1:end) = [];
+end
+
 ht{N}.fcn_params = setdiff(token,'varargin','stable');
 
+
 % Get argument values for named arguments
-nActualArguments= evalin('caller', 'nargin');
-for ii=1:min(numel(token), nActualArguments),
-    if ~strcmp(token{ii},'varargin') && ~strcmp(token{ii},objname)
-        s=evalin('caller',['whos(''' token{ii} ''')']);  % Get size of variable
-        if s.bytes > maxSize
-           ht{N}.(token{ii}) = sprintf('variable exceeds maximum size %d kb',maxSize/1000);
-        else
-           ht{N}.(token{ii}) = evalin('caller',token{ii});
-        end
+for ii=1:numel(ht{N}.fcn_params)
+  if strcmp(ht{N}.fcn_params{ii},objname)
+    ht{N}.fcn_params{ii} = 'obj';  % always call the dat/epo/cnt struct obj
+  else
+    s =evalin('caller',['whos(''' token{ii} ''')']);  % Get size of variable
+    if s.bytes > maxSize
+       ht{N}.(ht{N}.fcn_params{ii}) = sprintf('variable exceeds maximum size %d kb',maxSize/1000);
+    else
+       ht{N}.(ht{N}.fcn_params{ii}) = evalin('caller',ht{N}.fcn_params{ii});
     end
+  end
 end
 
 % Get optional arguments (varargin)
 if any(ismember(token,'varargin'))
-%   ht{N}.varargin = evalin('caller','varargin');
   va = evalin('caller','varargin');
-  for ii=1:numel(va)
-      ht{N}.(sprintf('varargin%d',ii)) = va{ii};
+  % Check size of variable
+  s=evalin('caller','whos(''varargin'')');
+  if s.bytes > maxSize
+     ht{N}.varargin_note = sprintf('varargin exceeds maximum size %d kb',maxSize/1000);
+  else
+    for ii=1:numel(va)
+        ht{N}.(sprintf('varargin%d',ii)) = va{ii};
+    end
   end
 end
 
