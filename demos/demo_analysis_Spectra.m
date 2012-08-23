@@ -71,7 +71,7 @@ plot_scalpEvolutionPlusChannel(spec_r, mnt, clab, band_list, defopt_scalp_r);
 ref_ival= [200 1200];
 
 mrk_ref= mrk;
-mrk_ref.y= ones(1, length(mrk_ref.pos));
+mrk_ref.y= ones(1, length(mrk_ref.time));
 mrk_ref.className= {'ref'};
 mrk_ref= reject_varEventsAndChannels(cnt, mrk_ref, ref_ival);
 spec_baseline= proc_segmentation(cnt, mrk_ref, ref_ival);
