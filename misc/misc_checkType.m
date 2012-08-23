@@ -98,7 +98,7 @@ end
 if nargin<3,
   propname= inputname(1);
   if isempty(propname),
-    error('First argument must be a variable, or a third must be provided.');
+    error('First argument must be a variable, or a third argument must be provided.');
   end
 end
 
