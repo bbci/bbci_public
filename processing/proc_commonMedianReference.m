@@ -20,10 +20,14 @@ function dat= proc_commonMedianReference(dat, refChans, rerefChans)
 dat = misc_history(dat);
 
 
-if ~exist('refChans','var') | isempty(refChans),
+if ~exist('refChans','var') || isempty(refChans),
   refChans= scalpChannels(dat);
 end
-if ~exist('rerefChans','var') | isempty(rerefChans), rerefChans= refChans; end
+if ~exist('rerefChans','var') || isempty(rerefChans), rerefChans= refChans; end
+
+misc_checkType(dat, 'STRUCT(x clab)'); 
+misc_checkType(refChans, 'CELL{CHAR}|CHAR'); 
+misc_checkType(rerefChans, 'CELL{CHAR}|CHAR'); 
 
 rc= chanind(dat, refChans);
 rrc= chanind(dat, rerefChans);
