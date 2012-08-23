@@ -5,7 +5,7 @@ hdr= file_readBVheader(file);
 Wps= [42 49]/hdr.fs*2;
 [n, Ws]= cheb2ord(Wps(1), Wps(2), 3, 40);
 [filt.b, filt.a]= cheby2(n, 50, Ws);
-[cnt, mrk_orig]= file_readBV([file '*'], 'Fs',100, 'Filt',filt, ...
+[cnt, mrk_orig]= file_readBV(file, 'Fs',100, 'Filt',filt, ...
                              'Clab', {'not','E*'});
 
 %% Marker struct
