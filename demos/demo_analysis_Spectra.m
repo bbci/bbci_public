@@ -5,7 +5,7 @@ hdr= file_readBVheader(file);
 Wps= [42 49]/hdr.fs*2;
 [n, Ws]= cheb2ord(Wps(1), Wps(2), 3, 40);
 [filt.b, filt.a]= cheby2(n, 50, Ws);
-[cnt, mrk_orig]= file_readBV([file '*'], 'Fs',100, 'Filt',filt);
+[cnt, mrk_orig]= file_readBV(file, 'Fs',100, 'Filt',filt);
 
 %% Marker struct
 stimDef= {[65 70], [74 192];
@@ -71,7 +71,7 @@ plot_scalpEvolutionPlusChannel(spec_r, mnt, clab, band_list, defopt_scalp_r);
 ref_ival= [200 1200];
 
 mrk_ref= mrk;
-mrk_ref.y= ones(1, length(mrk_ref.pos));
+mrk_ref.y= ones(1, length(mrk_ref.time));
 mrk_ref.className= {'ref'};
 mrk_ref= reject_varEventsAndChannels(cnt, mrk_ref, ref_ival);
 spec_baseline= proc_segmentation(cnt, mrk_ref, ref_ival);

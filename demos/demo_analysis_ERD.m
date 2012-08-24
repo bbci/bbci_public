@@ -5,7 +5,7 @@ hdr= file_readBVheader(file);
 Wps= [42 49]/hdr.fs*2;
 [n, Ws]= cheb2ord(Wps(1), Wps(2), 3, 40);
 [filt.b, filt.a]= cheby2(n, 50, Ws);
-[cnt, mrk_orig]= file_readBV([file '*'], 'Fs',100, 'Filt',filt, ...
+[cnt, mrk_orig]= file_readBV(file, 'Fs',100, 'Filt',filt, ...
                              'Clab', {'not','E*'});
 
 %% Marker struct
@@ -22,6 +22,7 @@ mnt= get_electrodePositions(cnt.clab);
 mnt= mnt_setGrid(mnt, grd);
 
 colOrder= [245 159 0; 0 150 200]/255;
+clab= {'C3','C4'};
 ival_erd= [-1000 500];
 band_erd= [11 14];
 ival_scalps= -800:200:200;

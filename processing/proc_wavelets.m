@@ -39,6 +39,8 @@ function dat  = proc_wavelets(dat,varargin)
 % See also PROC_SPECTROGRAM.
 
 % Author: Matthias Treder (2010,2012)
+
+
 dat = misc_history(dat);
 
 if numel(varargin)>0 && ~ischar(varargin{1})
@@ -61,8 +63,8 @@ opt= opt_proplistToStruct(varargin{:});
 [opt,isdefault] = opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 misc_checkType(dat,'STRUCT(x fs)');
-misc_checkType(dat.fs,'!DOUBLE[1]','dat.fs');
-misc_checkType(dat.x,'DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]','dat.x');  % accept about everything except row vectors
+misc_checkType('dat.fs','!DOUBLE[1]','dat.fs');
+misc_checkType('dat.x','DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]','dat.x');  % accept about everything except row vectors
 
 %% Prepare
 clear pi
