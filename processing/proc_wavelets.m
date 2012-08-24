@@ -63,8 +63,8 @@ opt= opt_proplistToStruct(varargin{:});
 [opt,isdefault] = opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 misc_checkType(dat,'STRUCT(x fs)');
-misc_checkType('dat.fs','!DOUBLE[1]','dat.fs');
-misc_checkType('dat.x','DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]','dat.x');  % accept about everything except row vectors
+misc_checkType(dat.fs,'!DOUBLE[1]','dat.fs');
+misc_checkType(dat.x,'DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]','dat.x');  % accept about everything except row vectors
 
 %% Prepare
 clear pi
