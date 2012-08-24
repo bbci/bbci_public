@@ -31,7 +31,7 @@ if nargin==0,
   fv_roc= props; return
 end
 
-misc_checkType(dat, 'STRUCT(x clab fs'); 
+misc_checkType(dat, 'STRUCT(x)'); 
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
@@ -52,7 +52,7 @@ for k= 1:size(fv.x,1),
   roc(k)= 2*(0.5-auc);
 end
 
-fv_roc= copy_struct(fv, 'not', 'x','y','className');
+fv_roc= fv;
 fv_roc.x= reshape(roc, [sz(1:end-1) 1]);
 if isfield(fv, 'className'),
   fv_roc.className= {sprintf('roc( %s , %s )', fv.className{1:2})};
