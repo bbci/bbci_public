@@ -17,7 +17,7 @@ function opt = opt_proplistToStruct(varargin)
 %  'Param1' set to value VALUE1, field 'Param2' set to value VALUE2, and
 %  so forth (property/value list).
 %
-%See also opt_setDefaults
+%See also opt_setDefaults opt_structToProplist
 
 % 06-2012 Benjamin Blankertz
 

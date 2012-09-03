@@ -41,6 +41,12 @@ function ind= util_chanind(lab, varargin)
 
 % bb, GMD-FIRST, 04/00, matthias.treder 11
 
+if nargin==0,
+  ind= []; return
+end
+
+misc_checkType(lab,'!STRUCT(clab)|!CELL{CHAR}');
+
 tags={'9','7','5','3','1','z','2','4','6','8','10'};
 if isstruct(lab), lab= lab.clab; end
 %% delete appendices (separated by a blank), e.g. 'C3 lap' -> 'C3'
