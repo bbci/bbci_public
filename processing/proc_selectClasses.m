@@ -18,7 +18,7 @@ function [epo, ev]= proc_selectClasses(epo, varargin)
 % to given classes. a typical application is to select from a multi-class
 % experiment a two-class subproblem.
 % class names may include the wildcard '*' as first exclusive-or last
-% symbol, see getClassIndices.
+% symbol, see procutil_getClassIndices.
 %
 % Examples
 %      epo_lr= mrk_selectClasses(epo, {'left', 'right'});
@@ -28,10 +28,11 @@ function [epo, ev]= proc_selectClasses(epo, varargin)
 %
 
 % Benjamin Blankertz
-% 07-2012 Johannes Hoehne - Updated documentation and parameter naming
 epo = misc_history(epo);
 
-clInd= getClassIndices(epo, varargin{:});
+misc_checkType(epo, 'STRUCT(className y)');
+
+clInd= procutil_getClassIndices(epo, varargin{:});
 ev= find(any(epo.y(clInd,:)==1,1));
 
 %% the following is done to keep the order of classes as specified

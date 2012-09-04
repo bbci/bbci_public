@@ -28,15 +28,13 @@ function obj = misc_history(obj)
 %See also: misc_applyHistory
 
 % 08-2012 Matthias Treder
-
-
 global BBCI_HISTORY
 
 if ~isempty(BBCI_HISTORY) && BBCI_HISTORY==0
   return
 end
 
-maxSize = 10*1000*1000;   % max byte size of arguments saved in history
+misc_checkType(ob,'STRUCT');
 
 if isfield(obj,'history')
   ht = obj.history;
@@ -49,6 +47,7 @@ ht{N} = struct();
 
 objname = inputname(1);  % Name of object in caller's workspace
 
+maxSize = 10*1000*1000;   % max byte size of arguments saved in history
 % Get function name (of caller)
 ST = dbstack('-completenames',1);
 ht{N}.fcn = eval(['@' ST(1).name]);

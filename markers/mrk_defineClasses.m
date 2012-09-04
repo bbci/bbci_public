@@ -48,7 +48,7 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-misc_checkType(mk, 'STRUCT(time)');
+misc_checkType(mk, 'STRUCT(time desc)');
 misc_checkType(classDef, 'CELL');
 
 nClasses= size(classDef,2);
