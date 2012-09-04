@@ -17,5 +17,4 @@ function bool= str_matchesHead(head, str)
 
 % 06-2012 Some Genius
 
-
 bool= strncmp(head, str, length(head));

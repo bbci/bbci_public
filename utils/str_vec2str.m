@@ -6,14 +6,10 @@ function str= str_vec2str(v, fmt, inbetween)
 
 narginchk(1,3)
 misc_checkType(v,'DOUBLE[-]|CELL{CHAR}');
-if nargin>1, 
-  misc_checkType(fmt,'CHAR'); 
-end
-if nargin>2, 
-  misc_checkType(inbetween,'CHAR'); 
-end
+misc_checkTypeIfExists('fmt','CHAR');
+misc_checkTypeIfExists('inbetween','CHAR');
 
-if ~exist('fmt', 'var') | isempty(fmt), 
+if ~exist('fmt', 'var') || isempty(fmt), 
   if iscell(v) || ischar(v),
     fmt='%s'; 
   else
@@ -29,7 +25,7 @@ elseif iscell(v),
   for vi= 1:length(v),
     if ischar(v{vi}),
       fstr{vi}= ['%s' inbetween];
-    elseif ~iscell(v{vi}) & ~isstruct(v{vi}),
+    elseif ~iscell(v{vi}) && ~isstruct(v{vi}),
       fstr{vi}= repmat([fmt inbetween], 1, length(v{vi}));
     else
       isprint= setdiff(isprint, vi);
