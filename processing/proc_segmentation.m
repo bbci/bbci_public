@@ -121,7 +121,7 @@ if isequal(opt.CLab, '*'),
   epo.clab= cnt.clab;
   epo.x= reshape(cnt.x(IV, :), [len_sa nMarkers size(cnt.x,2)]);
 else
-  cidx= chanind(cnt, opt.CLab);
+  cidx= util_chanind(cnt, opt.CLab);
   epo.clab= cnt.clab(cidx);
   epo.x= reshape(cnt.x(IV, cidx), [len_sa nMarkers length(cidx)]);
 end

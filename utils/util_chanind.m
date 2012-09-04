@@ -167,5 +167,5 @@ end
 
 %if ~isempty(unknownChans),
 %  warning('bbci:missing_channels', ...
-%          ['missing channels: ' vec2str(unknownChans)]);
+%          ['missing channels: ' str_vec2str(unknownChans)]);
 %end

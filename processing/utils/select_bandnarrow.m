@@ -122,7 +122,7 @@ idx= find(score.t>=opt.bandTopscore(1) & ...
 chanscore= sqrt(sum(score.x(idx,:).^2, 1));
 aaa = 1;
 for aa= 1:length(opt.areas),
-  ci= chanind(score, opt.areas{aa});
+  ci= util_chanind(score, opt.areas{aa});
   if(~isempty(ci)),
      [mm,mi]= max(chanscore(ci));
      chansel(aaa)= ci(mi);

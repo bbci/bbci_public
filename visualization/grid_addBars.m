@@ -152,7 +152,7 @@ for ii= 1:length(ax),
   end
 end
 if strcmpi(opt.CLim, 'auto'),
-  ci= chanind(fv, clab);
+  ci= util_chanind(fv, clab);
   mi= min(min(fv.x(:,ci)));
   if mi>=0 && isdefault.CLim,
     warning('know-it-all: switching to CLim mode ''0tomax''');
@@ -161,14 +161,14 @@ if strcmpi(opt.CLim, 'auto'),
     opt.CLim= [mi max(max(fv.x(:,ci)))];
   end
 elseif strcmpi(opt.CLim, 'sym'),
-  ci= chanind(fv, clab);
+  ci= util_chanind(fv, clab);
   mi= min(min(fv.x(:,ci)));
   ma= max(max(fv.x(:,ci)));
   mm= max(abs(mi), ma);
   opt.CLim= [-mm mm];
 end
 if strcmpi(opt.CLim, '0tomax'),
-  ci= chanind(fv, clab);
+  ci= util_chanind(fv, clab);
   opt.CLim= [0 max(max(fv.x(:,ci)))];
 end
 
@@ -179,7 +179,7 @@ for ii= 1:length(ax),
   if iscell(ud.chan),
     ud.chan= ud.chan{1};  %% for multiple channels per axis take only the first
   end
-  ci= chanind(fv, ud.chan);
+  ci= util_chanind(fv, ud.chan);
   if isempty(ci) && isempty(strmatch(ud.chan,opt.ShiftAlso,'exact')),
     continue;
   end
@@ -229,7 +229,7 @@ for ii= 1:length(ax),
     H.image(jj)= image(fv.x(:,ci)', 'cDataMapping','scaled');
   end
   set(H.ax(jj), AxesStyle{:});
-  ud= struct('type','ERP plus: bar', 'chan',vec2str(fv.clab(ci)));
+  ud= struct('type','ERP plus: bar', 'chan' str_vec2str(fv.clab(ci)));
   set(H.ax(jj), 'userData',ud);
   hold off;
   if strcmp(get(H.ax(jj), 'box'), 'on'),

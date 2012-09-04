@@ -32,6 +32,6 @@ if nargin==0,
 else
 %  w_cm= warning('query', 'bci:missing_channels');
 %  warning('off', 'bci:missing_channels');
-  chans= chanind(clab, label_list);
+  chans= util_chanind(clab, label_list);
 %  warning(w_cm);
 end

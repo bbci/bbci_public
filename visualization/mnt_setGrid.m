@@ -79,7 +79,7 @@ mnt.box_sz= mnt.box_sz(:,1:end-1);
 function [ci,ri]= getIndices(lab, grid)
 
 nRows= size(grid,1);
-ii= chanind(grid, lab);
+ii= util_chanind(grid, lab);
 if isempty(ii),
   ci= NaN;
   ri= NaN;

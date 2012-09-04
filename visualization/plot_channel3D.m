@@ -109,7 +109,7 @@ else
   epo.x= epo.x(:,:,:,si);
 end
 
-chan= chanind(epo, clab);
+chan= util_chanind(epo, clab);
 nChans= length(chan);
 nClasses= size(epo.y, 1);
 

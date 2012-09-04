@@ -2,9 +2,9 @@ function mnt= mnt_excenterNonEegChans(mnt, nonEEGchans)
 %mnt= mnt_excenterNonEegChans(mnt, <nonEEGchans>)
 
 if ~exist('nonEEGchans', 'var'),
-  nonEEGchans= chanind(mnt, 'E*');
+  nonEEGchans= util_chanind(mnt, 'E*');
 else
-  nonEEGchans= chanind(mnt, nonEEGchans);
+  nonEEGchans= util_chanind(mnt, nonEEGchans);
 end
 
 mnt.box(:,nonEEGchans)= mnt.box(:,nonEEGchans) + ...

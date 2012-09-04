@@ -128,7 +128,7 @@ chanscore= max(chanscp, chanscn);
 
 aaa = 1;
 for aa= 1:length(opt.areas),
-  ci= chanind(score, opt.areas{aa});
+  ci= util_chanind(score, opt.areas{aa});
   
   if(~isempty(ci)),
     [mm,mi]= max(chanscore(ci));

@@ -60,8 +60,8 @@ mnt= mnt_adaptMontage(mnt, dat);
 if ~isequal(mnt.clab, dat.clab),
   error('channel mismatch');
 end
-rc= chanind(dat, {'not', opt.ignore_clab{:}});
-idx_tbf= chanind(dat, opt.clab);
+rc= util_chanind(dat, {'not', opt.ignore_clab{:}});
+idx_tbf= util_chanind(dat, opt.clab);
 out= proc_selectChannels(dat, opt.clab);
 W= zeros(length(dat.clab), length(idx_tbf));
 for ci= 1:length(idx_tbf),
@@ -70,7 +70,7 @@ for ci= 1:length(idx_tbf),
   dist= sqrt(sum( (mnt.pos_3d(:,rc)-pos).^2) );
   iRef= find(dist>0 & dist<opt.radius);
   if opt.verbose,
-    fprintf('%s: ref''ed to: %s\n', dat.clab{cc}, vec2str(dat.clab(rc(iRef))));
+    fprintf('%s: ref''ed to: %s\n', dat.clab{cc}, str_vec2str(dat.clab(rc(iRef))));
   end
   W(cc,ci)= 1;
   if ~isempty(iRef),

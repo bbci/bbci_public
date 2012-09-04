@@ -104,7 +104,7 @@ if opt.ScalpChannelsOnly,
     if isequal(opt.Clab, '*'),
       opt.Clab= clab_in_preserved_order(epo_r, scalpchans);
     else
-      selchans= epo_r.clab(chanind(epo_r, opt.Clab));
+      selchans= epo_r.clab(util_chanind(epo_r, opt.Clab));
       opt.Clab= clab_in_preserved_order(epo_r, ...
                                         intersect(selchans, scalpChannels));
     end
@@ -183,7 +183,7 @@ end
 if opt.Verbose,
   nonscalp= setdiff(strtok(epo_r.clab), scalpChannels);
   if ~isempty(nonscalp),
-    warning(['Presumably non-scalp channel(s) found: ' vec2str(nonscalp)]);
+    warning(['Presumably non-scalp channel(s) found: ' str_vec2str(nonscalp)]);
   end
 end
 
@@ -216,7 +216,7 @@ if opt.NIvals>1,
   return;
 end
 
-cidx= chanind(epo_r, opt.ClabPickPeak);
+cidx= util_chanind(epo_r, opt.ClabPickPeak);
 X0= epo_r.x(:,cidx);
 T= size(X0,1);
 score= zeros(1, T);

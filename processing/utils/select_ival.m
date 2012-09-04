@@ -65,7 +65,7 @@ score= feval(['proc_' score_fcn], erd, score_param{:});
 %% choose good channels
 chanscore= sqrt(sum(score.x.^2, 1));
 for aa= 1:length(opt.areas),
-  ci= chanind(score, opt.areas{aa});
+  ci= util_chanind(score, opt.areas{aa});
   [mm,mi]= max(chanscore(ci));
   chansel(aa)= ci(mi);
 end

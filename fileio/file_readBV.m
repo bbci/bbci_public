@@ -153,7 +153,7 @@ fileNames = fileNamesTemp;
 if length(fileNames)>1,
   if opt.Verbose,
     fprintf('concatenating files in the following order:\n');
-    fprintf('%s\n', vec2str(fileNames));
+    fprintf('%s\n', str_vec2str(fileNames));
   end
 end
 
@@ -193,14 +193,14 @@ clab_in_file= cnt.clab;
 
 % select specified channels
 if ~isempty(opt.CLab) && strcmp(opt.TargetFormat,'bbci'),
-  cnt.clab= cnt.clab(chanind(cnt, opt.CLab));
+  cnt.clab= cnt.clab(util_chanind(cnt, opt.CLab));
 end
 
 % sort channels for memory efficient application of linear derivation:
 % temporary channels are moved to the end
 if ~isempty(opt.LinearDerivation),
   rm_clab= cell_flaten({opt.LinearDerivation.rm_clab});
-  rmidx= chanind(cnt.clab, rm_clab);
+  rmidx= util_chanind(cnt.clab, rm_clab);
   cnt.clab(rmidx)= [];
   cnt.clab= cat(2, cnt.clab, rm_clab);
 end
@@ -217,8 +217,8 @@ if isequal(opt.Fs, 'raw'),
   opt.Fs= raw_fs;
 end
 cnt.fs= opt.Fs;
-cnt.title = vec2str(file);
-cnt.file = vec2str(fileNames);
+cnt.title = str_vec2str(file);
+cnt.file = str_vec2str(fileNames);
 
 nChans= length(cnt.clab);
 
@@ -306,7 +306,7 @@ cnt.T = dataSize;
 dataOffset = 0; % the offset for the current file
 for filePos = firstFileToRead:lastFileToRead
   % get the channel id for this file
-  chanids = chanind(clab_in_file,chosen_clab); % the -1 is for read_bv
+  chanids = util_chanind(clab_in_file,chosen_clab); % the -1 is for read_bv
   
   read_opt = struct('fs',cnt.fs, 'chanidx',chanids);
 
@@ -382,14 +382,14 @@ clear read_opt;
 if ~isempty(opt.LinearDerivation),
   ld= opt.LinearDerivation;
   for cc= 1:length(ld),
-    ci= chanind(cnt.clab, ld(cc).chan);
+    ci= util_chanind(cnt.clab, ld(cc).chan);
     support= find(ld(cc).filter);
-    s2= chanind(cnt.clab, ld(cc).clab(support));
+    s2= util_chanind(cnt.clab, ld(cc).clab(support));
     cnt.x(:,ci)= cnt.x(:,s2) * ld(cc).filter(support);
     cnt.clab{ci}= ld(cc).new_clab;
   end
   % delete temporary channels: TODO in a memory efficient way
-  idx= chanind(cnt, rm_clab);
+  idx= util_chanind(cnt, rm_clab);
   cnt.x(:,idx)= [];
   cnt.clab(idx)= [];
 end

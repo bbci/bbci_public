@@ -2,9 +2,9 @@ function mnt= mnt_shrinkNonEegChans(mnt, nonEEGchans)
 %mnt= mnt_shrinkNonEegChans(mnt, <nonEEGchans>)
 
 if ~exist('nonEEGchans', 'var'),
-  nonEEGchans= chanind(mnt, 'E*');
+  nonEEGchans= util_chanind(mnt, 'E*');
 else
-  nonEEGchans= chanind(mnt, nonEEGchans);
+  nonEEGchans= util_chanind(mnt, nonEEGchans);
 end
 
 mnt.box_sz(:,nonEEGchans)= 0.9*mnt.box_sz(:,nonEEGchans);

@@ -201,7 +201,7 @@ elseif str_matchesHead('STRUCT', typeDefinition),
     ok= isfield(variable, requiredFields{1});
     if ~all(ok),
       msg= sprintf('Missing obligatory field(s) in variable ''%s'': %s', ...
-                   propname, vec2str(requiredFields{1}(~ok)));
+                   propname, str_vec2str(requiredFields{1}(~ok)));
       ok= 0;
     end
   end
@@ -304,5 +304,5 @@ if ~ok,
     receivedSize= length(variable);
   end
   msg= sprintf('Size mismatch for variable ''%s'': expected %s but got [%s]', ...
-        propname, sizeDefinition, vec2str(receivedSize,'%d',' '));
+        propname, sizeDefinition, str_vec2str(receivedSize,'%d',' '));
 end

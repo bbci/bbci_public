@@ -175,7 +175,7 @@ if imp_exists
       hdr.impedance_gnd= impedance;
       continue;
     end
-    ci= chanind(hdr, clab);
+    ci= util_chanind(hdr, clab);
     if isempty(ci),
       if opt.Verbose,
         warning('Impedance of unknown channel ''%s'' found\n', clab);

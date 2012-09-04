@@ -7,7 +7,7 @@ function mnt= mnt_adaptMontage(mnt, varargin);
 %
 %Input:
 % mnt  - display montage, see setElectrodeMontage, setDisplayMontage
-% clab - channels, format as accepted by chanind
+% clab - channels, format as accepted by util_chanind
 % dat  - a data struct which has a field clab with format as above
 %
 %Output:
@@ -23,7 +23,7 @@ function mnt= mnt_adaptMontage(mnt, varargin);
 % mt= mnt_adaptMontage(mnt, ep);
 % %% now mt fits to ep, just as mnt to epo
 
-chans= chanind(mnt.clab, varargin{:});
+chans= util_chanind(mnt.clab, varargin{:});
 
 if isfield(mnt, 'x'),
   mnt.x = mnt.x(chans);

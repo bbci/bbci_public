@@ -14,9 +14,9 @@ mrk= mrk_defineClasses(mrk_orig, stimDef);
 
 %% Re-referencing to linked-mastoids
 A= eye(length(cnt.clab));
-iA1= chanind(cnt.clab,'A1');
+iA1= util_chanind(cnt.clab,'A1');
 if isempty(iA1)
-    iA1= chanind(cnt.clab,'A2');
+    iA1= util_chanind(cnt.clab,'A2');
 end
 A(iA1,:)= -0.5;
 A(:,iA1)= [];

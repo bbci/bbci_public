@@ -79,7 +79,7 @@ else
   laplace.filter= getLaplaceFilter(opt.filter_type);
 end
 
-rc= chanind(clab, {'not', opt.ignore_clab{:}});
+rc= util_chanind(clab, {'not', opt.ignore_clab{:}});
 nOrigChans= length(clab);
 pos= zeros(2, nOrigChans);
 for ic= 1:nOrigChans,
@@ -87,7 +87,7 @@ for ic= 1:nOrigChans,
 end
 pos(:,setdiff(1:nOrigChans,rc))= inf;
 
-idx_tbf= chanind(clab, opt.clab);
+idx_tbf= util_chanind(clab, opt.clab);
 W= zeros(length(clab), length(idx_tbf));
 lc= 0;
 requ_clab= {};
@@ -136,7 +136,7 @@ for ci= 1:length(idx_tbf),
   end
 end
 clear filter_tmp
-W= W(chanind(clab, requ_clab),:);
+W= W(util_chanind(clab, requ_clab),:);
 
 
 
@@ -145,7 +145,7 @@ function pos= getCoordinates(lab, grid)
 nRows= size(grid,1);
 %w_cm= warning('query', 'bci:missing_channels');
 %warning('off', 'bci:missing_channels');
-ii= chanind(grid, lab);
+ii= util_chanind(grid, lab);
 %warning(w_cm);
 if isempty(ii),
   pos= [NaN; NaN];

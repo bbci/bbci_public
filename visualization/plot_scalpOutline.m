@@ -90,7 +90,7 @@ if ~any(strcmpi('Color',opt.LineProperties)),
 end
 % If channels are given as labels in cells, turn into indices
 if iscell(opt.DisplayChannels)
-    opt.DisplayChannels = chanind(mnt.clab, opt.DisplayChannels);
+    opt.DisplayChannels = util_chanind(mnt.clab, opt.DisplayChannels);
 end
 
 % Normalized units (for positioning, set back later)
@@ -162,7 +162,7 @@ if opt.Reference
 end
 
 % Add markers & labels
-opt.MarkChannels= chanind(mnt.clab(opt.DisplayChannels), opt.MarkChannels);
+opt.MarkChannels= util_chanind(mnt.clab(opt.DisplayChannels), opt.MarkChannels);
 % Plot markers
 H.label_markers = [];
 for k=1:numel(xe)

@@ -97,7 +97,7 @@ mnt.x= NaN*ones(nChans, 1);
 mnt.y= NaN*ones(nChans, 1);
 mnt.pos_3d= NaN*ones(3, nChans);
 for ei= 1:nChans,
-  ii= chanind(elab, clab{ei});
+  ii= util_chanind(elab, clab{ei});
   if ~isempty(ii),
     mnt.x(ei)= pos2d(ii, 1);
     mnt.y(ei)= pos2d(ii, 2);

@@ -232,7 +232,7 @@ if opt.visualize,
   Vint= 2 + floor(nCols*(Vfull-mi)/(ma+1e-2-mi));
   Vdisp= ones([nChans+4 nEvents+4]);
   Vdisp(3:end-2, 3:end-2)= Vint;
-  iClab= sort(chanind(fv, rClab));
+  iClab= sort(util_chanind(fv, rClab));
   Vdisp(iClab+2, 1)= nCols+2;
   Vdisp(iClab+2, end)= nCols+2;
   Vdisp(1, rTrials+2)= nCols+2;

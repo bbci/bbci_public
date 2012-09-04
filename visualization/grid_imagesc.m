@@ -156,8 +156,8 @@ if ~isfield(opt, 'ScaleGroup'),
     if isempty(scalp_idx),
       opt.ScaleGroup= {intersect(grd_clab, epo.clab)};
     else
-      scalp_idx= intersect(scalp_idx, chanind(epo, grd_clab));
-      emgeog_idx= chanind(epo, 'EOGh','EOGv','EMG*');
+      scalp_idx= intersect(scalp_idx, util_chanind(epo, grd_clab));
+      emgeog_idx= util_chanind(epo, 'EOGh','EOGv','EMG*');
       others_idx= setdiff(1:length(epo.clab), [scalp_idx emgeog_idx]);
       opt.ScaleGroup= {epo.clab(scalp_idx), {'EMG*'}, {'EOGh'}, {'EOGv'}, ...
                        epo.clab(others_idx)};
@@ -206,7 +206,7 @@ DisplayChannels= find(ismember(strtok(mnt.clab), strtok(epo.clab)));
 nDisps= length(DisplayChannels);
 %% mnt.clab{DisplayChannels(ii)} may differ from epo.clab{ii}, e.g. the former
 %% may be 'C3' while the latter is 'C3 lap'
-idx= chanind(epo, mnt.clab(DisplayChannels));
+idx= util_chanind(epo, mnt.clab(DisplayChannels));
 Axestitle= apply_cellwise(epo.clab(idx), 'sprintf');
 
 %w_cm= warning('query', 'bci:missing_channels');
@@ -214,7 +214,7 @@ Axestitle= apply_cellwise(epo.clab(idx), 'sprintf');
 %all_idx= 1:length(mnt.clab);
 %  yLim= zeros(length(opt.ScaleGroup), 2);
 %  for ig= 1:length(opt.ScaleGroup),
-%    ax_idx= chanind(mnt.clab(DisplayChannels), opt.ScaleGroup{ig});
+%    ax_idx= util_chanind(mnt.clab(DisplayChannels), opt.ScaleGroup{ig});
 %    if isempty(ax_idx), continue; end
 %  %  ch_idx= find(ismember(all_idx, ax_idx));
 %    ch_idx= DisplayChannels(ax_idx);
@@ -247,7 +247,7 @@ Axestitle= apply_cellwise(epo.clab(idx), 'sprintf');
 %      yLim(ig,:)= [-1 1];
 %    end
 %    if ig==1 & length(ax_idx)>1,
-%  %    scale_with_group1= setdiff(1:nDisps, chanind(mnt.clab(DisplayChannels), ...
+%  %    scale_with_group1= setdiff(1:nDisps, util_chanind(mnt.clab(DisplayChannels), ...
 %  %                                                 [opt.ScaleGroup{2:end}]));
 %  %    set(H{ih}.ax(scale_with_group1), 'yLim',yLim(ig,:));
 %      ch2group= ones(1,nDisps);
@@ -361,7 +361,7 @@ for ih = 1:s(4)
   end
       
   if isfield(mnt, 'scale_box') & all(~isnan(mnt.scale_box)),
-    ax_idx= chanind(mnt.clab(DisplayChannels), opt.ScaleGroup{1});
+    ax_idx= util_chanind(mnt.clab(DisplayChannels), opt.ScaleGroup{1});
     axes(H{ih}.ax(ax_idx(1)));
     H{ih}.scale= grid_addScale(mnt, opt);
   end
@@ -387,7 +387,7 @@ for ih = 1:s(4)
       tit= [tit, epo.ClassName{ih} ', '];
     end
     if isfield(epo, 'N'),
-      tit= [tit, 'N= ' vec2str(epo.N,[],'/') ',  '];
+      tit= [tit, 'N= ' str_vec2str(epo.N,[],'/') ',  '];
     end
     if isfield(epo, 't'),
       tit= [tit, sprintf('[%g %g] %s,  ', trunc(epo.t([1 end]), 0), opt.XUnit)];

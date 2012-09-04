@@ -26,7 +26,7 @@ for ih= 1:length(hc),
   ud= get(hc(ih), 'userData');
   if isstruct(ud) & isfield(ud,'type') & ischar(ud.type) & ...
         strpatterncmp(search_type, ud.type), 
-    if isempty(chans) | ~isempty(chanind(chans, ud.chan)),
+    if isempty(chans) | ~isempty(util_chanind(chans, ud.chan)),
       isERPplot(ih)= 1;
     end
   end

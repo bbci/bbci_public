@@ -67,5 +67,5 @@ for ii= 1:length(fld_list),
 end
 
 if ~isempty(warning_list),
-  warning(sprintf('Field(s) not found in struct: %s', vec2str(warning_list)));
+  warning(sprintf('Field(s) not found in struct: %s', str_vec2str(warning_list)));
 end

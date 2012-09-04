@@ -68,7 +68,7 @@ if ~isstruct(dat),
   dat= struct('clab',{dat});
 end
 
-rc= chanind(dat, {'not', opt.ignoreClab{:}});
+rc= util_chanind(dat, {'not', opt.ignoreClab{:}});
 nOrigChans= length(dat.clab);
 pos= zeros(2, nOrigChans);
 for ic= 1:nOrigChans,
@@ -76,7 +76,7 @@ for ic= 1:nOrigChans,
 end
 pos(:,setdiff(1:nOrigChans,rc))= inf;
 
-idx_tbf= chanind(dat, opt.clab);
+idx_tbf= util_chanind(dat, opt.clab);
 W= zeros(length(dat.clab), length(idx_tbf));
 clab = [];
 lc= 0;
@@ -122,7 +122,7 @@ for ci= 1:length(idx_tbf),
     clab= [clab, dat.clab(cc)];
     if opt.verbose,
       fprintf('%s: ref''ed to: %s\n', ...
-        dat.clab{cc}, vec2str(dat.clab(refChans)));
+        dat.clab{cc}, str_vec2str(dat.clab(refChans)));
     end
   elseif opt.requireCompleteOutput,
     error('channel %s has incomplete neighborhood', dat.clab{cc});
@@ -148,7 +148,7 @@ function pos= getCoordinates(lab, grid)
 nRows= size(grid,1);
 %w_cm= warning('query', 'bci:missing_channels');
 %warning('off', 'bci:missing_channels');
-ii= chanind(grid, lab);
+ii= util_chanind(grid, lab);
 %warning(w_cm);
 if isempty(ii),
   pos= [NaN; NaN];

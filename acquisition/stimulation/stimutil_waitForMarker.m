@@ -91,7 +91,7 @@ while ~stopmarker,
   end
   [data, markertime, markerdescr, opt.state]= opt.acquire_fcn(opt.state);
   if ~isempty(markerdescr) && opt.verbose>1,
-    fprintf('%s: received markers: %s\n', datestr(now,'HH:MM:SS.FFF'), vec2str(markerdescr));
+    fprintf('%s: received markers: %s\n', datestr(now,'HH:MM:SS.FFF'), str_vec2str(markerdescr));
   end
   for mm= 1:length(markerdescr),
     for mmm= 1:length(opt.stopmarkers),

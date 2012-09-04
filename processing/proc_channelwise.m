@@ -24,7 +24,7 @@ epo = misc_history(epo);
 
 chan= 1:size(epo.x,2);
 if iscell(fcn),
-  fcn= chanind(epo, fcn);
+  fcn= util_chanind(epo, fcn);
 end
 if isnumeric(fcn),
   chan= fcn;
