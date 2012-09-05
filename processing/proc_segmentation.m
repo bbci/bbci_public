@@ -58,8 +58,6 @@ function [epo, complete]= proc_segmentation(cnt, mrk, ival, varargin)
 
 % 02-2009 Benjamin Blankertz
 
-cnt = misc_history(cnt);
-
 props= {'CLab'                       '*'       'CHAR|CELL{CHAR}'
         'DiscardIncompleteSegments'  1,        'BOOL'};
 
@@ -74,7 +72,7 @@ misc_checkType(ival, 'DOUBLE[- 2]');
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
-
+cnt = misc_history(cnt);
 
 if ~isstruct(mrk), 
   mrk= struct('time', mrk);

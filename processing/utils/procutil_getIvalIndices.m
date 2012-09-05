@@ -27,9 +27,9 @@ if nargin==0,
 end
 
 misc_checkType(ival, 'DOUBLE[- 2]');
-misc_checkType(dat, '!DOUBLE[1]|STRUCT(fs t)');
+misc_checkType(dat, '!DOUBLE[1]|STRUCT(fs)');
 
-if length(varargin)==1 & ~isstruct(varargin{1}),
+if length(varargin)==1 && ~isstruct(varargin{1}),
   opt= strukt('Dim', varargin{1});
 else
   opt= opt_proplistToStruct(varargin{:});

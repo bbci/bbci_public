@@ -28,9 +28,12 @@ function [epo, ev]= proc_selectClasses(epo, varargin)
 %
 
 % Benjamin Blankertz
-epo = misc_history(epo);
+if nargin==0,
+  epo= []; return
+end
 
 misc_checkType(epo, 'STRUCT(className y)');
+epo = misc_history(epo);
 
 clInd= procutil_getClassIndices(epo, varargin{:});
 ev= find(any(epo.y(clInd,:)==1,1));

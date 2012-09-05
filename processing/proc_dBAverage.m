@@ -4,13 +4,11 @@ function out= proc_dBAverage(epo, varargin)
 %This functions is exactly used as proc_average. It should be used
 %for dB-scaled features (e.g. output of proc_power2dB; or
 %proc_spectrum in the default setting 'scaling', 'dB').
-epo = misc_history(epo);
-
-
 if nargin==0,
   out= proc_average; return;
 end
 
+epo = misc_history(epo);
 out= epo;
 %% scale back
 out.x= 10.^(epo.x/10);

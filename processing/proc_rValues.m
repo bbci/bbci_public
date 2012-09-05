@@ -11,11 +11,11 @@ function fv_rval= proc_rValues(fv, varargin)
 % FV_RVAL - data structute of r values (one sample only)
 %
 %Properties:
-% 'tolerateNans': observations with NaN value are skipped
+% 'TolerateNans': observations with NaN value are skipped
 %    (nanmean/nanstd are used instead of mean/std). Deafult: 0
-% 'valueForConst': constant feauture dimensions are assigned this
+% 'ValueForConst': constant feauture dimensions are assigned this
 %    value. Default: NaN.
-% 'multiclassPolicy': possible options: 'pairwise' (default), 
+% 'MulticlassPolicy': possible options: 'pairwise' (default), 
 %    'all-against-last', 'each-against-rest', or provide specified
 %    pairs as an [nPairs x 2] sized matrix. ('specified_pairs' is obsolete)
 % 
@@ -34,17 +34,15 @@ function fv_rval= proc_rValues(fv, varargin)
 %See also:  proc_tTest, proc_rSquare
 
 % Benjamin Blankertz
-fv = misc_history(fv);
-
-
-props= { 'tolerateNans',      0,           'BOOL|DOUBLE'
-         'valueForConst',     NaN,         'DOUBLE'
-         'multiclassPolicy',  'pairwise',  'CHAR'  };
+props= { 'TolerateNans',      0,           'BOOL|DOUBLE'
+         'ValueForConst',     NaN,         'DOUBLE'
+         'MulticlassPolicy',  'pairwise',  'CHAR(pairwise all-against-last each-against-rest)|INT[- 2]'  };
 
 if nargin==0,
   fv_rval= props; return
 end
 
+fv = misc_history(fv);
 misc_checkType(fv, 'STRUCT(x y)');
 
 opt= opt_proplistToStruct(varargin{:});
@@ -54,7 +52,7 @@ opt_checkProplist(opt, props);
 
 if size(fv.y,1)>2,
   fv_rval= procutil_multiclassDiff(fv, {'rValues',opt}, ...
-                                   opt.multiclassPolicy);
+                                   opt.MulticlassPolicy);
   return;
 elseif size(fv.y,1)==1,
   bbci_warning('1 class only: calculating r-values against flat-line of same var', 'r_policy');
@@ -71,7 +69,7 @@ c1= find(fv.y(1,:));
 c2= find(fv.y(2,:));
 lp= length(c1);
 lq= length(c2);
-if opt.tolerateNans,
+if opt.TolerateNans,
   stdi= @nanstd;
   meani= @nanmean;
   iV = reshape(sum(~isnan(fv.x), 2), [sz(1:end-1) 1])-3;
@@ -85,7 +83,7 @@ iConst= find(div==0);
 div(iConst)= 1;
 rval= ( (meani(fv.x(:,c1),2)-meani(fv.x(:,c2),2)) * sqrt(lp*lq) ) ./ ...
         ( div*(lp+lq) );
-rval(iConst)= opt.valueForConst;
+rval(iConst)= opt.ValueForConst;
 rval= reshape(rval, [sz(1:end-1) 1]);
 iV= reshape(iV, [sz(1:end-1) 1]);
 

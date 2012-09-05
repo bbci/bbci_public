@@ -23,9 +23,6 @@ function epo= proc_selectEpochs(epo, idx, varargin)
 % OUT epo  - updated data structure
 
 % Benjamin Blankertz
-epo= misc_history(epo);
-
-
 props= {'RemoveVoidClasses',   1,   'BOOL'};
 
 if nargin==0,
@@ -33,6 +30,7 @@ if nargin==0,
 end
 
 misc_checkType(epo, 'STRUCT(x clab fs)');
+epo= misc_history(epo);
 
 if mod(length(varargin),2)==1,
   if isequal(idx, 'not'),

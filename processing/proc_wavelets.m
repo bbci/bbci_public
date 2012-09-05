@@ -40,9 +40,6 @@ function dat  = proc_wavelets(dat,varargin)
 
 % Author: Matthias Treder (2010,2012)
 
-
-dat = misc_history(dat);
-
 if numel(varargin)>0 && ~ischar(varargin{1})
   freq = varargin{1};
   varargin(1) = [];
@@ -59,6 +56,7 @@ if nargin==0,
   dat= props; return
 end
 
+dat = misc_history(dat);
 opt= opt_proplistToStruct(varargin{:});
 [opt,isdefault] = opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);

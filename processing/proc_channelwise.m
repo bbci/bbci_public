@@ -1,4 +1,4 @@
-function dat = proc_channelwise(epo, fcn, varargin);
+function dat = proc_channelwise(epo, fcn, varargin)
 %PROC_CHANNELWISE - applies a processing function channelwise
 %
 %Synopsis:

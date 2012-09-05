@@ -26,19 +26,20 @@ function out= proc_linearDerivation(dat, A, varargin)
 
 %        Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
-
-dat = misc_history(dat);
-misc_checkType(dat,  'STRUCT(x clab)');
-misc_checkType(A, sprintf('DOUBLE[%i -]', size(dat.x,2)));
-
-props= {'clab'          []
-        'prependix'     ''
-        'appendix'      ''};
+props= {'clab'          []          'CHAR';
+        'prependix'     ''          'CHAR';
+        'appendix'      ''          'CHAR'
+        };
 
 if nargin==0,
   out = props; return
 end
 
+misc_checkType(dat,  'STRUCT(x clab)');
+misc_checkType(A, sprintf('DOUBLE[%i -]', size(dat.x,2)));
+dat = misc_history(dat);
+
+%%
 if length(varargin)==1,
   opt= struct('appendix', varargin{1});
 else

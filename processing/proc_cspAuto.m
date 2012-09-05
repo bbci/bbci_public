@@ -44,8 +44,6 @@ function [dat, varargout]= proc_cspAuto(dat, varargin)
 %See also demos/demo_validate_csp
 
 % Author(s): Benjamin Blankertz
-dat = misc_history(dat);
-
 props= { 'patterns'     3           'INT'
          'score'        'medianvar' 'CHAR'
          'covPolicy'    'average'   'CHAR'
@@ -59,8 +57,9 @@ if nargin==0,
   dat = props; return
 end
 
+dat = misc_history(dat);
 misc_checkType(dat, 'STRUCT(x clab y)'); 
-if length(varargin)==1 & isnumeric(varargin{1}),
+if length(varargin)==1 && isnumeric(varargin{1}),
   opt= struct('patterns', varargin{1});
 else
   opt= opt_proplistToStruct(varargin{:});
