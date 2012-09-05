@@ -1,34 +1,39 @@
 function ind= util_chanind(lab, varargin)
-%ind= util_chanind(clab, chan1, <chan2, ...>)
-%ind= util_chanind(dat, chan1, <chan2, ...>)
-%ind= util_chanind(clab, chancell)
+%UTIL_CHANIND - Get the channel indices for some channel labels
 %
-% IN   clab  - cell array of channel labels (or struct with field clab)
-%              ! only the string up to the first space is used !
-%      chanx - channel label (string)  or only one chanx argument and
-%              chan1 is a cell array of channel labels;
-%              integer arguments are just returned; 
-%              the following special tokens can be used:
-%              '#' matches 'z' or the number 1-10
-%              '*' matches multiple numbers and/or letters
-%              Any combination and number of these tokens can be used at
-%              any location in the string.
-%              If the first string is 'not', ind will contain indices of
-%              all channels except for the given ones.
-%      chancell - alternative input format: cell array of strings, where
-%              each string is a channel label pattern as described above.
+%Synopsis:
+% IND = util_chanind(CLAB, CHAN1, <CHAN2, ...>)
+% IND = util_chanind(DAT, CHAN1, <CHAN2, ...>)
+% IND = util_chanind(CLAB, CHANCELL)
 %
-% Optional arguments:
-%  ignore    - specify characters that should additionally match wildcards
+%Arguments:
+%  CLAB/DAT:    CELL/STRUCT - cell array of channel labels (or struct with field clab)
+%                             Only the string up to the first space is used!
+%  CHAN1,CHAN2.. CHAR       - channel label (string)  or only one chanx argument and
+%                             chan1 is a cell array of channel labels;
+%                             integer arguments are just returned; 
+%                             the following special tokens can be used:
+%                             '#' matches 'z' or the number 1-10
+%                             '*' matches multiple numbers and/or letters
+%                              Any combination and number of these tokens can be used at
+%                             any location in the string.
+%                             If the first string is 'not', ind will contain indices of
+%                             all channels except for the given ones.
+% CHANCELL: - alternative input format: cell array of strings, where
+%               each string is a channel label pattern as described above.
+%
+%  OPT:  PROPLIST     - Struct or property/value list of optional properties:
+%  'Ignore'    - specify characters that should additionally match wildcards
 %              in addition to alphanumeric characters. You have to
 %              parametrize it as a cell array in the form like {'ignore' '-/\'} 
 %              where '-/\' would be the set of characters to match the wildcards.
 %
 %
-% OUT  ind   - indices of channels in channel enumeration given
-%              by the first argument
+%Returns:
+% ind   -    indices of channels in channel enumeration given
+%            by the first argument
 %
-% Xamples
+%Examples:
 %   util_chanind(scalpChannels, 'P#')
 %     matches P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, Pz
 %
@@ -38,8 +43,6 @@ function ind= util_chanind(lab, varargin)
 %
 %   util_chanind(epo, 'not','E*');
 %     matches all channels that do not start with letter 'E'
-
-% bb, GMD-FIRST, 04/00, matthias.treder 11
 
 if nargin==0,
   ind= []; return
@@ -58,7 +61,7 @@ if length(chans)==1 && isempty(chans{1}), ind= []; return; end
 %% Search for 'ignore' parameter
 ignore = [];
 for ii=1:numel(chans)
-  if iscell(chans{ii}) && ~isempty(chans{ii}) && strcmp(chans{ii}{1},'ignore')
+  if iscell(chans{ii}) && ~isempty(chans{ii}) && strcmpi(chans{ii}{1},'ignore')
     ignore = chans{ii}{2};
     chans(ii)=[];
     if ismember('\',ignore)
