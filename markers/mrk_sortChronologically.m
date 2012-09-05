@@ -16,9 +16,11 @@ function mrk= mrk_sortChronologically(mrk, varargin)
 % Benjamin Blankertz
 
 
-props= {'Sort',              0  'BOOL'
-        'RemoveVoidClasses'  1  'BOOL'};
-props_selectEvents= mrk_sortChronologically;
+props= {'Sort',              0  'BOOL';
+        'RemoveVoidClasses'  1  'BOOL';
+        'Classwise'          0  '!BOOL';
+        };
+props_selectEvents= mrk_selectEvents;
 
 if nargin==0,
   mrk= opt_catProps(props, props_selectEvents);

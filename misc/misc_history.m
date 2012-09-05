@@ -34,7 +34,7 @@ if ~isempty(BBCI_HISTORY) && BBCI_HISTORY==0
   return
 end
 
-misc_checkType(ob,'STRUCT');
+misc_checkType(obj,'STRUCT');
 
 if isfield(obj,'history')
   ht = obj.history;
