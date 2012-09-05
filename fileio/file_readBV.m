@@ -101,7 +101,7 @@ if nargin==0,
 end
 
 opt= opt_proplistToStruct(varargin{:});
-opt= opt_setDefaults(opt, props);
+[opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, all_props);
 
 misc_checkType(file, 'CHAR|CELL{CHAR}');
@@ -360,6 +360,7 @@ for filePos = firstFileToRead:lastFileToRead
   if nargout>1,
     opt_mrk= opt_substruct(opt, props_readBVmarkers(:,1));
     curmrk= file_readBVmarkers(fileNames{filePos}, opt_mrk);
+    curmrk.time= curmrk.time + dataOffset/cnt.fs*1000;
     % find markers in the loaded interval
     inival= find(curmrk.time > skip/cnt.fs*1000 & ...
                  curmrk.time <= (skip+maxlen)/cnt.fs*1000);
@@ -372,10 +373,8 @@ for filePos = firstFileToRead:lastFileToRead
     else
       mrk = mrk_mergeMarkers(mrk, curmrk);
     end
-  dataOffset = dataOffset + dataSize(filePos);
-
+    dataOffset = dataOffset + dataSize(filePos);
   end
-  
 end
 clear read_opt;
 
