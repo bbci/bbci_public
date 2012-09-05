@@ -1,9 +1,8 @@
-function [dat, mrk]= proc_subsampleByLag(dat, lag, mrk)
+function dat = proc_subsampleByLag(dat, lag)
 %PROC_SUBSAMPLEBYLAG - subsampling with specified sampling intervals!
 % 
 %Synopsis:
 %dat= proc_subsampleByLag(dat, lag)
-%[dat, mrk]= proc_subsampleByLag(dat, lag, mrk)
 %
 %Arguments:
 %     dat  - data structure of continuous or epoched data
@@ -17,10 +16,15 @@ function [dat, mrk]= proc_subsampleByLag(dat, lag, mrk)
 % updated.
 %
 
-% bb, ida.first.fhg.de
+if nargin==0,
+  dat=[];  return
+end
+
+misc_checkType(dat, 'STRUCT(x y)');
+misc_checkType(lag,'INT[1]');
+
 dat = misc_history(dat);
-
-
+%%
 iv= ceil(lag/2):lag:size(dat.x,1);
 dat.x= dat.x(iv,:,:);
 dat.fs= dat.fs/lag;
@@ -33,7 +37,3 @@ if isfield(dat, 'T'),
   dat.T= dat.T./lag;
 end
 
-if nargin>2 && nargout>1,
-  mrk.pos= ceil(mrk.pos/lag);
-  mrk.fs= mrk.fs/lag;
-end

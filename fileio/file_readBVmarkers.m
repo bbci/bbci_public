@@ -75,7 +75,6 @@ Mrk.event.type= M_type';
 Mrk.event.length= M_length';
 Mrk.event.chan= M_chan';
 Mrk.event.clock= M_clock';
-Mrk.fs= fs;
 
 if strcmp(opt.MarkerFormat, 'numeric'),
   [toe,idx]= marker_mapping_SposRneg(Mrk.desc);

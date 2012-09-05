@@ -21,9 +21,6 @@ function [out, iv]= proc_selectIval(dat, ival, varargin)
 %  
 % OUT  dat  - updated data structure
 
-
-dat= misc_history(dat);
-
 props= {'Pos'      'beginning'  '!CHAR(beginning end relative)'
         'Dim'       1           '!INT' };
 props_getIvalIndices= procutil_getIvalIndices;
@@ -43,6 +40,7 @@ end
 opt_checkProplist(opt, props, props_getIvalIndices);
 misc_checkType(dat, 'STRUCT(x fs)'); 
 misc_checkType(ival,'DOUBLE[2]'); 
+dat= misc_history(dat);
 
 %%                
 if length(ival)==1 || isequal(opt.Pos, 'relative'),

@@ -23,7 +23,6 @@ function out= proc_zScore(epo, varargin)
 
 % Author(s): Benjamin Blankertz, long time ago
 %            Andreas Ziehe, November 2007
-epo = misc_history(epo);
 
 props= {'Policy'  'mean'     '!CHAR(mean nanmean median)'
         'Classes' 'ALL'      '!CHAR'
@@ -36,11 +35,11 @@ end
 misc_checkType(epo, 'STRUCT(x clab)'); 
 
 opt= opt_proplistToStruct(varargin{:});
-
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
+epo = misc_history(epo);
 
-
+%%
 if ~isfield(epo, 'y'),
   warning('no classes label found: calculating average across all epochs');
   nEpochs= size(epo.x, ndims(epo.x));

@@ -29,7 +29,6 @@ function out= proc_average(epo, varargin)
 % Benjamin Blankertz
 
 
-epo = misc_history(epo);
 props= {  'policy'   'mean' 'CHAR(mean nanmean median)'
           'classes' 'ALL'   'CHAR'
           'std'      0      'BOOL'  };
@@ -38,7 +37,7 @@ if nargin==0,
   out = props; return
 end
 
-
+epo = misc_history(epo);
 misc_checkType(epo, 'STRUCT(x clab y)'); 
 if nargin==2
   opt.classes = varargin{:};

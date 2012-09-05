@@ -1,4 +1,4 @@
-function [varargout]= proc_laplacian(dat, varargin)
+function varargout= proc_laplacian(dat, varargin)
 %PROC_LAPLACIAN - Apply spatial Laplacian filter to signals
 %
 %Synopsis:
@@ -24,22 +24,24 @@ function [varargout]= proc_laplacian(dat, varargin)
 
 %        Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
-dat = misc_history(dat);
 
-props= {'clab'       '*'
-        'ignoreClab' {'E*'}
-        'copyClab'   {'E*'}
-        'grid'       'grid_128'
-        'filterType' 'small'
-        'requireCompleteNeighborhood'    1
-        'requireCompleteOutput'          0
-        'appendix'   ' lap'
-        'verbose'    0};
+props= {'clab'          '*'         '!CHAR';
+        'ignoreClab'    {'E*'}      'CHAR|CELL{CHAR}';
+        'copyClab'      {'E*'}      'CHAR|CELL{CHAR}';
+        'grid'          'grid_128'  'CHAR';
+        'filterType'    'small'     'CHAR(small large horizontal vertical diagonal eight)';
+        'requireCompleteNeighborhood'    1      '!BOOL';
+        'requireCompleteOutput'          0      '!BOOL';
+        'appendix'      ' lap'      'CHAR';
+        'verbose'       0           'BOOL';
+        };
 
 if nargin==0,
-  varargout = props; return
+  varargout{1} = props; 
+  return
 end
 
+dat = misc_history(dat);
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 % opt_checkProplist(opt, props);

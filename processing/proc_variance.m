@@ -1,12 +1,12 @@
-function dat= proc_variance(dat, nSections, calc_std)
+function dat= proc_variance(dat, nSections, calcStd)
 %PROC_VARIANCE - computes the variance in equally spaced intervals
 %
 %Synopsis
-% dat= proc_variance(dat, <nSections=1, calc_std=0>)
+% dat= proc_variance(dat, <nSections=1, calcStd=0>)
 %
 % IN   dat       - data structure of continuous or epoched data
 %      nSections - number of intervals in which var is to be calculated
-%      calc_std  - standard deviation is calculated instead of variance
+%      calcStd   - standard deviation is calculated instead of variance
 %
 % OUT  dat       - updated data structure
 %
@@ -14,19 +14,25 @@ function dat= proc_variance(dat, nSections, calc_std)
 % calculate the variance in 'nSections' equally spaced intervals.
 % works for cnt and epo structures.
 
+if nargin==0,
+  dat=[];return
+end
 
+misc_checkType(dat, 'STRUCT(time)');
+misc_checkTypeIfExists('nSections', 'INT');
+misc_checkTypeIfExists('calcStd','BOOL');
 dat = misc_history(dat);
 
 if ~exist('nSections','var'), nSections=1; end
-if ischar(nSections) & strcmpi(nSections,'std'),
+if ischar(nSections) && strcmpi(nSections,'std'),
   nSections=1;
-  calc_std=1;
+  calcStd=1;
 end
-if ~exist('calc_std','var') | (ischar(calc_std) & strcmpi(calc_std,'var')),
-  calc_std= 0;
+if ~exist('calcStd','var') || (ischar(calcStd) && strcmpi(calcStd,'var')),
+  calcStd= 0;
 end
-if ischar(calc_std) & strcmpi(nSections,'std'),
-  calc_std=1;
+if ischar(calcStd) && strcmpi(nSections,'std'),
+  calcStd=1;
 end
 
 
@@ -41,7 +47,7 @@ for s= 1:nSections,
   if length(Ti)==1,
     warning('calculating variance of scalar');
   end
-  if calc_std,
+  if calcStd,
     xo(s,:,:)= reshape(std(dat.x(Ti,:),0,1), [1, nChans, nMotos]);
   else
     if length(Ti)==1,

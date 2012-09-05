@@ -1,4 +1,4 @@
-function mnt= mnt_adaptMontage(mnt, varargin);
+function mnt= mnt_adaptMontage(mnt, varargin)
 %MNT_ADAPTMONTAGE - Adapts an electrode montage to another electrode set
 %
 %Usage:

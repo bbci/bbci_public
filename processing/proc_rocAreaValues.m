@@ -22,15 +22,13 @@ function fv_roc= proc_rocAreaValues(fv, varargin)
 % proc_rValues, proc_rSquaredSigned, proc_tTest
 
 % Author(s): Benjamin Blankertz, Feb 2006
-fv = misc_history(fv);
-
-
 props= {'multiclassPolicy' 'pairwise' 'CHAR'};
 
 if nargin==0,
   fv_roc= props; return
 end
 
+fv = misc_history(fv);
 misc_checkType(dat, 'STRUCT(x)'); 
 
 opt= opt_proplistToStruct(varargin{:});

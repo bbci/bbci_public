@@ -25,7 +25,7 @@ function [opt, isdefault]= opt_setDefaults(opt, props)
 %  property names in PROPLIST. In the case of a match, the variant of
 %  PROPSPEC is used.
 %
-%See also opt_checkProplist, opt_proplist2struct.
+%See also opt_checkProplist, opt_proplistToStruct.
 %
 %Example:
 %  opt= struct('linewidth',3, 'color','k')

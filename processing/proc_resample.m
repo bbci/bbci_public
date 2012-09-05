@@ -1,8 +1,8 @@
 function [dat, mrk] = proc_resample(dat, target_fs, varargin)
-%PROC_RESAMPLE - resample the EEG data to a target freq
+%PROC_RESAMPLE - resample the EEG data to a target sampling frequency
 %
-%Synopsis:
-%  proc_resample(dat, target_fs, <mrk, N>)
+%Synposis:
+% [dat, mrk] = proc_resample(dat, target_fs, <mrk, N>)
 %
 %Arguments:
 %     dat - Structure with fields x and fs. This fields
@@ -10,34 +10,37 @@ function [dat, mrk] = proc_resample(dat, target_fs, varargin)
 %     target_fs - the target sampling frequency
 %
 %     optional (given with keywords or as opt.xxx):
-%     mrk - Structure with fields fs and pos. They will be updated
+%     mrk - Structure with field time. It will be updated.
 %     N - remove the first and last N samples from the resampled data to
 %     avoid edge effects (default is 0)
 %
 %Returns:
-%     dat, mrk
+%     dat: updated data structure
+%     mrk: updated marker structure
 %
+%Description:
 % Resamples the field dat.x such that is has the desired sampling frequency.
 % dat.t and mrk (if given) will be updated as well.
 
 % Sven Daehne, 06-2011
 
 
-props= {'N'     0                 '!DOUBLE[1]'
-        'mrk'   struct('pos',0)   'STRUCT(pos)' };
+props= {'N'     0     '!INT[1]'
+        'mrk'   []    'STRUCT'};
 
 if nargin==0,
   dat= props; return
 end
-dat = misc_history(dat);
 
 misc_checkType(dat, 'STRUCT(x fs)'); 
+dat = misc_history(dat);
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-N = opt.N;
+N = opt.N;                  % # samples
+Nt = N/target_fs*1000;      % corresponding time in ms
 mrk = opt.mrk;
 
 p = round(target_fs*1000);
@@ -58,12 +61,19 @@ if isfield(dat, 't'),
   t = linspace(dat.t(1), dat.t(end), n_samples);
   dat.t = t; % time in ms
 end
-mrk.pos = round(mrk.pos * p/q);
-mrk.fs = target_fs;
 
 % remove the first and the last N samples to avoid edge effects
 dat.x = dat.x((N+1):end-N, :, :);
 if isfield(dat, 't')
     dat.t = dat.t((N+1):end-N);
 end
-mrk.pos = mrk.pos-N;
+
+% Adjust marker if necessary
+if N>0 && ~isempty(mrk)
+    %% *** HIER WEITER
+    mrk.time = mrk.time-Nt;
+    % Remove markers that refer to data that was cut-off the beginning or
+    % end
+    rem_idx = [find(mrk.time<=0) find(mrk.time>length(dat.x)/dat.fs*1000)];
+    mrk = mrk_selectEvents(mrk,'not',rem_idx);
+end

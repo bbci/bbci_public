@@ -30,33 +30,37 @@ function [mrk, istim, iresp, iresp2]= ...
 props= {'MinLatency'        0           '!DOUBLE[1]';
         'MaxLatency'        inf         '!DOUBLE[1]';
         'AllowOvershoot'    0           '!DOUBLE[1]';
-        'MissingresponsePolicy' 'reject'	'CHAR(reject accept)';
-        'MultiresponsePolicy'   'reject'    'CHAR(reject first last)';
+        'MissingresponsePolicy' 'reject'	'!CHAR(reject accept)';
+        'MultiresponsePolicy'   'reject'    '!CHAR(reject first last)';
         'RemoveVoidClasses'	0           '!BOOL';
         'Sort'              1           '!BOOL'};
-    
+props_selectEvents = mrk_selectEvents;
+props_sortChron= mrk_sortChronologically;
 
 if nargin==0,
   mrk= props;
   return
 end
+
 opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
+opt_selectEvents = opt_substruct(opt, props_selectEvents(:,1));
+opt_sortChron = opt_substruct(opt, props_sortChron(:,1));
 
-misc_checkType(mrk_stim, 'STRUCT(pos fs)');
-misc_checkType(mrk_resp, 'STRUCT(pos fs)');
+misc_checkType(mrk_stim, 'STRUCT(time)');
+misc_checkType(mrk_resp, 'STRUCT(time)');
 
-stim_msec= [mrk_stim.pos/mrk_stim.fs*1000 inf];
-resp_msec= mrk_resp.pos/mrk_resp.fs*1000;
+stim_msec= [mrk_stim.time inf];
+resp_msec= mrk_resp.time;
 
 k= 0;
 istim= [];
 iresp= [];
 multiple= [];
-for ii= 1:length(mrk_stim.pos),
+for ii= 1:length(mrk_stim.time),
   valid_range(1)= stim_msec(ii) + opt.MinLatency;
-  if opt.allow_overshoot,
+  if opt.AllowOvershoot,
     valid_range(2)= stim_msec(ii) + opt.MaxLatency;
   else
     valid_range(2)= min(stim_msec(ii+1), stim_msec(ii)+opt.MaxLatency);
@@ -72,8 +76,6 @@ for ii= 1:length(mrk_stim.pos),
       ivalidresp= ivalidresp(1);
      case 'last',
       ivalidresp= ivalidresp(end);
-     otherwise,
-      error('unknown choice for multireponse_policy');
     end
   else 
     hasmultiresp= 0;
@@ -90,27 +92,23 @@ for ii= 1:length(mrk_stim.pos),
   end
 end
 
-mrk= mrk_chooseEvents(mrk_stim, istim, opt);
+mrk= mrk_selectEvents(mrk_stim, istim, opt_selectEvents);
 if ~strcmp(opt.MissingresponsePolicy,'reject'),
-  mrk.missingresponse= isnan(iresp);
-  mrk= mrk_addIndexedField(mrk, 'missingresponse');
-  iresp(mrk.missingresponse)= 1;
+  mrk.event.missingresponse= isnan(iresp);
+  iresp(mrk.event.missingresponse)= 1;
 end
-mrk.latency= mrk_resp.pos(iresp)*1000/mrk_resp.fs - mrk.pos*1000/mrk.fs;
-mrk.resp_toe= mrk_resp.toe(iresp);
+mrk.event.latency= mrk_resp.time(iresp) - mrk.time;
 iresp2= iresp;
-if isfield(mrk, 'missingresponse') && ~isempty(mrk.missingresponse),
-  mrk.latency(mrk.missingresponse)= NaN;
-  mrk.resp_toe(mrk.missingresponse)= NaN;
-  iresp= iresp(~mrk.missingresponse);
-  iresp2(mrk.missingresponse)= NaN;
+if isfield(mrk, 'missingresponse') && ~isempty(mrk.event.missingresponse),
+  mrk.latency(mrk.event.missingresponse)= NaN;
+  iresp= iresp(~mrk.event.missingresponse);
+  iresp2(mrk.event.missingresponse)= NaN;
 end
-mrk= mrk_addIndexedField(mrk, {'latency', 'resp_toe'});
+
 if ~strcmpi(opt.MultiresponsePolicy, 'reject'),
-  mrk.multiresponse= multiple;
-  mrk= mrk_addIndexedField(mrk, 'multiresponse');
+  mrk.event.multiresponse= multiple;
 end
 
 if opt.Sort,
-  mrk= mrk_sortChronologically(mrk, opt);
+  mrk= mrk_sortChronologically(mrk, opt_sortChron);
 end

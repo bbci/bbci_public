@@ -24,6 +24,10 @@ function dat= proc_appendChannels(dat, dat_append,varargin)
 %        Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
 
+if nargin==0,
+  dat = []; return
+end
+
 dat = misc_history(dat);
 misc_checkType(dat, 'STRUCT(x clab)'); 
 misc_checkType(dat_append, 'STRUCT(x clab)');

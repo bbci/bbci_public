@@ -15,20 +15,19 @@ function dat= proc_flaten(dat, varargin)
 % reshape data matrix to data vector (clash all but last dimensions)
 % if an optional parameter force_flaten is given, a single subtrial with 
 % size (NxM) will be flatened to NMx1. Default = False.
-% use: dat = proc_flaten(dat, 'force_flaten', True);
+% use: dat = proc_flaten(dat, 'ForceFlaten', True);
 % 
 % added support for single trial flatening (Martijn)
 %
 % bb, ida.first.fhg.de
-dat = misc_history(dat);
-
-
-props= { 'force_flaten'   0    'BOOL'};
+props= { 'ForceFlaten'   0    'BOOL'};
 
 if nargin==0,
   dat = props; return
 end
-misc_checkType(dat, 'STRUCT(x)'); 
+
+dat = misc_history(dat);
+misc_checkType(dat, 'STRUCT(x)');
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
@@ -44,7 +43,7 @@ elseif isstruct(dat),
     dat= proc_flatenGuido(dat);
   else
     sz = size(dat.x);
-    if numel(sz) == 2 && opt.force_flaten,
+    if numel(sz) == 2 && opt.ForceFlaten,
       dat.x = reshape(dat.x, prod(sz), 1);
     else
       dat.x = reshape(dat.x, [prod(sz(1:end-1)) sz(end)]);

@@ -34,7 +34,6 @@ function dat= proc_baseline(dat, ival, varargin)
 % bb, ida.first.fhg.de
 % Matthias Treder Aug 2010: Added time-frequency data support
 
-dat = misc_history(dat);
 
 props= {'pos'      'beginning'  'CHAR(beginning end)'
         'classwise'     0       'BOOL'   
@@ -45,6 +44,7 @@ if nargin==0,
   dat = props; return
 end
 
+dat = misc_history(dat);
 misc_checkType(dat, 'STRUCT(x clab)'); 
 misc_checkType(ival,'DOUBLE[2]'); 
 
