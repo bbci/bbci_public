@@ -43,7 +43,7 @@ props = {'LineWidth',           3,                  'DOUBLE';
          'Subplot',             [],                 'DOUBLE'};
 
 props_scalpPattern= plot_scalpPattern;
-props_channel= plot_channel2D;
+props_channel= plot_channel1D;
 
 if nargin==0,
   H= opt_catProps(props, props_scalpPattern, props_channel); return

@@ -25,7 +25,7 @@ switch(lower(opt.policy)),
   if diff(yl)>1,
     dig= max(1, dig);
   end
-  YLim= [trunc(yl(1),-dig+1,'floor') trunc(yl(2),-dig+1,'ceil')];
+  YLim= [util_trunc(yl(1),-dig+1,'floor') util_trunc(yl(2),-dig+1,'ceil')];
  otherwise,
   error('unknown policy');
 end

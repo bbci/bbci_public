@@ -103,10 +103,10 @@ opt_checkProplist(opt, props, props_channel, props_addScale);
 opt_channel= opt_substruct(opt, props_channel(:,1));
 opt_addScale = opt_substruct(opt, props_addScale(:,1));
 
-fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-if fig_Visible
-  jvm= jvm_hideFig;
-end
+% fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
+% if fig_Visible
+%   jvm= jvm_hideFig;
+% end
 
 if nargin<2 || isempty(mnt),
   mnt= strukt('clab',epo.clab);
@@ -270,7 +270,7 @@ for ig= 1:length(opt.ScaleGroup),
       if diff(yl)>1,
         dig= max(1, dig);
       end
-      yLim(ig,:)= [trunc(yl(1),-dig+1,'floor') trunc(yl(2),-dig+1,'ceil')];
+      yLim(ig,:)= [util_trunc(yl(1),-dig+1,'floor') util_trunc(yl(2),-dig+1,'ceil')];
     end
   end
   if ~isempty(strfind(opt.ScalePolicy{ig},'sym')),
@@ -300,19 +300,19 @@ for ig= 1:length(opt.ScaleGroup),
        case 'oneline',
         axestitle{ia}= sprintf('%s  [%g %g] %s', ...
                                axestitle{ia}, ...
-                               trunc(yLim(ig,:), dig), opt.YUnit);
+                               util_trunc(yLim(ig,:), dig), opt.YUnit);
        case 'nounit',
         axestitle{ia}= sprintf('%s  [%g %g]', ...
                                axestitle{ia}, ...
-                               trunc(yLim(ig,:), dig));
+                               util_trunc(yLim(ig,:), dig));
        case 'twolines',
         axestitle{ia}= sprintf('%s\n[%g %g] %s', ...
                                axestitle{ia}, ...
-                               trunc(yLim(ig,:), dig), opt.YUnit);
+                               util_trunc(yLim(ig,:), dig), opt.YUnit);
        case 'twolines_nounit',
         axestitle{ia}= sprintf('%s\n[%g %g]', ...
                                axestitle{ia}, ...
-                               trunc(yLim(ig,:), dig));
+                               util_trunc(yLim(ig,:), dig));
        otherwise,
         error('invalid choice for opt.AxisTitleLayout');
       end
@@ -395,9 +395,9 @@ if ~strcmp(opt.TitleDir, 'none'),
     tit= [tit, 'N= ' str_vec2str(epo.N,[],'/') ',  '];
   end
   if isfield(epo, 't'),
-    tit= [tit, sprintf('[%g %g] %s  ', trunc(epo.t([1 end])), opt.XUnit)];
+    tit= [tit, sprintf('[%g %g] %s  ', util_trunc(epo.t([1 end])), opt.XUnit)];
   end
-  tit= [tit, sprintf('[%g %g] %s', trunc(yLim(1,:)), opt.YUnit)];
+  tit= [tit, sprintf('[%g %g] %s', util_trunc(yLim(1,:)), opt.YUnit)];
   if strcmpi(opt.YDir, 'reverse'),
     tit= [tit, ' neg. up'];
   end
@@ -426,6 +426,6 @@ if nargout==0,
   clear H;
 end
 
-if fig_Visible
-  jvm_restoreFig(jvm);
-end
+% if fig_Visible
+%   jvm_restoreFig(jvm);
+% end

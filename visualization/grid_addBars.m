@@ -270,7 +270,7 @@ if ~isempty(opt.HScale),
     set(H.scale.ax, 'yTick',yTick, 'yTickLabel',100*[1 fv.alpha]);
   else
     ticks= goodContourValues(CLim(1), CLim(2), -3);
-    tickLabels= trunc(ticks, opt.ScaleDigits);
+    tickLabels= util_trunc(ticks, opt.ScaleDigits);
     if opt.UseLocalColormap,
       YLim= get(gca,'YLim');
       ticks= (ticks-CLim(1))*diff(YLim)/diff(CLim)+YLim(1);

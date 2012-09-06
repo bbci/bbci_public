@@ -62,10 +62,10 @@ if nargin==0,
 end
 
 % With input argument erp, we know it better
-if getDataDimension(erp)==2
-  props_channel= plot_channel2D;
+if getDataDimension(erp)==1
+  props_channel= plot_channel1D;
 else
-  props_channel= plot_channel3D;
+  props_channel= plot_channel2D;
 end
 
 opt= opt_proplistToStruct(varargin{:});

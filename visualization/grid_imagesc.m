@@ -81,7 +81,7 @@ props = {'YDir',                            'normal',               'CHAR';
          'ScaleShowOrientation',            1,                      'BOOL';
          'PlotStd',                         0,                      'BOOL'};
 
-props_channel = plot_channel2D;
+props_channel = plot_channel1D;
 
 if nargin==0,
   H= opt_catProps(props, props_channel);
@@ -97,7 +97,7 @@ opt_channel= opt_substruct(opt, props_channel(:,1));
 
 s = size(epo.x);
 
-if nargin<2 | isempty(mnt),
+if nargin<2 || isempty(mnt),
   mnt= strukt('clab',epo.clab);
 else
   mnt= mnt_adaptMontage(mnt, epo);
@@ -236,7 +236,7 @@ Axestitle= apply_cellwise(epo.clab(idx), 'sprintf');
 %        if diff(yl)>1,
 %          dig= max(1, dig);
 %        end
-%        yLim(ig,:)= [trunc(yl(1),-dig+1,'floor') trunc(yl(2),-dig+1,'ceil')];
+%        yLim(ig,:)= [util_trunc(yl(1),-dig+1,'floor') util_trunc(yl(2),-dig+1,'ceil')];
 %      end
 %    end
 %    if isequal(opt.ScalePolicy{ig},'sym'),
@@ -264,7 +264,7 @@ Axestitle= apply_cellwise(epo.clab(idx), 'sprintf');
 %        end
 %        axestitle{ia}= sprintf('%s  [%g %g] %s', ...
 %                               axestitle{ia}, ...
-%                               trunc(yLim(ig,:), dig), opt.YUnit);
+%                               util_trunc(yLim(ig,:), dig), opt.YUnit);
 %      end
 %    end
 %  end
@@ -390,10 +390,10 @@ for ih = 1:s(4)
       tit= [tit, 'N= ' str_vec2str(epo.N,[],'/') ',  '];
     end
     if isfield(epo, 't'),
-      tit= [tit, sprintf('[%g %g] %s,  ', trunc(epo.t([1 end]), 0), opt.XUnit)];
+      tit= [tit, sprintf('[%g %g] %s,  ', util_trunc(epo.t([1 end]), 0), opt.XUnit)];
     end
     if isfield(epo, 'f')
-      tit= [tit, sprintf('[%g %g] %s  ', trunc(epo.f([1 end]), 0), opt.YUnit)];
+      tit= [tit, sprintf('[%g %g] %s  ', util_trunc(epo.f([1 end]), 0), opt.YUnit)];
     end
     if strcmpi(opt.YDir, 'reverse'),
       tit= [tit, ' neg. up'];

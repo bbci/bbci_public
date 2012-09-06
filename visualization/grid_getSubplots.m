@@ -7,11 +7,11 @@ function hsp= grid_getSubplots(chans)
 % IN  - channels, [] means all, default []
 
 if ~exist('chans','var'), chans=[]; end
-if ~isempty(chans) & ~iscell(chans),
+if ~isempty(chans) && ~iscell(chans),
   chans= {chans};
 end
 
-if length(chans)>0 & ischar(chans{1}) & ...
+if length(chans)>0 && ischar(chans{1}) && ...
       strcmp(chans{1},'plus'),
   search_type= 'ERP*';
   chans= chans(2:end);
@@ -24,9 +24,9 @@ isERPplot= zeros(size(hc));
 
 for ih= 1:length(hc),
   ud= get(hc(ih), 'userData');
-  if isstruct(ud) & isfield(ud,'type') & ischar(ud.type) & ...
+  if isstruct(ud) && isfield(ud,'type') && ischar(ud.type) && ...
         strpatterncmp(search_type, ud.type), 
-    if isempty(chans) | ~isempty(util_chanind(chans, ud.chan)),
+    if isempty(chans) || ~isempty(util_chanind(chans, ud.chan)),
       isERPplot(ih)= 1;
     end
   end
