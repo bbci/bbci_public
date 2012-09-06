@@ -18,7 +18,7 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %Description:
 %  This function checks that VARIABLE complies with the type specification
 %  given in TYPEDEF. The following type specifications are implemented:
-%    'DOBULE' - value has to be a numeric array (of any size)
+%    'DOUBLE' - value has to be a numeric array (of any size)
 %    'DOUBLE[x]' with x being a nonnegative integer - value has
 %          to be a numeric vector of length x. Here, row and column vectors
 %          are both allowed. To force either row or column vectors of 
@@ -43,6 +43,7 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %            equal to one of the specified strings val1 val2 (an arbitrary 
 %            number of values can be specified).
 %    'FUNC' - value has to be a function handle
+%    'GRAPHICS' - value has to be a graphics or Java handle
 %    'STRUCT' - value has to be a struct array
 %    'STRUCT(fld1 fld2)' - values has to be a struct array and the specified
 %            fields 'fld1' and 'fld2' must exist (an arbitrary number of fields
@@ -167,6 +168,8 @@ elseif str_matchesHead('CHAR', typeDefinition),
   end
 elseif str_matchesHead('FUNC', typeDefinition),
   ok= isa(variable, 'function_handle');
+elseif str_matchesHead('GRAPHICS', typeDefinition),
+  ok= ishandle(variable);
 elseif str_matchesHead('CELL', typeDefinition),
   ok= iscell(variable);
   spec= typeDefinition(length('CELL')+1:end);
