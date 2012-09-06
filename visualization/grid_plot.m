@@ -88,7 +88,7 @@ props= {'YDir',                           'normal',               'CHAR';
         'YLim',                           [],                     'DOUBLE[2]';
         'PlotStd',                        0,                      'BOOL'};
 
-props_channel = plot_channel2D;
+props_channel = plot_channel1D;
 props_addScale = grid_addScale;
 
 if nargin==0,
@@ -217,7 +217,7 @@ if isfield(mnt, 'box'),
 end
 
 if max(sum(epo.y,2))>1,
-  epo= proc_average(epo, 'std',opt.PlotStd);
+  epo= proc_average(epo, 'Std',opt.PlotStd);
 end
 
 if isempty(opt.Axes),
@@ -336,10 +336,12 @@ for ia= 1:nDisps,
   else
     H.ax(ia)= get_backAxes('position', get_axisGridPos(mnt, ic));
   end
-  H.chan(ia)= setfield(plot_channel(epo, mnt.clab{ic}, opt_channel, opt_plot{:}, ...
+  cchan = plot_channel(epo, mnt.clab{ic}, opt_channel, opt_plot{:}, ...
                           'YLim', yLim(ch2group(ia),:), ...
                           'AxisTitle', axestitle{ia}, 'Title',0, ...
-                          'SmallSetup',1), 'Clab', mnt.clab{ic});
+                          'SmallSetup',1);
+  cchan.clab = mnt.clab{ic};
+  H.chan(ia) = cchan;
   if ic==DisplayChannels(1),
     opt_plot{2}= 0;
     H.leg= H.chan(ia).leg;
@@ -357,7 +359,7 @@ for ia= 1:nDisps,
       leg_pos(3:4)= leg_pos_orig(3:4);  %% use original size
       set(H.leg, 'position', leg_pos);
       ud= get(H.leg, 'userData');
-      ud= set_defaults(ud, 'type','ERP plus', 'chan','legend');
+      ud= opt_setDefaults(ud,{ 'type','ERP plus', 'chan','legend'});
       set(H.leg, 'userData',ud);
       if exist('verLessThan')~=2 || verLessThan('matlab','7'),
         set(H.leg, 'Visible','off');

@@ -124,7 +124,7 @@ X_memo= epo_r.x;
 
 % delete scores where nothing should be selected
 if ~isempty(opt.IvalMax),
-  idx_keep= getIvalIndices(opt.IvalMax, epo_r);
+  idx_keep= procutil_getIvalIndices(opt.IvalMax, epo_r);
   idx_rm= setdiff(1:size(epo_r.x,1), idx_keep);
   epo_r.x(idx_rm,:)= 0;
 end
@@ -149,7 +149,7 @@ if ~isempty(opt.Constraint),
     tmp_r= epo_r;
     if length(this_constraint)>=4,
       % TODO: use new option ivalMax!
-      idx_keep= getIvalIndices(this_constraint{4}, epo_r);
+      idx_keep= procutil_getIvalIndices(this_constraint{4}, epo_r);
       idx_rm= setdiff(1:size(tmp_r.x,1), idx_keep);
       tmp_r.x(idx_rm,:)= 0;
     end
@@ -164,7 +164,7 @@ if ~isempty(opt.Constraint),
     else
       ival(ii,[1 2])= tmp_ival;
       nfo(ii)= tmp_nfo;
-      idx_rm= getIvalIndices(tmp_ival, epo_r);
+      idx_rm= procutil_getIvalIndices(tmp_ival, epo_r);
       epo_r.x(idx_rm,:)= 0;
     end
   end
@@ -239,7 +239,7 @@ nfo.score= score;
 if isempty(opt.IvalPickPeak),
   pick_idx= 1:length(score);
 else
-  pick_idx= getIvalIndices(opt.IvalPickPeak, epo_r);
+  pick_idx= procutil_getIvalIndices(opt.IvalPickPeak, epo_r);
 end
 [nfo.peak_val, t0]= max(nfo.score(pick_idx));
 ti= pick_idx(t0);

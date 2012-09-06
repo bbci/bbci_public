@@ -65,7 +65,7 @@ function H= plot_channel1D(epo, clab, varargin)
 % 02-2005 Benjamin Blankertz
 
 
-props = {'AxisType',                        'box',                  'CHAR';
+props = {'AxisType',                        'box',                '!CHAR';
          'Legend',                          1,                      'BOOL';
          'LegendPos',                       0,                      'CHAR|DOUBLE[1]|DOUBLE[4]';
          'YDir',                            'normal',               'CHAR';
@@ -111,13 +111,15 @@ props = {'AxisType',                        'box',                  'CHAR';
          'StdLineSpec',                     '--',                   'CHAR';
          'OversizePlot',                    1,                      'DOUBLE'};
 
+props_gridOverPatches = plot_gridOverPatches;
+
 if nargin==0,
-  H= props; return
+  H= opt_catProps(props, props_gridOverPatches); return
 end
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
+opt_checkProplist(opt_substruct(opt,props(:,1)), props);
 
 [opt, isdefault]= ...
     opt_overrideIfDefault(opt, isdefault, ...
@@ -172,7 +174,7 @@ elseif nChans>1,
   end
   hold off;
   if opt.Legend,
-    H{1}.leg= legend(H{1}.plot, epo.ClassName, opt.LegendPos);
+    H{1}.leg= legend(H{1}.plot, epo.className, opt.LegendPos);
   else
     H{1}.leg= NaN;
   end
@@ -236,13 +238,12 @@ else
   opt.ColorOrder= opt.ColorOrder(1:min([nClasses size(opt.ColorOrder,1)]),:);
 end
 [axesStyle, lineStyle]= opt_extractPlotStyles(rmfield(opt,{'YLim','LineStyleOrder'}));
-[opt, isdefault]= set_defaults(opt, ...
-                  'LineStyleOrder', {}, ...
+[opt, isdefault]= opt_setDefaults(opt, {'LineStyleOrder', {}, ...
                   'LineWidthOrder', [], ...
-                  'LineSpecOrder', {});
+                  'LineSpecOrder', {}} );
 ns= length(opt.LineStyleOrder);
 nw= length(opt.LineWidthOrder);
-if isempty(opt.LineSpecOrder) & max([ns nw])>0,
+if isempty(opt.LineSpecOrder) && max([ns nw])>0,
   opt.LineSpecOrder= cell(1, nClasses);
   for cc= 1:nClasses,
     lsp= {};
@@ -296,7 +297,7 @@ else
   else
     opt_selYLim= {};
   end
-  yLim= selectYLim(H.ax, 'policy',opt.YLimPolicy, opt_selYLim{:});
+  yLim= select_yLim(H.ax, 'policy',opt.YLimPolicy, opt_selYLim{:});
 end
 
 if opt.PlotStd,
@@ -327,7 +328,7 @@ if opt.XZeroLine,
   H.xZero= line([-1e10 1e10], [0 0], ...
                 'Color',opt.ZeroLineColor, 'lineStyle',opt.ZeroLineStyle);
   H.hidden_objects= [H.hidden_objects; H.xZero];
-  if strcmpi(opt.AxisType, 'cross') & opt.ZeroLineTickLength>0,
+  if strcmpi(opt.AxisType, 'cross') && opt.ZeroLineTickLength>0,
     xTick= get(H.ax, 'xTick');
     set(H.ax, 'xTickMode','manual');
     tlen= diff(yLim)/pos_pixel(4)*opt.ZeroLineTickLength;
@@ -363,7 +364,8 @@ if isfield(epo, 'refIval'),
   move_objectBack(H.refPatch);
 end
 if opt.GridOverPatches,
-  plot_gridOverPatches(copy_struct(opt, 'XGrid','YGrid'));
+  opt_gridOverPatches = opt_substruct(opt, props_gridOverPatches(:,1));
+  plot_gridOverPatches(opt_gridOverPatches);
 end
 
 switch(lower(opt.XUnitDispPolicy)),

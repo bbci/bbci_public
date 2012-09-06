@@ -72,8 +72,8 @@ if isempty(opt.DisplayChannels)
     opt= set_defaults(opt, 'DisplayChannels', 1:length(mnt.clab));
 end
 
-if opt.ShowLabels, opt= set_defaults(opt, 'MarkerProperties', {'Marker','o','MarkerSize',20,'MarkerEdgeColor','k'});
-else opt= set_defaults(opt, 'MarkerProperties', {'Marker','+','MarkerSize',2,'LineWidth',.2,'MarkerEdgeColor','k'});
+if opt.ShowLabels, opt= opt_setDefaults(opt,{ 'MarkerProperties', {'Marker','o','MarkerSize',20,'MarkerEdgeColor','k'}});
+else opt= opt_setDefaults(opt,{'MarkerProperties', {'Marker','+','MarkerSize',2,'LineWidth',.2,'MarkerEdgeColor','k'}});
 end;
              
 % If no other marker was set, set default marker 'o'

@@ -105,9 +105,9 @@ opt_checkProplist(opt, props, props_scalpOutline);
 opt_scalpOutline= opt_substruct(opt, props_scalpOutline(:,1));
 
 fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-if fig_Visible
-  jvm= jvm_hideFig;
-end
+% if fig_Visible
+%   jvm= jvm_hideFig;
+% end
 
 if opt.NewColormap,
   acm= fig_addcolormap(opt.Colormap);
@@ -383,6 +383,6 @@ if nargout>=2,
                 'values',v, 'matrix',c);
 end
 
-if fig_Visible
-  jvm_restoreFig(jvm);
-end
+% if fig_Visible
+%   jvm_restoreFig(jvm);
+% end

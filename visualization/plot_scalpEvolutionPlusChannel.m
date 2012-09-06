@@ -76,9 +76,9 @@ opt_scalpPattern= opt_substruct(opt, props_scalpPattern(:,1));
 opt_channel= opt_substruct(opt, props_channel(:,1));
 
 fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-if fig_Visible
-  jvm= jvm_hideFig;
-end
+% if fig_Visible
+%   jvm= jvm_hideFig;
+% end
 
 if isfield(erp, 'XUnit'),
   [opt,isdefault]= opt_overrideIfDefault(opt, isdefault, ...
@@ -224,8 +224,8 @@ for cc= 1:nClasses,
       if cb_per_ival,
         H.cb(ii)= plot_colorbarAside('horiz');
         if ~opt.GlobalCLim,
-%          unifyCLim([H.scalp(:,ii).ax], [zeros(1,nClasses-1) H.cb(ii)]);
-          unifyCLim([H.scalp(:,ii).ax]);
+%          visutil_unifyCLim([H.scalp(:,ii).ax], [zeros(1,nClasses-1) H.cb(ii)]);
+          visutil_unifyCLim([H.scalp(:,ii).ax]);
         end
       end
     end
@@ -240,8 +240,8 @@ for cc= 1:nClasses,
       set(H.cb(cc), 'Position',cbpos);
     end
     if ~opt.GlobalCLim,
-%      unifyCLim([H.scalp(cc,:).ax], [zeros(1,nIvals-1) H.cb(cc)]);
-      unifyCLim([H.scalp(cc,:).ax]);
+%      visutil_unifyCLim([H.scalp(cc,:).ax], [zeros(1,nIvals-1) H.cb(cc)]);
+      visutil_unifyCLim([H.scalp(cc,:).ax]);
     end
   end
   pos= get(H.scalp(cc,end).ax, 'position');
@@ -261,14 +261,14 @@ for cc= 1:nClasses,
 end
 if opt.GlobalCLim,
 %  ucb= [zeros(nClasses, nIvals-1) ones(nClasses,1)];
-%  unifyCLim([H.scalp.ax], isfield(H, 'cb'));
-  unifyCLim([H.scalp.ax]);
+%  visutil_unifyCLim([H.scalp.ax], isfield(H, 'cb'));
+  visutil_unifyCLim([H.scalp.ax]);
 end
 
 if nargout<1,
   clear H
 end
 
-if fig_Visible
-  jvm_restoreFig(jvm);
-end
+% if fig_Visible
+%   jvm_restoreFig(jvm);
+% end

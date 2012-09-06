@@ -9,9 +9,9 @@ function H= grid_markInterval(ival, chans, markCol)
 %                default 0.8
 
 fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-if fig_Visible
-  jvm= jvm_hideFig;
-end
+% if fig_Visible
+%   jvm= jvm_hideFig;
+% end
 
 if ~exist('chans','var'), chans=[]; end
 if ~exist('markCol','var'), markCol= 0.85; end
@@ -28,7 +28,7 @@ end
 
 
 old_ax= gca;
-if isnumeric(chans) & ~isempty(chans),
+if isnumeric(chans) && ~isempty(chans),
   hsp= chans;
 else
   hsp= grid_getSubplots(chans);
@@ -57,6 +57,6 @@ if isfield(get(old_ax,'UserData'),'hleg') & ...
   legend;
 end
 
-if fig_Visible
-  jvm_restoreFig(jvm);
-end
+% if fig_Visible
+%   jvm_restoreFig(jvm);
+% end

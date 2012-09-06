@@ -43,7 +43,7 @@ if isdefault.YUnit && isfield(erp, 'YUnit'),
 end
 
 eee= erp;
-if nargin>=3 & ~isempty(ival) & ~any(isnan(ival)),
+if nargin>=3 && ~isempty(ival) && ~any(isnan(ival)),
   eee= proc_selectIval(eee, ival, 'IvalPolicy','minimal');
 end
 if ~isempty(opt.Class),
@@ -55,7 +55,7 @@ end
 if size(eee.x,3)>1,
   error('For plotting topographies of multiple Classes use ''plot_scalpPatterns''');
 end
-eee= proc_meanAcrossTime(eee);
+eee.x= mean(eee.x,1);
 head= mnt_adaptMontage(mnt, eee);
 eee= proc_selectChannels(eee, head.clab(find(~isnan(head.x))));
 head= mnt_adaptMontage(mnt, eee);
