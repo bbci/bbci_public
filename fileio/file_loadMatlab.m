@@ -100,7 +100,7 @@ if (isunix && (file(1)==filesep)) || (ispc && (file(2)==':')),
   end
   opt.Path= '';
 end
-fullname= [opt.Path file];
+fullname= [opt.Path filesep file];
 
 if ismember('*', file),
   [filepath, filename]= fileparts(fullname);
@@ -202,7 +202,7 @@ if ~isempty(iData),
     if ~isempty(opt.Ival),
       dat.ival= opt.Ival;
       if isinf(opt.Ival(2))
-          opt.Ival(2) = dat.T/dat.fs*1000;  % Set to maximum
+          opt.Ival(2) = sum(dat.T)/dat.fs*1000;  % Set to maximum
       end
       iv= procutil_getIvalIndices(opt.Ival, nfo);
       iOut= find(iv<1 | iv>nfo.T);
