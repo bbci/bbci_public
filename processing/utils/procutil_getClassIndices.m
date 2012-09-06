@@ -20,14 +20,12 @@ function clInd= procutil_getClassIndices(className, varargin)
 % returns 2.
 % this function is used, e.g., in mrk_selectClasses, mrk_mergeClasses
 
-% bb 08/03, ida.first.fhg
-
 if nargin==0,
   clInd=[];
   return
 end
 
-misc_checkType(className, 'STRUCT|CHAR');
+misc_checkType(className, '!STRUCT|!CELL{CHAR}');
 
 
 if isempty(varargin),
@@ -64,7 +62,7 @@ else
   clInd= [];
   for desiredClass= classes,
     dc= desiredClass{1};
-    clInd= [clInd, str_patternmatch(dc, className)];
+    clInd= [clInd, find(strcmp(dc,className))];
   end
 end
 

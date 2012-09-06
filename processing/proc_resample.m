@@ -70,7 +70,6 @@ end
 
 % Adjust marker if necessary
 if N>0 && ~isempty(mrk)
-    %% *** HIER WEITER
     mrk.time = mrk.time-Nt;
     % Remove markers that refer to data that was cut-off the beginning or
     % end

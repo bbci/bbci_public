@@ -323,7 +323,7 @@ H.cb= colorbar;
 if isfield(epo_r, 'yUnit'),
   ylabel(H.cb, sprintf('[%s]', epo_r.yUnit));
 end
-cidx= strpatternmatch(optVisu.markClab, epo_r.clab);
+cidx= find(ismember(epo_r.clab,optVisu.markClab));
 set(H.ax, 'YTick',cidx, 'YTickLabel',optVisu.markClab, ...
           'TickLength',[0.005 0]);
 if isdefault.xunit && isfield(epo_r, 'xUnit'),

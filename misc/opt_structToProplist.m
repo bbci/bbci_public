@@ -3,7 +3,7 @@ function pl= opt_structToProplist(opt)
 %
 % See also opt_proplistToStruct
 
-if nargin==0
+if nargin==0 || isempty(opt)
   pl=[];
   return
 end
