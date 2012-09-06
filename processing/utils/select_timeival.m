@@ -53,7 +53,10 @@ function ival= select_timeival(erd, mrk, varargin)
 motor_areas= {{'FC5,3','CFC5,3','C5,3','CCP5,3','CP5,3'},
               {'FC1-2','CFC1-2','C1-2','CCP1-2','CP1-2'}, 
               {'FC4,6','CFC4,6','C4,6','CCP4,6','CP4,6'}};
-done_laplace= ~isempty(strpatternmatch('* lap*', erd.clab));
+
+done_laplace = regexpi(cnt.clab,'^\w+ lap\w*');
+done_laplace = any(cell2mat(done_laplace));
+
 props= { 'filter'         []
          'maxIval'        [250 5000]
          'startIval'      [750 3500]

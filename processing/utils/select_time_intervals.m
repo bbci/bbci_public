@@ -64,26 +64,26 @@ function [ival, nfo, X_rem,H]= select_time_intervals(epo_r, varargin)
 %            naming
 
 
-props= { 'NIvals'               5
-         'Sign'                 0
-         'ScoreFactorForMax'    3
-         'RRelThreshold'        0.5
-         'CThreshold'           0.75
-         'Clab'                 '*'
-         'ScalpChannelsOnly'    0
-         'ClabPickPeak'         '*'
-         'IvalPickPeak'         []
-         'IvalMax'              []
-         'MinWidth'             []
-         'Sort'                 0
-         'Visualize'            0
-         'VisuScalps'           0
-         'OptVisu'              []
-         'Title'                ''
-         'Mnt'                  get_electrodePositions(epo_r.clab)
-         'Constraint'           {}
-         'IntersampleTiming'    0
-         'Verbose'              1 };
+props= { 'NIvals'               5               '!INT[1]';
+         'Sign'                 0               '!INT[1]';
+         'ScoreFactorForMax'    3               '!DOUBLE';
+         'RRelThreshold'        0.5             '!DOUBLE';
+         'CThreshold'           0.75            '!DOUBLE';
+         'Clab'                 '*'             'CHAR|CELL{CHAR}';
+         'ScalpChannelsOnly'    0               '!BOOL';
+         'ClabPickPeak'         '*'             'CHAR|CELL{CHAR}';
+         'IvalPickPeak'         []              '!DOUBLE';
+         'IvalMax'              []              '!DOUBLE';
+         'MinWidth'             []              '!DOUBLE';
+         'Sort'                 0               '!BOOL';
+         'Visualize'            0               '!BOOL';
+         'VisuScalps'           0               '!BOOL';
+         'OptVisu'              []              'CELL|STRUCT';
+         'Title'                ''              'CHAR'
+         'Mnt'                  get_electrodePositions(epo_r.clab)  'STRUCT';
+         'Constraint'           {}              'CELL';
+         'IntersampleTiming'    0               '!DOUBLE';
+         'Verbose'              1               '!BOOL'};
 
 if nargin==0,
   ival = props; return
