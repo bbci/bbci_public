@@ -30,16 +30,16 @@ function H= plot_scalpPatternsPlusChannel(erp, mnt, clab, ival, varargin)
 props = {'LineWidth',           3,                  'DOUBLE';
          'IvalColor',           0.85*[1 1 1],       'DOUBLE[3]';
          'ColorOrder',          [0 0 0],            'DOUBLE[3]';
-         'MarkIval',            size(ival,1)==1,    'BOOL';
+         'MarkIval',            0,                  'BOOL';
          'XGrid',               'on',               'CHAR';
          'YGrid',               'on',               'CHAR';
          'XUnit',               '[ms]',             'CHAR';
-         'PlotChannel',         ~isempty(clab),     'BOOL';
+         'PlotChannel',         1,                  'BOOL';
          'ScalePos',            'vert',             'CHAR';
          'LegendPos',           0,                  'CHAR|DOUBLE[1]|DOUBLE[4]';
          'NewColormap',         0,                  'BOOL';
          'MarkPatterns',        [],                 'DOUBLE|CHAR';
-         'MarkStyle',           {'LineWidth',3},    'STRUCT';
+         'MarkStyle',           {'LineWidth',3},    'CELL';
          'Subplot',             [],                 'DOUBLE'};
 
 props_scalpPattern= plot_scalpPattern;
@@ -50,16 +50,22 @@ if nargin==0,
 end
 
 opt= opt_proplistToStruct(varargin{:});
-opt= opt_setDefaults(opt, props);
+[opt,isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props, props_scalpPattern, props_channel);
+[opt,isdefault] = opt_overrideIfDefault(opt,isdefault, 'MarkIval',size(ival,1)==1,'PlotChannel',~isempty(clab));
+
 
 opt_scalpPattern= opt_substruct(opt, props_scalpPattern(:,1));
 opt_channel= opt_substruct(opt, props_channel(:,1));
 
-fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-if fig_Visible
-  jvm= jvm_hideFig;
-end
+misc_checkType(erp,'!STRUCT(x y className)');
+misc_checkType(mnt,'!STRUCT(x)');
+
+%%
+% fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
+% if fig_Visible
+%   jvm= jvm_hideFig;
+% end
 
 if nargin<4 || isempty(ival),
   ival= [NaN NaN]; %erp.t([1 end]);
@@ -70,14 +76,16 @@ elseif size(ival,2)>2,
 end
 
 if isfield(erp, 'XUnit'),
-  [opt,isdefault]= opt_overrideIfDefault(opt, isdefault, 'XUnit', erp.XUnit);
+  [opt,isdefault]= opt_overrideIfDefault(opt, isdefault, 'XUnit', erp.xUnit);
 end
 
 if max(sum(erp.y,2))>1,
   erp= proc_average(erp);
 end
-nClasses= length(erp.ClassName);
+nClasses= length(erp.className);
 
+% Diese Abfrage ist nicht korrekt, da alle Felder schon gesetzt sein
+% muessen
 if ~isfield(opt, 'CLim') && all(erp.x>=0),
   opt.CLim= 'range';
   warning('automatically set opt.CLim= ''range''.');
@@ -122,7 +130,7 @@ for cc= 1:nClasses,
     set([h.H_topo(cc).head h.H_topo(cc).nose], opt.MarkStyle{:});
   end
   yLim= get(gca, 'yLim');
-  h.text(cc)= text(mean(xlim), yLim(2)+0.06*diff(yLim), erp.ClassName{cc});
+  h.text(cc)= text(mean(xlim), yLim(2)+0.06*diff(yLim), erp.className{cc});
   set(h.text(cc), 'Color',clscol);
   if ~any(isnan(ival(cc,:))),
     ival_str= sprintf('%g - %g %s', ival(cc,:), opt.XUnit);
@@ -147,15 +155,15 @@ if ismember(opt.ScalePos, {'horiz','vert'}),
   if isfield(erp, 'YUnit'),
     axes(h.cb);
     yl= get(h.cb, 'YLim');
-    h.YUnit= text(mean(xlim), yl(2), erp.YUnit);
+    h.YUnit= text(mean(xlim), yl(2), erp.yUnit);
     set(h.YUnit, 'horizontalAli','center', 'verticalAli','bottom');
   end
   if nClasses>1,
-%    unifyCLim([h.H_topo.ax], [zeros(1,nClasses-1) h.cb]);
-    unifyCLim([h.H_topo.ax]);
+%    visutil_unifyCLim([h.H_topo.ax], [zeros(1,nClasses-1) h.cb]);
+    visutil_unifyCLim([h.H_topo.ax]);
   end
 elseif nClasses>1,
-  unifyCLim([h.H_topo.ax], [zeros(1,nClasses)]);
+  visutil_unifyCLim([h.H_topo.ax], [zeros(1,nClasses)]);
 end
 if opt.NewColormap,
   fig_acmAdaptCLim(acm, [h.H_topo.ax]);
@@ -186,7 +194,7 @@ if opt.PlotChannel,
   end
   set(get(h.ax_erp, 'title'), 'FontSize',12, 'fontWeight','bold');
   if ~isequal(opt.LegendPos, 'none'),
-    h.leg= legend(erp.ClassName, opt.LegendPos);
+    h.leg= legend(erp.className, opt.LegendPos);
   end
 end
 
@@ -194,7 +202,7 @@ if nargout<1,
   clear h
 end
 
-if fig_Visible
-  jvm_restoreFig(jvm);
-end
+% if fig_Visible
+%   jvm_restoreFig(jvm);
+% end
 

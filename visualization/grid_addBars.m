@@ -57,7 +57,7 @@ props= {'VPos',                 0,                      'DOUBLE';
         'ScaleFontSize',        get(gca,'FontSize'),    'DOUBLE';
         'ScaleDigits',          4                       'DOUBLE';
         'ScaleUnit',            ''                      'CHAR';
-        'Channels',             'plus',                 'CHAR|DOUBLE'};
+        'Channels',             '*'                     'CHAR|DOUBLE'};
 
 
 if nargin==0,
@@ -109,7 +109,7 @@ if isdefault.Visible && strcmpi(opt.Box, 'on'),
   opt.Visible= 'on';
 end
 if isdefault.UseLocalColormap,
-  if iscolormapused && ~isequal(opt.Colormap, get(gcf, 'colormap')),
+  if visutil_isColormapUsed && ~isequal(opt.Colormap, get(gcf, 'colormap')),
     opt.UseLocalColormap= 1;
   end
 end
@@ -229,7 +229,7 @@ for ii= 1:length(ax),
     H.image(jj)= image(fv.x(:,ci)', 'cDataMapping','scaled');
   end
   set(H.ax(jj), AxesStyle{:});
-  ud= struct('type','ERP plus: bar', 'chan' str_vec2str(fv.clab(ci)));
+  ud= struct('type','ERP plus: bar', 'chan', str_vec2str(fv.clab(ci)));
   set(H.ax(jj), 'userData',ud);
   hold off;
   if strcmp(get(H.ax(jj), 'box'), 'on'),

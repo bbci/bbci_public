@@ -352,6 +352,7 @@ if opt.YZeroLine,
   else
     yLim_reduced= [-1e10 1e10];
   end
+  set(gca,'YLimMode','manual');
   H.yZero= line([0 0], yLim_reduced, ...
                 'Color',opt.ZeroLineColor, 'lineStyle',opt.ZeroLineStyle);
   H.hidden_objects= [H.hidden_objects; H.yZero];

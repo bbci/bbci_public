@@ -25,8 +25,8 @@ isERPplot= zeros(size(hc));
 for ih= 1:length(hc),
   ud= get(hc(ih), 'userData');
   if isstruct(ud) && isfield(ud,'type') && ischar(ud.type) && ...
-        regexp(ud.type,search_type), 
-    if isempty(chans) || ~isempty(util_chanind(chans, ud.chan)),
+        ~isempty(regexp(ud.type,search_type))
+    if isempty(chans) || ~isempty(util_chanind(ud.chan,chans)),
       isERPplot(ih)= 1;
     end
   end

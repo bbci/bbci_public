@@ -1,4 +1,4 @@
-function h= plot_scalpPatterns(erp, mnt, varargin)
+function h= plot_scalpPatterns(erp, mnt, ival, varargin)
 %SCALPPATTERNS - Display Classwise topographies
 %
 %Usage:
@@ -21,8 +21,11 @@ function h= plot_scalpPatterns(erp, mnt, varargin)
 %See also plot_scalpEvolution, plot_scalpPatternsPlusChannel, plot_scalp.
 
 % Author(s): Benjamin Blankertz, Jan 2005
+if nargin==0
+    h=plot_scalpPatternsPlusChannel; return
+end
 
-h= plot_scalpPatternsPlusChannel(erp, mnt, [], varargin{:});
+h= plot_scalpPatternsPlusChannel(erp, mnt, [], ival, varargin{:});
 
 if nargout<1,
   clear h
