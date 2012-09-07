@@ -388,10 +388,10 @@ if ~strcmp(opt.TitleDir, 'none'),
   if isfield(opt, 'title'),
     tit= [opt.Title ':  '];
   elseif isfield(epo, 'title'),
-    tit= [untex(epo.title) ':  '];
+    tit= [util_untex(epo.title) ':  '];
   end
-  if isfield(epo, 'ClassName'),
-    tit= [tit, str_vec2str(epo.ClassName, [], ' / ') ', '];
+  if isfield(epo, 'className'),
+    tit= [tit, str_vec2str(epo.className, [], ' / ') ', '];
   end
   if isfield(epo, 'N'),
     tit= [tit, 'N= ' str_vec2str(epo.N,[],'/') ',  '];
@@ -406,7 +406,7 @@ if ~strcmp(opt.TitleDir, 'none'),
   if isfield(opt, 'TitleAppendix'),
     tit= [tit, ', ' opt.TitleAppendix];
   end
-%  H.title= addtitle(tit, opt.TitleDir);
+ H.title= visutil_addTitle(tit, opt.TitleDir);
 end
 
 if ~isempty(opt.ShiftAxesUp) && opt.ShiftAxesUp~=0,

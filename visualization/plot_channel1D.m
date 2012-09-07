@@ -90,9 +90,11 @@ props = {'AxisType',                        'box',                '!CHAR';
          'LineWidth',                       2,                      'DOUBLE';
          'LineStyle',                       '-',                    'CHAR';
          'LineStyleOrder',                  {},                     'CELL{CHAR}'
-         'LineWidthOrder',                  [],                     'DOUBLE'
-         'LineSpecOrder',                   {},                     'CELL'
-         'ChannelLineStyleOrder',           {'-','--','-.',':'},    'CELL{CHAR}'
+         'LineWidthOrder',                  [],                     'DOUBLE';
+         'LineSpecOrder',                   {},                     'CELL';
+         'ChannelLineStyleOrder',           {'-','--','-.',':'},    'CELL{CHAR}';
+         'ShadeDifference',                 0                       'BOOL';
+         'ShadeDifferenceColor',            [1 0.8 1]               'DOUBLE[3]|CHAR';
          'Title',                           1,                      'BOOL';
          'TitleColor',                      'k',                    'CHAR';
          'TitleFontSize',                   get(gca,'FontSize'),    'DOUBLE';
@@ -276,6 +278,11 @@ if opt.Reset,
 end
 set(H.ax, axesStyle{:});
 hold on;      %% otherwise axis properties like ColorOrder are lost
+if opt.ShadeDifference,
+  xx= squeeze(epo.x(:,chan,:));
+  H.shade= patch([epo.t(:); flipud(epo.t(:))], [xx(:,1); flipud(xx(:,2))], ...
+                 opt.ShadeDifferenceColor, 'EdgeColor','none');
+end
 H.plot= plot(epo.t, squeeze(epo.x(:,chan,:)));
 if length(lineStyle)>0,
   set(H.plot, lineStyle{:});

@@ -24,7 +24,7 @@ if nargin==0,
   return
 end
 
-if getDataDimension(epo)==1
+if util_getDataDimension(epo)==1
   H= plot_channel1D(epo, clab, varargin{:});
 else
   H= plot_channel2D(epo, clab, varargin{:});

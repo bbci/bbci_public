@@ -16,7 +16,7 @@ function s1= struct_sloppycat(s1, s2, varargin)
 
 
 props = {'Dim',         2           '!INT[1]';
-         'Keepfields'   3           '!INT[1]';
+         'Keepfields'   3           '!INT[1]|!CHAR(none first last all)';
          'Matchsize'    0           '!BOOL';
          };
 

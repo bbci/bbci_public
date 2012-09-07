@@ -92,8 +92,8 @@ opt= opt_proplistToStruct(varargin{:});
 opt_checkProplist(opt, props);
 
 if isdefault.FreqLim,
-  if isfield(epo,'wave_FreqLim')
-    opt.FreqLim= [epo.wave_FreqLim(1) epo.wave_FreqLim(end)];
+  if isfield(epo,'wave_freq')
+    opt.FreqLim= [epo.wave_freq(1) epo.wave_freq(end)];
   else
     opt.FreqLim= [1 size(epo.x,1)];
   end
@@ -145,10 +145,10 @@ if isequal(opt.Title, 1),
   opt.Title= epo.clab(chan);
 end
 
-if isdefault.XUnit && isfield(epo, 'XUnit'),
+if isdefault.XUnit && isfield(epo, 'xUnit'),
   opt.XUnit= ['[' epo.XUnit ']'];
 end
-if isdefault.YUnit && isfield(epo, 'YUnit'),
+if isdefault.YUnit && isfield(epo, 'yUnit'),
   opt.YUnit= ['[' epo.YUnit ']'];
 end
 
@@ -204,7 +204,7 @@ if opt.PlotRef && isfield(epo, 'refIval'),
 end
 
 if opt.GridOverPatches,
-  plot_gridOverPatches(copy_struct(opt, 'XGrid','YGrid'));
+  plot_gridOverPatches(rmfield(opt, intersect(fieldnames(opt),{'XGrid','YGrid'})));
 end
 
 %% More layout settings

@@ -62,7 +62,7 @@ if nargin==0,
 end
 
 % With input argument erp, we know it better
-if getDataDimension(erp)==1
+if util_getDataDimension(erp)==1
   props_channel= plot_channel1D;
 else
   props_channel= plot_channel2D;
