@@ -65,8 +65,7 @@ if nActualArguments < numel(token)
   token(nActualArguments+1:end) = [];
 end
 
-ht{N}.fcn_params = setdiff(token,'varargin','stable');
-
+ht{N}.fcn_params = token(~ismember(token,'varargin'));
 
 % Get argument values for named arguments
 for ii=1:numel(ht{N}.fcn_params)

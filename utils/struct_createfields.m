@@ -21,10 +21,10 @@ if ischar(flds),
 end
 
 for ii= 1:length(flds),
-  if isempty(opt.matchsize),
-    val= opt.value;
+  if isempty(opt.Matchsize),
+    val= opt.Value;
   else
-    val= repmat(opt.value, size(opt.matchsize.(flds{ii})));
+    val= repmat(opt.Value, size(opt.Matchsize.(flds{ii})));
   end
   [s.(flds{ii})]= deal(val);
 end
