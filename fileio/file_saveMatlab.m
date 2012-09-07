@@ -94,7 +94,7 @@ if (isunix && (file(1)==filesep)) || (ispc && (file(2)==':')) && isdefault.Path
 end
 
 nChans= length(dat.clab);
-fullname= [opt.Path file];
+fullname= [opt.Path filesep file];
 if opt.AddChannels && ~exist([fullname '.mat'], 'file')
   warning('File does not exist: ignoring option ''add_channels''.');
   opt.AddChannels= 0;
