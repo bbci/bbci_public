@@ -48,10 +48,12 @@ if nargin==0,
   ind= []; return
 end
 
-misc_checkType(lab,'!STRUCT(clab)|!CELL{CHAR}');
+misc_checkType(lab,'!STRUCT(clab)|!CELL{CHAR}|!CHAR');
 
 tags={'9','7','5','3','1','z','2','4','6','8','10'};
-if isstruct(lab), lab= lab.clab; end
+if isstruct(lab), lab= lab.clab; 
+elseif ischar(lab), lab = {lab};
+end
 %% delete appendices (separated by a blank), e.g. 'C3 lap' -> 'C3'
 lab= strtok(lab);
 
