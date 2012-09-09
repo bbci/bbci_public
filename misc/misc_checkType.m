@@ -107,7 +107,7 @@ ok= [];
 msg= '';
 if isempty(typeDefinition),
   ok= 1;
-elseif ismember('|', typeDefinition),
+elseif any('|'==typeDefinition),
   ii= min(find(typeDefinition=='|'));
   ok= or(misc_checkType(variable, typeDefinition(1:ii-1), propname, 0), ...
       misc_checkType(variable, typeDefinition(ii+1:end), propname, 0));
@@ -145,7 +145,7 @@ elseif str_matchesHead('INT', typeDefinition),
                           propname);
   end
 elseif str_matchesHead('BOOL', typeDefinition),
-  ok= islogical(variable) || ismember(variable, [0 1]);
+  ok= islogical(variable) || isequal(variable, 0) || isequal(variable, 1);
   if ok,
     [ok, msg]= size_check(variable, typeDefinition(length('BOOL')+1:end), ...
                           propname);

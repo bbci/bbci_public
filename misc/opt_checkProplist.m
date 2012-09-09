@@ -48,7 +48,12 @@ fn= fieldnames(opt);
 isknown= ismember(upper(fn), upper(props_all(:,1)));
 unknown_fields= fn(~isknown);
 if ~isempty(unknown_fields),
-  error('unexpected properties: %s.', str_vec2str(unknown_fields));
+  if length(unknown_fields)==1,
+    tag= 'unexpected property';
+  else
+    tag= 'unexpected properties';
+  end
+  error('%s: %s.', tag, str_vec2str(unknown_fields));
 end
 
 opt_checkTypes(opt, props);

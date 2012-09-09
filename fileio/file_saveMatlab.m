@@ -2,7 +2,7 @@ function file_saveMatlab(file, dat, mrk, mnt, varargin)
 %FILE_SAVEMATLAB - Save EEG data structures in Matlab format
 %
 % Synopsis:
-%   eegfile_saveMatlab(FILE, DAT, MRK, MNT, <OPT>)
+%   file_saveMatlab(FILE, DAT, MRK, MNT, <OPT>)
 %
 % Arguments:
 %   FILE:   CHAR    name of data file

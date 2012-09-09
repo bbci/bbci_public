@@ -8,7 +8,7 @@ function [cnt, mrk]= proc_appendCnt(cnt, cnt2, mrk, mrk2, varargin)
 % [CNT, MRK]= proc_appendCnt({CNT1, ...}, {MRK1, ...});
 %
 %Arguments:
-%  CNT:  STRUCT       - Continuous data (see eegfile_readBV, eegfile_loadMatlab)
+%  CNT:  STRUCT       - Continuous data (see file_readBV, file_loadMatlab)
 %  CNT2: STRUCT       -  Continuous data to be appended
 %  MRK:  STRUCT       - Marker structure, with obligatory field 'time',
 %                       which specifies the time points which define the t=0
@@ -25,9 +25,9 @@ function [cnt, mrk]= proc_appendCnt(cnt, cnt2, mrk, mrk2, varargin)
 %  MRK -  an updated MRK structure, if MRK1 and MRK2 is specified
 %
 %Examples
-%  [cnt1, mrk1]= eegfile_readBV(file1);   %load EEG-data from file1
-%  [cnt2, mrk2]= eegfile_readBV(file2);   %load EEG-data from file2
-%  [cnt3, mrk3]= eegfile_readBV(file3);   %load EEG-data from file3
+%  [cnt1, mrk1]= file_readBV(file1);   %load EEG-data from file1
+%  [cnt2, mrk2]= file_readBV(file2);   %load EEG-data from file2
+%  [cnt3, mrk3]= file_readBV(file3);   %load EEG-data from file3
 %  cnt12 = proc_appendCnt(cnt1, cnt2); %append EEG-data only
 %  [cnt12, mrk12] = proc_appendCnt(cnt1, cnt2, mrk1, mrk2); 
 %           %append EEG-data and marker of file 1 and file2
@@ -133,7 +133,7 @@ if exist('mrk','var') && ~isempty(mrk),
   if isfield(mrk(1),'time') && ~isfield(mrk2(1),'time')
     error('appending dissimilar structs for mrk');
   elseif length(mrk2)>1 % || ~iscell(mrk2.type),   % @Benjamin: ist OK das iscell auszukommentieren? [mrk hat das Feld nicht mehr?]
-    %% mrk2 has format 'StructArray' (see eegfile_readBVmarkers)
+    %% mrk2 has format 'StructArray' (see file_readBVmarkers)
     for ii = 1:length(mrk2)
       mrk2(ii).time = mrk2(ii).time + Tt;
     end

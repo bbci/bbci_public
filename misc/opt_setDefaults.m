@@ -1,13 +1,16 @@
-function [opt, isdefault]= opt_setDefaults(opt, props)
+function [opt, isdefault]= opt_setDefaults(opt, props, check)
 %OPT_SETDEFAULTS - Set default values according to a property spec list
 %
 %Synopsis:
 %  [OPT, ISDEFAULT]= opt_setDefaults(OPT, PROPSPEC)
+%  [OPT, ISDEFAULT]= opt_setDefaults(OPT, PROPSPEC, CHECK)
 %
 %Arguments:
 %  OPT:      STRUCT of optional properties
 %  PROPSPEC: PROPSPECLIST - Property specification list, i.e., CELL of size
 %      [N 2] or [N 3], with the first column all being strings.
+%  CHECK:    BOOL - Evokes type checking according to the third column of
+%      PROPSPEC
 %
 %Returns:
 %  OPT: STRUCT with added properties from the property specification list
@@ -63,4 +66,8 @@ for k= 1:size(props,1),
     [opt.(fld)]= deal(props{k,2});
     isdefault.(fld)= 1;
   end
+end
+
+if nargin>=3 && check,
+  opt_checkProplist(opt, props);
 end

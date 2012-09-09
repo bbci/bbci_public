@@ -77,7 +77,7 @@ Mrk.event.chan= M_chan';
 Mrk.event.clock= M_clock';
 
 if strcmp(opt.MarkerFormat, 'numeric'),
-  [toe,idx]= marker_mapping_SposRneg(Mrk.desc);
+  [toe,idx]= bbciutil_markerMappingSposRneg(Mrk.desc);
   Mrk.desc= zeros(size(Mrk.desc));
   Mrk.desc(idx)= toe;
 end

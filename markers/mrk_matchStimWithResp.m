@@ -6,8 +6,8 @@ function [mrk, istim, iresp, iresp2]= ...
 % [MRK, ISTIM, IRESP]= mrk_matchStimWithResp(MRK_STIM, MRK_RESP, <OPT>)
 %
 %Arguments:
-% MRK_STIM: Marker structure of stimuli events as received by eegfile_loadBV
-% MRK_RESP: Marker structure of response events as received by eegfile_loadBV
+% MRK_STIM: Marker structure of stimuli events as received by file_loadBV
+% MRK_RESP: Marker structure of response events as received by file_loadBV
 % OPT: struct or property/value list of optional properties:
 %  'MinLatency': Only responses having at least this latency (in msec)
 %     after stimulus are considered, default 0.

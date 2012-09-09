@@ -1,8 +1,8 @@
-function [toe, idx]= marker_mapping_SposRneg(desc)
+function [toe, idx]= bbciutil_markerMappingSposRneg(desc)
 %MARKER_MAPPING_SPOSRNEG - Map BV Markers to numeric values
 %
 %Synopsis:
-%  [TOE, IDX]= marker_mapping_SposRneg(DESC)
+%  [TOE, IDX]= bbciutil_markerMappingSposRneg(DESC)
 %
 %Arguments:
 %  DESC - Cell of strings: BV markers, like {'S 23', 'R134'}

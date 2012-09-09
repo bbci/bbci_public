@@ -2,7 +2,7 @@ function s1= struct_sloppycat(s1, s2, varargin)
 % STRUCT_SLOPPYCAT - Copy fields 
 %
 % Synopsis:
-%   s1= eegfile_loadMatlab(s1,s2,<OPT>)
+%   s1= file_loadMatlab(s1,s2,<OPT>)
 %
 %Arguments:
 %   S1:     STRUCT - target struct in which fields from s2 are copied

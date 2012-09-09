@@ -23,7 +23,7 @@ function dat= proc_baseline(dat, ival, varargin)
 % amplitude in the specified interval is substracted for every channel
 %
 %Examples:
-%  [cnt, mrk]= eegfile_readBV(some_file);   %load EEG-data in BV-format
+%  [cnt, mrk]= file_readBV(some_file);   %load EEG-data in BV-format
 %  mrk= mrk_defineClasses(mrk, {1, 2; 'target','nontarget'}); 
 %  epo= proc_segmentation(cnt, mrk, [-200 800], 'CLab', {'Fz','Cz','Pz'});
 %  epo = proc_basline(epo, [-150 0]);

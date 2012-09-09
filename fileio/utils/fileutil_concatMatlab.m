@@ -2,7 +2,7 @@ function [varargout]= fileutil_concatMatlab(file_list, varargin)
 % EEGFILE_CONCATMATLAB - concatenate Matlab data structures
 %
 % Synopsis:
-%   [DAT, MRK, MNT]= eegfile_concatBV(FILE_LIST, 'Property, 'Value', ...)
+%   [DAT, MRK, MNT]= file_concatBV(FILE_LIST, 'Property, 'Value', ...)
 %
 % Arguments:
 %   FILE_LIST:  CELL|CHAR   list of file names (no extension)
@@ -13,10 +13,10 @@ function [varargout]= fileutil_concatMatlab(file_list, varargin)
 %   MNT: electrode montage structure
 %
 % Properties:
-%   are passed to eegfile_loadBV
+%   are passed to file_loadBV
 %
 % Description:
-%   This function is called by eegfile_loadBV in case the file name argument
+%   This function is called by file_loadBV in case the file name argument
 %   is a cell array of file names. Typically there is no need to call this 
 %   function directly.
 %
@@ -50,7 +50,7 @@ N= NaN*zeros(1, length(file_list));
 T= zeros(1, length(file_list));
 
 for ii= 1:length(file_list),
-  [varargcat{:}]= eegfile_loadMatlab(file_list{ii}, opt);
+  [varargcat{:}]= file_loadMatlab(file_list{ii}, opt);
   T(ii)= varargcat{iNfo}.T;
   N(ii)= max(varargcat{iNfo}.nEpochs, varargcat{iNfo}.nEvents);
   if ii==1,
@@ -89,7 +89,7 @@ for ii= 1:length(file_list),
     end
     if ~isempty(iMrkBV),
       if length(varargcat{iMrkBV})>1,
-        orig_fs= eegfile_loadMatlab(file_list{ii-1}, 'vars','fs_orig');
+        orig_fs= file_loadMatlab(file_list{ii-1}, 'vars','fs_orig');
         TT(ii-1)= round(T(ii-1)/varargcat{iNfo}.fs*orig_fs);
         shift= sum(TT(1:ii-1));
         for ii= 1:length(varargcat{iMrkBV}),

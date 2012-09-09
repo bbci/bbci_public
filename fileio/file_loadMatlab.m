@@ -2,8 +2,8 @@ function [varargout]= file_loadMatlab(file, varargin)
 % EEGFILE_LOADMATLAB - Load EEG data structure from Matlab file
 %
 % Synopsis:
-%   [DAT, MRK, MNT]= eegfile_loadMatlab(FILE, VARS)
-%   [DAT, MRK, MNT]= eegfile_loadMatlab(FILE, <OPT>)
+%   [DAT, MRK, MNT]= file_loadMatlab(FILE, VARS)
+%   [DAT, MRK, MNT]= file_loadMatlab(FILE, <OPT>)
 %
 % Arguments:
 %   FILE:   CHAR    name of data file
@@ -40,11 +40,11 @@ function [varargout]= file_loadMatlab(file, varargin)
 %
 % Example:
 %   file= 'Gabriel_03_05_21/selfpaced2sGabriel';
-%   [cnt,mrk,mnt]= eegfile_loadMatlab(file);
+%   [cnt,mrk,mnt]= file_loadMatlab(file);
 %   %% or just to load variables 'mrk' and 'mnt':
-%   [mrk,mnt]= eegfile_loadMatlab(file, {'mrk','mnt'});
+%   [mrk,mnt]= file_loadMatlab(file, {'mrk','mnt'});
 %   %% or to load only some central channels
-%   [cnt, mnt]= eegfile_loadMatlab(file, 'clab','C5-6', 'vars',{'cnt','mnt'});
+%   [cnt, mnt]= file_loadMatlab(file, 'clab','C5-6', 'vars',{'cnt','mnt'});
 %
 % See also: file_loadBV file_saveMatlab
 

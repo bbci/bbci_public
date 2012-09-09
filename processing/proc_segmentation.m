@@ -6,7 +6,7 @@ function [epo, complete]= proc_segmentation(cnt, mrk, ival, varargin)
 %  [EPO, IDX]= proc_segmentation(CNT, TIME, IVAL, <OPT>)
 %
 %Arguments:
-%  CNT:  STRUCT       - Continuous data (see eegfile_readBV, eegfile_loadMatlab)
+%  CNT:  STRUCT       - Continuous data (see file_readBV, file_loadMatlab)
 %  MRK:  STRUCT       - Marker structure, with obligatory field 'time',
 %                       which specifies the time points which define the t=0
 %                       for each segment that is cut out from the continuous

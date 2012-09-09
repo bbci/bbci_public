@@ -25,11 +25,11 @@ function mrk= mrk_defineClasses(mk, classDef, varargin)
 %
 %Example:
 % file= 'Gabriel_01_07_24/selfpaced1sGabriel';
-% [cnt,mk]= eegfile_readBV(file);
+% [cnt,mk]= file_readBV(file);
 % classDef= {[65 70], [74 192]; 'left','right'};
 % mrk= mrk_defineClasses(mk, classDef);
 %
-% [cnt,mk]= eegfile_readBV(file, 'MarkerFormat','string');
+% [cnt,mk]= file_readBV(file, 'MarkerFormat','string');
 % classDef= {{'S 65','S 70'},{'S 74', 'S192'}; 'left','right'}
 % mrk= mrk_defineClasses(mk, classDef);
 % %% does the same
