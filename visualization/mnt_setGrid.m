@@ -19,7 +19,7 @@ function mnt= mnt_setGrid(mnt, displayMontage, varargin)
 % grd= sprintf('legend,Fz,scale\n,C3,Cz,C4\nP3,Pz,P4');
 % mnt= mnt_setGrid(mnt, grd);
 %
-%See also: get_electrodePositions, getGrid.
+%See also: mnt_setElectrodePositions, getGrid.
 
 props = {'CenterClab',   'Cz',   'CHAR'};
 

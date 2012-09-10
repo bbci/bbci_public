@@ -80,7 +80,7 @@ props= { 'NIvals'               5               '!INT[1]';
          'VisuScalps'           0               '!BOOL';
          'OptVisu'              []              'CELL|STRUCT';
          'Title'                ''              'CHAR'
-         'Mnt'                  get_electrodePositions(epo_r.clab)  'STRUCT';
+         'Mnt'                  mnt_setElectrodePositions(epo_r.clab)  'STRUCT';
          'Constraint'           {}              'CELL';
          'IntersampleTiming'    0               '!DOUBLE';
          'Verbose'              1               '!BOOL'};

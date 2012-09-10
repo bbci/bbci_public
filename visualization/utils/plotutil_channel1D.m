@@ -1,9 +1,9 @@
-function H= plot_channel1D(epo, clab, varargin)
-%plot_channel1D - Plot the Classwise averages of one channel. Takes 1D data,
+function H= plotutil_channel1D(epo, clab, varargin)
+%plotutil_channel1D - Plot the Classwise averages of one channel. Takes 1D data,
 %i.e. time or frequency data.
 %
 %Usage:
-% H= plot_channel1D(EPO, CLAB, <OPT>)
+% H= plotutil_channel1D(EPO, CLAB, <OPT>)
 %
 %Input:
 % EPO  - Struct of epoched signals, see makeEpochs
@@ -113,7 +113,7 @@ props = {'AxisType',                        'box',                '!CHAR';
          'StdLineSpec',                     '--',                   'CHAR';
          'OversizePlot',                    1,                      'DOUBLE'};
 
-props_gridOverPatches = plot_gridOverPatches;
+props_gridOverPatches = plotutil_gridOverPatches;
 
 if nargin==0,
   H= opt_catProps(props, props_gridOverPatches); return
@@ -159,13 +159,13 @@ elseif nChans>1,
     end
     ils= mod(ic-1, length(opt.ChannelLineStyleOrder))+1;
     if strcmpi(opt.ChannelLineStyleOrder{ils}, 'thick'),
-      H{ic}= plot_channel1D(epo, chan(ic), opt_rmifdefault(opt, isdefault), ...
+      H{ic}= plotutil_channel1D(epo, chan(ic), opt_rmifdefault(opt, isdefault), ...
                          opt_plot{:});
     elseif strcmpi(opt.ChannelLineStyleOrder{ils}, 'thin'),
-      H{ic}= plot_channel1D(epo, chan(ic), opt_rmifdefault(opt, isdefault), ...
+      H{ic}= plotutil_channel1D(epo, chan(ic), opt_rmifdefault(opt, isdefault), ...
                          opt_plot{:}, 'LineWidth',1);
     else
-      H{ic}= plot_channel1D(epo, chan(ic), opt_rmifdefault(opt, isdefault), ...
+      H{ic}= plotutil_channel1D(epo, chan(ic), opt_rmifdefault(opt, isdefault), ...
                          opt_plot{:}, ...
                          'LineStyle',opt.ChannelLineStyleOrder{ils});
     end
@@ -304,7 +304,7 @@ else
   else
     opt_selYLim= {};
   end
-  yLim= select_yLim(H.ax, 'policy',opt.YLimPolicy, opt_selYLim{:});
+  yLim= visutil_selectYLim(H.ax, 'policy',opt.YLimPolicy, opt_selYLim{:});
 end
 
 if opt.PlotStd,
@@ -369,11 +369,11 @@ if isfield(epo, 'refIval'),
   yPatch= [-1 1] * opt.RefVSize * diff(yLim);
   H.refPatch= patch(epo.refIval([1 2 2 1]), yPatch([1 1 2 2]), opt.RefCol);
   set(H.refPatch, 'edgeColor','none');
-  move_objectBack(H.refPatch);
+  obj_moveBack(H.refPatch);
 end
 if opt.GridOverPatches,
   opt_gridOverPatches = opt_substruct(opt, props_gridOverPatches(:,1));
-  plot_gridOverPatches(opt_gridOverPatches);
+  plotutil_gridOverPatches(opt_gridOverPatches);
 end
 
 switch(lower(opt.XUnitDispPolicy)),
@@ -465,7 +465,7 @@ if ~isempty(opt.AxisTitle),
 end
 
 if ~isempty(H.hidden_objects),
-  move_objectBack(H.hidden_objects);
+  obj_moveBack(H.hidden_objects);
 % If we hide handles, those objects may pop to the front again,
 % e.g., when another object is moved to the background with moveObjetBack
 %  set(H.hidden_objects, 'handleVisibility','off');

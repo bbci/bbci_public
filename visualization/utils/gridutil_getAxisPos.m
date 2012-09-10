@@ -1,5 +1,5 @@
-function pos= get_axisGridPos(mnt, ic)
-%pos= get_axisGridPos(mnt, ic)
+function pos= gridutil_getAxisPos(mnt, ic)
+%pos= gridutil_getAxisPos(mnt, ic)
 %
 % ic=0 or ic=nChans+1 for status box
 

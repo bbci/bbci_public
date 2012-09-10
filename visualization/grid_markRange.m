@@ -7,12 +7,12 @@ function hl= grid_markRange(yRange, chans, varargin)
 if ~exist('chans','var'), chans=[]; end
 if length(yRange)==1, yRange=[-yRange yRange]; end
 
-hsp= grid_getSubplots(chans);
+hsp= gridutil_getSubplots(chans);
 for ih= hsp,
   axes(ih);
   xl= get(ih, 'xLim');
   hl= line(xl, yRange([1 1]), varargin{:});
-  move_objectBack(hl);
+  obj_moveBack(hl);
   hl= line(xl, yRange([2 2]), varargin{:});
-  move_objectBack(hl);
+  obj_moveBack(hl);
 end

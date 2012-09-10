@@ -43,7 +43,7 @@ props = {'LineWidth',           3,                  'DOUBLE';
          'Subplot',             [],                 'DOUBLE'};
 
 props_scalpPattern= plot_scalpPattern;
-props_channel= plot_channel1D;
+props_channel= plotutil_channel1D;
 
 if nargin==0,
   H= opt_catProps(props, props_scalpPattern, props_channel); return
@@ -115,7 +115,7 @@ for cc= 1:nClasses,
     subplotxl(1, nClasses+opt.PlotChannel, cc+opt.PlotChannel, ...
               0.07, [0.07 0.02 0.1]);
   else
-    get_backAxes(opt.Subplot(cc));
+    axis_getQuitely(opt.Subplot(cc));
   end
   opt_scalpPattern= setfield(opt_scalpPattern, 'ScalePos','none');
   if opt.NewColormap,
@@ -146,7 +146,7 @@ set(h.text, 'horizontalAli','center', ...
 set(h.text_ival, 'verticalAli','top', 'horizontalAli','center', ...
                  'Visible','on');  
 if ismember(opt.ScalePos, {'horiz','vert'}),
-  h.cb= plot_colorbarAside(opt.ScalePos);
+  h.cb= plotutil_colorbarAside(opt.ScalePos);
   %% hack to fix a matlab bug
   ud= get(h.cb, 'UserData');
   ud.orientation= opt.ScalePos;

@@ -1,9 +1,9 @@
-function H= plot_channel2D(epo, clab, varargin)
-%plot_channel2D - Plot the Classwise averages of one channel. Plots 2D data,
+function H= plotutil_channel2D(epo, clab, varargin)
+%plotutil_channel2D - Plot the Classwise averages of one channel. Plots 2D data,
 %i.e. time x frequency.
 %
 %Usage:
-% H= plot_channel2D(EPO, CLAB, <OPT>)
+% H= plotutil_channel2D(EPO, CLAB, <OPT>)
 %
 %Input:
 % EPO  - Struct of epoched signals, see makeEpochs
@@ -45,9 +45,9 @@ function H= plot_channel2D(epo, clab, varargin)
 % H - Handle to several graphical objects.
 %
 %Do not call this function directly, rather use the superfunction
-%plot_channel. This function is an adapted version of plot_channel2D.
+%plot_channel. This function is an adapted version of plotutil_channel2D.
 %
-%See also plot_channel1D, grid_plot.
+%See also plotutil_channel1D, grid_plot.
 
 % Author(s): Matthias Treder Aug 2010
 
@@ -124,7 +124,7 @@ elseif nChans>1,
       opt_plot([4 6])= {1};
     end
     ils= mod(ic-1, length(opt.ChannelLineStyleOrder))+1;
-    H{ic}= plot_channel2D(epo, chan(ic), opt_rmifdefault(opt, isdefault), ...
+    H{ic}= plotutil_channel2D(epo, chan(ic), opt_rmifdefault(opt, isdefault), ...
                        opt_plot{:}, ...
                        'lineStyle',opt.ChannelLineStyleOrder{ils});
     hold on;
@@ -204,7 +204,7 @@ if opt.PlotRef && isfield(epo, 'refIval'),
 end
 
 if opt.GridOverPatches,
-  plot_gridOverPatches(rmfield(opt, intersect(fieldnames(opt),{'XGrid','YGrid'})));
+  plotutil_gridOverPatches(rmfield(opt, intersect(fieldnames(opt),{'XGrid','YGrid'})));
 end
 
 %% More layout settings
@@ -234,7 +234,7 @@ H.xlabel = xlabel(opt.XUnit);
 H.ylabel = ylabel(opt.YUnit);
 
 % if ~isempty(H.hidden_objects),
-%   move_objectBack(H.hidden_objects);
+%   obj_moveBack(H.hidden_objects);
 % % If we hide handles, those objects may pop to the front again,
 % % e.g., when another object is moved to the background with moveObjetBack
 % %  set(H.hidden_objects, 'handleVisibility','off');

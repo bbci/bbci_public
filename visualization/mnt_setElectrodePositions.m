@@ -1,12 +1,12 @@
-function mnt= get_electrodePositions(clab, varargin)
+function mnt= mnt_setElectrodePositions(clab, varargin)
 %GETELECTRODEPOSITIONS - Electrode positions of standard named channels
 %
 %Usage:
-% MNT= get_electrodePositions(CLAB);
+% MNT= mnt_setElectrodePositions(CLAB);
 %
 %Input:
 % CLAB: Label of channels (according to the extended international
-%       10-10 system, see calc_pos_ext_10_10).
+%       10-10 system, see mntutil_posExt1010).
 %Output:
 % MNT:  Struct for electrode montage
 %   .x     - x coordiante of electrode positions
@@ -22,10 +22,10 @@ function mnt= get_electrodePositions(clab, varargin)
 % kraulem 08.09.2003
 
 if ~exist('clab','var'),
-  [d,d,d,clab]= calc_pos_ext_10_10;
+  [d,d,d,clab]= mntutil_posExt1010;
 end
 if nargin<=1 | isempty(varargin{1}),
-  varargin{1}= calc_pos_ext_10_10;
+  varargin{1}= mntutil_posExt1010;
 end
 
 if ischar(varargin{1}),
@@ -34,7 +34,7 @@ if ischar(varargin{1}),
     posSystem= feval(posFile);
     displayMontage= {varargin{2:end}};
   else
-    posSystem= calc_pos_ext_10_10;
+    posSystem= mntutil_posExt1010;
     displayMontage= {varargin{:}};
   end
   x= posSystem.x;

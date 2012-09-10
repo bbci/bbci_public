@@ -1,4 +1,4 @@
-function h_out= backaxes(varargin)
+function h_out= axis_getQuitely(varargin)
 
 vis= get(gcf, 'Visible');
 if nargin==1,

@@ -1,5 +1,5 @@
-function hsp= grid_getSubplots(chans)
-%hsp= grid_getSubplots(<chans>)
+function hsp= gridutil_getSubplots(chans)
+%hsp= gridutil_getSubplots(<chans>)
 %
 % returns the handles of the subplots of an grid plot (cf. grid_plot)
 % that correspond to given channels
