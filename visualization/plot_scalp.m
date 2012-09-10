@@ -183,8 +183,7 @@ end
 
 if opt.Extrapolation,
   wstate= warning('off');
-%  [xg,yg,zg]= griddata(xe, ye, w, xx, yy, 'invdist');
-  [xg,yg,zg]= griddata(xe, ye, w, xx, yy);
+  [xg,yg,zg]= griddata(xe, ye, w, xx, yy, 'v4');
   warning(wstate);
   margin = maxrad +opt.ContourMargin;
   headmask= (sqrt(xg.^2+yg.^2)<=margin);
@@ -192,7 +191,7 @@ if opt.Extrapolation,
   zg(imaskout)= NaN;
   
 else
-  if strcmp(opt.Interpolation, 'invdist'),
+  if strcmp(opt.Interpolation, 'v4'),
     %% get the convex hull from linear Interpolation
     [dmy,dmy,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
     imaskout= find(isnan(zconv(:)));
