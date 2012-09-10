@@ -120,7 +120,7 @@ end
 %        opt_overrideIfDefault(opt, isdefault, ...
 %                              'ShrinkAxes', 0.8);
 %  end
-if isdefault.shift_axesUp && ...
+if isdefault.ShiftAxesUp && ...
       (isfield(opt, 'xTick') && ~isempty(opt.xTick)), ...
       opt.ShiftAxesUp= 0.05;
 end
@@ -404,8 +404,8 @@ for ih = 1:s(4)
     H{ih}.title= addtitle(tit, opt.TitleDir);
   end
   
-  if ~isempty(opt.ShiftAxesUp) && opt.ShiftAxesUp~=0,
-    shift_axesUp(opt.ShiftAxesUp);
+  if ~isempty(opt.ShiftAxesUp) && opt.ShiftAxesUp~=0
+    axis_shiftUp(opt.ShiftAxesUp);
   end
   
   if nargout==0,

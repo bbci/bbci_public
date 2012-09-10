@@ -1,5 +1,5 @@
-function visutil_shiftAxesLeft(left, hc)
-%visutil_shiftAxesLeft(<left=0.1, hc>)
+function axis_shiftLeft(left, hc)
+%axis_shiftLeft(<left=0.1, hc>)
 
 if ~exist('left','var'), left=0.1; end
 if ~exist('hc','var'), hc= get(gcf, 'children'); end

@@ -410,7 +410,7 @@ if ~strcmp(opt.TitleDir, 'none'),
 end
 
 if ~isempty(opt.ShiftAxesUp) && opt.ShiftAxesUp~=0,
-  shift_axesUp(opt.ShiftAxesUp);
+  axis_shiftUp(opt.ShiftAxesUp);
 end
 
 if opt.HeadMode,

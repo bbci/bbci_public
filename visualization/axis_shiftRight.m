@@ -1,5 +1,5 @@
-function visutil_shiftAxesRight(shift, hc)
-%visutil_shiftAxesRight(<shift=0.1, hc>)
+function axis_shiftRight(shift, hc)
+%axis_shiftRight(<shift=0.1, hc>)
 
 if ~exist('shift','var'), shift=0.1; end
 if ~exist('hc','var'), hc= get(gcf, 'children'); end
