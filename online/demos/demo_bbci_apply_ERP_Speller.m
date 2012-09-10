@@ -1,5 +1,9 @@
 eeg_file= 'VPiac_10_10_13/CenterSpellerMVEP_VPiac';
 [cnt, mrk]= file_loadMatlab(eeg_file, 'vars',{'cnt','mrk'});
+%% TODO!
+mrk.desc= mrk.toe;
+mrk.time= mrk.pos/mrk.fs*1000;
+%% -----
 
 clab= {'F3','Fz','F4', 'C3','Cz','C4', 'P3','Pz','P4'};
 ref_ival= [-200 0];
@@ -43,10 +47,10 @@ log_format= '%fs | M(%u) | %fs | [%f] | %s';
              'delimiter','','commentstyle','shell');
 
 % validate makers that evoked calculation of control signals
-isequal(marker_desc, mrk.toe(1:length(marker_desc))')
+isequal(marker_desc, mrk.desc(1:length(marker_desc))')
 
 % offline processing of the data
-epo= cntToEpo(cnt, mrk, [ref_ival(1) cfy_ival(end)], 'clab', bbci.signal.clab);
+epo= proc_segmentation(cnt, mrk, [ref_ival(1) cfy_ival(end)], 'clab', bbci.signal.clab);
 fv= proc_baseline(epo, ref_ival);
 fv= proc_jumpingMeans(fv, cfy_ival);
 out= applyClassifier(fv, 'LDA', bbci.classifier.C);

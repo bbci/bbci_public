@@ -36,18 +36,14 @@ function [bbci_cls, data_adapt]= ...
 
 
 if ischar(marker) && strcmp(marker, 'init'),
-  opt= propertylist2struct(varargin{:});
-  opt= set_defaults(opt, ...
-                    'UC', 0.05,...
-                    'ival', [], ...
-                    'mrk_start', [1 2 3],...
-                    'mrk_end', []);
-  if isempty(opt.ival),
-    error('Adaptation interval (.ival) must be defined');
-  end
-  if iscell(opt.mrk_start),
-    error('Property .mrk_start must be a vector, not a cell');
-  end
+  props= {'UC'              0.05    '!DOUBLE[1]'
+          'ival'             []      '!DOUBLE[2]'
+          'mrk_start'        []      'INT'
+          'mrk_end'          []      'INT'
+          'log_mean_limit'   100     '!INT'
+         };
+  opt= opt_proplistToStruct(varargin{:});
+  opt= opt_setDefaults(opt, props, 1);
   data_adapt.opt= opt;
   data_adapt.feature= zeros(size(bbci_cls.C.w));
   data_adapt.trial_start= NaN;
