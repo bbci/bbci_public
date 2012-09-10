@@ -1,7 +1,7 @@
-function shift_axesUp(up, hc)
-%shift_axesUp(<up=0.1, hc>)
+function visutil_shiftAxesUp(up, hc)
+%visutil_shiftAxesUp(<up=0.1, hc>)
 
-if ~exist('up','var') | isempty(up), up=0.1; end
+if ~exist('up','var') || isempty(up), up=0.1; end
 if ~exist('hc','var'), hc= get(gcf, 'children'); end
 
 for hi= 1:length(hc);
