@@ -15,12 +15,10 @@ function dat= proc_filterbank(dat, filt_b, filt_a)
 %
 % SEE online_filterbank, butters
 
-% bb, ida.first.fhg.de
 dat = misc_history(dat);
 
-if ~iscell(filt_b),
-  error('should be a cell');
-end
+misc_checkType(filt_b,'CELL');
+misc_checkType(filt_a,'CELL');
 
 nFilters= length(filt_b);
 [T, nChans, nEpochs]= size(dat.x);
@@ -29,7 +27,7 @@ xo= zeros([T, nCE*nFilters]);
 clab= cell(1, nChans*nFilters);
 cc= 1:nCE;
 for ii= 1:nFilters,
-  clab(cc)= apply_cellwise(dat.clab, 'strcat', ['_flt' int2str(ii)]);
+  clab(cc)= strcat(dat.clab, ['_flt' int2str(ii)]);
   xo(:,cc)= filter(filt_b{ii}, filt_a{ii}, dat.x(:,:));
   cc= cc + nCE;
 end

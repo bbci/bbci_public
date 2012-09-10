@@ -16,7 +16,7 @@ if all(iseq),
 else
   if all(isnums),
     if nargin<2,
-      nd= apply_cellwise2(in, 'ndims');
+      nd= cellfun(@ndims,in);
       sz= ones(max(nd), length(in));
       for ii= 1:length(in),
         sz(:,ii)= size(in{ii});

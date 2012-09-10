@@ -18,7 +18,7 @@ if nargin==0,
   dat=[];return
 end
 
-misc_checkType(dat, 'STRUCT(time)');
+misc_checkType(dat, 'STRUCT(x)');
 misc_checkTypeIfExists('nSections', 'INT');
 misc_checkTypeIfExists('calcStd','BOOL');
 dat = misc_history(dat);

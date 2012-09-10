@@ -129,7 +129,7 @@ elseif ischar(opt.patterns) & strcmpi(opt.patterns, 'auto'),
   if ~strcmpi(opt.selectPolicy, 'maxvalues'),
     score= max(score, 1-score);
   end
-  perc= percentiles(score, [20 80]);
+  perc= stat_percentiles(score, [20 80]);
   thresh= perc(2) + diff(perc);
   fi= find(score>thresh);
 else

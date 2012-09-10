@@ -225,7 +225,7 @@ for cc= 1:nClasses,
         H.cb(ii)= plot_colorbarAside('horiz');
         if ~opt.GlobalCLim,
 %          visutil_unifyCLim([H.scalp(:,ii).ax], [zeros(1,nClasses-1) H.cb(ii)]);
-          visutil_unifyCLim([H.scalp(:,ii).ax]);
+%           visutil_unifyCLim([H.scalp(:,ii).ax]);
         end
       end
     end
@@ -241,7 +241,7 @@ for cc= 1:nClasses,
     end
     if ~opt.GlobalCLim,
 %      visutil_unifyCLim([H.scalp(cc,:).ax], [zeros(1,nIvals-1) H.cb(cc)]);
-      visutil_unifyCLim([H.scalp(cc,:).ax]);
+%       visutil_unifyCLim([H.scalp(cc,:).ax]);
     end
   end
   pos= get(H.scalp(cc,end).ax, 'position');

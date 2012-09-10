@@ -2,7 +2,7 @@ function H= grid_markBybox(fractiles, varargin)
 %H= grid_markBybox(fractiles, <opts>)
 %
 % IN  fractiles - vector, e.g. [min 25%ile median 75%tile max],
-%                 as obtained by 'percentiles(blah, [])'.
+%                 as obtained by 'stat_percentiles(blah, [])'.
 %     opts - struct or property/value list with optional fields/properties:
 %       .clab     - channels which should be marked
 %       .Color    - Color of the box plot
@@ -14,7 +14,7 @@ function H= grid_markBybox(fractiles, varargin)
 %
 % EXAMPLE
 %  grid_plot(erp, mnt, defopt_erps);
-%  grid_markBybox(percentiles(mrk.latency, [5 25 50 75 95]);
+%  grid_markBybox(stat_percentiles(mrk.latency, [5 25 50 75 95]);
 
 props = {'Clab',        [],             'CELL{CHAR}|DOUBLE';
          'Color',       0.3*[1 1 1],    'DOUBLE[3]';
