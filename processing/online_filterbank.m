@@ -38,7 +38,7 @@ if isempty(state),
 %  state.clab= cell(1, state.nChans*state.nFilters);
 %  cc= 1:state.nChans;
 %  for ii= 1:state.nFilters,
-%    state.clab(cc)= apply_cellwise(cnt.clab, 'strcat', ['_flt' int2str(ii)]);
+%    state.clab(cc)= strcat(cnt.clab, ['_flt' int2str(ii)]);
 %    cc= cc + state.nChans;
 %  end
 end

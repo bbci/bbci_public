@@ -1,11 +1,11 @@
-function send_udp_xml(varargin)
-%SEND_UDP_XML - Send Signal in XML Format via UDP
+function pyff_sendUdp(varargin)
+%PYFF_SENDUDP - Send Signal in XML Format via UDP
 %
 %Synopsis:
-% send_udp_xml('init', HOSTNAME, PORT)
-% send_udp_xml('PARAM1', VALUE1, ...)
-% send_udp_xml('SIGNAL_TYPE', 'PARAM1', VALUE1, ...)
-% send_udp_xml('close')
+% pyff_sendUdp('init', HOSTNAME, PORT)
+% pyff_sendUdp('PARAM1', VALUE1, ...)
+% pyff_sendUdp('SIGNAL_TYPE', 'PARAM1', VALUE1, ...)
+% pyff_sendUdp('close')
 %
 %Arguments:
 %  HOSTNAME: String, IP-address or hostname
@@ -22,8 +22,8 @@ function send_udp_xml(varargin)
 %
 %
 %Example:
-% send_udp_xml('init', bbci.fb_machine, bbci.fb_port);
-% send_udp_xml('i:controlnumber', controlnumber, ...
+% pyff_sendUdp('init', bbci.fb_machine, bbci.fb_port);
+% pyff_sendUdp('i:controlnumber', controlnumber, ...
 %              'timestamp', timestamp, ...
 %              'cl_output', classifier_output)
 
@@ -42,7 +42,7 @@ if nargin==3 & isequal(varargin{1},'init'),
     error('udp communication failed');
   end
   pnet(socke, 'udpconnect', hostname, port);
-elseif nargin==1 & isequal(varargin{1}, 'close'),
+elseif nargin==1 && isequal(varargin{1}, 'close'),
   pnet(socke, 'close');
   socke= [];
 else
@@ -51,7 +51,7 @@ else
     signal_type= varargin{1};
     varargin= varargin(2:end);
   end
-  if ~all(apply_cellwise2(varargin(1:2:end), 'ischar')) | ~ischar(signal_type),
+  if ~all(cellfun(@ischar,varargin(1:2:end))) || ~ischar(signal_type),
     error('unrecognized format of input arguments');
   end
   if isempty(socke),

@@ -82,7 +82,7 @@ if iscell(desc),
   factor= 1;
   too_small= 1;
   nLines= length(desc);
-  nChars= max(apply_cellwise2(desc, 'length'));
+  nChars= max(cellfun(@length,desc));
   while too_small,
     desc_fontsize= factor * min( opt.desc_maxsize./[nChars nLines] );
     ht= text(opt.desc_pos(1), opt.desc_pos(2), desc);

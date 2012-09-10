@@ -179,9 +179,8 @@ if opt.ShowLabels,
   H.label_text= text(xe, ye, labs);
   set(H.label_text, 'horizontalAlignment','center',opt.LabelProperties{:});
   % Find labels with >3 letters and set their properties
-  strLen= apply_cellwise(labs, 'length');
-  strLen = [strLen{:}];
-  iLong= strLen>3;
+  strLen= cellfun(@length,labs);
+  iLong= find(strLen>3);
   set(H.label_text(iLong), opt.MinorLabelProperties{:});
   if ~isempty(opt.MarkChannels),
     set(H.label_text(opt.MarkChannels), opt.MarkLabelProperties{:});

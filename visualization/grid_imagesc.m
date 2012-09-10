@@ -120,8 +120,8 @@ end
 %        opt_overrideIfDefault(opt, isdefault, ...
 %                              'ShrinkAxes', 0.8);
 %  end
-if isdefault.shift_axesUp & ...
-      (isfield(opt, 'xTick') & ~isempty(opt.xTick)), ...
+if isdefault.shift_axesUp && ...
+      (isfield(opt, 'xTick') && ~isempty(opt.xTick)), ...
       opt.ShiftAxesUp= 0.05;
 end
 %  if isdefault.XUnit & isfield(epo, 'XUnit'),
@@ -177,7 +177,7 @@ elseif ~iscell(opt.ScaleGroup),
   opt.ScaleGroup= {opt.ScaleGroup};
 end
 
-if length(opt.ScalePolicy)==1 & length(opt.ScaleGroup)>1,
+if length(opt.ScalePolicy)==1 && length(opt.ScaleGroup)>1,
   opt.ScalePolicy= repmat(opt.ScalePolicy, 1, length(opt.ScaleGroup));
 end
 if length(opt.ShrinkAxes)==1,
@@ -207,7 +207,7 @@ nDisps= length(DisplayChannels);
 %% mnt.clab{DisplayChannels(ii)} may differ from epo.clab{ii}, e.g. the former
 %% may be 'C3' while the latter is 'C3 lap'
 idx= util_chanind(epo, mnt.clab(DisplayChannels));
-Axestitle= apply_cellwise(epo.clab(idx), 'sprintf');
+Axestitle= cellfun(@sprintf,epo.clab(idx), 'UniformOutput',0);
 
 %w_cm= warning('query', 'bci:missing_channels');
 %warning('off', 'bci:missing_channels');
@@ -281,7 +281,7 @@ for ih = 1:s(4)
   H{ih}.ax= zeros(1, nDisps);
   opt_plot= {'legend',1, 'title','', 'UnitDispPolicy','none', ...
             'GridOverPatches',0};
-  if isfield(mnt, 'box') & isnan(mnt.box(1,end)),
+  if isfield(mnt, 'box') && isnan(mnt.box(1,end)),
     %% no grid position for legend available
     opt_plot{2}= 0;
   end
@@ -360,7 +360,7 @@ for ih = 1:s(4)
     end
   end
       
-  if isfield(mnt, 'scale_box') & all(~isnan(mnt.scale_box)),
+  if isfield(mnt, 'scale_box') && all(~isnan(mnt.scale_box)),
     ax_idx= util_chanind(mnt.clab(DisplayChannels), opt.ScaleGroup{1});
     axes(H{ih}.ax(ax_idx(1)));
     H{ih}.scale= grid_addScale(mnt, opt);
@@ -404,7 +404,7 @@ for ih = 1:s(4)
     H{ih}.title= addtitle(tit, opt.TitleDir);
   end
   
-  if ~isempty(opt.ShiftAxesUp) & opt.ShiftAxesUp~=0,
+  if ~isempty(opt.ShiftAxesUp) && opt.ShiftAxesUp~=0,
     shift_axesUp(opt.ShiftAxesUp);
   end
   

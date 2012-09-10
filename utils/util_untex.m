@@ -2,7 +2,7 @@ function strout= util_untex(strin)
 %strout= untex(strin)
 
 if iscell(strin),
-  strout= apply_cellwise(strin, 'untex');
+  strout= cellfun(@util_untex,strin,'UniformOutput',0);
   return
 end
 
