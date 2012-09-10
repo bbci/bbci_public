@@ -1,4 +1,4 @@
-% EEG file used of offline simulation of online processing
+% EEG file used for offline simulation of online processing
 eeg_file= 'VPkg_08_08_07/imag_arrowVPkg';
 [cnt, mrk]= file_loadMatlab(eeg_file, 'vars',{'cnt','mrk'});
 S.bbci= file_loadMatlab(eeg_file, 'vars','bbci');
@@ -9,7 +9,7 @@ fv= proc_selectChannels(cnt, clab);
 [fv, A]= proc_laplacian(fv, 'clab','C3,4');
 [filt_b, filt_a]= butters(5, [9 13; 18 26]/cnt.fs*2);
 fv= proc_filterbank(fv, filt_b, filt_a);
-fv= cntToEpo(fv, mrk, S.bbci.setup_opts.ival);
+fv= proc_segmentation(fv, mrk, S.bbci.setup_opts.ival);
 fv= proc_variance(fv);
 fv= proc_logarithm(fv);
 fv= proc_flaten(fv);

@@ -1,4 +1,4 @@
-function [CLS, data_adapt]= bbci_adaptation_csp_plus_lap(CLS, data_adapt, marker, varargin)
+function [CLS, data_adapt]= bbci_adaptation_cspPlusLap(CLS, data_adapt, marker, varargin)
 %BBCI_ADAPTATIOIN_CSP_PLUS_LAP - Reselect Laplacian channels (additionally to CSP) and retrain classifier
 %
 %Technique described in
@@ -40,22 +40,16 @@ function [CLS, data_adapt]= bbci_adaptation_csp_plus_lap(CLS, data_adapt, marker
 
 
 if ischar(marker) && strcmp(marker, 'init'),
-  opt= propertylist2struct(varargin{:});
-  opt= set_defaults(opt, ...
-                    'ival', [], ...
-                    'scaling', 1, ...
-                    'mrk_start', [],...
-                    'mrk_end', [], ...
-                    'buffer', 80, ...
-                    'area', CLS.opt.area, ...
-                    'nlaps_per_area', CLS.opt.nlaps_per_area);
-
-  if isempty(opt.ival),
-    error('you need to define the adaptation interval');
-  end
-  if ~iscell(opt.mrk_start),
-    error('you need to define .mrk_start of adaptation parameters as cell');
-  end
+  props= {'ival'         []                           '!DOUBLE[2]'
+          'scaling'      1                            '!BOOL'
+          'mrk_start'    {}                           '!CELL'
+          'mrk_end'      []                           'INT'
+          'buffer'       80                           '!INT'
+          'area'         CLS.opt.area                 'CELL'
+          'nlaps_per_area'   CLS.opt.nlaps_per_area   '!INT'
+         };
+  opt= opt_proplistToStruct(varargin{:});
+  opt= opt_setDefaults(opt, props, 1);
   data_adapt.opt= opt;
   data_adapt.trial_start= NaN;
   data_adapt.lastcheck= -inf;

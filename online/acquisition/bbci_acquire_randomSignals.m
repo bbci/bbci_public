@@ -53,7 +53,7 @@ if isequal(varargin{1}, 'init'),
           'marker_mode'   'global'       'CHAR(global pyff_udp)'
           'realtime'      0              '!DOUBLE[1]'
          };
-  state= set_defaults(state, props);
+  state= opt_setDefaults(state, props, 1);
   state.nChannels= length(state.clab);
   state.blocksize_sa= ceil(state.blocksize*state.fs/1000);
   state.blocksize= state.blocksize_sa/state.fs*1000;
@@ -84,7 +84,7 @@ else
       varargout= output(1:nargout);
       return;
     end
-    cntx= state.amp*randn(state.blocksize_sa, state.nChannels);
+    cntx= state.amplitude*randn(state.blocksize_sa, state.nChannels);
     state.nsamples= state.nsamples + state.blocksize_sa;
     switch(state.marker_mode),
      case '',

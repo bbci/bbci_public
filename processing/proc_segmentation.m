@@ -58,6 +58,7 @@ function [epo, complete]= proc_segmentation(cnt, mrk, ival, varargin)
 
 % 02-2009 Benjamin Blankertz
 
+
 props= {'CLab'                       '*'       'CHAR|CELL{CHAR}'
         'DiscardIncompleteSegments'  1,        'BOOL'};
 
