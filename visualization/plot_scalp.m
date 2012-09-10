@@ -10,7 +10,7 @@ function [H, Ctour]= plot_scalp(mnt, w, varargin)
 % H= plot_scalp(MNT, W, <OPT>)
 %
 %Input:
-% MNT: An electrode montage, see get_electrodePositions
+% MNT: An electrode montage, see mnt_setElectrodePositions
 % W:   Vector to be displayed as scalp topography. The length of W must
 %      concide with the length of MNT.clab or the number of non-NaN
 %      entries of MNT.x, or OPT must include a field 'WClab'.

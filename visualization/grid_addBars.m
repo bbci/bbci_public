@@ -137,7 +137,7 @@ end
 if isnumeric(opt.Channels)
   ax= opt.Channels;
 else
-  ax= grid_getSubplots(opt.Channels);
+  ax= gridutil_getSubplots(opt.Channels);
 end
 
 %% For image_localColormap we have to determine the CLim in advance.
@@ -247,7 +247,7 @@ set(H.ax, 'xLim',[0.5 size(fv.x,1)+0.5], 'xTick',[], 'yTick',[], ...
           'CLim',opt.CLim);
 
 if opt.MoveBack,
-  move_objectBack(H.ax);
+  obj_moveBack(H.ax);
 end
 
 if ~isempty(opt.HScale),

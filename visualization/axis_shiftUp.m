@@ -1,5 +1,5 @@
-function shift_axesUp(up, hc)
-%shift_axesUp(<up=0.1, hc>)
+function axis_shiftUp(up, hc)
+%axis_shiftUp(<up=0.1, hc>)
 
 if ~exist('up','var') | isempty(up), up=0.1; end
 if ~exist('hc','var'), hc= get(gcf, 'children'); end

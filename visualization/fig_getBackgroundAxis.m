@@ -21,11 +21,11 @@ elseif create,
              'tickLength',[0 0], 'XLim',[0 1], 'YLim',[0 1]);
 %% If you want to have a non transparent background (e.g. for printing)
 %% you can do the following
-%% >> set(ax, 'Visible','on'); move_objectBack(ax);
+%% >> set(ax, 'Visible','on'); obj_moveBack(ax);
 %% To this end we set tickLength to 0.
 else
   h_bax= [];
 end
 if ~isempty(h_bax),
-  get_backAxes(h_bax);
+  axis_getQuitely(h_bax);
 end

@@ -1,6 +1,6 @@
-function H= visualize_scoreMatrix(epo_r, ival, varargin)
+function H= plot_scoreMatrix(epo_r, ival, varargin)
 
-props = {'mnt',             get_electrodePositions(epo_r.clab),     'STRUCT';
+props = {'mnt',             mnt_setElectrodePositions(epo_r.clab),     'STRUCT';
          'VisuScalps',      1,                                      'BOOL';
          'colormap',        cmap_posneg(51),                        'CHAR|DOUBLE[- 3]';
          'MarkClab',        {'Fz','FCz','Cz','CPz','Pz','Oz'},      'CELL{CHAR}';
@@ -14,7 +14,7 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-epo_r= proc_selectChannels(epo_r, get_scalpChannels); %% order channels
+epo_r= proc_selectChannels(epo_r, util_scalpChannels); %% order channels
 clf;
 colormap(opt.Colormap);
 if opt.VisuScalps,

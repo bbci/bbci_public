@@ -10,8 +10,8 @@ function H= grid_imagesc(epo, mnt, varargin)
 % OPT: property/value list or struct of options with fields/properties:
 %  .ScaleGroup -  groups of channels, where each group should
 %                 get the same y limits, cell array of cells,
-%                 default {get_scalpChannels, {'EMG*'},{'EOGh'},{'EOGv'}};
-%                 As group you can also use get_scalpChannels (without quotes!)
+%                 default {util_scalpChannels, {'EMG*'},{'EOGh'},{'EOGv'}};
+%                 As group you can also use util_scalpChannels (without quotes!)
 %                 or 'all' (with quotes!).
 %  .ScalePolicy - says how the y limits are chosen:
 %                 'auto': choose automatically,
@@ -25,7 +25,7 @@ function H= grid_imagesc(epo, mnt, varargin)
 %                 [lower upper]: define y limits;
 %                 .scapePolicy is usually a cell array, where
 %                 each cell corresponds to one .ScaleGroup. Otherwise it
-%                 applies only to the first group (get_scalpChannels by defaults).
+%                 applies only to the first group (util_scalpChannels by defaults).
 %  .ScaleUpperLimit - values (in magnitude) above this limit are not 
 %                 considered, when choosing the y limits, default inf
 %  .ScaleLowerLimit - values (in magnitude) below this limit are not 
@@ -81,7 +81,7 @@ props = {'YDir',                            'normal',               'CHAR';
          'ScaleShowOrientation',            1,                      'BOOL';
          'PlotStd',                         0,                      'BOOL'};
 
-props_channel = plot_channel1D;
+props_channel = plotutil_channel1D;
 
 if nargin==0,
   H= opt_catProps(props, props_channel);
@@ -120,7 +120,7 @@ end
 %        opt_overrideIfDefault(opt, isdefault, ...
 %                              'ShrinkAxes', 0.8);
 %  end
-if isdefault.shift_axesUp & ...
+if isdefault.axis_shiftUp & ...
       (isfield(opt, 'xTick') & ~isempty(opt.xTick)), ...
       opt.ShiftAxesUp= 0.05;
 end
@@ -141,7 +141,7 @@ if ~iscell(opt.ScalePolicy),
   opt.ScalePolicy= {opt.ScalePolicy};
 end
 if ~isfield(opt, 'ScaleGroup'),
-  grd_clab= get_clabOfGrid(mnt);
+  grd_clab= gridutil_getClabOfGrid(mnt);
   if strncmp(opt.ScalePolicy, 'individual', length('individual')),
     opt.ScaleGroup= grd_clab;
     pol= opt.ScalePolicy(length('individual')+1:end);
@@ -152,7 +152,7 @@ if ~isfield(opt, 'ScaleGroup'),
     end
     opt.ScalePolicy= repmat({pol}, size(grd_clab));
   else
-    scalp_idx= get_scalpChannels(epo);
+    scalp_idx= util_scalpChannels(epo);
     if isempty(scalp_idx),
       opt.ScaleGroup= {intersect(grd_clab, epo.clab)};
     else
@@ -172,7 +172,7 @@ if ~isfield(opt, 'ScaleGroup'),
     end
   end
 elseif isequal(opt.ScaleGroup, 'all'),
-  opt.ScaleGroup= {get_clabOfGrid(mnt)};
+  opt.ScaleGroup= {gridutil_getClabOfGrid(mnt)};
 elseif ~iscell(opt.ScaleGroup),
   opt.ScaleGroup= {opt.ScaleGroup};
 end
@@ -294,7 +294,7 @@ for ih = 1:s(4)
   
   for ia= 1:nDisps,
     ic= DisplayChannels(ia);
-    pos = get_axisGridPos(mnt, ic);
+    pos = gridutil_getAxisPos(mnt, ic);
     if sum(isnan(pos)) == 0
       H{ih}.ax(ia)= axes('position', pos);
 
@@ -338,7 +338,7 @@ for ih = 1:s(4)
   %      if ic==DisplayChannels(1),
   %        opt_plot{2}= 0;
   %        H{ih}.leg= H{ih}.chan(ia).leg;
-  %        leg_pos= get_axisGridPos(mnt, 0);
+  %        leg_pos= gridutil_getAxisPos(mnt, 0);
   %        if ~any(isnan(leg_pos)),
   %          leg_pos_orig= get(H{ih}.leg, 'position');
   %          if leg_pos(4)>leg_pos_orig(4),
@@ -366,7 +366,7 @@ for ih = 1:s(4)
     H{ih}.scale= grid_addScale(mnt, opt);
   end
 
-    pos = get_axisGridPos(mnt, ic+1);
+    pos = gridutil_getAxisPos(mnt, ic+1);
     pos(3) = 0.075*pos(3);
     H{ih}.ax(ia+1) = axes('position', pos);
     set(gca, 'YTicklabel', '', 'XTicklabel', '')
@@ -374,7 +374,7 @@ for ih = 1:s(4)
     axes(H{ih}.ax(fa(1)))
     cb = Colorbar(H{ih}.ax(ia+1));
     set(get(cb, 'ylabel'), 'String', opt.CUnit)
-%    plot_gridOverPatches('Axes',H{ih}.ax);
+%    plotutil_gridOverPatches('Axes',H{ih}.ax);
   
   if ~strcmp(opt.TitleDir, 'none'),
     tit= '';
@@ -405,7 +405,7 @@ for ih = 1:s(4)
   end
   
   if ~isempty(opt.ShiftAxesUp) & opt.ShiftAxesUp~=0,
-    shift_axesUp(opt.ShiftAxesUp);
+    axis_shiftUp(opt.ShiftAxesUp);
   end
   
   if nargout==0,

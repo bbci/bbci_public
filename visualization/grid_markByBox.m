@@ -36,7 +36,7 @@ if isempty(opt.Linespec),
 end
 
 old_ax= gca;
-hsp= grid_getSubplots(opt.clab);
+hsp= gridutil_getSubplots(opt.clab);
 for ii= 1:length(hsp),
   ih= hsp(ii);
   axes(ih);
@@ -51,5 +51,5 @@ for ii= 1:length(hsp),
                       opt.Linespec{:})';
   H(ii).box= line(fractiles([2 4 4 2 2]), yy([1 1 2 2 1]), opt.Linespec{:});
 end
-move_objectBack(struct2array(H));
+obj_moveBack(struct2array(H));
 Axes(old_ax);

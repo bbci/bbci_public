@@ -1,9 +1,9 @@
-function h_cb= plot_colorbarAside(varargin)
+function h_cb= plotutil_colorbarAside(varargin)
 %PLOT_COLORBARASIDE - Add a colorbar without shrining the axis
 %
 %Synopsis:
-% H_CB= plot_colorbarAside(<OPT>)
-% H_CB= plot_colorbarAside(ORIENTATION, <OPT>)
+% H_CB= plotutil_colorbarAside(<OPT>)
+% H_CB= plotutil_colorbarAside(ORIENTATION, <OPT>)
 %
 %Arguments:
 % ORIENTATION: see OPT.Orientation
@@ -16,7 +16,7 @@ function h_cb= plot_colorbarAside(varargin)
 % HCB: handle of the colorbar
 %
 %Note:
-% So far, plot_colorbarAside is compatible with Matlab 6, but it allows
+% So far, plotutil_colorbarAside is compatible with Matlab 6, but it allows
 % the new orientation modes of Matlab 7.
 
 % blanker@cs.tu-berlin.de

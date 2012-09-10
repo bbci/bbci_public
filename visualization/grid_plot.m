@@ -10,8 +10,8 @@ function H= grid_plot(epo, mnt, varargin)
 % OPT: property/value list or struct of options with fields/properties:
 %  .ScaleGroup -  groups of channels, where each group should
 %                 get the same y limits, cell array of cells,
-%                 default {get_scalpChannels, {'EMG*'},{'EOGh'},{'EOGv'}};
-%                 As group you can also use get_scalpChannels (without quotes!)
+%                 default {util_scalpChannels, {'EMG*'},{'EOGh'},{'EOGv'}};
+%                 As group you can also use util_scalpChannels (without quotes!)
 %                 or 'all' (with quotes!).
 %  .ScalePolicy - says how the y limits are chosen:
 %                 'auto': choose automatically,
@@ -25,7 +25,7 @@ function H= grid_plot(epo, mnt, varargin)
 %                 [lower upper]: define y limits;
 %                 .scapePolicy is usually a cell array, where
 %                 each cell corresponds to one .ScaleGroup. Otherwise it
-%                 applies only to the first group (get_scalpChannels by defaults).
+%                 applies only to the first group (util_scalpChannels by defaults).
 %  .ScaleUpperLimit - values (in magnitude) above this limit are not 
 %                 considered, when choosing the y limits, default inf
 %  .ScaleLowerLimit - values (in magnitude) below this limit are not 
@@ -88,7 +88,7 @@ props= {'YDir',                           'normal',               'CHAR';
         'YLim',                           [],                     'DOUBLE[2]';
         'PlotStd',                        0,                      'BOOL'};
 
-props_channel = plot_channel1D;
+props_channel = plotutil_channel1D;
 props_addScale = grid_addScale;
 
 if nargin==0,
@@ -153,7 +153,7 @@ if ~iscell(opt.ScalePolicy),
   opt.ScalePolicy= {opt.ScalePolicy};
 end
 if ~isfield(opt, 'ScaleGroup'),
-  grd_clab= get_clabOfGrid(mnt);
+  grd_clab= gridutil_getClabOfGrid(mnt);
   if strncmp(opt.ScalePolicy, 'individual', length('individual')),
     opt.ScaleGroup= grd_clab;
     pol= opt.ScalePolicy(length('individual')+1:end);
@@ -164,7 +164,7 @@ if ~isfield(opt, 'ScaleGroup'),
     end
     opt.ScalePolicy= repmat({pol}, size(grd_clab));
   else
-    scalp_idx= get_scalpChannels(epo);
+    scalp_idx= util_scalpChannels(epo);
     if isempty(scalp_idx),
       opt.ScaleGroup= {intersect(grd_clab, epo.clab)};
     else
@@ -189,7 +189,7 @@ if ~isfield(opt, 'ScaleGroup'),
     end
   end
 elseif isequal(opt.ScaleGroup, 'all'),
-  opt.ScaleGroup= {get_clabOfGrid(mnt)};
+  opt.ScaleGroup= {gridutil_getClabOfGrid(mnt)};
 elseif ~iscell(opt.ScaleGroup),
   opt.ScaleGroup= {opt.ScaleGroup};
 end
@@ -332,9 +332,9 @@ for ia= 1:nDisps,
   ic= DisplayChannels(ia);
   if ~isempty(opt.Axes),
     H.ax(ia)= opt.Axes(ic);
-    get_backAxes(H.ax(ia));
+    axis_getQuitely(H.ax(ia));
   else
-    H.ax(ia)= get_backAxes('position', get_axisGridPos(mnt, ic));
+    H.ax(ia)= axis_getQuitely('position', gridutil_getAxisPos(mnt, ic));
   end
   cchan = plot_channel(epo, mnt.clab{ic}, opt_channel, opt_plot{:}, ...
                           'YLim', yLim(ch2group(ia),:), ...
@@ -345,7 +345,7 @@ for ia= 1:nDisps,
   if ic==DisplayChannels(1),
     opt_plot{2}= 0;
     H.leg= H.chan(ia).leg;
-    leg_pos= get_axisGridPos(mnt, 0);
+    leg_pos= gridutil_getAxisPos(mnt, 0);
     if ~any(isnan(leg_pos)) && ~isnan(H.leg),
       leg_pos_orig= get(H.leg, 'position');
       if leg_pos(4)>leg_pos_orig(4),
@@ -375,7 +375,7 @@ if isfield(mnt, 'scale_box') && all(~isnan(mnt.scale_box)),
   H.scale= grid_addScale(mnt, opt_addScale);
 end
 if opt.GridOverPatches,
-  plot_gridOverPatches('Axes',H.ax);
+  plotutil_gridOverPatches('Axes',H.ax);
 end
 
 if ~isdefault.XTickAxes,
@@ -410,7 +410,7 @@ if ~strcmp(opt.TitleDir, 'none'),
 end
 
 if ~isempty(opt.ShiftAxesUp) && opt.ShiftAxesUp~=0,
-  shift_axesUp(opt.ShiftAxesUp);
+  axis_shiftUp(opt.ShiftAxesUp);
 end
 
 if opt.HeadMode,
@@ -421,7 +421,7 @@ if opt.HeadMode,
   H.scalpOutline= plot_scalpOutline(mnt, opt.HeadModeSpec{:}, 'DrawEars', 1);
   set(H.scalpOutline.ax, 'Visible','off');
   delete(H.scalpOutline.label_markers);
-  move_objectBack(H.scalpOutline.ax);
+  obj_moveBack(H.scalpOutline.ax);
 end
 
 if nargout==0,

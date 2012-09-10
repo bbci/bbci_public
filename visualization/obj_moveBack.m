@@ -1,5 +1,5 @@
-function move_objectBack(ho)
-%move_objectBack(<ho>)
+function obj_moveBack(ho)
+%obj_moveBack(<ho>)
 %
 % IN  ho - handle of graphic object, default: last plotted object
 
@@ -7,7 +7,7 @@ if ~exist('ho', 'var'),
   ho= gco;
 elseif length(ho)>1,
   for h= ho(:)',
-    move_objectBack(h);
+    obj_moveBack(h);
   end
   return;
 end

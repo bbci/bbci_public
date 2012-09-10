@@ -1,8 +1,8 @@
-function chans= get_scalpChannels(clab)
-%LABEL_LIST= get_scalpChannels
+function chans= util_scalpChannels(clab)
+%LABEL_LIST= util_scalpChannels
 % or
-%CHAN_IDX= get_scalpChannels(CLAB)
-%CHAN_IDX= get_scalpChannels(DAT)
+%CHAN_IDX= util_scalpChannels(CLAB)
+%CHAN_IDX= util_scalpChannels(DAT)
 %
 % Output:
 % LABEL_LIST is a list of electrode positions on the scalp

@@ -1,7 +1,7 @@
-function [x,y,z,clab]= calc_pos_ext_10_10
-%[x,y,z,clab]= calc_pos_ext_10_10;
+function [x,y,z,clab]= mntutil_posExt1010
+%[x,y,z,clab]= mntutil_posExt1010;
 % or
-%posSystem= calc_pos_ext_10_10;
+%posSystem= mntutil_posExt1010;
 
 clab= {'Fpz', ...
        'Fp1','AFp1','AFp2','Fp2', ...

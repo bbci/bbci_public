@@ -1,5 +1,5 @@
-function h=plot_gridOverPatches(varargin)
-%plot_gridOverPatches
+function h=plotutil_gridOverPatches(varargin)
+%plotutil_gridOverPatches
 %
 % replots x- and y-grid such that it is shown on top of patches
 
@@ -23,7 +23,7 @@ for ax= opt.Axes(:)',
   if strcmp(opt.xGrid,'on') || ...
         (isempty(opt.xGrid) && strcmp(get(ax,'XGrid'), 'on')),
     xTick= get(ax, 'xTick');
-    backaxes(ax);
+    visutil_backaxes(ax);
     h= line(repmat(xTick,[2 1]), ylim');
     set(h, 'color','k', 'lineStyle',gridLineStyle, 'handleVisibility','off');
     set(ax, 'XGrid','off', 'XLimMode','Manual', 'XTickMode','Manual');
@@ -31,7 +31,7 @@ for ax= opt.Axes(:)',
   if strcmp(opt.yGrid,'on') || ...
         (isempty(opt.yGrid) && strcmp(get(ax,'YGrid'), 'on')),
     yTick= get(ax, 'yTick');
-    backaxes(ax);
+    visutil_backaxes(ax);
     h= line(xlim', repmat(yTick,[2 1]));
     set(h, 'color','k', 'lineStyle',gridLineStyle, 'handleVisibility','off');
     set(ax, 'YGrid','off', 'YLimMode','Manual', 'YTickMode','Manual');

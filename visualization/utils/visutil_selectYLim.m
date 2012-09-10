@@ -1,4 +1,4 @@
-function YLim= select_yLim(h, varargin)
+function YLim= visutil_selectYLim(h, varargin)
 
 props = {'Policy',          'auto'          '!CHAR(auto tightest tight)';
          'TightenBorder'     0.03        	'DOUBLE';
@@ -19,11 +19,11 @@ switch(opt.Policy),
  case 'auto',
   YLim= get(h, 'YLim');
  case 'tightest',
-  backaxes(h);
+  visutil_backaxes(h);
   axis('tight');
   YLim= get(h, 'YLim');
  case 'tight',
-  backaxes(h);
+  visutil_backaxes(h);
   axis('tight');
   yl= get(h, 'YLim');
   %% add border not to make it too tight:

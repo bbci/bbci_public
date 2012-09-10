@@ -6,10 +6,10 @@ function hl = grid_markTimePoint(tp, chans, varargin)
 
 if ~exist('chans','var'), chans=[]; end
 
-hsp= grid_getSubplots(chans);
+hsp= gridutil_getSubplots(chans);
 for ih= hsp,
   axes(ih);
   yl= get(ih, 'yLim');
   hl= line([tp tp], yl, varargin{:});
-  move_objectBack(hl);
+  obj_moveBack(hl);
 end
