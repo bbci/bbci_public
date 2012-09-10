@@ -217,6 +217,15 @@ elseif str_matchesHead('PROPLIST', typeDefinition),
   else
     ok= 0;
   end
+elseif str_matchesHead('PROPSPEC', typeDefinition),
+  if isempty(variable) || ...
+        ( iscell(variable) && ndims(variable)==2 && ...
+          (size(variable,2)==2 || size(variable,2)==3) ),
+    ok= all(cellfun(@ischar, variable(:,1))) && ...
+        all(cellfun(@ischar, variable(:,3)));
+  else
+    ok= 0;
+  end
 else
   ok= 0;
   msg= sprintf('Unknown type: %s in variable ''%s''', typeDefinition, propname);

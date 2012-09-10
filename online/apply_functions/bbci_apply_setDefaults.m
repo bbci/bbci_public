@@ -34,7 +34,7 @@ props= {'source'          struct   'STRUCT'
         'adaptation'      struct   'STRUCT'
         'quit_condition'  struct   'STRUCT'
        };
-bbci= opt_setDefaults(bbci, props, 1);
+bbci= opt_setDefaults('bbci', props);
 
 
 props= {'acquire_fcn'           @bbci_acquire_bv   '!FUNC'
@@ -47,7 +47,7 @@ props= {'acquire_fcn'           @bbci_acquire_bv   '!FUNC'
         'record_param'          {}                 'CELL'
         'log'                   struct             'STRUCT'
        };
-[bbci.source, isdefault_source]= opt_setDefaults(bbci.source, props, 1);
+[bbci.source, isdefault_source]= opt_setDefaults('bbci.source', props);
 if length(bbci.source)==1 && ...
       isequal(bbci.source.acquire_fcn, @bbci_acquire_bv) && ...
       isdefault_source.acquire_param,
@@ -59,13 +59,13 @@ for k= 1:length(bbci.source)
           'markers'        1           '!BOOL'
           'time_fmt'       '%08.3fs'   'CHAR'
          };
-  bbci.source(k).log= opt_setDefaults(bbci.source(k).log, props, 1);
+  bbci.source(k).log= opt_setDefaults('bbci.source(k).log', props);
 end
 
 
 props= {'queue_length'   100   '!INT'
        };
-bbci.marker= opt_setDefaults(bbci.marker, props, 1);
+bbci.marker= opt_setDefaults('bbci.marker', props);
 
 
 props= {'source'        1         '!INT'
@@ -75,7 +75,8 @@ props= {'source'        1         '!INT'
         'fcn'           []        'FUNC'
         'param'         {}        'CELL'
        };
-bbci.signal= opt_setDefaults(bbci.signal, props, 1);
+bbci.signal= opt_setDefaults('bbci.signal', props);
+opt_checkExclusiveProps('bbci.signal', {'proc','fcn'; 'proc','param'});
 bbci.signal= bbciutil_transformProc2FcnParam(bbci.signal);
 
 
@@ -85,7 +86,8 @@ props= {'signal'         1      '!INT'
         'param'          {}     'CELL'
         'ival'           []     '!DOUBLE[2]'
        };
-bbci.feature= opt_setDefaults(bbci.feature, props, 1);
+bbci.feature= opt_setDefaults('bbci.feature', props);
+opt_checkExclusiveProps('bbci.feature', {'proc','fcn'; 'proc','param'});
 bbci.feature= bbciutil_transformProc2FcnParam(bbci.feature);
 
 
@@ -93,7 +95,7 @@ props= {'feature'     1                             '!INT'
         'fcn'         @apply_separatingHyperplane   'FUNC'
         'C'           struct                        '!STRUCT'
        };
-bbci.classifier= opt_setDefaults(bbci.classifier, props, 1);
+bbci.classifier= opt_setDefaults('bbci.classifier', props);
 
 
 props= {'classifier'     1      '!INT'
@@ -101,7 +103,8 @@ props= {'classifier'     1      '!INT'
         'fcn'            ''     'FUNC'
         'param'          {}     'CELL'
         'condition'      []     'STRUCT(marker)|STRUCT(interval)'};
-bbci.control= opt_setDefaults(bbci.control, props, 1);
+bbci.control= opt_setDefaults('bbci.control', props);
+opt_checkExclusiveProps('bbci.control', {'proc','fcn'; 'proc','param'});
 
 for ic= 1:length(bbci.control),
   cfy_list= bbci.control(ic).classifier;
@@ -117,7 +120,7 @@ for ic= 1:length(bbci.control),
       ivals= cat(1, bbci.feature(feat_list).ival);
       props= {'overrun'    max(ivals(:,2))   '!DOUBLE[1]'};
       bbci.control(ic).condition= ...
-          opt_setDefaults(bbci.control(ic).condition, props, 1);
+          opt_setDefaults('bbci.control(ic).condition', props);
     else
       if ~isfield(bbci.control(ic).condition, 'interval'),
         error(['If bbci.control.condition is nonempty, it must either ' ...
@@ -137,7 +140,7 @@ props= {'control'     1             'INT'
         'host'        '127.0.0.1'   'CHAR'
         'port'        12345         'INT'
        };
-[bbci.feedback, isdefault]=  opt_setDefaults(bbci.feedback, props, 1);
+[bbci.feedback, isdefault]=  opt_setDefaults('bbci.feedback', props);
 % defaults for bbci.feedback.log are set below
 % (because it refers to bbci.log)
 global VP_SCREEN
@@ -152,7 +155,7 @@ for k= 1:length(bbci.feedback),
             'trigger_param'   {}           'CELL'
            };
   end
-  bbci.feedback(k).opt= opt_setDefaults(bbci.feedback(k).opt, props, 1);
+  bbci.feedback(k).opt= opt_setDefaults('bbci.feedback(k).opt', props);
 end
 
 
@@ -168,7 +171,9 @@ props= {'active'            1                   'BOOL'
         'load_classifier'   0                   '!BOOL'
         'log'               struct('output','screen')   'STRUCT(output)'
        };
-[bbci.adaptation, adapt_default]= opt_setDefaults(bbci.adaptation, props, 1);
+[bbci.adaptation, adapt_default]= opt_setDefaults('bbci.adaptation', props);
+opt_checkExclusiveProps('bbci.adaptation', {'proc','fcn'; 'proc','param'});
+
 % Assign filename according to the name of the adaptation function:
 for k= 1:length(bbci.adaptation),
   if adapt_default.file && ~isempty(bbci.adaptation(k).fcn),
@@ -207,7 +212,7 @@ props= {'output'       default_output    'BOOL|CHAR(screen file screen&file)'
         'classifier'   0                 '!BOOL'
         'markers'      0                 '!BOOL'
        };
-bbci.log= opt_setDefaults(bbci.log, props, 1);
+bbci.log= opt_setDefaults('bbci.log', props);
 if ~strcmp(bbci.log.header{1}, header_line),
   dim= min(find(size(bbci.log.header)>1));
   if isempty(dim), 
@@ -230,7 +235,7 @@ for k= 1:length(bbci.feedback),
           'header'       {header_line}     'CELL{CHAR}'
           'force_overwriting'   0          '!BOOL'
          };
-  bbci.feedback(k).log= opt_setDefaults(bbci.feedback(k).log, props, 1);
+  bbci.feedback(k).log= opt_setDefaults('bbci.feedback(k).log', props);
   if isempty(bbci.feedback(k).log.file),
     if strcmp(bbci.feedback(k).receiver, 'matlab'),
       bbci.feedback(k).log.file= [func2str(bbci.feedback(k).fcn) no_str '_log'];
@@ -247,4 +252,4 @@ end
 props= {'running_time'    inf    '!DOUBLE[1]'
         'marker'          []     'INT|CELL{CHAR}'
        };
-bbci.quit_condition= opt_setDefaults(bbci.quit_condition, props, 1);
+bbci.quit_condition= opt_setDefaults('bbci.quit_condition', props);

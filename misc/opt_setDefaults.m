@@ -38,6 +38,23 @@ function [opt, isdefault]= opt_setDefaults(opt, props, check)
 % 06-2012 Benjamin Blankertz
 
 
+misc_checkType(opt, 'STRUCT|CHAR');
+misc_checkType(props, 'PROPSPEC');
+misc_checkTypeIfExists('check', 'BOOL');
+
+if nargin<3,
+  check= 0;
+end
+
+if ischar(opt),
+  structname= opt;
+  opt= evalin('caller', opt);
+  check= 1;
+else
+  structname= '';
+end
+
+
 % Perform a case correction in the STRUCT opt, and
 % Set 'isdefault' to ones for the field already present in 'opt'
 isdefault= [];
@@ -68,6 +85,9 @@ for k= 1:size(props,1),
   end
 end
 
-if nargin>=3 && check,
-  opt_checkProplist(opt, props);
+if check,
+  if isempty(structname),
+    structname= inputname(1);
+  end
+  opt_checkProplist(opt, props, structname);
 end
