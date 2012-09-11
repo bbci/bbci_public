@@ -33,33 +33,30 @@ if nargin>0 && (isstruct(varargin{1}) || isempty(varargin{1})),
   varargin(1)= [];
 end
 
-bbci= set_defaults(bbci, ...
-                   'calibrate', struct);
+bbci= opt_setDefaults(bbci, {'calibrate'   struct   'STRUCT'});
 
-bbci.calibrate= set_defaults(bbci.calibrate, ...
-                             'save', struct);
-
-bbci.calibrate.save= set_defaults(bbci.calibrate.save, ...
-                                  'file', 'bbci_classifier', ...
-                                  varargin{:});
+bbci.calibrate= opt_setDefaults(bbci.calibrate, {'save'  struct  'STRUCT'});
+bbci.calibrate.save= struct_copyFields(bbci.calibrate.save, ...
+                                       struct(varargin{:}));
 
 if isfield(bbci.calibrate, 'folder'),
   default_save_folder= bbci.calibrate.folder;
 else
-  if fileutil_isAbsolutePath(bbci.calibrate.save.file),
-    default_save_folder= '';
-  else
-    default_save_folder= TODAY_DIR;
-  end
+  default_save_folder= TODAY_DIR;
 end
 
-bbci.calibrate.save= set_defaults(bbci.calibrate.save, ...
-                                  'folder', default_save_folder, ...
-                                  'overwrite', 1, ...
-                                  'raw_data', 0, ...
-                                  'data', 'separately', ...
-                                  'figures', 0, ...
-                                  'figures_spec', {'paperSize','auto'});
+props= {'file'   'bbci_classifier'    'CHAR'
+        'folder'        default_save_folder    'CHAR'
+        'overwrite'     1                      '!BOOL'
+        'raw_data'      0                      '!BOOL'
+        'data'          'separately'           'CHAR(separately combined)'
+        'figures'       0                      '!BOOL'
+        'figures_spec'  {'paperSize','auto'}   'PROPLIST'
+       };
+bbci.calibrate.save= opt_setDefaults('bbci.calibrate.save', props);
+if fileutil_isAbsolutePath(bbci.calibrate.save.file),
+  bbci.calibrate.save.folder= '';
+end
 
 % Force a clean division into folder name and file name:
 [pat,file]= fileparts(bbci.calibrate.save.file);

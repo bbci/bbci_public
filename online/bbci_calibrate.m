@@ -25,18 +25,18 @@ data.log= bbci_log_open(BC.log);
 bbci_log_write(data, '#Calibration files from folder <%s>:', BC.folder);
 file_counter = 1;
 for k= 1:length(data.fileinfo),
-    for f = 1:length(data.fileinfo{k}),
-      msg= sprintf('File %d: %s <%s>, size %d', file_counter, data.fileinfo{k}(f).name, ...
-                   data.fileinfo{k}(f).date, data.fileinfo{k}(f).bytes);
-      bbci_log_write(data, ['#' msg]);
-      file_counter = file_counter + 1;
-    end
+  for f = 1:length(data.fileinfo{k}),
+    msg= sprintf('File %d: %s <%s>, size %d', file_counter, data.fileinfo{k}(f).name, ...
+                 data.fileinfo{k}(f).date, data.fileinfo{k}(f).bytes);
+    bbci_log_write(data, ['#' msg]);
+    file_counter = file_counter + 1;
+  end
 end
 bbci_log_write(data, '\n#Settings of BBCI:');
-bbci_prettyPrint(data.log.fid, copy_fields(bbci, 'calibrate'));
+bbci_prettyPrint(data.log.fid, struct_copyFields(bbci, 'calibrate'));
 
 % Store original values for recovery via bbci_calibrate_reset
-if ~isfield(bbci, 'default_settings'),
+if isempty(bbci.calibrate.default_settings),
   bbci.calibrate.default_settings= bbci.calibrate.settings;
 end
 
