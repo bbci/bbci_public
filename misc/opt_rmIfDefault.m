@@ -1,4 +1,4 @@
-function opt= opt_rmifdefault(opt, isdefault)
+function opt= opt_rmIfDefault(opt, isdefault)
 %OPT_RMIFDEFAULT - Remove default-valued fields of opt-struct
 %
 %Usage:
