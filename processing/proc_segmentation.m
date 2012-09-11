@@ -102,10 +102,13 @@ if size(ival,1)>1,
 end
 
 si= 1000/cnt.fs;
+TIMEEPS= si/100;
 nMarkers= length(mrk.time);
 len_sa= round(diff(ival)/si);
-pos_zero= ceil(mrk.time/si);
-pos_end= pos_zero + ceil(ival(2)/si);
+pos_zero= ceil((mrk.time-TIMEEPS)/si);
+core_ival= [ceil(ival(1)/si) floor(ival(2)/si)];
+addone= diff(core_ival)+1 < len_sa;
+pos_end= pos_zero + floor(ival(2)/si) + addone;
 IV= [-len_sa+1:0]'*ones(1,nMarkers) + ones(len_sa,1)*pos_end;
 
 complete= find(all(IV>=1 & IV<=size(cnt.x,1),1));
@@ -127,7 +130,9 @@ end
 clear IV
 
 epo.x= permute(epo.x, [1 3 2]);
-epo.t= linspace(si*ceil(ival(1)/si), si*floor(ival(2)/si), len_sa);
+timeival= si*(core_ival + [1 addone]);
+%timeival= round(10000*timeival)/10000;
+epo.t= linspace(timeival(1), timeival(2), len_sa);
 
 basic_fields_of_mrk= {'y','className','~event'};
 fields_to_copy_from_mrk= intersect(fieldnames(mrk), basic_fields_of_mrk);
