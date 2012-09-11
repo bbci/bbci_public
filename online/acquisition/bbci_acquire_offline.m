@@ -64,8 +64,7 @@ if isequal(varargin{1}, 'init'),
   end
   % --
   state.mrk= mrk;
-  TIME_EPS= 0.001;
-  state.mrk.time= mrk.time - TIME_EPS;
+  state.mrk.time= mrk.time;
   state.start_time= tic;
   output= {state};
 elseif length(varargin)~=1,
@@ -92,12 +91,11 @@ else
       return;
     end
     cntx= state.cnt.x(state.cnt_idx, :);
-    mrk_idx= find(state.mrk.time>(state.cnt_idx(1)-1)/state.fs*1000 & ...
-                  state.mrk.time<=(state.cnt_idx(end)-1)/state.fs*1000);
-    if state.cnt_idx(end)>6520,
-      keyboard
-    end
-    mrkTime= state.mrk.time(mrk_idx);
+    si= 1000/state.fs;
+    TIMEEPS= si/100;
+    mrk_idx= find(state.mrk.time-TIMEEPS > (state.cnt_idx(1)-1)*si & ...
+                  state.mrk.time-TIMEEPS <= state.cnt_idx(end)*si);
+    mrkTime= state.mrk.time(mrk_idx) - (state.cnt_idx(1)-1)*si;
     mrkDesc= state.mrk.desc(mrk_idx);         
     state.cnt_idx= state.cnt_idx + state.cnt_step;
     output= {cntx, mrkTime, mrkDesc, state};

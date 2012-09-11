@@ -1,5 +1,5 @@
 BC= [];
-BC.fcn= @bbci_calibrate_ERP_Speller;
+BC.fcn= @bbci_calibrate_ERP_Speller_tiny;
 BC.settings.nClasses= 6;
 BC.folder= fullfile(EEG_RAW_DIR, 'VPibq_11_05_18');
 BC.file= 'calibration_CenterSpellerFixedSequenceVPibq';
@@ -33,11 +33,12 @@ log_format= '%fs | M(%u) | %fs | [%f] | %s';
     textread(data.log.filename, log_format, ...
              'delimiter','','commentstyle','shell');
 
-isequal(marker_desc, calib.mrk.toe')
+isequal(marker_desc, calib.mrk.desc')
 
 ref_ival= bbci.feature.proc{1}{2};
 cfy_ival= bbci.feature.proc{2}{2};
-epo= cntToEpo(calib.cnt, calib.mrk, bbci.feature.ival, 'clab', bbci.signal.clab);
+epo= proc_segmentation(calib.cnt, calib.mrk, bbci.feature.ival, ...
+                       'clab', bbci.signal.clab);
 fv= proc_baseline(epo, ref_ival, 'beginning_exact');
 fv= proc_jumpingMeans(fv, cfy_ival);
 out= applyClassifier(fv, 'LDA', bbci.classifier.C);
