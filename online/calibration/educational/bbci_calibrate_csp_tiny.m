@@ -34,7 +34,7 @@ function [bbci, data]= bbci_calibrate_csp_tiny(bbci, data)
 
 
 default_clab=  {'not','E*','Fp*','AF*','OI*','I*','*9','*10'};
-default_model= {@train_RLDAshrink, 'gamma',0, 'store_means',1, 'scaling',1};
+default_model= {@train_RLDAshrink, 'Gamma',0, 'StoreMeans',1, 'Scaling',1};
 
 props= {'clab'         default_clab   'CELL{CHAR}'
         'ival'         [750 3750]     '!DOUBLE[1 2]'
