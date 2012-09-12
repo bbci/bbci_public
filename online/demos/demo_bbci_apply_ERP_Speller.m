@@ -31,7 +31,7 @@ bbci.quit_condition.marker= 255;
 bbci.quit_condition.running_time= 2*60;
 
 bbci.log.output= 'screen&file';
-bbci.log.file= fullfile(TMP_DIR, 'log');
+bbci.log.file= fullfile(BBCI.TmpDir, 'log');
 bbci.log.classifier= 1;
 
 data= bbci_apply_uni(bbci);

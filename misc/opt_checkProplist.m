@@ -39,9 +39,9 @@ function opt_checkProplist(opt, props, varargin)
 % 06-2012 Benjamin Blankertz
 
 
-global BBCI_TYPECHECKING
+global BBCI
 
-if ~BBCI_TYPECHECKING, return; end
+if ~BBCI.TypeChecking, return; end
 
 if length(varargin)>0 && ischar(varargin{end}),
   structname= varargin{end};

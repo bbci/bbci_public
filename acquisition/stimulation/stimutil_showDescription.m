@@ -33,7 +33,7 @@ function HANDLE= stimutil_showDescription(desc, varargin)
 
 % blanker@cs.tu-berlin.de, Jul-2007
 
-global VP_SCREEN
+global BBCI
 
 props= {'clf'               0                               'BOOL'
         'handle_background' []                              'HANDLE'
@@ -43,7 +43,7 @@ props= {'clf'               0                               'BOOL'
         'desc_pos'          [0.5 0.5]                       'DOUBLE[2]'
         'desc_boxgap'        0.05                           'DOUBLE[1]'
         'delete'            1                               'BOOL'       
-        'position'          VP_SCREEN                       'DOUBLE[2]'
+        'position'          BBCI.Tp.Geometry                       'DOUBLE[2]'
         'waitfor'           'R*'                            'CHAR'
         'waitfor_msg'       'Press <ENTER> to continue: '   'CHAR'};
     

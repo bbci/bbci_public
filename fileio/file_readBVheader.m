@@ -6,7 +6,7 @@ function hdr= file_readBVheader(hdrName, varargin)
 %
 % Arguments:
 %   HDRNAME: name of header file (no extension),
-%            relative to EEG_RAW_DIR unless beginning with '/'.
+%            relative to BBCI.RawDir unless beginning with '/'.
 %            HDRNAME may also contain '*' as wildcard or be a cell
 %            array of strings
 %
@@ -76,8 +76,8 @@ end
 if fileutil_isAbsolutePath(hdrName),
   fullName= hdrName;
 else
-  global EEG_RAW_DIR
-  fullName= fullfile(EEG_RAW_DIR, hdrName);
+  global BBCI
+  fullName= fullfile(BBCI.RawDir, hdrName);
 end
 
 fid= fopen([fullName '.vhdr'], 'r');

@@ -1,5 +1,5 @@
 % Subject-independent kickstart classifier
-cfy_dir= [EEG_RAW_DIR 'subject_independent_classifiers/vitalbci_season2/'];
+cfy_dir= [BBCI.RawDir 'subject_independent_classifiers/vitalbci_season2/'];
 bbci= load([cfy_dir 'kickstart_vitalbci_season2_C3CzC4_9-15_15-35']);
 
 % EEG file used of offline simulation of online processing
@@ -11,7 +11,7 @@ bbci.source.acquire_fcn= @bbci_acquire_offline;
 bbci.source.acquire_param= {cnt, mrk};
 
 bbci.log.output= 'file';
-bbci.log.folder= TMP_DIR;
+bbci.log.folder= BBCI.TmpDir;
 bbci.log.classifier= 1;
 
 data= bbci_apply(bbci);

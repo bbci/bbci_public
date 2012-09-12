@@ -63,7 +63,7 @@ elseif ~isempty(varargin{1}),
     bbci = varargin{1};
 end
 
-global TODAY_DIR;
+global BBCI.Tp.Dir;
 
 % get preset intervals
 ivals = [80,350; 360, 800];
@@ -77,7 +77,7 @@ for k=1:size(ivals,1)
     opt.cfy_ival = [opt.cfy_ival; tmp_ivals];
 end
 
-bbci.calibrate.folder = TODAY_DIR;
+bbci.calibrate.folder = BBCI.Tp.Dir;
 bbci.calibrate.file =  'SETBYGUI';
 bbci.calibrate.read_fcn = @file_readBV;
 bbci.calibrate.read_param = {'fs', 100};
@@ -116,9 +116,9 @@ if strcmp(varargin{1}, 'variables'),
     return
 end
 
-global TODAY_DIR VP_CODE DROPBOX GTEC_SERIAL TMP_DIR VP_SCREEN
+global BBCI.Tp.Dir BBCI.Tp.Code DROPBOX GTEC_SERIAL BBCI.TmpDir BBCI.Tp.Geometry
 
-VP_SCREEN = [1280, 0, 1024, 768];
+BBCI.Tp.Geometry = [1280, 0, 1024, 768];
 
 experiments.classifier_name = {'bbci_classifier'};
 experiments.allowed_files = {'PhotoBrowser_train_full', 'PhotoBrowser_train_mask', 'PhotoBrowser_train_flash'};
@@ -156,16 +156,16 @@ experiments.editable_params = {
 experiments.aux.dropbox_root = DROPBOX;
 experiments.aux.sigserv_template = [DROPBOX '\settings\template_sigserv_config.xml'];
 experiments.aux.custom_settings_folder = [DROPBOX '\settings\'];
-experiments.aux.standard_root = [TMP_DIR 'Home\'];
+experiments.aux.standard_root = [BBCI.TmpDir 'Home\'];
 experiments.aux.pb_db = 'E:\svn\p300_photobrowser\p300_database.sqlite';
 experiments.aux.gtec_serial = GTEC_SERIAL;
 
 % preset the standard pyff parameters
-pypa = strukt('logging_directory', [TODAY_DIR 'pblog\'], ...
-    'screen_x', VP_SCREEN(1), ...
-    'screen_y', VP_SCREEN(2), ...
-    'screen_width', VP_SCREEN(3), ...
-    'screen_height', VP_SCREEN(4), ...
+pypa = strukt('logging_directory', [BBCI.Tp.Dir 'pblog\'], ...
+    'screen_x', BBCI.Tp.Geometry(1), ...
+    'screen_y', BBCI.Tp.Geometry(2), ...
+    'screen_width', BBCI.Tp.Geometry(3), ...
+    'screen_height', BBCI.Tp.Geometry(4), ...
     'num_blocks', 2, ...
     'num_subtrials_per_iteration', 2, ...
     'num_trials', 4, ...
@@ -275,7 +275,7 @@ ex.pa.(genvarname('Free mode')) = ...
     propertylist2struct(pypa, ...
     'num_blocks', 20, ...
     'filename', 'PhotoBrowser_free_mode_', ...
-    'root_directory', [experiments.aux.dropbox_root VP_CODE filesep]);
+    'root_directory', [experiments.aux.dropbox_root BBCI.Tp.Code filesep]);
 
 experiments.parameters = ex.pa;
 fill_defaults = false;
@@ -290,7 +290,7 @@ if strcmp(varargin{1}, 'variables'),
     return
 end
 
-global VP_CODE
+global BBCI.Tp.Code
 output = [];
 fill_defaults = false;
 experiment = varargin{1}.experiment;

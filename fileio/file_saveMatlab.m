@@ -11,7 +11,7 @@ function file_saveMatlab(file, dat, mrk, mnt, varargin)
 %   MNT:    STRUCT  electrode montage structure
 %
 %   OPT: PROPLIST - Structure or property/value list of optional properties:
-%   'Path' - CHAR: Path to save the file. Default is the global variable BBCI_MAT_DIR
+%   'Path' - CHAR: Path to save the file. Default is the global variable BBCI.MatDir
 %                  unless FILE is an absolute path in which case it is ''.
 %   'Channelwise' - BOOL: If true, signals are saved channelwise. This is an advantage
 %                  for big files, because it allows to load selected
@@ -53,9 +53,9 @@ function file_saveMatlab(file, dat, mrk, mnt, varargin)
 
 % Author(s): Benjamin Blankertz, Feb 2005
 
-global BBCI_MAT_DIR
+global BBCI
 
-props = {'Path',            BBCI_MAT_DIR    'CHAR';
+props = {'Path',            BBCI.MatDir    'CHAR';
          'Channelwise',     1               '!BOOL';
          'Format'           'auto'          '!CHAR(double float int16 auto)';
          'Resolution'       'auto'          '!CHAR(auto)|!DOUBLE[1]|!DOUBLE[-]';
