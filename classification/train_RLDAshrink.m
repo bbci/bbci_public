@@ -56,21 +56,29 @@ function C = train_RLDAshrink(xTr, yTr, varargin)
 
 % Benjamin Blankertz
 
+
 if size(yTr,1)==1, yTr= [yTr<0; yTr>0]; end
 nClasses= size(yTr,1);
 
-opt= propertylist2struct(varargin{:});
-[opt, isdefault]= ...
-    set_defaults(opt, ...
-                 'exclude_infs', 0, ...
-                 'prior', ones(nClasses, 1)/nClasses, ...
-                 'use_pcov', 0, ...
-                 'store_prior', 0, ...
-                 'store_means', 0, ...
-                 'store_cov', 0, ...
-                 'store_invcov', 0, ...
-		         'store_extinvcov',0, ...
-                 'scaling', 0);
+props= {'exclude_infs'      0                    'BOOL'
+        'prior'             ones(nClasses, 1)/nClasses    'DOUBLE[- 1]'
+        'se_pcov'          0                             'BOOL'
+        'store_prior'       0                             'BOOL'
+        'store_means'       0                             'BOOL'
+        'store_cov'         0                             'BOOL'
+        'store_invcov'      0                             'BOOL'
+		    'store_extinvcov'   0                             'BOOL'
+        'scaling'           0                             'BOOL'
+       };
+props_shrinkage= clsutil_shrinkage;
+
+if nargin==0,
+  mrk= opt_catProps(props, props_shrinkage); 
+  return
+end
+
+opt= opt_proplistToStruct(varargin{:});
+[opt, isdefault]= opt_setDefaults(opt, props);
 
 % empirical class priors as an option (I leave 1/nClasses as default, haufe)
 if isnan(opt.prior)
@@ -93,10 +101,11 @@ for ci= 1:nClasses,
     X= [X, xTr(:,idx) - C_mean(:,ci)*ones(1,length(idx))];
   end
 end
+opt_shrinkage= opt_substruct(opt, props_shrinkage);
 if opt.use_pcov,
-  [C_cov, C.gamma]= clsutil_shrinkage(xTr, opt);
+  [C_cov, C.gamma]= clsutil_shrinkage(xTr, opt_shrinkage);
 else
-  [C_cov, C.gamma]= clsutil_shrinkage(X, opt);
+  [C_cov, C.gamma]= clsutil_shrinkage(X, opt_shrinkage);
 end
 C_invcov= pinv(C_cov);
 
@@ -136,7 +145,8 @@ if opt.store_extinvcov,
   feat= [ones(1,size(xTr,2)); xTr];
   C.extinvcov= inv(feat*feat'/size(xTr,2));
   % Alternative (with shrinkage):
-%  [C_extpcov, C_gamma_extpcov]= clsutil_shrinkage([ones(1,size(xTr,2)); xTr]);
+%  [C_extpcov, C_gamma_extpcov]= ...
+%       clsutil_shrinkage([ones(1,size(xTr,2)); xTr], opt_shrinkage);
 %  C.extinvcov= pinv(C_extpcov);
 % But this subtracts the pooled mean, which seems not to be appropriate
 % ?? Ask Carmen, when she's back ??
