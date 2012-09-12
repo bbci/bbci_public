@@ -1,4 +1,4 @@
-function out= util_catifnonequal(in, dim)
+function out= util_catIfNonequal(in, dim)
 
 if length(in)==1,
   out= in{1};

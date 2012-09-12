@@ -73,7 +73,7 @@ props= {'source'        1         '!INT'
         'clab'          '*'       'CHAR|CELL{CHAR}'
         'buffer_size'   5*1000    '!INT[1]'
         'proc'          {}        'CELL'
-        'fcn'           []        'FUNC'
+        'fcn'           []        'FUNC|CELL{FUNC}'
         'param'         {}        'CELL'
        };
 bbci.signal= opt_setDefaults('bbci.signal', props);
@@ -83,7 +83,7 @@ bbci.signal= bbciutil_transformProc2FcnParam(bbci.signal);
 
 props= {'signal'         1      '!INT'
         'proc'           {}     'CELL'
-        'fcn'            []     'FUNC'
+        'fcn'            []     'FUNC|CELL{FUNC}'
         'param'          {}     'CELL'
         'ival'           []     '!DOUBLE[2]'
        };

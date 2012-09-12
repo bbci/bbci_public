@@ -1,10 +1,10 @@
 BC= [];
-BC.fcn= @bbci_calibrate_csp;
+BC.fcn= @bbci_calibrate_csp_tiny;
 BC.folder= EEG_RAW_DIR;
 BC.file= 'VPkg_08_08_07/imag_arrowVPkg';
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
-BC.marker_param= {{1, 2, 3; 'left', 'right', 'foot'}};
+BC.marker_param= {{1, 2; 'left', 'right'}};
 
 % In demos, we just write to the temp folder. Otherwise, the default
 % choice would be fine.
@@ -32,8 +32,6 @@ log_format= '%fs | [%f] | {cl_output=%f}';
                             'delimiter','','commentstyle','shell');
 
 cnt_cfy= struct('fs',25, 'x',cfy, 'clab',{{'cfy'}});
-mrk_cfy= mrk_selectClasses(calib.mrk, calib.result.classes);
-mrk_cfy= mrk_resample(mrk_cfy, cnt_cfy.fs);
-epo_cfy= cntToEpo(cnt_cfy, mrk_cfy, [0 5000]);
+epo_cfy= proc_segmentation(cnt_cfy, calib.mrk, [0 5000]);
 fig_set(1, 'name','classifier output'); clf;
-plotChannel(epo_cfy, 1);
+plot_channel(epo_cfy, 1);
