@@ -240,8 +240,8 @@ else
   opt.ColorOrder= opt.ColorOrder(1:min([nClasses size(opt.ColorOrder,1)]),:);
 end
 [axesStyle, lineStyle]= opt_extractPlotStyles(rmfield(opt,{'YLim','LineStyleOrder'}));
-[opt, isdefault]= opt_setDefaults(opt, {'LineStyleOrder', {}, ...
-                  'LineWidthOrder', [], ...
+[opt, isdefault]= opt_setDefaults(opt, {'LineStyleOrder', {};
+                  'LineWidthOrder', [];
                   'LineSpecOrder', {}} );
 ns= length(opt.LineStyleOrder);
 nw= length(opt.LineWidthOrder);
