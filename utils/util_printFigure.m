@@ -21,13 +21,12 @@ function util_printFigure(file, varargin)
 %  .Renderer: how the figure is rendered to a file, 'painters' (default)
 %     produces vector images, 'zbuffer' and 'opengl' produce bitmaps
 
-global BBCI_PRINTER BBCI_FIG_DIR BCI_DIR
 
 props = {   
         'PaperSize'         'auto'          '!CHAR(maxAspect)|!DOUBLE[- -]';
         'Format'            'eps'           '!CHAR(eps pdf svg epspdf)';
         'Device'            'epsc2'         '!CHAR';
-        'Folder'            BBCI_FIG_DIR    'CHAR';
+        'Folder'            ''              'CHAR';
         'Prefix'            ''              'CHAR';
         'Resolution'        []              'DOUBLE[1]';
         'Renderer'          'painters'      '!CHAR(painters zbuffer opengl)';
@@ -82,15 +81,6 @@ else
   fullName= [fullfile(opt.Folder, opt.Prefix) file];
 end
 
-if isempty(BBCI_PRINTER) || ~BBCI_PRINTER,
-  fprintf('%s not printed (global BBCI_PRINTER not set)\n', fullName);
-  if BBCI_PRINTER==1,
-    fprintf('press a key to continue');
-    pause;
-  end
-  return;
-end
-
 [filepath, filename]= fileparts(fullName); 
 if ~exist(filepath, 'dir'),
   [parentdir, newdir]= fileparts(filepath);
@@ -106,7 +96,7 @@ end
 
 if strcmpi(opt.Format, 'SVG'),
   if ~exist('', 'file'),
-    addpath([BCI_DIR 'import/plot2svg']);
+    addpath([BBCI.Dir 'import/plot2svg']);
   end
   plot2svg([fullName '.svg']);
   return;

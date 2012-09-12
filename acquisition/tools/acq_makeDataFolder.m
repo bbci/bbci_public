@@ -12,39 +12,38 @@ function [varargout] = acq_makeDataFolder(varargin)
 %Returns:
 % folder: name of the folder in which EEG signals will be saved
 %Side effect:
-% Set global variables VP_CODE, TODAY_DIR
+% Set global variables BBCI.Tp.Code, BBCI.Tp.Dir
 %
 % XX-XX Benjamin Blankertz 
 % 06-12 Javier Pascual. Updated. Created new function getSubjectcode
 
-global EEG_RAW_DIR VP_CODE TODAY_DIR
-global ACQ_PREFIX_LETTER ACQ_LETTER_START ACQ_LETTER_RESERVED
 
-VP_CODE = [];
+global BBCI
+
+BBCI.Tp.Code = [];
 
 %% Get the date
 today_vec= clock;
 today_str= sprintf('%02d_%02d_%02d', today_vec(1)-2000, today_vec(2:3));
 
 if length(varargin)==1 & isequal(varargin{1},'tmp'),
-  TODAY_DIR= [EEG_RAW_DIR 'Temp_' today_str '\'];
-  if ~exist(TODAY_DIR, 'dir'),
-    mkdir_rec(TODAY_DIR);
+  BBCI.Tp.Dir= [BBCI.RawDir 'Temp_' today_str '\'];
+  if ~exist(BBCI.Tp.Dir, 'dir'),
+    mkdir_rec(BBCI.Tp.Dir);
   end
   return;
 end
 
-if isempty(ACQ_LETTER_START),
-  ACQ_LETTER_START= 'a';
+if isempty(BBCI.Acq.StartLetter),
+  BBCI.Acq.StartLetter= 'a';
 end
 
 
-props = {   'multiple_folders'	0	'BOOL'          
-            'log_dir'           0   'BOOL'};
+props = {'multiple_folders'	0	'BOOL'};
 
 if nargin==0,
-    varargout{1} = opt_catProps(props, getSubjectCode); 
-    return;
+  varargout{1} = opt_catProps(props, acq_getSubjectCode); 
+  return;
 end;
 
 opt= opt_proplistToStruct(varargin{:});
@@ -52,7 +51,7 @@ opt= opt_proplistToStruct(varargin{:});
 opt_checkProplist(opt, props);
 
 %% Check whether a directory exists that is to be used
-dd= dir([EEG_RAW_DIR 'VP???_' today_str '*']);
+dd= dir([BBCI.RawDir 'VP???_' today_str '*']);
 
 if ~opt.multiple_folders & length(dd)>1,
   error('multiple folder of today exist, but opt.multiple_folder is set to 0.');
@@ -60,35 +59,26 @@ end
 
 k= 0;
 
-while isempty(VP_CODE) & k<length(dd),
+while isempty(BBCI.Tp.Code) & k<length(dd),
   k= k+1;
-  de= dir([EEG_RAW_DIR dd(k).name '\*.eeg']);
+  de= dir([BBCI.RawDir dd(k).name '\*.eeg']);
   if ~opt.multiple_folders | isempty(de),
     is= find(dd(k).name=='_', 1, 'first');
-    VP_CODE= dd(k).name(1:is-1);
+    BBCI.Tp.Code= dd(k).name(1:is-1);
     fprintf('!!Using existing directory <%s>!!\n', dd(k).name);
   end
 end
 
-% if VP_CODE is empty, we generate a new one
-if(isempty(VP_CODE)),
-    VP_CODE = getSubjectCode(   'prefix_letter', ACQ_PREFIX_LETTER, ...
-                                'letter_start', ACQ_LETTER_START, ...
-                                'letter_reserved', ACQ_LETTER_RESERVED);
+% if BBCI.Tp.Code is empty, we generate a new one
+if(isempty(BBCI.Tp.Code)),
+    BBCI.Tp.Code= acq_getSubjectCode('prefix_letter', BBCI.Acq.Prefix, ...
+                                     'letter_start', BBCI.Acq.StartLetter);
 end;
 
-TODAY_DIR= [EEG_RAW_DIR VP_CODE '_' today_str filesep];
+BBCI.Tp.Dir= [BBCI.RawDir BBCI.Tp.Code '_' today_str filesep];
 
-if ~exist(TODAY_DIR, 'dir'),
-  mkdir_rec(TODAY_DIR);
+if ~exist(BBCI.Tp.Dir, 'dir'),
+  mkdir_rec(BBCI.Tp.Dir);
 end
 
-if opt.log_dir,
-  global LOG_DIR
-  LOG_DIR= [TODAY_DIR 'log\'];
-  if ~exist([TODAY_DIR 'log']),
-    mkdir_rec(LOG_DIR);
-  end
-end
-
-fprintf('EEG data will be saved in <%s>.\n', TODAY_DIR);
+fprintf('EEG data will be saved in <%s>.\n', BBCI.Tp.Dir);

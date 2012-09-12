@@ -1,5 +1,5 @@
 function oldstate= bbci_typechecking(onoff)
-%BBCI_TYPECHECKING - Switch type checking on or off
+%BBCI.TypeChecking - Switch type checking on or off
 %
 %Synopsis:
 % bbci_typechecking(<SWITCH>)
@@ -17,25 +17,25 @@ function oldstate= bbci_typechecking(onoff)
 % bbci_typechecking(tcstat);
 
 
-global BBCI_TYPECHECKING
+global BBCI
 
-if isempty(BBCI_TYPECHECKING),
+if isempty(BBCI.TypeChecking),
   oldstate= 'on';
 else
-  oldstate= BBCI_TYPECHECKING;
+  oldstate= BBCI.TypeChecking;
 end
 
 if nargin==0,
   onoff= 'on';
 end
 
-BBCI_TYPECHECKING= onoff;
+BBCI.TypeChecking= onoff;
 
-switch(BBCI_TYPECHECKING),
+switch(BBCI.TypeChecking),
  case {1, 'on'},
-  BBCI_TYPECHECKING= 1;
+  BBCI.TypeChecking= 1;
  case {0, 'off'},
-  BBCI_TYPECHECKING= 0;
+  BBCI.TypeChecking= 0;
  otherwise
   error('only ''on'' and ''off'' are allowed arguments');
 end

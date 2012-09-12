@@ -2,10 +2,10 @@ function file= fileutil_getFilelist(spec, varargin)
 
 %% TODO: should also handle: spec is cell array
 
-global BBCI_RAW_DIR BBCI_MAT_DIR
+global BBCI
 
 props = {'Ext',             'eeg',                  'CHAR';
-         'Folder',           BBCI_RAW_DIR,          '!CHAR';
+         'Folder',           BBCI.RawDir,           '!CHAR';
          'RequireMatch',     0,                     '!BOOL';
          };
 
@@ -35,9 +35,9 @@ end
 if isdefault.Folder,
   switch(lower(opt.Ext)),
    case {'eeg','vhdr','vmrk'},
-    opt.Folder= BBCI_RAW_DIR;
+    opt.Folder= BBCI.RawDir;
    case 'mat',
-    opt.Folder= BBCI_MAT_DIR;
+    opt.Folder= BBCI.MatDir;
   end
 end
 
