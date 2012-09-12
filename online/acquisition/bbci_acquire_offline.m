@@ -51,9 +51,6 @@ if isequal(varargin{1}, 'init'),
          };
   state= opt_setDefaults(state, props, 1);
   [cnt, mrk]= varargin{2:3};
-  if cnt.fs~=mrk.fs,
-    error('sampling rates in CNT and MRK not consistent');
-  end
   state.lag= 1;
   state.orig_fs= cnt.fs;
   state.fs= cnt.fs;
@@ -61,10 +58,13 @@ if isequal(varargin{1}, 'init'),
   state.cnt_idx= 1:state.cnt_step;
   state.clab= cnt.clab;
   state.cnt= cnt;
+  % -- transitional
   if ~isfield(mrk, 'desc'),
     mrk.desc= mrk.toe;
   end
+  % --
   state.mrk= mrk;
+  state.mrk.time= mrk.time;
   state.start_time= tic;
   output= {state};
 elseif length(varargin)~=1,
@@ -91,9 +91,11 @@ else
       return;
     end
     cntx= state.cnt.x(state.cnt_idx, :);
-    mrk_idx= find(state.mrk.pos>=state.cnt_idx(1) & ...
-                  state.mrk.pos<=state.cnt_idx(end));
-    mrkTime= (state.mrk.pos(mrk_idx)-state.cnt_idx(1)+1)/state.fs*1000;
+    si= 1000/state.fs;
+    TIMEEPS= si/100;
+    mrk_idx= find(state.mrk.time-TIMEEPS > (state.cnt_idx(1)-1)*si & ...
+                  state.mrk.time-TIMEEPS <= state.cnt_idx(end)*si);
+    mrkTime= state.mrk.time(mrk_idx) - (state.cnt_idx(1)-1)*si;
     mrkDesc= state.mrk.desc(mrk_idx);         
     state.cnt_idx= state.cnt_idx + state.cnt_step;
     output= {cntx, mrkTime, mrkDesc, state};

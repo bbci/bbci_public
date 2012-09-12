@@ -52,7 +52,7 @@ misc_checkType(mk, 'STRUCT(time desc)');
 misc_checkType(classDef, 'CELL');
 
 nClasses= size(classDef,2);
-mrk= struct('time', mk.time);
+mrk= struct('time', mk.time, 'desc',mk.desc);
 mrk.y= zeros(nClasses, numel(mrk.time));
 for cc= 1:nClasses,
   if isnumeric(classDef{1,cc}),

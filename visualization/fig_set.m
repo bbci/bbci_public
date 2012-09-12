@@ -1,23 +1,24 @@
 function fig_set(varargin)
 
+props= {'fn'              1            '!INT'
+        'toolsoff'        1            '!BOOL'
+        'gridsize'        [2 2]        '!DOUBLE[2]'
+        'shrink'          [1 1]        '!DOUBLE[2]'
+        'shiftUpwards'   1            '!BOOL'
+        'name'            ''           'CHAR'
+        'clf'             0            '!BOOL'
+        'set'             {}           'PROPLIST'
+        'desktopborder'   [0 30 0 0]   '!DOUBLE[4]'
+        'windowborder'    [5 20]       '!DOUBLE[2]'
+       };
+
 if nargin>0 && isnumeric(varargin{1}),
-  opt= propertylist2struct(varargin{2:end});
+  opt= opt_proplistToStruct(varargin{2:end});
   opt.fn= varargin{1};
 else
-  opt= propertylist2struct(varargin{:});
+  opt= opt_proplistToStruct(varargin{:});
 end
-[opt, isdefault]= ...
-    set_defaults(opt, ...
-                 'fn', 1, ...
-                 'toolsoff', 1, ...
-                 'gridsize', [2 2], ...
-                 'shrink', [1 1], ...
-                 'shift_upwards', 1, ...
-                 'name', '', ...
-                 'clf', 0, ...
-                 'set', {}, ...
-                 'desktopborder', [0 30 0 0], ...
-                 'windowborder', [5 20]);
+[opt, isdefault]= opt_setDefaults(opt, props);
 
 pos_screen= get(0, 'ScreenSize');
 actualsize(1)= pos_screen(3) - opt.gridsize(2)*2*opt.windowborder(1);
@@ -36,7 +37,7 @@ if opt.toolsoff,
 end
 fig_size_orig= fig_size;
 fig_size= round(fig_size .* opt.shrink);
-if opt.shift_upwards && fig_size(2)~=fig_size_orig(2),
+if opt.shiftUpwards && fig_size(2)~=fig_size_orig(2),
   fig_pos(2)= fig_pos(2) + fig_size_orig(2) - fig_size(2);
 end
 drawnow;

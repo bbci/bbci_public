@@ -19,7 +19,7 @@ function out= bbci_calibrate_evalFeature(signal, bbci_feature, mrk)
 
 
 bbci_feature= bbciutil_transformProc2FcnParam(bbci_feature);
-bbci_feature= set_defaults(bbci_feature, 'signal', 1);
+bbci_feature= opt_setDefaults(bbci_feature, {'signal', 1});
 
 feature= repmat(struct, [1 length(bbci_feature)]);
 for f= 1:length(bbci_feature),

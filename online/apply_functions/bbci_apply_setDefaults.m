@@ -23,7 +23,8 @@ if nargin==0,
 end
 
 
-props= {'source'          struct   'STRUCT'
+props= {'calibrate'       struct   'STRUCT'
+        'source'          struct   'STRUCT'
         'marker'          struct   'STRUCT'
         'signal'          struct   'STRUCT'
         'feature'         struct   'STRUCT'

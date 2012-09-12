@@ -1,8 +1,7 @@
 eeg_file= 'VPiac_10_10_13/CenterSpellerMVEP_VPiac';
 [cnt, mrk]= file_loadMatlab(eeg_file, 'vars',{'cnt','mrk'});
-%% TODO!
-mrk.desc= mrk.toe;
-mrk.time= mrk.pos/mrk.fs*1000;
+%% --- transitional
+mrk= convert_markers(mrk);
 %% -----
 
 clab= {'F3','Fz','F4', 'C3','Cz','C4', 'P3','Pz','P4'};

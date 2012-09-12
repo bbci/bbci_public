@@ -1,6 +1,10 @@
-function data = bbci_load(bbci)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+function data= bbci_load(bbci)
+%BBCI_LOAD - Load data set
+%
+%Synopsis:
+%  DATA= bbci_load(BBCI);
+%
+
 
 bbci= bbci_calibrate_setDefaults(bbci);
 BC= bbci.calibrate;
@@ -28,6 +32,3 @@ if ~isempty(BC.marker_fcn),
     data.mrk= BC.marker_fcn(data.mrk, BC.marker_param{:});
 end
 data.isnew= 1;
-
-end
-

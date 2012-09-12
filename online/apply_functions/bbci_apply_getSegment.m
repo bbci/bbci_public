@@ -21,17 +21,22 @@ function epo= bbci_apply_getSegment(signal, reference_time, ival)
 
 
 % Determine the indices in the ring buffer that correspond to the specified
-% time interval. There are some rounding-issues here for some sampling rates.
-% The following procedure should do well.
-len= floor(diff(ival)/1000*signal.fs);
-idx0= signal.ptr + (reference_time-signal.time)*signal.fs/1000;
-idx_ival= round(idx0 + ival(1)/1000*signal.fs) + [0:len];
-idx= 1 + mod(idx_ival-1, signal.size);
+% time interval. There are rounding-issues here for some sampling rates.
+% The following procedure should do ok.
+si= 1000/signal.fs;
+TIMEEPS= si/100;
+len_sa= round(diff(ival)/si);
+pos_zero= signal.ptr + ceil( (reference_time-signal.time-TIMEEPS)/si );
+core_ival= [ceil(ival(1)/si) floor(ival(2)/si)];
+addone= diff(core_ival)+1 < len_sa;
+pos_end= pos_zero + floor(ival(2)/si) + addone;
+idx= [-len_sa+1:0] + pos_end;
+idx_ring= 1 + mod(idx-1, signal.size);
 
 % Get requested segment from the ring buffer and store it into an EPO struct
-epo.x= signal.x(idx,:);
+epo.x= signal.x(idx_ring,:);
 epo.clab= signal.clab;
-timeival= (idx_ival([1 end])-idx0)*1000/signal.fs;
+timeival= si*(core_ival + [1 addone]);
 timeival= round(10000*timeival)/10000;
-epo.t= linspace(timeival(1), timeival(2), length(idx));
+epo.t= linspace(timeival(1), timeival(2), len_sa);
 epo.fs= signal.fs;
