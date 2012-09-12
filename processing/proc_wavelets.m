@@ -1,4 +1,4 @@
-function [dat info] = proc_wavelets(dat,varargin)
+function dat  = proc_wavelets(dat,varargin)
 % PROC_WAVELETS -  calculates the continuous wavelet transform for a
 % specified range of scales. (Wavelet coefficients are obtained in Fourier
 % space.
@@ -56,18 +56,18 @@ if nargin==0,
   dat= props; return
 end
 
+dat = misc_history(dat);
 opt= opt_proplistToStruct(varargin{:});
-opt= opt_setDefaults(opt, props);
+[opt,isdefault] = opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
-misc_checkType('dat','STRUCT(x fs)');
-misc_checkType('dat.fs','!DOUBLE[1]');
-misc_checkType('dat.x','DOUBLE[- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]');  % accept about everything except row vectors
+misc_checkType(dat,'STRUCT(x fs)');
+misc_checkType(dat.fs,'!DOUBLE[1]','dat.fs');
+misc_checkType(dat.x,'DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]','dat.x');  % accept about everything except row vectors
 
 %% Prepare
 clear pi
 
 dt = 1/dat.fs;  % time resolution (determined by sampling frequency)
-e = exp(1);  % Euler's number
 
 % Prepare output stuff
 info = struct();
@@ -88,6 +88,7 @@ dat.x = zeros([N length(opt.Freq) siz]);
 % [ and normalization ..]
 switch(opt.Mother)
   case 'morlet'
+    e = exp(1);
     psi0 = 'pi^(-1/4) * (w>0) .* e.^(-((s*w-opt.w0).^2)/2)'; % Mother wavelet
     scf = '(opt.w0+sqrt(2+opt.w0^2))/(4*pi*f)'; % How to obtain scale as a function of Fourier frequency  
 end

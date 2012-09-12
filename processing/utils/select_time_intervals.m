@@ -64,32 +64,32 @@ function [ival, nfo, X_rem,H]= select_time_intervals(epo_r, varargin)
 %            naming
 
 
-props= { 'NIvals'               5
-         'Sign'                 0
-         'ScoreFactorForMax'    3
-         'RRelThreshold'        0.5
-         'CThreshold'           0.75
-         'Clab'                 '*'
-         'ScalpChannelsOnly'    0
-         'ClabPickPeak'         '*'
-         'IvalPickPeak'         []
-         'IvalMax'              []
-         'MinWidth'             []
-         'Sort'                 0
-         'Visualize'            0
-         'VisuScalps'           0
-         'OptVisu'              []
-         'Title'                ''
-         'Mnt'                  get_electrodePositions(epo_r.clab)
-         'Constraint'           {}
-         'IntersampleTiming'    0
-         'Verbose'              1 };
+props= { 'NIvals'               5               '!INT[1]';
+         'Sign'                 0               '!INT[1]';
+         'ScoreFactorForMax'    3               '!DOUBLE';
+         'RRelThreshold'        0.5             '!DOUBLE';
+         'CThreshold'           0.75            '!DOUBLE';
+         'Clab'                 '*'             'CHAR|CELL{CHAR}';
+         'ScalpChannelsOnly'    0               '!BOOL';
+         'ClabPickPeak'         '*'             'CHAR|CELL{CHAR}';
+         'IvalPickPeak'         []              '!DOUBLE';
+         'IvalMax'              []              '!DOUBLE';
+         'MinWidth'             []              '!DOUBLE';
+         'Sort'                 0               '!BOOL';
+         'Visualize'            0               '!BOOL';
+         'VisuScalps'           0               '!BOOL';
+         'OptVisu'              []              'CELL|STRUCT';
+         'Title'                ''              'CHAR'
+         'Mnt'                  mnt_setElectrodePositions(epo_r.clab)  'STRUCT';
+         'Constraint'           {}              'CELL';
+         'IntersampleTiming'    0               '!DOUBLE';
+         'Verbose'              1               '!BOOL'};
 
 if nargin==0,
   ival = props; return
 end
 
-misc_checkType('epo_r', 'STRUCT(x)'); 
+misc_checkType(epo_r, 'STRUCT(x)'); 
 
 
 opt= opt_proplistToStruct(varargin{:});
@@ -104,7 +104,7 @@ if opt.ScalpChannelsOnly,
     if isequal(opt.Clab, '*'),
       opt.Clab= clab_in_preserved_order(epo_r, scalpchans);
     else
-      selchans= epo_r.clab(chanind(epo_r, opt.Clab));
+      selchans= epo_r.clab(util_chanind(epo_r, opt.Clab));
       opt.Clab= clab_in_preserved_order(epo_r, ...
                                         intersect(selchans, scalpChannels));
     end
@@ -124,7 +124,7 @@ X_memo= epo_r.x;
 
 % delete scores where nothing should be selected
 if ~isempty(opt.IvalMax),
-  idx_keep= getIvalIndices(opt.IvalMax, epo_r);
+  idx_keep= procutil_getIvalIndices(opt.IvalMax, epo_r);
   idx_rm= setdiff(1:size(epo_r.x,1), idx_keep);
   epo_r.x(idx_rm,:)= 0;
 end
@@ -149,7 +149,7 @@ if ~isempty(opt.Constraint),
     tmp_r= epo_r;
     if length(this_constraint)>=4,
       % TODO: use new option ivalMax!
-      idx_keep= getIvalIndices(this_constraint{4}, epo_r);
+      idx_keep= procutil_getIvalIndices(this_constraint{4}, epo_r);
       idx_rm= setdiff(1:size(tmp_r.x,1), idx_keep);
       tmp_r.x(idx_rm,:)= 0;
     end
@@ -164,7 +164,7 @@ if ~isempty(opt.Constraint),
     else
       ival(ii,[1 2])= tmp_ival;
       nfo(ii)= tmp_nfo;
-      idx_rm= getIvalIndices(tmp_ival, epo_r);
+      idx_rm= procutil_getIvalIndices(tmp_ival, epo_r);
       epo_r.x(idx_rm,:)= 0;
     end
   end
@@ -183,7 +183,7 @@ end
 if opt.Verbose,
   nonscalp= setdiff(strtok(epo_r.clab), scalpChannels);
   if ~isempty(nonscalp),
-    warning(['Presumably non-scalp channel(s) found: ' vec2str(nonscalp)]);
+    warning(['Presumably non-scalp channel(s) found: ' str_vec2str(nonscalp)]);
   end
 end
 
@@ -216,7 +216,7 @@ if opt.NIvals>1,
   return;
 end
 
-cidx= chanind(epo_r, opt.ClabPickPeak);
+cidx= util_chanind(epo_r, opt.ClabPickPeak);
 X0= epo_r.x(:,cidx);
 T= size(X0,1);
 score= zeros(1, T);
@@ -239,7 +239,7 @@ nfo.score= score;
 if isempty(opt.IvalPickPeak),
   pick_idx= 1:length(score);
 else
-  pick_idx= getIvalIndices(opt.IvalPickPeak, epo_r);
+  pick_idx= procutil_getIvalIndices(opt.IvalPickPeak, epo_r);
 end
 [nfo.peak_val, t0]= max(nfo.score(pick_idx));
 ti= pick_idx(t0);
@@ -323,7 +323,7 @@ H.cb= colorbar;
 if isfield(epo_r, 'yUnit'),
   ylabel(H.cb, sprintf('[%s]', epo_r.yUnit));
 end
-cidx= strpatternmatch(optVisu.markClab, epo_r.clab);
+cidx= find(ismember(epo_r.clab,optVisu.markClab));
 set(H.ax, 'YTick',cidx, 'YTickLabel',optVisu.markClab, ...
           'TickLength',[0.005 0]);
 if isdefault.xunit && isfield(epo_r, 'xUnit'),

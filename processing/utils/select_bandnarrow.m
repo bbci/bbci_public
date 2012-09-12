@@ -50,8 +50,9 @@ function band= select_bandnarrow(cnt, mrk, ival, varargin)
 motor_areas= {{'FC5,3','CFC5,3','C5,3','CCP5,3','CP5,3'},
               {'FC1-2','CFC1-2','C1-2','CCP1-2','CP1-2'}, 
               {'FC4,6','CFC4,6','C4,6','CCP4,6','CP4,6'}};
-done_laplace= ~isempty(strpatternmatch('* lap*', cnt.clab));
-opt= propertylist2struct(varargin{:});
+
+done_laplace = regexpi(cnt.clab,'^\w+ lap\w*');
+done_laplace = any(cell2mat(done_laplace));
 
 props={ 'band'          [5 35]
         'bandTopscore' [7 35]
@@ -68,8 +69,8 @@ if nargin==0,
   ival = props; return
 end
 
-misc_checkType('erd', 'STRUCT(x clab)'); 
-misc_checkType('mrk', 'STRUCT(time)'); 
+misc_checkType(erd, 'STRUCT(x clab)'); 
+misc_checkType(mrk, 'STRUCT(time)'); 
 
 opt= opt_proplistToStruct(varargin{:});
 
@@ -122,7 +123,7 @@ idx= find(score.t>=opt.bandTopscore(1) & ...
 chanscore= sqrt(sum(score.x(idx,:).^2, 1));
 aaa = 1;
 for aa= 1:length(opt.areas),
-  ci= chanind(score, opt.areas{aa});
+  ci= util_chanind(score, opt.areas{aa});
   if(~isempty(ci)),
      [mm,mi]= max(chanscore(ci));
      chansel(aaa)= ci(mi);

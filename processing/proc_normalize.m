@@ -36,6 +36,7 @@ function [fv, opt]= proc_normalize(fv, varargin)
 
 % 09-03 Benjamin Blankertz
 % 02-05 Anton Schwaighofer
+fv = misc_history(fv);
 
 props= { 'Policy'  'std'    '!CHAR(std max norm nanstd)'
          'Dim'      2       'INT'};
@@ -44,7 +45,7 @@ if nargin==0,
   fv = props; return
 end
 
-misc_checkType('fv', 'STRUCT(x)'); 
+misc_checkType(fv, 'STRUCT(x)'); 
 if length(varargin)==1 & ischar(varargin{1}),
   opt= struct('Policy', varargin{1});
 else

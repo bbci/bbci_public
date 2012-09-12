@@ -18,9 +18,12 @@ function dat= proc_jumpingMeans(dat, nSamples, nMeans)
 %Returns:
 %      dat      - updated data structure
 %
-% SEE proc_jumpingMedians
-
-% bb, ida.first.fhg.de
+% See also proc_jumpingMedians
+if nargin==0
+  dat=[];return
+end
+misc_checkType(dat, 'STRUCT(x)');
+dat = misc_history(dat);
 
 
 [T, nChans, nMotos]= size(dat.x);
@@ -39,7 +42,7 @@ if length(nSamples)==1,
     dat.t = mean(dat.t(reshape((T-nMeans*nSamples+1):T,nSamples,nMeans)));
   end
 
-elseif size(nSamples,1)==1 & size(nSamples,2)~=2,
+elseif size(nSamples,1)==1 && size(nSamples,2)~=2,
   
   intervals= nSamples([1:end-1; 2:end]');
   dat= proc_jumpingMeans(dat, intervals);

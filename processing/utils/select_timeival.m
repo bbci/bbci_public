@@ -53,7 +53,10 @@ function ival= select_timeival(erd, mrk, varargin)
 motor_areas= {{'FC5,3','CFC5,3','C5,3','CCP5,3','CP5,3'},
               {'FC1-2','CFC1-2','C1-2','CCP1-2','CP1-2'}, 
               {'FC4,6','CFC4,6','C4,6','CCP4,6','CP4,6'}};
-done_laplace= ~isempty(strpatternmatch('* lap*', erd.clab));
+
+done_laplace = regexpi(cnt.clab,'^\w+ lap\w*');
+done_laplace = any(cell2mat(done_laplace));
+
 props= { 'filter'         []
          'maxIval'        [250 5000]
          'startIval'      [750 3500]
@@ -68,8 +71,8 @@ if nargin==0,
   ival = props; return
 end
 
-misc_checkType('erd', 'STRUCT(x clab)'); 
-misc_checkType('mrk', 'STRUCT(time)'); 
+misc_checkType(erd, 'STRUCT(x clab)'); 
+misc_checkType(mrk, 'STRUCT(time)'); 
 
 opt= opt_proplistToStruct(varargin{:});
 
@@ -128,7 +131,7 @@ chanscore= max(chanscp, chanscn);
 
 aaa = 1;
 for aa= 1:length(opt.areas),
-  ci= chanind(score, opt.areas{aa});
+  ci= util_chanind(score, opt.areas{aa});
   
   if(~isempty(ci)),
     [mm,mi]= max(chanscore(ci));
@@ -145,7 +148,7 @@ timescore= max(scp, scn);
 timescore= movingAverage(timescore, smooth_sa, 'centered');
 timescore= mean(timescore(:,chansel),2);
 tempscore= zeros(size(timescore));
-idx= getIvalIndices(opt.startIval, erd);
+idx= procutil_getIvalIndices(opt.startIval, erd);
 tempscore(idx)= timescore(idx);
 [topscore,mm]= max(tempscore);
 dt= 100/1000*erd.fs;

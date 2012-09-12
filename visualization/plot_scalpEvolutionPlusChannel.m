@@ -61,6 +61,13 @@ if nargin==0,
   return
 end
 
+% With input argument erp, we know it better
+if util_getDataDimension(erp)==1
+  props_channel= plotutil_channel1D;
+else
+  props_channel= plotutil_channel2D;
+end
+
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props, props_scalpPattern, props_channel);
@@ -68,10 +75,10 @@ opt_checkProplist(opt, props, props_scalpPattern, props_channel);
 opt_scalpPattern= opt_substruct(opt, props_scalpPattern(:,1));
 opt_channel= opt_substruct(opt, props_channel(:,1));
 
-fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-if fig_Visible
-  jvm= jvm_hideFig;
-end
+% fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
+% if fig_Visible
+%   jvm= jvm_hideFig;
+% end
 
 if isfield(erp, 'XUnit'),
   [opt,isdefault]= opt_overrideIfDefault(opt, isdefault, ...
@@ -127,7 +134,7 @@ subplot_Offset= 0;
 if opt.PlotChannel && ~isempty(clab),
   if ~isempty(opt.SubplotChannel),
     H.ax_erp= opt.SubplotChannel;
-    get_backAxes(H.ax_erp);
+    axis_getQuitely(H.ax_erp);
   else
     if opt.ChannelAtBottom,
       H.ax_erp= subplotxl(1+nClasses, 1, 1+nClasses, ...
@@ -191,7 +198,7 @@ for cc= 1:nClasses,
       continue;
     end
     if ~isempty(opt.Subplot),
-      get_backAxes(opt.Subplot(cc, ii));
+      axis_getQuitely(opt.Subplot(cc, ii));
     else
       subplotxl(nClasses+opt.PlotChannel, nIvals, ...
                 ii+(cc-1+subplot_Offset)*nIvals, ...
@@ -215,16 +222,16 @@ for cc= 1:nClasses,
                               'verticalAli','top', 'horizontalAli','center');
       end
       if cb_per_ival,
-        H.cb(ii)= plot_colorbarAside('horiz');
+        H.cb(ii)= plotutil_colorbarAside('horiz');
         if ~opt.GlobalCLim,
-%          unifyCLim([H.scalp(:,ii).ax], [zeros(1,nClasses-1) H.cb(ii)]);
-          unifyCLim([H.scalp(:,ii).ax]);
+%          visutil_unifyCLim([H.scalp(:,ii).ax], [zeros(1,nClasses-1) H.cb(ii)]);
+%           visutil_unifyCLim([H.scalp(:,ii).ax]);
         end
       end
     end
   end
   if strcmp(opt.ScalePos, 'vert'),
-    H.cb(cc)= plot_colorbarAside;
+    H.cb(cc)= plotutil_colorbarAside;
     ylabel(H.cb(cc), opt.YUnit);
     if opt.ShrinkColorbar>0,
       cbpos= get(H.cb(cc), 'Position');
@@ -233,13 +240,13 @@ for cc= 1:nClasses,
       set(H.cb(cc), 'Position',cbpos);
     end
     if ~opt.GlobalCLim,
-%      unifyCLim([H.scalp(cc,:).ax], [zeros(1,nIvals-1) H.cb(cc)]);
-      unifyCLim([H.scalp(cc,:).ax]);
+%      visutil_unifyCLim([H.scalp(cc,:).ax], [zeros(1,nIvals-1) H.cb(cc)]);
+%       visutil_unifyCLim([H.scalp(cc,:).ax]);
     end
   end
   pos= get(H.scalp(cc,end).ax, 'position');
   yy= pos(2)+0.5*pos(4);
-  H.background= get_backgroundAxis;
+  H.background= fig_getBackgroundAxis;
   H.text(cc)= text(0.01, yy, erp.className{cc});
   set(H.text(cc), 'verticalAli','top', ...
                   'horizontalAli','center', ...
@@ -254,14 +261,14 @@ for cc= 1:nClasses,
 end
 if opt.GlobalCLim,
 %  ucb= [zeros(nClasses, nIvals-1) ones(nClasses,1)];
-%  unifyCLim([H.scalp.ax], isfield(H, 'cb'));
-  unifyCLim([H.scalp.ax]);
+%  visutil_unifyCLim([H.scalp.ax], isfield(H, 'cb'));
+  visutil_unifyCLim([H.scalp.ax]);
 end
 
 if nargout<1,
   clear H
 end
 
-if fig_Visible
-  jvm_restoreFig(jvm);
-end
+% if fig_Visible
+%   jvm_restoreFig(jvm);
+% end

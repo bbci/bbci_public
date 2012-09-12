@@ -19,7 +19,7 @@ function mnt= mnt_setGrid(mnt, displayMontage, varargin)
 % grd= sprintf('legend,Fz,scale\n,C3,Cz,C4\nP3,Pz,P4');
 % mnt= mnt_setGrid(mnt, grd);
 %
-%See also: get_electrodePositions, getGrid.
+%See also: mnt_setElectrodePositions, getGrid.
 
 props = {'CenterClab',   'Cz',   'CHAR'};
 
@@ -79,7 +79,7 @@ mnt.box_sz= mnt.box_sz(:,1:end-1);
 function [ci,ri]= getIndices(lab, grid)
 
 nRows= size(grid,1);
-ii= chanind(grid, lab);
+ii= util_chanind(grid, lab);
 if isempty(ii),
   ci= NaN;
   ri= NaN;

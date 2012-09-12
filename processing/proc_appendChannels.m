@@ -14,8 +14,8 @@ function dat= proc_appendChannels(dat, dat_append,varargin)
 % OUT  dat        - a miracle
 %
 %Example
-%  cnt1 = eegfile_readBV(file1);   %load EEG-data in BV-format
-%  cnt2 = eegfile_readBV(file2);   %load EEG-data in BV-format
+%  cnt1 = file_readBV(file1);   %load EEG-data in BV-format
+%  cnt2 = file_readBV(file2);   %load EEG-data in BV-format
 % append data structures: (t
 %    cnt_app = proc_appendChannels(cnt1 , cnt2)
 % append 2 channels with random values to cnt1:
@@ -24,8 +24,13 @@ function dat= proc_appendChannels(dat, dat_append,varargin)
 %        Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
 
-misc_checkType('dat', 'STRUCT(x clab)'); 
-misc_checkType('dat_append', 'STRUCT(x clab)');
+if nargin==0,
+  dat = []; return
+end
+
+dat = misc_history(dat);
+misc_checkType(dat, 'STRUCT(x clab)'); 
+misc_checkType(dat_append, 'STRUCT(x clab)');
 
 if isempty(dat)
     dat = dat_append;

@@ -1,4 +1,4 @@
-function [dat, mrk]= proc_subsampleByMean(dat, nSamples, mrk)
+function dat = proc_subsampleByMean(dat, nSamples)
 %   PROC_SUBSAMPLEBYMEAN  -  subsampling a timeseries by taking the mean
 %
 %Synopsis
@@ -14,12 +14,15 @@ function [dat, mrk]= proc_subsampleByMean(dat, nSamples, mrk)
 %Description:
 % Reduce the sampling rate by subsampling with the mean.
 %
-%SEE proc_jumpingMeans
+%See also proc_jumpingMeans
+if nargin==0
+  dat=[];return
+end
+
+misc_checkType(dat, 'STRUCT(x)');
+misc_checkType(nSamples,'DOUBLE[1]');
+dat = misc_history(dat);
 
 dat= proc_jumpingMeans(dat, nSamples);
 
-if nargin>2 & nargout>1,
-  mrk.pos= round((mrk.pos-nSamples/2+0.5)/nSamples);
-  mrk.fs= mrk.fs/nSamples;
-end
 

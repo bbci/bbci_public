@@ -20,9 +20,10 @@ function epo= proc_appendEpochs(epo, epo_append, mrk, mrk_append)
 % does NOT work for jittered epochs!!!
 %
 % SEE  makeEpochs, proc_appendCnt, proc_appendChannels
+epo = misc_history(epo);
 
-misc_checkType('dat', 'STRUCT(x clab)|CELL(STRUCT)'); 
-misc_checkType('dat_append', 'STRUCT(x clab)');
+misc_checkType(dat, 'STRUCT(x clab)|CELL(STRUCT)'); 
+misc_checkType(dat_append, 'STRUCT(x clab)');
 
 if iscell(epo),
   Cepo= epo;

@@ -46,18 +46,25 @@ if isfield(mrk1, 'y'),
   end
 end
 
+if xor(isfield(mrk1,'desc'), isfield(mrk2,'desc')),
+  warning('field ''desc'' not found in all markers: lost');
+elseif isfield(mrk1,'desc'),
+  mrk.desc= cat(2, mrk1.desc, mrk2.desc);
+end
+  
 %% Merge subfields of mrk.event
 if xor(isfield(mrk1,'event'), isfield(mrk2,'event')),
   warning('field ''event'' not found in all markers: lost');
-else
+elseif isfield(mrk1,'event'),
   fields1= fieldnames(mrk1.event);
   fields2= fieldnames(mrk2.event);
   lost_fields= setdiff(union(fields1, fields2), intersect(fields1, fields2));
   if ~isempty(lost_fields),
-    lost_list= vec2str(lost_fields);
+    lost_list= str_vec2str(lost_fields);
     warning('events fields {%s} not found in all markers: lost', lost_list{:});
   end
-  for Fld= intersect(fields1, fields2),
+  mrk.event= struct;
+  for Fld= intersect(fields1, fields2)',
     fld= Fld{1};
     tmp1= getfield(mrk1.event, fld);
     tmp2= getfield(mrk2.event, fld);

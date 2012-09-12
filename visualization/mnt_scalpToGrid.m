@@ -8,7 +8,7 @@ function mnt= mnt_scalpToGrid(mnt, varargin)
 %  MNT: Display montage
 %  OPTS: property/value list or struct of optional properties:
 %   .clab     - choose only locations for those specified channels,
-%               cell array, for format see function chanind.
+%               cell array, for format see function util_chanind.
 %   .AxisSize - [width Height]: size of axis. Default [] means choosing
 %               automatically the large possible size, without overlapping.
 %   .Oversize - factor to increase AxisSize to allow partial overlapping,
@@ -53,7 +53,7 @@ end
 
 chind= find(~isnan(mnt.x));
 if ~isempty(opt.clab),
-  chind= setdiff(chind, chanind(mnt, opt.clab));
+  chind= setdiff(chind, util_chanind(mnt, opt.clab));
 end
 
 mnt.box= NaN*zeros(2,length(mnt.clab)+1);
@@ -102,10 +102,10 @@ end
 
 switch(opt.PosCorrection),
  case 1,
-  ci= chanind(mnt, 'AF3,4');
+  ci= util_chanind(mnt, 'AF3,4');
   mnt.box(:,ci)= [-0.2 0.2; 0.75 0.75];
-  ci= chanind(mnt, 'PO7,8');
+  ci= util_chanind(mnt, 'PO7,8');
   mnt.box(:,ci)= [-0.45 0.45; -0.65 -0.65];
-  ci= chanind(mnt, 'TP7,8');
+  ci= util_chanind(mnt, 'TP7,8');
   mnt.box(:,ci)= [-0.68 0.68; -0.37 -0.37];
 end

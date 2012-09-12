@@ -21,28 +21,29 @@ function [out, iv]= proc_selectIval(dat, ival, varargin)
 %  
 % OUT  dat  - updated data structure
 
-% bb, ida.first.fhg.de
-
 props= {'Pos'      'beginning'  '!CHAR(beginning end relative)'
         'Dim'       1           '!INT' };
-      
+props_getIvalIndices= procutil_getIvalIndices;
+
 if nargin==0,
-  dat= props; return
+  dat= opt_catProps(props, props_getIvalIndices);
+  return
 end
 
-if length(varargin)==1 & ~isstruct(varargin{1}),
+if length(varargin)==1 && ~isstruct(varargin{1}),
   opt= strukt('Pos', varargin{1});
 else
-  opt= propertylist2struct(varargin{:});
+  opt= opt_proplistToStruct(varargin{:});
 end
 
 [opt, isdefault]= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
-misc_checkType('dat', 'STRUCT(x fs)'); 
-misc_checkType('ival','DOUBLE[2]'); 
+opt_checkProplist(opt, props, props_getIvalIndices);
+misc_checkType(dat, 'STRUCT(x fs)'); 
+misc_checkType(ival,'DOUBLE[2]'); 
+dat= misc_history(dat);
 
 %%                
-if length(ival)==1 | isequal(opt.Pos, 'relative'),
+if length(ival)==1 || isequal(opt.Pos, 'relative'),
   msec= ival;
   switch(lower(opt.Pos)),
    case 'beginning',
@@ -55,12 +56,13 @@ if length(ival)==1 | isequal(opt.Pos, 'relative'),
     error('unknown position indicator');
   end
 else
-  iv= getIvalIndices(ival, dat, opt);
+  opt_x= opt_substruct(opt, props_getIvalIndices(:,1));
+  iv= procutil_getIvalIndices(ival, dat, opt_x);
 end
 
-out= copy_struct(dat, 'not','x');
+out= dat;
 sz= size(dat.x);
-if isfield(dat, 'dim') & length(dat.dim)>1,
+if isfield(dat, 'dim') && length(dat.dim)>1,
   %% first dimension of dat.x comprises different 'virtual' dimensions
   %% that have been clashed
   xx= reshape(dat.x, [dat.dim sz(2:end)]);

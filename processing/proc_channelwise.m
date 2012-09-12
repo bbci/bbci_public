@@ -1,4 +1,4 @@
-function dat = proc_channelwise(epo, fcn, varargin);
+function dat = proc_channelwise(epo, fcn, varargin)
 %PROC_CHANNELWISE - applies a processing function channelwise
 %
 %Synopsis:
@@ -20,10 +20,11 @@ function dat = proc_channelwise(epo, fcn, varargin);
 % Guido Dornhege, 23/02/05
 %  + modifications by Benjamin
 % $Id: proc_channelwise.m,v 1.4 2007/09/24 10:16:34 neuro_cvs Exp $
+epo = misc_history(epo);
 
 chan= 1:size(epo.x,2);
 if iscell(fcn),
-  fcn= chanind(epo, fcn);
+  fcn= util_chanind(epo, fcn);
 end
 if isnumeric(fcn),
   chan= fcn;

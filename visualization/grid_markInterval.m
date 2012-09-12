@@ -9,9 +9,9 @@ function H= grid_markInterval(ival, chans, markCol)
 %                default 0.8
 
 fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-if fig_Visible
-  jvm= jvm_hideFig;
-end
+% if fig_Visible
+%   jvm= jvm_hideFig;
+% end
 
 if ~exist('chans','var'), chans=[]; end
 if ~exist('markCol','var'), markCol= 0.85; end
@@ -28,35 +28,35 @@ end
 
 
 old_ax= gca;
-if isnumeric(chans) & ~isempty(chans),
+if isnumeric(chans) && ~isempty(chans),
   hsp= chans;
 else
-  hsp= grid_getSubplots(chans);
+  hsp= gridutil_getSubplots(chans);
 end
 k= 0;
 for ih= hsp,
   k= k+1;
-  get_backAxes(ih);  %% this lets the legend vanish behind the axis
+  axis_getQuitely(ih);  %% this lets the legend vanish behind the axis
   yPatch= get(ih, 'yLim');
   H.line(:,k)= line(ival([1 2; 1 2]), yPatch([1 1; 2 2]), ...
                   'Color',0.5*markCol, 'LineWidth',0.3);
   
-  move_objectBack(H.line(:,k));
+  obj_moveBack(H.line(:,k));
   H.patch(k)= patch(ival([1 2 2 1]), yPatch([1 1 2 2]), markCol);
-  move_objectBack(H.patch(k));
-  plot_gridOverPatches;
+  obj_moveBack(H.patch(k));
+  plotutil_gridOverPatches;
   if ~isnan(getfield(get(ih,'UserData'), 'hleg')), %% restore legend
     legend;
   end
 end
 set(H.line, 'UserData','ival line');
 set(H.patch, 'EdgeColor','none', 'UserData','ival patch');
-get_backAxes(old_ax);
+axis_getQuitely(old_ax);
 if isfield(get(old_ax,'UserData'),'hleg') & ...
       ~isnan(getfield(get(old_ax,'UserData'), 'hleg')),
   legend;
 end
 
-if fig_Visible
-  jvm_restoreFig(jvm);
-end
+% if fig_Visible
+%   jvm_restoreFig(jvm);
+% end

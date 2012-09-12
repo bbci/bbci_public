@@ -25,44 +25,45 @@ function dat= proc_envelope(dat, varargin)
 % Author(s): Benjamin Blankertz
 % added channelwise option by Claudia
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
-
-props= {'envelopMethod'     'hilbert'
-        'movAvgMethod'      'centered'
-        'movAvgMilisec'     100
-        'movAvgOpts'        {}
-        'channelwise'       false};
+props= {'envelopMethod'     'hilbert'    '!CHAR(hilbert)'
+        'movAvgMethod'      'centered'   '!CHAR'
+        'movAvgMsec'        100          'DOUBLE[1]'
+        'movAvgOpts'        {}           'CELL'
+        'channelwise'       false        'BOOL'};
 
 if nargin==0,
-  dat = props; return
+  dat= props; return
 end
 
 if length(varargin)==1,
   opt= struct('appendix', varargin{1});
 else
-  opt= propertylist2struct(varargin{:});
+  opt= opt_proplistToStruct(varargin{:});
 end
 
+dat = misc_history(dat);
 [opt, isdefault]= opt_setDefaults(opt, props);
+opt_checkProplist(opt, props);
 
 sz= size(dat.x);
 switch(lower(opt.envelopMethod)),
  case 'hilbert',
-     if opt.channelwise
-         for ch = 1:sz(2)
-             x(:,ch,:) = abs(hilbert(squeeze(dat.x(:,ch,:))));
-         end
-         dat.x = x;
-     else
-         dat.x= abs(hilbert(dat.x(:,:)));     
-         dat.x= reshape(dat.x, sz);
-     end
-
+  if opt.channelwise
+    for ch = 1:sz(2)
+      x(:,ch,:) = abs(hilbert(squeeze(dat.x(:,ch,:))));
+    end
+    dat.x = x;
+  else
+    dat.x= abs(hilbert(dat.x(:,:)));     
+    dat.x= reshape(dat.x, sz);
+  end
+  
  otherwise,
   error('unknown envelop method');
 end
 
 if ~isempty(opt.movAvgOpts),
-  dat= proc_movingAverage(dat, opt.movAvgMilisec, opt.movAvgOpts{:});
-elseif ~isempty(opt.movAvgMilisec) & opt.movAvgMilisec>0,
-  dat= proc_movingAverage(dat, opt.movAvgMilisec, opt.movAvgMethod);
+  dat= proc_movingAverage(dat, opt.movAvgMsec, opt.movAvgOpts{:});
+elseif ~isempty(opt.movAvgMsec) && opt.movAvgMsec>0,
+  dat= proc_movingAverage(dat, opt.movAvgMsec, opt.movAvgMethod);
 end

@@ -7,7 +7,7 @@ function mnt= mnt_restrictMontage(mnt, varargin)
 %
 %Input:
 %  mnt   - display montage, see setElectrodeMontage, setDisplayMontage
-%  chans - channels, format as accepted by chanind
+%  chans - channels, format as accepted by util_chanind
 %  dat   - structure which has a field 'clab', such as cnt, epo, ...
 %
 %Output:
@@ -21,12 +21,12 @@ function mnt= mnt_restrictMontage(mnt, varargin)
 
 if nargin==2 && isstruct(varargin{1}),
   if isfield(varargin{1}, 'Clab'),
-    chans= chanind(mnt.Clab, varargin{1}.Clab);
+    chans= util_chanind(mnt.Clab, varargin{1}.Clab);
   else
     error('field .Clab expected when 2nd argument is a struct');
   end
 else
-  chans= chanind(mnt.clab, varargin{:});
+  chans= util_chanind(mnt.clab, varargin{:});
 end
 off= setdiff(1:length(mnt.clab), chans);
 

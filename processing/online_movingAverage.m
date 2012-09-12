@@ -18,7 +18,7 @@ function [dat,state]= online_movingAverage(dat, state,ms,varargin)
 
 % bb, ida.first.fhg.de
 
-nSamples= getIvalIndices(ms, dat.fs);
+nSamples= procutil_getIvalIndices(ms, dat.fs);
 sdat = size(dat.x,1);
 
 if isempty(state)

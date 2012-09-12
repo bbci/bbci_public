@@ -20,7 +20,14 @@ function fv= proc_selectSamples(fv, idx)
 %See also xvalidation, proc_selectEpochs
 
 % 07-04 Benjamin Blankertz
+if nargin==0,
+  fv=[];  return
+end
 
+misc_checkType(fv, 'STRUCT(x y)');
+fv = misc_history(fv);
+
+%%
 nd= ndims(fv.x);
 ii= repmat({':'}, [1 nd]);
 ii{nd}= idx;

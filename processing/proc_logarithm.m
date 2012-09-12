@@ -10,5 +10,6 @@ function dat= proc_logarithm(dat)
 %Returns:
 %     dat     -  updated data struct
 %     
+dat = misc_history(dat);
 
 dat.x= log(dat.x);

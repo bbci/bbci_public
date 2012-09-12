@@ -19,26 +19,24 @@ function fv_roc= proc_rocAreaValues(fv, varargin)
 %For data with more than two classes, pairwise roc values are calculated.
 %
 %See also:
-% proc_r_values, proc_r_squared_signed, proc_t_values
+% proc_rValues, proc_rSquaredSigned, proc_tTest
 
 % Author(s): Benjamin Blankertz, Feb 2006
-
-
 props= {'multiclassPolicy' 'pairwise' 'CHAR'};
 
-
 if nargin==0,
-  fv_roc = props; return
+  fv_roc= props; return
 end
 
-misc_checkType('dat', 'STRUCT(x clab fs'); 
+fv = misc_history(fv);
+misc_checkType(dat, 'STRUCT(x)'); 
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
 if size(fv.y,1)>2, 
-  fv_roc= proc_wr_multiclass_diff(fv, {'rocAreaValues',opt}, ...
+  fv_roc= procutil_multiclassDiff(fv, {'rocAreaValues',opt}, ...
                                   opt.multiclassPolicy);
   return;
 end
@@ -52,7 +50,7 @@ for k= 1:size(fv.x,1),
   roc(k)= 2*(0.5-auc);
 end
 
-fv_roc= copy_struct(fv, 'not', 'x','y','className');
+fv_roc= fv;
 fv_roc.x= reshape(roc, [sz(1:end-1) 1]);
 if isfield(fv, 'className'),
   fv_roc.className= {sprintf('roc( %s , %s )', fv.className{1:2})};

@@ -7,7 +7,7 @@ function fv_fscore= proc_fisherScore(fv, varargin)
 %Arguments:
 % FV  - data structure of feature vectors
 % OPT - struct or property/value list of optional properties
-%    .tolerate_nans: observations with NaN value are skipped
+%    .TolerateNans: observations with NaN value are skipped
 %       (nanmean/nanstd are used instead of mean/std)
 %
 %Returns:
@@ -20,13 +20,14 @@ function fv_fscore= proc_fisherScore(fv, varargin)
 % Only standard case is tested.
 
 % Author(s): Benjamin Blankertz
-
-props= { 'tolerate_nans'   0    'BOOL'};
+props= { 'TolerateNans'   0    '!BOOL'};
 
 if nargin==0,
   fv_fscore = props; return
 end
-misc_checkType('fv', 'STRUCT(x clab y)'); 
+
+fv = misc_history(fv);
+misc_checkType(fv, 'STRUCT(x clab y)'); 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
@@ -60,7 +61,7 @@ sz= size(fv.x);
 fv.x= reshape(fv.x, [prod(sz(1:end-1)), sz(end)]);
 cl1= find(fv.y(1,:));
 cl2= find(fv.y(2,:));
-if opt.tolerate_nans,
+if opt.TolerateNans,
   me= [nanmean(fv.x(:,cl1),2) nanmean(fv.x(:,cl2),2)];
   va= [nanstd(fv.x(:,cl1),0,2).^2 nanstd(fv.x(:,cl2),0,2).^2];
 else
@@ -70,7 +71,7 @@ end
 fscore= ((me(:,1)-me(:,2)).^2)./(va(:,1)+va(:,2)+eps);
 fscore= reshape(fscore, [sz(1:end-1) 1]);
 
-fv_fscore= copy_struct(fv, 'not', 'x','y','className');
+fv_fscore= rmfield(fv, intersect(fieldnames(fv),{'x','y','className'}) );
 fv_fscore.x= fscore;
 if isfield(fv, 'className'),
   fv_fscore.className= {sprintf('Fs( %s , %s )', fv.className{1:2})};

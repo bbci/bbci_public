@@ -6,7 +6,7 @@ function [epo, complete]= proc_segmentation(cnt, mrk, ival, varargin)
 %  [EPO, IDX]= proc_segmentation(CNT, TIME, IVAL, <OPT>)
 %
 %Arguments:
-%  CNT:  STRUCT       - Continuous data (see eegfile_readBV, eegfile_loadMatlab)
+%  CNT:  STRUCT       - Continuous data (see file_readBV, file_loadMatlab)
 %  MRK:  STRUCT       - Marker structure, with obligatory field 'time',
 %                       which specifies the time points which define the t=0
 %                       for each segment that is cut out from the continuous
@@ -66,14 +66,14 @@ if nargin==0,
   epo= props; return
 end
 
-misc_checkType('cnt', 'STRUCT(x clab fs)');
-misc_checkType('mrk', 'DOUBLE[-]|STRUCT(time)');
-misc_checkType('ival', 'DOUBLE[- 2]');
+misc_checkType(cnt, 'STRUCT(x clab fs)');
+misc_checkType(mrk, 'DOUBLE[-]|STRUCT(time)');
+misc_checkType(ival, 'DOUBLE[- 2]');
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
-
+cnt = misc_history(cnt);
 
 if ~isstruct(mrk), 
   mrk= struct('time', mrk);
@@ -102,10 +102,13 @@ if size(ival,1)>1,
 end
 
 si= 1000/cnt.fs;
+TIMEEPS= si/100;
 nMarkers= length(mrk.time);
 len_sa= round(diff(ival)/si);
-pos_zero= ceil(mrk.time/si);
-pos_end= pos_zero + ceil(ival(2)/si);
+pos_zero= ceil((mrk.time-TIMEEPS)/si);
+core_ival= [ceil(ival(1)/si) floor(ival(2)/si)];
+addone= diff(core_ival)+1 < len_sa;
+pos_end= pos_zero + floor(ival(2)/si) + addone;
 IV= [-len_sa+1:0]'*ones(1,nMarkers) + ones(len_sa,1)*pos_end;
 
 complete= find(all(IV>=1 & IV<=size(cnt.x,1),1));
@@ -120,14 +123,16 @@ if isequal(opt.CLab, '*'),
   epo.clab= cnt.clab;
   epo.x= reshape(cnt.x(IV, :), [len_sa nMarkers size(cnt.x,2)]);
 else
-  cidx= chanind(cnt, opt.CLab);
+  cidx= util_chanind(cnt, opt.CLab);
   epo.clab= cnt.clab(cidx);
   epo.x= reshape(cnt.x(IV, cidx), [len_sa nMarkers length(cidx)]);
 end
 clear IV
 
 epo.x= permute(epo.x, [1 3 2]);
-epo.t= linspace(si*ceil(ival(1)/si), si*floor(ival(2)/si), len_sa);
+timeival= si*(core_ival + [1 addone]);
+%timeival= round(10000*timeival)/10000;
+epo.t= linspace(timeival(1), timeival(2), len_sa);
 
 basic_fields_of_mrk= {'y','className','~event'};
 fields_to_copy_from_mrk= intersect(fieldnames(mrk), basic_fields_of_mrk);

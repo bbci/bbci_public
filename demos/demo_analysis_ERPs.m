@@ -1,11 +1,11 @@
 file= 'VPibv_10_11_02/calibration_CenterSpellerMVEP_VPibv';
 
 %% Load data
-hdr= file_readBVheader([file '*']);
+hdr= file_readBVheader(file);
 Wps= [42 49]/hdr.fs*2;
 [n, Ws]= cheb2ord(Wps(1), Wps(2), 3, 40);
 [filt.b, filt.a]= cheby2(n, 50, Ws);
-[cnt, mrk_orig]= file_readBV([file '*'], 'Fs',100, 'Filt',filt);
+[cnt, mrk_orig]= file_readBV(file, 'Fs',100, 'Filt',filt);
 
 %% Marker struct
 stimDef= {[31:46], [11:26];
@@ -14,9 +14,9 @@ mrk= mrk_defineClasses(mrk_orig, stimDef);
 
 %% Re-referencing to linked-mastoids
 A= eye(length(cnt.clab));
-iA1= chanind(cnt.clab,'A1');
+iA1= util_chanind(cnt.clab,'A1');
 if isempty(iA1)
-    iA1= chanind(cnt.clab,'A2');
+    iA1= util_chanind(cnt.clab,'A2');
 end
 A(iA1,:)= -0.5;
 A(:,iA1)= [];
@@ -28,7 +28,7 @@ grd= sprintf(['scale,_,F5,F3,Fz,F4,F6,_,legend\n' ...
               'T7,C5,C3,C1,Cz,C2,C4,C6,T8\n' ...
               'P7,P5,P3,P1,Pz,P2,P4,P6,P8\n' ...
               'PO9,PO7,PO3,O1,Oz,O2,PO4,PO8,PO10']);
-mnt= get_electrodePositions(cnt.clab);
+mnt= mnt_setElectrodePositions(cnt.clab);
 mnt= mnt_setGrid(mnt, grd);
 
 % Define some settings
@@ -56,7 +56,7 @@ epo= proc_rejectArtifactsMaxMin(epo, crit_maxmin, 'Clab',crit_clab, ...
 
 % Baseline subtraction, and calculation of a measure of discriminability
 epo= proc_baseline(epo, ref_ival);
-epo_r= proc_r_square_signed(epo);
+epo_r= proc_rSquareSigned(epo);
 
 % Select some discriminative intervals, with constraints to find N2, P2, P3 like components.
 fig_set(1);
@@ -69,12 +69,12 @@ constraint= ...
                           'Title', untex(file), ...
                           'Clab',{'not','E*'}, ...
                           'Constraint', constraint);
-printFigure('r_matrix', [18 13]);
+%printFigure('r_matrix', [18 13]);
 ival_scalps= visutil_correctIvalsForDisplay(ival_scalps, 'fs',epo.fs);
 
 fig_set(3)
 H= grid_plot(epo, mnt, defopt_erps, 'ColorOrder',colOrder);
-grid_addBars(epo_r, 'h_scale',H.scale);
+grid_addBars(epo_r, 'HScale',H.scale);
 %printFigure(['erp'], [19 12]);
 
 fig_set(2);

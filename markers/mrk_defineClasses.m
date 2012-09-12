@@ -25,11 +25,11 @@ function mrk= mrk_defineClasses(mk, classDef, varargin)
 %
 %Example:
 % file= 'Gabriel_01_07_24/selfpaced1sGabriel';
-% [cnt,mk]= eegfile_readBV(file);
+% [cnt,mk]= file_readBV(file);
 % classDef= {[65 70], [74 192]; 'left','right'};
 % mrk= mrk_defineClasses(mk, classDef);
 %
-% [cnt,mk]= eegfile_readBV(file, 'MarkerFormat','string');
+% [cnt,mk]= file_readBV(file, 'MarkerFormat','string');
 % classDef= {{'S 65','S 70'},{'S 74', 'S192'}; 'left','right'}
 % mrk= mrk_defineClasses(mk, classDef);
 % %% does the same
@@ -48,11 +48,11 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-misc_checkType('mk', 'STRUCT(time)');
-misc_checkType('classDef', 'CELL');
+misc_checkType(mk, 'STRUCT(time desc)');
+misc_checkType(classDef, 'CELL');
 
 nClasses= size(classDef,2);
-mrk= struct('time', mk.time);
+mrk= struct('time', mk.time, 'desc',mk.desc);
 mrk.y= zeros(nClasses, numel(mrk.time));
 for cc= 1:nClasses,
   if isnumeric(classDef{1,cc}),

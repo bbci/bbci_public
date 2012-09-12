@@ -27,13 +27,13 @@ function [mrk, rClab, rTrials, nfo]= ...
 % ''whiskerperc'' and ''whiskerlength''. The procedure of the heuristic can
 % be summarized with   :
 % 
-% (1) bandpass-filtering (see opt.doBandpass) 
+% (1) bandpass-filtering (see opt.DoBandpass) 
 % (2) build epoching for each markers (see also mrk & ival)
 % (3) compute variance for each trial
-% (4) remove channels with too small variance (see opt.doSilentChans)
+% (4) remove channels with too small variance (see opt.DoSilentChans)
 % (5) remove extreme outlier trials
-% (6) remove trails with a var > threshold, while (for opt.whiskerperc = 10)
-%       threshold = percentile(allVar, 90) + opt.whiskerlength * diff(percentile(allVar, 10), percentile(allVar, 90))      
+% (6) remove trails with a var > threshold, while (for opt.Whiskerperc = 10)
+%       threshold = percentile(allVar, 90) + opt.Whiskerlength * diff(percentile(allVar, 10), percentile(allVar, 90))      
 % (7) combined trials/channels rejection, optionally as multi-pass
 % 
 %
@@ -42,27 +42,27 @@ function [mrk, rClab, rTrials, nfo]= ...
 % 07-12 Johannes Hoehne - updated documentation and parametarization
 
 
-props= { 'whiskerperc'     10           'DOUBLE'
-         'whiskerlength'   3            'DOUBLE'
-         'doMultipass'     0            'BOOL'
-         'doRelVar'        0            'BOOL'
-         'doUnstabChans'   1            'BOOL'
-         'doSilentChans'   1            'BOOL'
-         'doBandpass'      1            'BOOL'
-         'removeChannelsFirst'     0    'BOOL'
-         'band'            [5 40]       'DOUBLE[2]'
-         'clab'            {'not','E*'} 'CHAR|CELL{CHAR}'
-         'visualize'       0            'BOOL'
-         'visu_log'        0            'BOOL'
-         'verbose'         0            'BOOL'};
+props= { 'Whiskerperc'     10           'DOUBLE[1]'
+         'Whiskerlength'   3            'DOUBLE[1]'
+         'DoMultipass'     0            'BOOL'
+         'DoRelVar'        0            'BOOL'
+         'DoUnstabChans'   1            'BOOL'
+         'DoSilentChans'   1            'BOOL'
+         'DoBandpass'      1            'BOOL'
+         'RemoveChannelsFirst'     0    'BOOL'
+         'Band'            [5 40]       'DOUBLE[2]'
+         'CLab'            {'not','E*'} 'CHAR|CELL{CHAR}'
+         'Visualize'       0            'BOOL'
+         'VisuLog'         0            'BOOL'
+         'Verbose'         0            'BOOL'};
 
 if nargin==0,
   mrk = props; return
 end
 
-misc_checkType('cnt', 'STRUCT(x clab)'); 
-misc_checkType('mrk', 'STRUCT(time)'); 
-misc_checkType('ival', 'DOUBLE[2]'); 
+misc_checkType(cnt, 'STRUCT(x clab)'); 
+misc_checkType(mrk, 'STRUCT(time)'); 
+misc_checkType(ival, 'DOUBLE[2]'); 
 
 opt= opt_proplistToStruct(varargin{:});
 
@@ -70,17 +70,17 @@ opt= opt_proplistToStruct(varargin{:});
 opt_checkProplist(opt, props);
 
 
-if opt.doBandpass,
-  [b,a]= butter(5, opt.band/cnt.fs*2);
-  cnt= proc_channelwise(cnt, opt.clab, 'filt', b, a);
+if opt.DoBandpass,
+  [b,a]= butter(5, opt.Band/cnt.fs*2);
+  cnt= proc_channelwise(cnt, opt.CLab, 'filt', b, a);
 end
 
-fv= proc_segmentation(cnt, mrk, ival, 'Clab',opt.clab);
+fv= proc_segmentation(cnt, mrk, ival, 'Clab',opt.CLab);
 nEvents= size(fv.x,3);
 fv= proc_variance(fv);
 V= squeeze(fv.x);
 
-if opt.visualize,
+if opt.Visualize,
   Vfull= V;
 end
 
@@ -95,7 +95,7 @@ end
 
 %% first-pass channels: remove channels with variance droppping to zero
 %%  criterium: variance<1 in more than 5% of trials
-if opt.doSilentChans,
+if opt.DoSilentChans,
   rClab= find(mean(V<1,2) > .05);
 
   V(rClab,:)= [];
@@ -109,8 +109,8 @@ end
 
 %% first-pass trials: remove really bad trials
 %%  criterium: >= 20% of the channels have excessive variance
-perc= percentiles(V(:), [0 100] + [1 -1]*opt.whiskerperc);
-thresh= perc(2) + opt.whiskerlength*diff(perc);
+perc= stat_percentiles(V(:), [0 100] + [1 -1]*opt.Whiskerperc);
+thresh= perc(2) + opt.Whiskerlength*diff(perc);
 EX= ( V > thresh );
 rTrials= find( mean(EX,1)>0.2 );
 
@@ -120,11 +120,11 @@ nfo.trials= {rTrials};
 
 
 %% If requested, remove channels first
-if opt.removeChannelsFirst,
+if opt.RemoveChannelsFirst,
   goon= 1;
   while goon,
-    perc= percentiles(V(:), [0 100] + [1 -1]*opt.whiskerperc);
-    thresh= perc(2) + opt.whiskerlength*diff(perc);
+    perc= stat_percentiles(V(:), [0 100] + [1 -1]*opt.Whiskerperc);
+    thresh= perc(2) + opt.Whiskerlength*diff(perc);
     isout= (V > thresh);
     
     rC= [];
@@ -139,7 +139,7 @@ if opt.removeChannelsFirst,
     if isempty(rC),
       goon= 0;
     end
-    goon= goon && opt.doMultipass;
+    goon= goon && opt.DoMultipass;
   end
 end
 
@@ -148,8 +148,8 @@ end
 
 goon= 1;
 while goon,
-  perc= percentiles(V(:), [0 100] + [1 -1]*opt.whiskerperc);
-  thresh= perc(2) + opt.whiskerlength*diff(perc);
+  perc= stat_percentiles(V(:), [0 100] + [1 -1]*opt.Whiskerperc);
+  thresh= perc(2) + opt.Whiskerlength*diff(perc);
   isout= (V > thresh);
   
   rC= [];
@@ -161,8 +161,8 @@ while goon,
     nfo.chans= cat(2, nfo.chans, {chGood(rC)});
     chGood(rC)= [];
     %% re-calculate threshold for updated V
-    perc= percentiles(V(:), [0 100] + [1 -1]*opt.whiskerperc);
-    thresh= perc(2) + opt.whiskerlength*diff(perc);
+    perc= stat_percentiles(V(:), [0 100] + [1 -1]*opt.Whiskerperc);
+    thresh= perc(2) + opt.Whiskerlength*diff(perc);
   else
     nfo.chans= cat(2, nfo.chans, {[]});
   end
@@ -173,7 +173,7 @@ while goon,
   nfo.trials= cat(2, nfo.trials, {evGood(rTr)});
   evGood(rTr)= [];
   
-  goon= opt.doMultipass & ...
+  goon= opt.DoMultipass & ...
         (~isempty(nfo.trials{end}) | ~isempty(nfo.chans{end}));
 end
 
@@ -183,10 +183,10 @@ end
 %% calculate relative variance (variance minus average channel var)
 %%  and discard trials, whose rel var is about a threshold for
 %%  more than 10% of the channels.
-if opt.doRelVar,
+if opt.DoRelVar,
   Vrel= V - repmat(mean(V,2), [1 size(V,2)]);
-  perc= percentiles(Vrel(:), [0 100] + [1 -1]*opt.whiskerperc);
-  thresh= perc(2) + opt.whiskerlength*diff(perc);
+  perc= stat_percentiles(Vrel(:), [0 100] + [1 -1]*opt.Whiskerperc);
+  thresh= perc(2) + opt.Whiskerlength*diff(perc);
   rTr= find(mean(Vrel > thresh, 1) > 0.1);
   V(:,rTr)= [];
   rTrials= [rTrials evGood(rTr)];
@@ -198,10 +198,10 @@ end
 %% should we???
 %% remove unstable channels
 %%  note: this rule is very conservative
-if opt.doUnstabChans,
+if opt.DoUnstabChans,
   Vv= var(V')';
-  perc= percentiles(Vv, [0 100] + [1 -1]*opt.whiskerperc);
-  thresh= perc(2) + opt.whiskerlength*diff(perc);
+  perc= stat_percentiles(Vv, [0 100] + [1 -1]*opt.Whiskerperc);
+  thresh= perc(2) + opt.Whiskerlength*diff(perc);
   rC= find(Vv > thresh);
 
   V(rC,:)= [];
@@ -211,28 +211,28 @@ if opt.doUnstabChans,
 end
 
 rClab= fv.clab(rClab);
-mrk= mrk_select(mrk, 'not', rTrials);
+mrk= mrk_selectEvents(mrk, 'not', rTrials);
 
-if opt.verbose && ~isempty(rTrials),
+if opt.Verbose && ~isempty(rTrials),
   fprintf('%d artifact trials removed due to variance criterion.\n', ...
           numel(rTrials));
 end
 
-if opt.visualize,
+if opt.Visualize,
   nCols= 51;
   cmap= [0 0 0; jet(nCols); 1 1 1];
-  if opt.visu_log,
+  if opt.VisuLog,
     Vfull= log(Vfull);
   end
   mi= min(Vfull(:));
   peak= max(Vfull(:));
-  perc= percentiles(Vfull(:), [0 100] + [1 -1]*opt.whiskerperc);
-  thresh= perc(2) + opt.whiskerlength*diff(perc);
+  perc= stat_percentiles(Vfull(:), [0 100] + [1 -1]*opt.Whiskerperc);
+  thresh= perc(2) + opt.Whiskerlength*diff(perc);
   ma= max(Vfull(find(Vfull < thresh)));
   Vint= 2 + floor(nCols*(Vfull-mi)/(ma+1e-2-mi));
   Vdisp= ones([nChans+4 nEvents+4]);
   Vdisp(3:end-2, 3:end-2)= Vint;
-  iClab= sort(chanind(fv, rClab));
+  iClab= sort(util_chanind(fv, rClab));
   Vdisp(iClab+2, 1)= nCols+2;
   Vdisp(iClab+2, end)= nCols+2;
   Vdisp(1, rTrials+2)= nCols+2;

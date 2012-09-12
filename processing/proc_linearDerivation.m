@@ -13,11 +13,11 @@ function out= proc_linearDerivation(dat, A, varargin)
 %      appendix - in case of input-output channel matching
 %                 this string is appended to channel labels, default ''
 %      OPT      - struct or property/value list of properties:
-%       .clab - cell array of channel labels to be used for new channels,
+%       .CLab - cell array of channel labels to be used for new channels,
 %               or 'generic' which uses {'ch1', 'ch2', ...}
 %               or 'copy' which copies the channel labels from input struct.
-%       .appendix - (as above) tries to find (naive) channel matching
-%               and uses as channel labels: old label plus opt.appendix.
+%       .Appendix - (as above) tries to find (naive) channel matching
+%               and uses as channel labels: old label plus opt.Appendix.
 %
 %Returns:  
 %      dat      - updated data structure
@@ -26,27 +26,28 @@ function out= proc_linearDerivation(dat, A, varargin)
 
 %        Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
-
-misc_checkType('dat',  'STRUCT(x clab)');
-misc_checkType('A', sprintf('DOUBLE[%i -]', size(dat.x,2)));
-
-props= {'clab'          []
-        'prependix'     ''
-        'appendix'      ''};
+props= {'CLab'          []          'CHAR';
+        'Prependix'     ''          'CHAR';
+        'Appendix'      ''          'CHAR'
+        };
 
 if nargin==0,
   out = props; return
 end
 
+misc_checkType(dat,  'STRUCT(x clab)');
+misc_checkType(A, sprintf('DOUBLE[%i -]', size(dat.x,2)));
+dat = misc_history(dat);
+
+%%
 if length(varargin)==1,
   opt= struct('appendix', varargin{1});
 else
-  opt= propertylist2struct(varargin{:});
+  opt= opt_proplistToStruct(varargin{:});
 end
 
 [opt, isdefault]= opt_setDefaults(opt, props);
 
-%out= copy_struct(dat, 'not', 'x','clab');
 out= dat;
 
 nNewChans= size(A,2);
@@ -59,21 +60,21 @@ else
   out.x= permute(reshape(out.x, [sz(1) sz(3) nNewChans]), [1 3 2]);
 end
 
-if ~isdefault.clab,
-  if isequal(opt.clab, 'generic'),
+if ~isdefault.CLab,
+  if isequal(opt.CLab, 'generic'),
     out.clab= cellstr([repmat('ch',nNewChans,1) int2str((1:nNewChans)')])';
-  elseif isequal(opt.clab, 'copy'),
+  elseif isequal(opt.CLab, 'copy'),
     out.clab= dat.clab;
   else
-    out.clab= opt.clab;
+    out.clab= opt.CLab;
   end
-elseif ~isdefault.prependix,
+elseif ~isdefault.Prependix,
 %  the following results, e.g., in 'csp 1', but the space is impractical
-%  out.clab= cellstr([repmat(opt.prependix,nNewChans,1) ...
+%  out.clab= cellstr([repmat(opt.Prependix,nNewChans,1) ...
 %		     int2str((1:nNewChans)')])';
   out.clab= cell(1,nNewChans);
   for ic= 1:nNewChans,
-    out.clab{ic}= [opt.prependix int2str(ic)];
+    out.clab{ic}= [opt.Prependix int2str(ic)];
   end  
 else
   no= NaN*ones(1, nNewChans);
@@ -87,11 +88,11 @@ else
   out.clab= cell(1,nNewChans);
   if ~any(isnan(no)),
     for ic= 1:nNewChans,
-      out.clab{ic}= [dat.clab{no(ic)} opt.appendix];
+      out.clab{ic}= [dat.clab{no(ic)} opt.Appendix];
     end
   else
     for ic= 1:nNewChans,
-      out.clab{ic}= [opt.prependix int2str(ic)];
+      out.clab{ic}= [opt.Prependix int2str(ic)];
     end
   end
 end

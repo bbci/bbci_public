@@ -32,10 +32,10 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-misc_checkType('hdrName', 'CHAR|CELL{CHAR}');
+misc_checkType(hdrName, 'CHAR|CELL{CHAR}');
 
 if ischar(hdrName) && ismember('*', hdrName),
-  tmpName= get_filelist(hdrName, 'ext','vhdr');
+  tmpName= fileutil_getFilelist(hdrName, 'Ext','vhdr');
   if isempty(tmpName), error('%s.vhdr not found', hdrName); end
   hdrName= tmpName;
 end
@@ -47,21 +47,21 @@ if iscell(hdrName),
   end
   hdr.DataFile= {hdr_array.DataFile};
   hdr.MarkerFile= {hdr_array.MarkerFile};
-  hdr.DataFormat= catifnonequal({hdr_array.DataFormat});  
-  hdr.DataOrientation= catifnonequal({hdr_array.DataOrientation});  
-  hdr.DataType= catifnonequal({hdr_array.DataType});  
-  hdr.NumberOfChannels= catifnonequal({hdr_array.NumberOfChannels});
+  hdr.DataFormat= util_catifnonequal({hdr_array.DataFormat});  
+  hdr.DataOrientation= util_catifnonequal({hdr_array.DataOrientation});  
+  hdr.DataType= util_catifnonequal({hdr_array.DataType});  
+  hdr.NumberOfChannels= util_catifnonequal({hdr_array.NumberOfChannels});
   hdr.DataPoints= cat(2, {hdr_array.DataPoints});
 %  hdr.SamplingInterval= cat(2, {hdr_array.SamplingInterval});
-  hdr.SamplingInterval= catifnonequal({hdr_array.SamplingInterval});
-  hdr.BinaryFormat= catifnonequal({hdr_array.BinaryFormat});  
-  hdr.UseBigEndianOrder= catifnonequal({hdr_array.UseBigEndianOrder});
-  hdr.fs= catifnonequal({hdr_array.fs});
+  hdr.SamplingInterval= util_catifnonequal({hdr_array.SamplingInterval});
+  hdr.BinaryFormat= util_catifnonequal({hdr_array.BinaryFormat});  
+  hdr.UseBigEndianOrder= util_catifnonequal({hdr_array.UseBigEndianOrder});
+  hdr.fs= util_catifnonequal({hdr_array.fs});
   hdr.len= cat(1, hdr_array.len);
-  hdr.endian= catifnonequal({hdr_array.endian});
-  hdr.clab= catifnonequal({hdr_array.clab});
-  hdr.clab_ref= catifnonequal({hdr_array.clab_ref});
-  hdr.scale= catifnonequal({hdr_array.scale});
+  hdr.endian= util_catifnonequal({hdr_array.endian});
+  hdr.clab= util_catifnonequal({hdr_array.clab});
+  hdr.clab_ref= util_catifnonequal({hdr_array.clab_ref});
+  hdr.scale= util_catifnonequal({hdr_array.scale});
   if isfield(hdr_array, 'impedances'),
     hdr.impedances= cat(1, hdr_array.impedances);
     hdr.impedances_time= cat(2, {hdr_array.impedances_time});
@@ -73,7 +73,7 @@ if iscell(hdrName),
   return;
 end
 
-if isabsolutepath(hdrName),
+if fileutil_isAbsolutePath(hdrName),
   fullName= hdrName;
 else
   global EEG_RAW_DIR
@@ -123,7 +123,7 @@ hdr.scale= zeros(1, hdr.NumberOfChannels);
 ci= 0;
 while ci<hdr.NumberOfChannels,
   str= fgets(fid);
-  if isempty(str) | str(1)==';', continue; end
+  if isempty(str) || str(1)==';', continue; end
   [chno,chname,refname,resol]= ...
     strread(str, 'Ch%u=%s%s%f%*[^\n]', 'delimiter',',');
   ci= ci+1;
@@ -175,7 +175,7 @@ if imp_exists
       hdr.impedance_gnd= impedance;
       continue;
     end
-    ci= chanind(hdr, clab);
+    ci= util_chanind(hdr, clab);
     if isempty(ci),
       if opt.Verbose,
         warning('Impedance of unknown channel ''%s'' found\n', clab);
@@ -201,7 +201,7 @@ if keyword(1)=='[',
   fseek(fid, 0, 'bof');
 end
 ok= 0;
-while ~ok & ~feof(fid),
+while ~ok && ~feof(fid),
   str= fgets(fid);
   ok= strncmp(keyword, str, length(keyword));
 end

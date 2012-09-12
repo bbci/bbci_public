@@ -1,4 +1,4 @@
-function opt_checkTypes(opt, optDefaults)
+function opt_checkTypes(opt, optDefaults, structname)
 %OPT_CHECKTYPE - Check types of the values in property/value struct
 %
 %Synopsis:
@@ -53,7 +53,8 @@ end
 for k= 1:size(optDefaults, 1),
   fld= optDefaults{k,1};
   if isfield(opt, fld),
-    [ok, msg]= misc_checkType(opt.(fld), optDefaults{k,3}, fld);
+    fielddisplayname= [structname '.' fld];
+    [ok, msg]= misc_checkType(opt.(fld), optDefaults{k,3}, fielddisplayname);
     if ~ok,
       error(msg);
     end

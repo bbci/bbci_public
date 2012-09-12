@@ -1,13 +1,16 @@
-function [opt, isdefault]= opt_setDefaults(opt, props)
+function [opt, isdefault]= opt_setDefaults(opt, props, check)
 %OPT_SETDEFAULTS - Set default values according to a property spec list
 %
 %Synopsis:
 %  [OPT, ISDEFAULT]= opt_setDefaults(OPT, PROPSPEC)
+%  [OPT, ISDEFAULT]= opt_setDefaults(OPT, PROPSPEC, CHECK)
 %
 %Arguments:
 %  OPT:      STRUCT of optional properties
 %  PROPSPEC: PROPSPECLIST - Property specification list, i.e., CELL of size
 %      [N 2] or [N 3], with the first column all being strings.
+%  CHECK:    BOOL - Evokes type checking according to the third column of
+%      PROPSPEC
 %
 %Returns:
 %  OPT: STRUCT with added properties from the property specification list
@@ -25,7 +28,7 @@ function [opt, isdefault]= opt_setDefaults(opt, props)
 %  property names in PROPLIST. In the case of a match, the variant of
 %  PROPSPEC is used.
 %
-%See also opt_checkProplist, opt_proplist2struct.
+%See also opt_checkProplist, opt_proplistToStruct.
 %
 %Example:
 %  opt= struct('linewidth',3, 'color','k')
@@ -33,6 +36,23 @@ function [opt, isdefault]= opt_setDefaults(opt, props)
 %  [opt, isdefault]= opt_setDefaults(opt, props)
 
 % 06-2012 Benjamin Blankertz
+
+
+misc_checkType(opt, 'STRUCT|CHAR');
+misc_checkType(props, 'PROPSPEC');
+misc_checkTypeIfExists('check', 'BOOL');
+
+if nargin<3,
+  check= 0;
+end
+
+if ischar(opt),
+  structname= opt;
+  opt= evalin('caller', opt);
+  check= 1;
+else
+  structname= '';
+end
 
 
 % Perform a case correction in the STRUCT opt, and
@@ -63,4 +83,11 @@ for k= 1:size(props,1),
     [opt.(fld)]= deal(props{k,2});
     isdefault.(fld)= 1;
   end
+end
+
+if check,
+  if isempty(structname),
+    structname= inputname(1);
+  end
+  opt_checkProplist(opt, props, structname);
 end

@@ -2,13 +2,15 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %MISC_CHECKTYPE - Check the type of a variable
 %
 %Synopsis:
-%  misc_checkType(VARNAME, TYPEDEF)
-%  misc_checkType(VARIABLE, TYPEDEF, VARNAME)
+%  misc_checkType(VARIABLE, TYPEDEF)
+%
+%As an alternative (intended for internal use only)
+%  misc_checkType(EXPRESSION, TYPEDEF, VARNAME)
 %
 %Arguments:
-%  VARNAME:  CHAR - Name of the variable that is to be checked.
-%  VARIABLE: Variable that is to be checked
-%  TYPEDEF:  CHAR - Specification of type, see below.
+%  VARIABLE:   Variable that is to be checked
+%  TYPEDEF:    CHAR - Specification of type, see below.
+%  EXPRESSION: Input that has no name (-> it's value is checked)   
 %
 %Returns:
 %  nothing (throws an error in case of violation)
@@ -16,7 +18,7 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %Description:
 %  This function checks that VARIABLE complies with the type specification
 %  given in TYPEDEF. The following type specifications are implemented:
-%    'DOBULE' - value has to be a numeric array (of any size)
+%    'DOUBLE' - value has to be a numeric array (of any size)
 %    'DOUBLE[x]' with x being a nonnegative integer - value has
 %          to be a numeric vector of length x. Here, row and column vectors
 %          are both allowed. To force either row or column vectors of 
@@ -41,6 +43,7 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %            equal to one of the specified strings val1 val2 (an arbitrary 
 %            number of values can be specified).
 %    'FUNC' - value has to be a function handle
+%    'GRAPHICS' - value has to be a graphics or Java handle
 %    'STRUCT' - value has to be a struct array
 %    'STRUCT(fld1 fld2)' - values has to be a struct array and the specified
 %            fields 'fld1' and 'fld2' must exist (an arbitrary number of fields
@@ -52,7 +55,7 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %    operator '|' (example 'CHAR|DOUBLE[3]' for a color specification).
 %    By default, the empty value is always accepted. In order to force
 %    nonempty values, prepend '!' to the type specification (such as
-%    '!CHAR'.
+%    '!CHAR').
 %
 %  Type checking can be switched off (and on again) by the function
 %  bbci_typechecking which is useful for time critical operations.
@@ -61,31 +64,32 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %
 %Examples:
 %  vec= 1:5;
-%  misc_checkType('vec', 'DOUBLE')
-%  misc_checkType(1:5, 'DOUBLE', 'vec')
-%  misc_checkType('vec', 'DOUBLE[4]')
-%  misc_checkType('vec', 'DOUBLE[- 5]')
-%  misc_checkType(vec', 'DOUBLE[- 5]', 'vec')
-%  misc_checkType(zeros(2,2), 'DOUBLE[-]')
+%  misc_checkType(vec, 'DOUBLE')
+%  misc_checkType(1:5, 'DOUBLE', 'vec')  % alternative use (mainly internal)
+%  misc_checkType(vec, 'DOUBLE[4]')
+%  misc_checkType(vec, 'DOUBLE[- 5]')
+%  misc_checkType(vec, 'DOUBLE[- 5]')
 %
 %  colormap= hot(21);
-%  misc_checkType('colormap', 'DOUBLE[- 3]')
+%  misc_checkType(colormap, 'DOUBLE[- 3]')
 %  colormap= rand(21, 4);
-%  misc_checkType('colormap', 'DOUBLE[- 3]')
+%  misc_checkType(colormap, 'DOUBLE[- 3]')
 %
 %  linecolor= 'green';   % allowed would be 'g' or [0 1 0]
-%  misc_checkType('linecolor', 'CHAR[1]|DOUBLE[3]')
+%  misc_checkType(linecolor, 'CHAR[1]|DOUBLE[3]')
 %
 %  cnt= struct('x',randn(1000,2), 'clab',{'C3','C4'});
-%  misc_checkType('cnt', 'STRUCT(x fs clab)')
+%  misc_checkType(cnt, 'STRUCT(x fs clab)')
 %
 %  clab= cprintf('C%d', 1:6)
-%  misc_checkType('clab', 'CELL{CHAR}')
+%  misc_checkType(clab, 'CELL{CHAR}')
 %  clab{end}= 3.14;
-%  misc_checkType('clab', 'CELL{CHAR}')
+%  misc_checkType(clab, 'CELL{CHAR}')
 
 % 06-2012 Benjamin Blankertz
 
+
+global BBCI_TYPECHECKING
 
 if ~BBCI_TYPECHECKING, return; end
 
@@ -93,25 +97,37 @@ if nargin<4,
   toplevel= 1;
 end
 if nargin<3,
-  if ~ischar(variable),
-    error('If no third argument is given, the first one must be CHAR');
+  propname= inputname(1);
+  if isempty(propname),
+    error('First argument must be a variable, or a third argument must be provided.');
   end
-  propname= variable;
-  variable= evalin('caller', propname);
 end
 
-always_allow_empty= 1;
-if ~isempty(typeDefinition) && typeDefinition(1)=='!',
-  always_allow_empty= 0;
-  typeDefinition(1)= [];
-end
+ok= [];
 msg= '';
-if isempty(typeDefinition) || (isempty(variable) && always_allow_empty),
+if isempty(typeDefinition),
   ok= 1;
-elseif ismember('|', typeDefinition),
+elseif any('|'==typeDefinition),
   ii= min(find(typeDefinition=='|'));
   ok= or(misc_checkType(variable, typeDefinition(1:ii-1), propname, 0), ...
       misc_checkType(variable, typeDefinition(ii+1:end), propname, 0));
+else
+  allow_empty= 1;
+  if typeDefinition(1)=='!',
+    allow_empty= 0;
+    typeDefinition(1)= [];
+  end
+end
+
+if ~isempty(ok),
+  % type check was already performed
+elseif isempty(variable) && allow_empty,
+  ok= 1;
+elseif isempty(variable) && ~allow_empty,
+  ok= 0;
+  msg= sprintf(['Type error: variable ''%s'' must not be empty ' ... 
+                '(expected type is !%s)'], ...
+                 propname, typeDefinition);
 elseif str_matchesHead('DOUBLE', typeDefinition),
   ok= isnumeric(variable);
   if ok,
@@ -129,7 +145,7 @@ elseif str_matchesHead('INT', typeDefinition),
                           propname);
   end
 elseif str_matchesHead('BOOL', typeDefinition),
-  ok= islogical(variable) || ismember(variable, [0 1]);
+  ok= islogical(variable) || isequal(variable, 0) || isequal(variable, 1);
   if ok,
     [ok, msg]= size_check(variable, typeDefinition(length('BOOL')+1:end), ...
                           propname);
@@ -152,6 +168,8 @@ elseif str_matchesHead('CHAR', typeDefinition),
   end
 elseif str_matchesHead('FUNC', typeDefinition),
   ok= isa(variable, 'function_handle');
+elseif str_matchesHead('GRAPHICS', typeDefinition),
+  ok= ishandle(variable);
 elseif str_matchesHead('CELL', typeDefinition),
   ok= iscell(variable);
   spec= typeDefinition(length('CELL')+1:end);
@@ -186,7 +204,7 @@ elseif str_matchesHead('STRUCT', typeDefinition),
     ok= isfield(variable, requiredFields{1});
     if ~all(ok),
       msg= sprintf('Missing obligatory field(s) in variable ''%s'': %s', ...
-                   propname, vec2str(requiredFields{1}(~ok)));
+                   propname, str_vec2str(requiredFields{1}(~ok)));
       ok= 0;
     end
   end
@@ -196,6 +214,17 @@ elseif str_matchesHead('PROPLIST', typeDefinition),
         ( iscell(variable) && ndims(variable)==2 && size(variable,1)==1 && ...
           mod(length(variable),2)==0 ),
     ok= all(cellfun(@ischar, variable(1:2:end)));
+  else
+    ok= 0;
+  end
+elseif str_matchesHead('PROPSPEC', typeDefinition),
+  if isempty(variable) || ...
+        ( iscell(variable) && ndims(variable)==2 && ...
+          (size(variable,2)==2 || size(variable,2)==3) ),
+    ok= all(cellfun(@ischar, variable(:,1)));
+    if size(variable,2)==3,
+      ok= ok && all(cellfun(@ischar, variable(:,3)));
+    end
   else
     ok= 0;
   end
@@ -289,5 +318,5 @@ if ~ok,
     receivedSize= length(variable);
   end
   msg= sprintf('Size mismatch for variable ''%s'': expected %s but got [%s]', ...
-        propname, sizeDefinition, vec2str(receivedSize,'%d',' '));
+        propname, sizeDefinition, str_vec2str(receivedSize,'%d',' '));
 end

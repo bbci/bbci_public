@@ -10,7 +10,7 @@ function [H, Ctour]= plot_scalp(mnt, w, varargin)
 % H= plot_scalp(MNT, W, <OPT>)
 %
 %Input:
-% MNT: An electrode montage, see get_electrodePositions
+% MNT: An electrode montage, see mnt_setElectrodePositions
 % W:   Vector to be displayed as scalp topography. The length of W must
 %      concide with the length of MNT.clab or the number of non-NaN
 %      entries of MNT.x, or OPT must include a field 'WClab'.
@@ -77,10 +77,11 @@ props= {'WClab',                 {},               'CELL{CHAR}';
         'MarkContour',           [],               'DOUBLE[0-2]';
         'MarkContourLineprop',   {'linewidth',2},  'PROPLIST';
         'Shading',               'flat',           'CHAR';
-        'Resolution',            40,               'DOUBLE[1]';
+        'Resolution',            51,               'DOUBLE[1]';
         'Extrapolate',           0,                'BOOL';
         'CLim',                 'sym',             'CHAR|DOUBLE[2]';
-        'ShrinkColorbar',        0,                'BOOL';
+        'ShrinkColorbar',        0,                'DOUBLE';
+        'Colormap',              get(gcf,'Colormap'), 'DOUBLE[- 3]';
         'NewColormap',           0,                'BOOL';
         'Interpolation',         'linear',         'CHAR';
         'ScalePos',              'vert',           'CHAR';
@@ -104,9 +105,9 @@ opt_checkProplist(opt, props, props_scalpOutline);
 opt_scalpOutline= opt_substruct(opt, props_scalpOutline(:,1));
 
 fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-if fig_Visible
-  jvm= jvm_hideFig;
-end
+% if fig_Visible
+%   jvm= jvm_hideFig;
+% end
 
 if opt.NewColormap,
   acm= fig_addcolormap(opt.Colormap);
@@ -182,8 +183,7 @@ end
 
 if opt.Extrapolation,
   wstate= warning('off');
-%  [xg,yg,zg]= griddata(xe, ye, w, xx, yy, 'invdist');
-  [xg,yg,zg]= griddata(xe, ye, w, xx, yy);
+  [xg,yg,zg]= griddata(xe, ye, w, xx, yy, 'v4');
   warning(wstate);
   margin = maxrad +opt.ContourMargin;
   headmask= (sqrt(xg.^2+yg.^2)<=margin);
@@ -191,7 +191,7 @@ if opt.Extrapolation,
   zg(imaskout)= NaN;
   
 else
-  if strcmp(opt.Interpolation, 'invdist'),
+  if strcmp(opt.Interpolation, 'v4'),
     %% get the convex hull from linear Interpolation
     [dmy,dmy,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
     imaskout= find(isnan(zconv(:)));
@@ -382,6 +382,6 @@ if nargout>=2,
                 'values',v, 'matrix',c);
 end
 
-if fig_Visible
-  jvm_restoreFig(jvm);
-end
+% if fig_Visible
+%   jvm_restoreFig(jvm);
+% end

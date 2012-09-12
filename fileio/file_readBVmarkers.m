@@ -40,9 +40,9 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-misc_checkType('mrkName', 'CHAR');
+misc_checkType(mrkName, 'CHAR');
 
-if isabsolutepath(mrkName),
+if fileutil_isAbsolutePath(mrkName),
   fullName= mrkName;
 else
   fullName= fullfile(EEG_RAW_DIR, mrkName);
@@ -75,10 +75,9 @@ Mrk.event.type= M_type';
 Mrk.event.length= M_length';
 Mrk.event.chan= M_chan';
 Mrk.event.clock= M_clock';
-Mrk.fs= fs;
 
 if strcmp(opt.MarkerFormat, 'numeric'),
-  [toe,idx]= marker_mapping_SposRneg(Mrk.desc);
+  [toe,idx]= bbciutil_markerMappingSposRneg(Mrk.desc);
   Mrk.desc= zeros(size(Mrk.desc));
   Mrk.desc(idx)= toe;
 end

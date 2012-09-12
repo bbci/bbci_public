@@ -10,8 +10,8 @@ function H= grid_plot(epo, mnt, varargin)
 % OPT: property/value list or struct of options with fields/properties:
 %  .ScaleGroup -  groups of channels, where each group should
 %                 get the same y limits, cell array of cells,
-%                 default {get_scalpChannels, {'EMG*'},{'EOGh'},{'EOGv'}};
-%                 As group you can also use get_scalpChannels (without quotes!)
+%                 default {util_scalpChannels, {'EMG*'},{'EOGh'},{'EOGv'}};
+%                 As group you can also use util_scalpChannels (without quotes!)
 %                 or 'all' (with quotes!).
 %  .ScalePolicy - says how the y limits are chosen:
 %                 'auto': choose automatically,
@@ -25,7 +25,7 @@ function H= grid_plot(epo, mnt, varargin)
 %                 [lower upper]: define y limits;
 %                 .scapePolicy is usually a cell array, where
 %                 each cell corresponds to one .ScaleGroup. Otherwise it
-%                 applies only to the first group (get_scalpChannels by defaults).
+%                 applies only to the first group (util_scalpChannels by defaults).
 %  .ScaleUpperLimit - values (in magnitude) above this limit are not 
 %                 considered, when choosing the y limits, default inf
 %  .ScaleLowerLimit - values (in magnitude) below this limit are not 
@@ -88,7 +88,7 @@ props= {'YDir',                           'normal',               'CHAR';
         'YLim',                           [],                     'DOUBLE[2]';
         'PlotStd',                        0,                      'BOOL'};
 
-props_channel = plot_channel2D;
+props_channel = plotutil_channel1D;
 props_addScale = grid_addScale;
 
 if nargin==0,
@@ -103,10 +103,10 @@ opt_checkProplist(opt, props, props_channel, props_addScale);
 opt_channel= opt_substruct(opt, props_channel(:,1));
 opt_addScale = opt_substruct(opt, props_addScale(:,1));
 
-fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-if fig_Visible
-  jvm= jvm_hideFig;
-end
+% fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
+% if fig_Visible
+%   jvm= jvm_hideFig;
+% end
 
 if nargin<2 || isempty(mnt),
   mnt= strukt('clab',epo.clab);
@@ -153,7 +153,7 @@ if ~iscell(opt.ScalePolicy),
   opt.ScalePolicy= {opt.ScalePolicy};
 end
 if ~isfield(opt, 'ScaleGroup'),
-  grd_clab= get_clabOfGrid(mnt);
+  grd_clab= gridutil_getClabOfGrid(mnt);
   if strncmp(opt.ScalePolicy, 'individual', length('individual')),
     opt.ScaleGroup= grd_clab;
     pol= opt.ScalePolicy(length('individual')+1:end);
@@ -164,12 +164,12 @@ if ~isfield(opt, 'ScaleGroup'),
     end
     opt.ScalePolicy= repmat({pol}, size(grd_clab));
   else
-    scalp_idx= get_scalpChannels(epo);
+    scalp_idx= util_scalpChannels(epo);
     if isempty(scalp_idx),
       opt.ScaleGroup= {intersect(grd_clab, epo.clab)};
     else
-      scalp_idx= intersect(scalp_idx, chanind(epo, grd_clab));
-      emgeog_idx= chanind(epo, 'EOGh','EOGv','EMG*');
+      scalp_idx= intersect(scalp_idx, util_chanind(epo, grd_clab));
+      emgeog_idx= util_chanind(epo, 'EOGh','EOGv','EMG*');
       others_idx= setdiff(1:length(epo.clab), [scalp_idx emgeog_idx]);
       opt.ScaleGroup= {epo.clab(scalp_idx), {'EMG*'}, {'EOGh'}, {'EOGv'}, ...
                        epo.clab(others_idx)};
@@ -189,7 +189,7 @@ if ~isfield(opt, 'ScaleGroup'),
     end
   end
 elseif isequal(opt.ScaleGroup, 'all'),
-  opt.ScaleGroup= {get_clabOfGrid(mnt)};
+  opt.ScaleGroup= {gridutil_getClabOfGrid(mnt)};
 elseif ~iscell(opt.ScaleGroup),
   opt.ScaleGroup= {opt.ScaleGroup};
 end
@@ -217,7 +217,7 @@ if isfield(mnt, 'box'),
 end
 
 if max(sum(epo.y,2))>1,
-  epo= proc_average(epo, 'std',opt.PlotStd);
+  epo= proc_average(epo, 'Std',opt.PlotStd);
 end
 
 if isempty(opt.Axes),
@@ -232,15 +232,15 @@ end
 nDisps= length(DisplayChannels);
 % mnt.clab{DisplayChannels(ii)} may differ from epo.clab{ii}, e.g. the former
 % may be 'C3' while the latter is 'C3 lap'
-idx= chanind(epo, mnt.clab(DisplayChannels));
+idx= util_chanind(epo, mnt.clab(DisplayChannels));
 if opt.Nirs==1
     for i=1:length(epo.clab)
         pos1=strfind(epo.clab{i},'_');
         epo1.clab{i}=['S' epo.clab{i}(1:pos1-1) '|D' epo.clab{i}(pos1+1:end)];
     end
-    axestitle=apply_cellwise(epo1.clab(idx), 'sprintf');
+    axestitle= epo1.clab(idx);
 else
-    axestitle= apply_cellwise(epo.clab(idx), 'sprintf');
+    axestitle= epo.clab(idx);
 end
 
 %w_cm= warning('query', 'bci:missing_channels');
@@ -248,10 +248,10 @@ end
 %all_idx= 1:length(mnt.clab);
 yLim= zeros(length(opt.ScaleGroup), 2);
 for ig= 1:length(opt.ScaleGroup),
-  ax_idx= chanind(mnt.clab(DisplayChannels), opt.ScaleGroup{ig});
+  ax_idx= util_chanind(mnt.clab(DisplayChannels), opt.ScaleGroup{ig});
   if isempty(ax_idx), continue; end
 %  ch_idx= find(ismember(all_idx, ax_idx));
-  ch_idx= chanind(epo, mnt.clab(DisplayChannels(ax_idx)));
+  ch_idx= util_chanind(epo, mnt.clab(DisplayChannels(ax_idx)));
   if isnumeric(opt.ScalePolicy{ig}),
     yLim(ig,:)= opt.ScalePolicy{ig};
   else
@@ -270,7 +270,7 @@ for ig= 1:length(opt.ScaleGroup),
       if diff(yl)>1,
         dig= max(1, dig);
       end
-      yLim(ig,:)= [trunc(yl(1),-dig+1,'floor') trunc(yl(2),-dig+1,'ceil')];
+      yLim(ig,:)= [util_trunc(yl(1),-dig+1,'floor') util_trunc(yl(2),-dig+1,'ceil')];
     end
   end
   if ~isempty(strfind(opt.ScalePolicy{ig},'sym')),
@@ -281,7 +281,7 @@ for ig= 1:length(opt.ScaleGroup),
     yLim(ig,:)= [-1 1];
   end
   if ig==1 && length(ax_idx)>1,
-%    scale_with_group1= setdiff(1:nDisps, chanind(mnt.clab(DisplayChannels), ...
+%    scale_with_group1= setdiff(1:nDisps, util_chanind(mnt.clab(DisplayChannels), ...
 %                                                 [opt.ScaleGroup{2:end}]));
 %    set(H.ax(scale_with_group1), 'yLim',yLim(ig,:));
     ch2group= ones(1,nDisps);
@@ -300,19 +300,19 @@ for ig= 1:length(opt.ScaleGroup),
        case 'oneline',
         axestitle{ia}= sprintf('%s  [%g %g] %s', ...
                                axestitle{ia}, ...
-                               trunc(yLim(ig,:), dig), opt.YUnit);
+                               util_trunc(yLim(ig,:), dig), opt.YUnit);
        case 'nounit',
         axestitle{ia}= sprintf('%s  [%g %g]', ...
                                axestitle{ia}, ...
-                               trunc(yLim(ig,:), dig));
+                               util_trunc(yLim(ig,:), dig));
        case 'twolines',
         axestitle{ia}= sprintf('%s\n[%g %g] %s', ...
                                axestitle{ia}, ...
-                               trunc(yLim(ig,:), dig), opt.YUnit);
+                               util_trunc(yLim(ig,:), dig), opt.YUnit);
        case 'twolines_nounit',
         axestitle{ia}= sprintf('%s\n[%g %g]', ...
                                axestitle{ia}, ...
-                               trunc(yLim(ig,:), dig));
+                               util_trunc(yLim(ig,:), dig));
        otherwise,
         error('invalid choice for opt.AxisTitleLayout');
       end
@@ -332,18 +332,20 @@ for ia= 1:nDisps,
   ic= DisplayChannels(ia);
   if ~isempty(opt.Axes),
     H.ax(ia)= opt.Axes(ic);
-    get_backAxes(H.ax(ia));
+    axis_getQuitely(H.ax(ia));
   else
-    H.ax(ia)= get_backAxes('position', get_axisGridPos(mnt, ic));
+    H.ax(ia)= axis_getQuitely('position', gridutil_getAxisPos(mnt, ic));
   end
-  H.chan(ia)= setfield(plot_channel(epo, mnt.clab{ic}, opt_channel, opt_plot{:}, ...
+  cchan = plot_channel(epo, mnt.clab{ic}, opt_channel, opt_plot{:}, ...
                           'YLim', yLim(ch2group(ia),:), ...
                           'AxisTitle', axestitle{ia}, 'Title',0, ...
-                          'SmallSetup',1), 'Clab', mnt.clab{ic});
+                          'SmallSetup',1);
+  cchan.clab = mnt.clab{ic};
+  H.chan(ia) = cchan;
   if ic==DisplayChannels(1),
     opt_plot{2}= 0;
     H.leg= H.chan(ia).leg;
-    leg_pos= get_axisGridPos(mnt, 0);
+    leg_pos= gridutil_getAxisPos(mnt, 0);
     if ~any(isnan(leg_pos)) && ~isnan(H.leg),
       leg_pos_orig= get(H.leg, 'position');
       if leg_pos(4)>leg_pos_orig(4),
@@ -357,7 +359,7 @@ for ia= 1:nDisps,
       leg_pos(3:4)= leg_pos_orig(3:4);  %% use original size
       set(H.leg, 'position', leg_pos);
       ud= get(H.leg, 'userData');
-      ud= set_defaults(ud, 'type','ERP plus', 'chan','legend');
+      ud= opt_setDefaults(ud,{ 'type','ERP plus', 'chan','legend'});
       set(H.leg, 'userData',ud);
       if exist('verLessThan')~=2 || verLessThan('matlab','7'),
         set(H.leg, 'Visible','off');
@@ -368,16 +370,16 @@ for ia= 1:nDisps,
 end
 
 if isfield(mnt, 'scale_box') && all(~isnan(mnt.scale_box)),
-  ax_idx= chanind(mnt.clab(DisplayChannels), opt.ScaleGroup{1});
+  ax_idx= util_chanind(mnt.clab(DisplayChannels), opt.ScaleGroup{1});
   set(gcf,'CurrentAxes',H.ax(ax_idx(1)))
   H.scale= grid_addScale(mnt, opt_addScale);
 end
 if opt.GridOverPatches,
-  plot_gridOverPatches('Axes',H.ax);
+  plotutil_gridOverPatches('Axes',H.ax);
 end
 
 if ~isdefault.XTickAxes,
-  h_xta= H.ax(chanind(mnt.clab(DisplayChannels), opt.XTickAxes));
+  h_xta= H.ax(util_chanind(mnt.clab(DisplayChannels), opt.XTickAxes));
   set(setdiff(H.ax, h_xta), 'XTickLabel','');
 end
 
@@ -386,29 +388,29 @@ if ~strcmp(opt.TitleDir, 'none'),
   if isfield(opt, 'title'),
     tit= [opt.Title ':  '];
   elseif isfield(epo, 'title'),
-    tit= [untex(epo.title) ':  '];
+    tit= [util_untex(epo.title) ':  '];
   end
-  if isfield(epo, 'ClassName'),
-    tit= [tit, vec2str(epo.ClassName, [], ' / ') ', '];
+  if isfield(epo, 'className'),
+    tit= [tit, str_vec2str(epo.className, [], ' / ') ', '];
   end
   if isfield(epo, 'N'),
-    tit= [tit, 'N= ' vec2str(epo.N,[],'/') ',  '];
+    tit= [tit, 'N= ' str_vec2str(epo.N,[],'/') ',  '];
   end
   if isfield(epo, 't'),
-    tit= [tit, sprintf('[%g %g] %s  ', trunc(epo.t([1 end])), opt.XUnit)];
+    tit= [tit, sprintf('[%g %g] %s  ', util_trunc(epo.t([1 end])), opt.XUnit)];
   end
-  tit= [tit, sprintf('[%g %g] %s', trunc(yLim(1,:)), opt.YUnit)];
+  tit= [tit, sprintf('[%g %g] %s', util_trunc(yLim(1,:)), opt.YUnit)];
   if strcmpi(opt.YDir, 'reverse'),
     tit= [tit, ' neg. up'];
   end
   if isfield(opt, 'TitleAppendix'),
     tit= [tit, ', ' opt.TitleAppendix];
   end
-%  H.title= addtitle(tit, opt.TitleDir);
+ H.title= visutil_addTitle(tit, opt.TitleDir);
 end
 
 if ~isempty(opt.ShiftAxesUp) && opt.ShiftAxesUp~=0,
-  shift_axesUp(opt.ShiftAxesUp);
+  axis_shiftUp(opt.ShiftAxesUp);
 end
 
 if opt.HeadMode,
@@ -419,13 +421,13 @@ if opt.HeadMode,
   H.scalpOutline= plot_scalpOutline(mnt, opt.HeadModeSpec{:}, 'DrawEars', 1);
   set(H.scalpOutline.ax, 'Visible','off');
   delete(H.scalpOutline.label_markers);
-  move_objectBack(H.scalpOutline.ax);
+  obj_moveBack(H.scalpOutline.ax);
 end
 
 if nargout==0,
   clear H;
 end
 
-if fig_Visible
-  jvm_restoreFig(jvm);
-end
+% if fig_Visible
+%   jvm_restoreFig(jvm);
+% end

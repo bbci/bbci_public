@@ -31,6 +31,7 @@ function [out, W]= proc_localAverageReference(dat, mnt, varargin)
 %  proc_commonAverageReference, proc_laplacian, getElectrodePositions
 
 % Author: Benjamin Blankertz
+dat = misc_history(dat);
 
 props= { 'radius'       0.8     'DOUBLE[1]'
          'clab'         '*'     'CHAR|CELL{CHAR}'
@@ -42,7 +43,7 @@ if nargin==0,
   out = props; return
 end
 
-misc_checkType('dat', 'STRUCT(x clab y)'); 
+misc_checkType(dat, 'STRUCT(x clab)'); 
 if length(varargin)==1 & isnumeric(varargin{1}),
   opt= struct('radius', varargin{1});
 else
@@ -59,8 +60,8 @@ mnt= mnt_adaptMontage(mnt, dat);
 if ~isequal(mnt.clab, dat.clab),
   error('channel mismatch');
 end
-rc= chanind(dat, {'not', opt.ignore_clab{:}});
-idx_tbf= chanind(dat, opt.clab);
+rc= util_chanind(dat, {'not', opt.ignore_clab{:}});
+idx_tbf= util_chanind(dat, opt.clab);
 out= proc_selectChannels(dat, opt.clab);
 W= zeros(length(dat.clab), length(idx_tbf));
 for ci= 1:length(idx_tbf),
@@ -69,7 +70,7 @@ for ci= 1:length(idx_tbf),
   dist= sqrt(sum( (mnt.pos_3d(:,rc)-pos).^2) );
   iRef= find(dist>0 & dist<opt.radius);
   if opt.verbose,
-    fprintf('%s: ref''ed to: %s\n', dat.clab{cc}, vec2str(dat.clab(rc(iRef))));
+    fprintf('%s: ref''ed to: %s\n', dat.clab{cc}, str_vec2str(dat.clab(rc(iRef))));
   end
   W(cc,ci)= 1;
   if ~isempty(iRef),

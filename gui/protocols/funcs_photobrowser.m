@@ -79,7 +79,7 @@ end
 
 bbci.calibrate.folder = TODAY_DIR;
 bbci.calibrate.file =  'SETBYGUI';
-bbci.calibrate.read_fcn = @eegfile_readBV;
+bbci.calibrate.read_fcn = @file_readBV;
 bbci.calibrate.read_param = {'fs', 100};
 bbci.calibrate.marker_fcn = @mrkdef_photobrowser;
 bbci.calibrate.marker_param = {'stimDef', {[120:132], [20:32]; 'Target', 'Non-target'}, ...

@@ -5,7 +5,7 @@ function mrk= mrk_sortChronologically(mrk, varargin)
 %  MRK_OUT= mrk_sortChronologically(MRK_IN, <OPT>)
 %
 %Arguments:
-%  MRK_IN: Marker structure as received by eegfile_loadBV
+%  MRK_IN: Marker structure as received by file_loadBV
 %  OPT: struct or property/value list of optional properties:
 %    'RemoveVoidClasses': Void classes are removed from the list of classes.
 %    'Classwise': Each class is sorted chronologically, default 0.
@@ -15,9 +15,12 @@ function mrk= mrk_sortChronologically(mrk, varargin)
 
 % Benjamin Blankertz
 
-props= {'Sort',              0  'BOOL'
-        'RemoveVoidClasses'  1  'BOOL'};
-props_selectEvents= mrk_sortChronologically;
+
+props= {'Sort',              0  'BOOL';
+        'RemoveVoidClasses'  1  'BOOL';
+        'Classwise'          0  '!BOOL';
+        };
+props_selectEvents= mrk_selectEvents;
 
 if nargin==0,
   mrk= opt_catProps(props, props_selectEvents);

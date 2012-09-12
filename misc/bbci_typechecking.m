@@ -19,7 +19,11 @@ function oldstate= bbci_typechecking(onoff)
 
 global BBCI_TYPECHECKING
 
-oldstate= BBCI_TYPECHECKING;
+if isempty(BBCI_TYPECHECKING),
+  oldstate= 'on';
+else
+  oldstate= BBCI_TYPECHECKING;
+end
 
 if nargin==0,
   onoff= 'on';

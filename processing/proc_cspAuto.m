@@ -44,8 +44,6 @@ function [dat, varargout]= proc_cspAuto(dat, varargin)
 %See also demos/demo_validate_csp
 
 % Author(s): Benjamin Blankertz
-
-
 props= { 'patterns'     3           'INT'
          'score'        'medianvar' 'CHAR'
          'covPolicy'    'average'   'CHAR'
@@ -59,8 +57,9 @@ if nargin==0,
   dat = props; return
 end
 
-misc_checkType('dat', 'STRUCT(x clab y)'); 
-if length(varargin)==1 & isnumeric(varargin{1}),
+dat = misc_history(dat);
+misc_checkType(dat, 'STRUCT(x clab y)'); 
+if length(varargin)==1 && isnumeric(varargin{1}),
   opt= struct('patterns', varargin{1});
 else
   opt= opt_proplistToStruct(varargin{:});
@@ -130,7 +129,7 @@ elseif ischar(opt.patterns) & strcmpi(opt.patterns, 'auto'),
   if ~strcmpi(opt.selectPolicy, 'maxvalues'),
     score= max(score, 1-score);
   end
-  perc= percentiles(score, [20 80]);
+  perc= stat_percentiles(score, [20 80]);
   thresh= perc(2) + diff(perc);
   fi= find(score>thresh);
 else

@@ -47,6 +47,8 @@ function dat= proc_filt(dat, varargin)
 %
 % 04-2010 David List, Michael Tangermann  - z,p,k functionality
 
+dat = misc_history(dat);
+misc_checkType(dat, 'STRUCT(x)'); 
 
 if size(varargin,2) == 1
   varargin= cat(2, varargin, {1});

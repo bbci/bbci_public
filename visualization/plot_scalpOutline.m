@@ -72,8 +72,8 @@ if isempty(opt.DisplayChannels)
     opt= set_defaults(opt, 'DisplayChannels', 1:length(mnt.clab));
 end
 
-if opt.ShowLabels, opt= set_defaults(opt, 'MarkerProperties', {'Marker','o','MarkerSize',20,'MarkerEdgeColor','k'});
-else opt= set_defaults(opt, 'MarkerProperties', {'Marker','+','MarkerSize',2,'LineWidth',.2,'MarkerEdgeColor','k'});
+if opt.ShowLabels, opt= opt_setDefaults(opt,{ 'MarkerProperties', {'Marker','o','MarkerSize',20,'MarkerEdgeColor','k'}});
+else opt= opt_setDefaults(opt,{'MarkerProperties', {'Marker','+','MarkerSize',2,'LineWidth',.2,'MarkerEdgeColor','k'}});
 end;
              
 % If no other marker was set, set default marker 'o'
@@ -90,7 +90,7 @@ if ~any(strcmpi('Color',opt.LineProperties)),
 end
 % If channels are given as labels in cells, turn into indices
 if iscell(opt.DisplayChannels)
-    opt.DisplayChannels = chanind(mnt.clab, opt.DisplayChannels);
+    opt.DisplayChannels = util_chanind(mnt.clab, opt.DisplayChannels);
 end
 
 % Normalized units (for positioning, set back later)
@@ -162,7 +162,7 @@ if opt.Reference
 end
 
 % Add markers & labels
-opt.MarkChannels= chanind(mnt.clab(opt.DisplayChannels), opt.MarkChannels);
+opt.MarkChannels= util_chanind(mnt.clab(opt.DisplayChannels), opt.MarkChannels);
 % Plot markers
 H.label_markers = [];
 for k=1:numel(xe)
@@ -179,9 +179,8 @@ if opt.ShowLabels,
   H.label_text= text(xe, ye, labs);
   set(H.label_text, 'horizontalAlignment','center',opt.LabelProperties{:});
   % Find labels with >3 letters and set their properties
-  strLen= apply_cellwise(labs, 'length');
-  strLen = [strLen{:}];
-  iLong= strLen>3;
+  strLen= cellfun(@length,labs);
+  iLong= find(strLen>3);
   set(H.label_text(iLong), opt.MinorLabelProperties{:});
   if ~isempty(opt.MarkChannels),
     set(H.label_text(opt.MarkChannels), opt.MarkLabelProperties{:});

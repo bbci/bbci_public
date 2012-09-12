@@ -23,15 +23,14 @@ function epo= proc_selectEpochs(epo, idx, varargin)
 % OUT epo  - updated data structure
 
 % Benjamin Blankertz
-
-
 props= {'RemoveVoidClasses',   1,   'BOOL'};
 
 if nargin==0,
-  H= props; return
+  epo= props; return
 end
 
-misc_checkType('epo', 'STRUCT(x clab fs)');
+misc_checkType(epo, 'STRUCT(x clab fs)');
+epo= misc_history(epo);
 
 if mod(length(varargin),2)==1,
   if isequal(idx, 'not'),
@@ -71,7 +70,7 @@ end
 if isfield(epo, 'event'),
   for Fld= fieldnames(epo.event),
     fld= Fld{1};
-    tmp= getfield(epo, fld);
+    tmp= getfield(epo.event, fld);
     subidx= cat(2, repmat({':'}, 1, ndims(tmp)-1), {idx});
     epo.event= setfield(epo.event, fld, tmp(subidx{:}));
   end

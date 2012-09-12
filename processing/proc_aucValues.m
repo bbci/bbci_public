@@ -14,18 +14,20 @@ function fv_rval= proc_aucValues(fv)
 %  Computes the area under the curve (AUC) score for each feature.
 %
 %Examples:
-%  [cnt, mrk]= eegfile_readBV(some_file);   %load EEG-data in BV-format
+%  [cnt, mrk]= file_readBV(some_file);   %load EEG-data in BV-format
 %  mrk= mrk_defineClasses(mrk, {1, 2; 'target','nontarget'}); 
 %  epo= proc_segmentation(cnt, mrk, [-200 800], 'CLab', {'Fz','Cz','Pz'});
 %  epo_auc = proc_auc_values(epo);
 %
 %
-%See also:  proc_t_scaled, proc_r_square, proc_r_values, proc_wr_multiclass_diff
-%
+%See also:  proc_tTest, proc_rSquare, proc_rValues
+
 % stefan.haufe@tu-berlin.de, 2012
 % 07-2012 Johannes Hoehne   - Updated the help documentation & probs
+fv = misc_history(fv);
 
-misc_checkType('fv', 'STRUCT(x clab fs)');
+
+misc_checkType(fv, 'STRUCT(x clab fs)');
 
 sz= size(fv.x);
 fv.x= reshape(fv.x, [prod(sz(1:end-1)), sz(end)]);

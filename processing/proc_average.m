@@ -16,46 +16,45 @@ function out= proc_average(epo, varargin)
 %            names of classes (strings in a cell array), or 'ALL' (default)
 %
 % For compatibility PROC_AVERAGE can be called in the old format with CLASSES
-% as second argument (which is now set via opt.classes):
+% as second argument (which is now set via opt.Classes):
 % CLASSES - classes of which the average is to be calculated,
 %           names of classes (strings in a cell array), or 'ALL' (default)
 %
 %Returns:
 % EPO     - updated data structure with new field(s)
 %  .N     - vector of epochs per class across which average was calculated
-%  .std   - standard deviation, if requested (opt.std==1),
+%  .std   - standard deviation, if requested (opt.Std==1),
 %           format as epo.x.
 
 % Benjamin Blankertz
 
 
-props= {  'policy'   'mean' 'CHAR(mean nanmean median)'
-          'classes' 'ALL'   'CHAR'
-          'std'      0      'BOOL'  };
+props= {  'Policy'   'mean' '!CHAR(mean nanmean median)'
+          'Classes' 'ALL'   '!CHAR'
+          'Std'      0      '!BOOL'  };
 
 if nargin==0,
   out = props; return
 end
 
-
-misc_checkType('epo', 'STRUCT(x clab y)'); 
+misc_checkType(epo, 'STRUCT(x clab y)'); 
 if nargin==2
-  opt.classes = varargin{:};
+  opt.Classes = varargin{:};
 else
   opt= opt_proplistToStruct(varargin{:});
 end
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);        
+epo = misc_history(epo);
 
 %% delegate a special case:
 if isfield(epo, 'yUnit') && isequal(epo.yUnit, 'dB'),
-% warning('Using ''proc_dBaverage''. In future this warning will be skipped.');
-  out= proc_dBaverage(epo, varargin{:});
+  out= proc_dBAverage(epo, varargin{:});
   return;
 end
 
 %%		  
-classes = opt.classes;
+classes = opt.Classes;
 
 if ~isfield(epo, 'y'),
   warning('no classes label found: calculating average across all epochs');
@@ -64,7 +63,7 @@ if ~isfield(epo, 'y'),
   epo.className= {'all'};
 end
 
-if isequal(opt.classes, 'ALL'),
+if isequal(opt.Classes, 'ALL'),
   classes= epo.className;
 end
 if ischar(classes), classes= {classes}; end
@@ -91,7 +90,7 @@ end
 
 sz= size(epo.x);
 out.x= zeros(prod(sz(1:end-1)), nClasses);
-if opt.std,
+if opt.Std,
   out.std= zeros(prod(sz(1:end-1)), nClasses);
   if exist('mrk_addIndexedField')==2,
     %% The following line is only to be executed if the BBCI Toolbox
@@ -104,7 +103,7 @@ out.className= classes;
 out.N= zeros(1, nClasses);
 epo.x= reshape(epo.x, [prod(sz(1:end-1)) sz(end)]);
 for ic= 1:nClasses,
-  switch(lower(opt.policy)),  %% alt: feval(opt.policy, ...)
+  switch(lower(opt.Policy)),  %% alt: feval(opt.Policy, ...)
    case 'mean',
     out.x(:,ic)= mean(epo.x(:,evInd{ic}), 2);
    case 'nanmean',
@@ -114,8 +113,8 @@ for ic= 1:nClasses,
    otherwise,
     error('unknown policy');
   end
-  if opt.std,
-    if strcmpi(opt.policy,'nanmean'),
+  if opt.Std,
+    if strcmpi(opt.Policy,'nanmean'),
       out.std(:,ic)= nanstd(epo.x(:,evInd{ic}), 0, 2);
     else
       out.std(:,ic)= std(epo.x(:,evInd{ic}), 0, 2);
@@ -125,6 +124,6 @@ for ic= 1:nClasses,
 end
 
 out.x= reshape(out.x, [sz(1:end-1) nClasses]);
-if opt.std,
+if opt.Std,
   out.std= reshape(out.std, [sz(1:end-1) nClasses]);
 end

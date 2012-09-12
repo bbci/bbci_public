@@ -8,7 +8,7 @@ function [cnt, mrk]= proc_appendCnt(cnt, cnt2, mrk, mrk2, varargin)
 % [CNT, MRK]= proc_appendCnt({CNT1, ...}, {MRK1, ...});
 %
 %Arguments:
-%  CNT:  STRUCT       - Continuous data (see eegfile_readBV, eegfile_loadMatlab)
+%  CNT:  STRUCT       - Continuous data (see file_readBV, file_loadMatlab)
 %  CNT2: STRUCT       -  Continuous data to be appended
 %  MRK:  STRUCT       - Marker structure, with obligatory field 'time',
 %                       which specifies the time points which define the t=0
@@ -17,7 +17,7 @@ function [cnt, mrk]= proc_appendCnt(cnt, cnt2, mrk, mrk2, varargin)
 %  MRK2:  STRUCT      - marker structure of the CNT2 to be appended to CNT
 %                       (OPTIONAL)
 %  OPT:  PROPLIST     - Struct or property/value list of optional properties:
-%    'channelwise': BOOL append data channel-wise (different programming
+%    'Channelwise': BOOL append data channel-wise (different programming
 %                       procedure, but same result), DEFAULT 0
 %
 %Returns:
@@ -25,9 +25,9 @@ function [cnt, mrk]= proc_appendCnt(cnt, cnt2, mrk, mrk2, varargin)
 %  MRK -  an updated MRK structure, if MRK1 and MRK2 is specified
 %
 %Examples
-%  [cnt1, mrk1]= eegfile_readBV(file1);   %load EEG-data from file1
-%  [cnt2, mrk2]= eegfile_readBV(file2);   %load EEG-data from file2
-%  [cnt3, mrk3]= eegfile_readBV(file3);   %load EEG-data from file3
+%  [cnt1, mrk1]= file_readBV(file1);   %load EEG-data from file1
+%  [cnt2, mrk2]= file_readBV(file2);   %load EEG-data from file2
+%  [cnt3, mrk3]= file_readBV(file3);   %load EEG-data from file3
 %  cnt12 = proc_appendCnt(cnt1, cnt2); %append EEG-data only
 %  [cnt12, mrk12] = proc_appendCnt(cnt1, cnt2, mrk1, mrk2); 
 %           %append EEG-data and marker of file 1 and file2
@@ -40,14 +40,17 @@ function [cnt, mrk]= proc_appendCnt(cnt, cnt2, mrk, mrk2, varargin)
 % 06-2012 Johannes Hoehne   - Updated the help documentation & probs
 
 
-props= {'channelwise',          0       'BOOL'};
+props= {'Channelwise',          0       'BOOL'};
 
 if nargin==0,
   cnt = props; return
 end
 
-misc_checkType('cnt', 'STRUCT(x clab fs)|CELL(STRUCT)'); 
-misc_checkType('cnt2', 'STRUCT(x clab fs)|CELL(STRUCT)');
+cnt = misc_history(cnt);
+misc_checkType(cnt, 'STRUCT(title x clab fs)|CELL(STRUCT)'); 
+misc_checkType(cnt2, 'STRUCT(title x clab fs)|CELL(STRUCT)');
+misc_checkTypeIfExists('mrk','STRUCT(time y)|CELL(STRUCT)');
+misc_checkTypeIfExists('mrk2','STRUCT(time y)|CELL(STRUCT)');
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
@@ -61,7 +64,7 @@ if iscell(cnt),
   cnt_cell= cnt;
   if nargin>1,
     mrk_cell= cnt2;
-    if ~iscell(mrk_cell) | length(mrk_cell)~=length(cnt_cell),
+    if ~iscell(mrk_cell) || length(mrk_cell)~=length(cnt_cell),
       error('cell arrays for CNT and MRK do not match');
     end
   else
@@ -93,15 +96,6 @@ if cnt.fs~=cnt2.fs,
   error('mismatch in cnt sampling rates');
 end
 
-if exist('mrk','var'),
-  if ~isempty(mrk) & mrk(1).fs~=mrk2(1).fs,
-    error('mismatch in mrk sampling rates');
-  end
-  if ~isempty(mrk) & mrk(1).fs~=cnt.fs,
-    error('mismatch between cnt and mrk sampling rates');
-  end
-end
-
 if ~isequal(cnt.clab, cnt2.clab),
   sub= intersect(cnt.clab, cnt2.clab);
   if isempty(sub),
@@ -115,9 +109,9 @@ if ~isequal(cnt.clab, cnt2.clab),
   cnt2= proc_selectChannels(cnt2, sub);
 end
 
-T= size(cnt.x, 1);
+T= size(cnt.x, 1);  % Length in samples
 C= size(cnt.x,2);
-if opt.channelwise
+if opt.Channelwise
   T2= size(cnt2.x, 1);
   for ic= 1:C
     cnt.x(1:T+T2,ic) = cat(1,cnt.x(1:T,ic),cnt2.x(:,ic));
@@ -128,23 +122,24 @@ end
 if ~strcmp(cnt.title, cnt2.title),
   cnt.title= [cnt.title ' et al'];
 end
-if isfield(cnt, 'file') & isfield(cnt2, 'file'),
+if isfield(cnt, 'file') && isfield(cnt2, 'file'),
   if ~iscell(cnt.file), cnt.file= {cnt.file}; end
   if ~iscell(cnt2.file), cnt2.file= {cnt2.file}; end
   cnt.file= cat(2, cnt.file, cnt2.file);
 end
 
-if exist('mrk','var') & ~isempty(mrk),
-  if isfield(mrk(1),'time') & ~isfield(mrk2(1),'time')
+if exist('mrk','var') && ~isempty(mrk),
+  Tt = T/cnt.fs*1000; % Length in ms
+  if isfield(mrk(1),'time') && ~isfield(mrk2(1),'time')
     error('appending dissimilar structs for mrk');
-  elseif length(mrk2)>1 || ~iscell(mrk2.type),
-    %% mrk2 has format 'StructArray' (see eegfile_readBVmarkers)
-    for i = 1:length(mrk2)
-      mrk2(i).pos = mrk2(i).pos+T;
+  elseif length(mrk2)>1 % || ~iscell(mrk2.type),   % @Benjamin: ist OK das iscell auszukommentieren? [mrk hat das Feld nicht mehr?]
+    %% mrk2 has format 'StructArray' (see file_readBVmarkers)
+    for ii = 1:length(mrk2)
+      mrk2(ii).time = mrk2(ii).time + Tt;
     end
     mrk = cat(1,mrk,mrk2);
   else
-    mrk2.pos= mrk2.pos + T;
+    mrk2.time= mrk2.time + Tt;
     mrk= mrk_mergeMarkers(mrk, mrk2);
   end
 end

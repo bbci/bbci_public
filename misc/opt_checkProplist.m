@@ -39,14 +39,31 @@ function opt_checkProplist(opt, props, varargin)
 % 06-2012 Benjamin Blankertz
 
 
+global BBCI_TYPECHECKING
+
 if ~BBCI_TYPECHECKING, return; end
+
+if length(varargin)>0 && ischar(varargin{end}),
+  structname= varargin{end};
+  varargin(end)= [];
+else
+  structname= '';
+end
 
 props_all= cat(1, props, varargin{:});
 fn= fieldnames(opt);
 isknown= ismember(upper(fn), upper(props_all(:,1)));
 unknown_fields= fn(~isknown);
 if ~isempty(unknown_fields),
-  error('unexpected properties: %s.', vec2str(unknown_fields));
+  if length(unknown_fields)==1,
+    tag= 'unexpected property';
+  else
+    tag= 'unexpected properties';
+  end
+  if ~isempty(structname),
+    tag= [tag sprintf(' in STRUCT ''%s''', structname)];
+  end
+  error('%s: %s.', tag, str_vec2str(unknown_fields));
 end
 
-opt_checkTypes(opt, props);
+opt_checkTypes(opt, props, structname);

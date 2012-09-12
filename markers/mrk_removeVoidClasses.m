@@ -3,13 +3,14 @@ function [mrk, ev]= mrk_removeVoidClasses(mrk)
 %
 % requires a field 'y' containing the class labels in mrk.
 
-misc_checkType('mrk', 'STRUCT(time y)');
+misc_checkType(mrk, 'STRUCT(time y)');
 
 nonvoidClasses= find(any(mrk.y,2));
 if length(nonvoidClasses)<size(mrk.y,1),
   msg= sprintf('void classes removed, %d classes remaining', ...
                   length(nonvoidClasses));
-  bbci_warning(msg, 'mrk', mfilename);
+%   bbci_warning(msg, 'mrk', mfilename);
+  warning(msg, 'mrk');
   mrk.y= mrk.y(nonvoidClasses,:);
   if isfield(mrk, 'className'),
     mrk.className= {mrk.className{nonvoidClasses}};

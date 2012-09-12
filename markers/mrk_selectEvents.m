@@ -11,7 +11,7 @@ function [mrk, ev]= mrk_selectEvents(mrk, ev, varargin)
 % IDX: DOUBLE - Indices of events that are to be selected (or discarded, in the
 %       second variant with keyword 'not')
 % OPT:  PROPLIST - Struct or property/value list of optional properties:
-%  'Sort' - BOOL: Evokes a call to mrk_sortChronologically.
+%  'Sort' - BOOL: Evokes a call to mrk_sortChronologically (default 0).
 %  'RemoveVoidClasses' - BOOL: Deletes empty classes (default 1), requires
 %                 MRK to have a field 'y'.
 
@@ -36,8 +36,8 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-misc_checkType('mrk', 'STRUCT(time)');
-misc_checkType('ev', 'CHAR|INT');
+misc_checkType(mrk, 'STRUCT(time)');
+misc_checkType(ev, 'CHAR|INT');
 
 if nargin==1 || (ischar(ev) && strcmpi(ev,'VALID')),
   ev= find(any(mrk.y,1));
@@ -48,12 +48,15 @@ if invert,
 end
 
 mrk.time= mrk.time(ev);
+if isfield(mrk, 'desc'),
+  mrk.desc= mrk.desc(:,ev);
+end
 if isfield(mrk, 'y'),
   mrk.y= mrk.y(:,ev);
 end
 
 if isfield(mrk, 'event'),
-  for Fld= fieldnames(mrk.event),
+  for Fld= fieldnames(mrk.event)'
     fld= Fld{1};
     tmp= getfield(mrk.event, fld);
     sz= size(tmp);

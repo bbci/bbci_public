@@ -23,7 +23,7 @@ function dat= proc_baseline(dat, ival, varargin)
 % amplitude in the specified interval is substracted for every channel
 %
 %Examples:
-%  [cnt, mrk]= eegfile_readBV(some_file);   %load EEG-data in BV-format
+%  [cnt, mrk]= file_readBV(some_file);   %load EEG-data in BV-format
 %  mrk= mrk_defineClasses(mrk, {1, 2; 'target','nontarget'}); 
 %  epo= proc_segmentation(cnt, mrk, [-200 800], 'CLab', {'Fz','Cz','Pz'});
 %  epo = proc_basline(epo, [-150 0]);
@@ -35,17 +35,18 @@ function dat= proc_baseline(dat, ival, varargin)
 % Matthias Treder Aug 2010: Added time-frequency data support
 
 
-props= {'pos'      'beginning'  'CHAR(beginning end)'
+props= {'pos'      'beginning'  'CHAR(beginning end beginning_exact end_exact)'
         'classwise'     0       'BOOL'   
         'trialwise'     1       'BOOL'
         'channelwise'   0       'BOOL'};
 
 if nargin==0,
-  cnt = props; return
+  dat = props; return
 end
 
-misc_checkType('dat', 'STRUCT(x clab)'); 
-misc_checkType('ival','DOUBLE[2]'); 
+dat = misc_history(dat);
+misc_checkType(dat, 'STRUCT(x clab)'); 
+misc_checkType(ival,'DOUBLE[2]'); 
 
 if length(varargin)==1,
   opt= struct('pos', varargin{1});
@@ -78,10 +79,10 @@ else
     switch(lower(opt.pos)),
      case 'beginning',
       dat.refIval= dat.t(1) + [0 msec];
-      Ti= getIvalIndices(dat.refIval, dat);
+      Ti= procutil_getIvalIndices(dat.refIval, dat);
      case 'end',
       dat.refIval= dat.t(end) - [msec 0];
-      Ti= getIvalIndices(dat.refIval, dat);
+      Ti= procutil_getIvalIndices(dat.refIval, dat);
      case 'beginning_exact', % 150 msec = 15 samples (not 16). 
       Ti= 1:round(msec/1000*dat.fs);
       dat.refIval= [dat.t(Ti(1)) dat.t(Ti(end))];      
@@ -95,14 +96,14 @@ else
     switch(lower(opt.pos)),
      case 'beginning_exact', % [-150 0] = 15 samples not 16 (at fs= 100 Hz)
       len= round(diff(ival)/1000*dat.fs);
-      Ti= getIvalIndices(ival, dat);
+      Ti= procutil_getIvalIndices(ival, dat);
       Ti= Ti(1:len);
      case 'end_exact',
       len= round(diff(ival)/1000*dat.fs);
-      Ti= getIvalIndices(ival, dat);
+      Ti= procutil_getIvalIndices(ival, dat);
       Ti= Ti(end-len+1:end);
      otherwise,
-      Ti= getIvalIndices(ival, dat);
+      Ti= procutil_getIvalIndices(ival, dat);
     end
     dat.refIval= dat.t(Ti([1 end]));
   end

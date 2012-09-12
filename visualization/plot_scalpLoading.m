@@ -1,14 +1,12 @@
 function H= plot_scalpLoading(mnt, w, varargin)
 %plot_scalpLoading(mnt, w, <opt>);
 
-% bb, ida.first.fhg.de 08/2000
-
 props = {'ShowLabels',         1,          'BOOL';
          'ScalePos',            'vert',     'CHAR';
          'FontSize',            8,          'DOUBLE';
          'MinorFontSize',       6,          'DOUBLE';
          'TextColor',           'k',        'CHAR|DOUBLE[3]';
-         'CLim',                'sym',      'CHAR';
+         'CLim',                'sym',      'CHAR(sym range 0tomax)|DOUBLE[2]';
          'DrawNose',           1,          'BOOL';
          'LineWidth',           2,          'DOUBLE';
          'LineColor',           'k',        'CHAR';
@@ -81,8 +79,8 @@ if opt.ShowLabels,
   H.label_text= text(xe, ye, labs);
   set(H.label_text, 'horizontalAlignment','center', ...
          'FontSize',opt.FontSize, 'Color',opt.TextColor);
-  strLen= apply_cellwise(labs, 'length');
-  iLong= find([strLen{:}]>3);
+  strLen= cellfun(@length,labs);
+  iLong= find(strLen>3);
   set(H.label_text(iLong), 'FontSize',opt.MinorFontSize);
 end
 

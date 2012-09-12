@@ -1,23 +1,27 @@
 function H= axis_redrawFrame(ax, varargin)
 
-opt= propertylist2struct(varargin{:});
-[opt, isdefault]= ...
-    set_defaults(opt, ...
-                 'VPos', 0, ...
-                 'LineWidth', 0.5);
+props = {'VPos',                        0               '!DOUBLE';
+         'LineWidth'                    1               '!DOUBLE'
+         };
 
-if nargin==0,
-  ax= gca;
+if nargin==0
+  H= props; return
 end
+
+opt= opt_proplistToStruct(varargin{:});
+[opt, isdefault]= opt_setDefaults(opt, props);
+opt_checkProplist(opt, props);
+
+misc_checkTypeIfExists('ax','!GRAPHICS');
 
 old_ax= gca;
 
 for ii= 1:length(ax),
-  if isequal(get(ax(ii),'XColor'),[1 1 1]) & ...
+  if isequal(get(ax(ii),'XColor'),[1 1 1]) && ...
         isequal(get(ax(ii),'YColor'),[1 1 1]),
     continue;
   end
-  backaxes(ax(ii));
+  visutil_backaxes(ax(ii));
 
   xLim= get(ax(ii), 'XLim');
   yLim= get(ax(ii), 'YLim');
@@ -60,5 +64,5 @@ for ii= 1:length(ax),
 end
 
 %if old_ax~=ax(end),  %% if this was not checked the legend would disappear
-  backaxes(old_ax);
+  visutil_backaxes(old_ax);
 %end

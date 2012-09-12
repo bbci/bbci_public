@@ -9,25 +9,30 @@ function dat= proc_commonAverageReference(dat, refChans, rerefChans)
 %
 %Arguments:
 %      dat        - data structure of continuous or epoched data
-%      refChans   - channels used as average reference, see chanind for format, 
+%      refChans   - channels used as average reference, see util_chanind for format, 
 %                   default scalpChannels(dat)
 %      rerefChans - those channels are rereferenced, default refChans
 %
 %Returns:
 %      dat        - updated data structure
 %
-% SEE scalpChannels, chanind
+% SEE scalpChannels, util_chanind
 
 % bb, ida.first.fhg.de
+dat = misc_history(dat);
 
-
-if ~exist('refChans','var') | isempty(refChans),
+if ~exist('refChans','var') || isempty(refChans)
   refChans= scalpChannels(dat);
 end
-if ~exist('rerefChans','var') | isempty(rerefChans), rerefChans= refChans; end
+if ~exist('rerefChans','var') || isempty(rerefChans), rerefChans= refChans; end
 
-rc= chanind(dat, refChans);
-rrc= chanind(dat, rerefChans);
+misc_checkType(dat, 'STRUCT(x clab)'); 
+misc_checkType(refChans, 'CELL{CHAR}|CHAR'); 
+misc_checkType(rerefChans, 'CELL{CHAR}|CHAR'); 
+
+
+rc= util_chanind(dat, refChans);
+rrc= util_chanind(dat, rerefChans);
 car= mean(dat.x(:,rc,:), 2);
 %% this might consume too much memory:
 %car= repmat(car, [1 length(rrc) 1]);
