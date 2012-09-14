@@ -137,6 +137,10 @@ epo.t= linspace(timeival(1), timeival(2), len_sa);
 basic_fields_of_mrk= {'y','className','~event'};
 fields_to_copy_from_mrk= intersect(fieldnames(mrk), basic_fields_of_mrk);
 epo= struct_copyFields(epo, mrk, basic_fields_of_mrk);
+if size(epo.y,2)>size(epo.x,ndims(epo.x))  
+  % segments have been dropped, adjust .y and .event fields
+  epo = proc_selectEpochs(epo,complete);
+end
 
 fields_exclude= union({'clab', 'time'}, basic_fields_of_mrk);
 fields_to_copy_from_mrk= setdiff(fieldnames(mrk), fields_exclude);
