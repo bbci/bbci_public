@@ -83,18 +83,22 @@ function res = pyff(command, varargin)
 
 % Matthias Treder 2010
 
-global IO_ADDR BBCI.Tp.Dir BBCI.Tp.Code acquire_func general_port_fields
+
+global BBCI
+%% TODO: get rid of these (change bvr_* functions to more general ones)
+global acquire_func general_port_fields
 persistent ACQ_STARTED
 
 props = {'Os',                    'win',            '!CHAR(win unix)';
+         'PyffDir'                BBCI.PyffDir      'CHAR';
          'ReplaceHtmlEntities',   1,                '!BOOL';
-         'Parport',               IO_ADDR,          'DOUBLE[1]';
+         'Parport',               BBCI.IOAaddr,     'DOUBLE[1]';
          'A',                     [],               'CHAR';
          'Gui',                   0,                'BOOL';
          'L',                     'debug',          'CHAR';
          'Bvplugin',              1,                '!BOOL';
-         'TodayDir',              BBCI.Tp.Dir,        'CHAR';
-         'VpCode',                BBCI.Tp.Code,          'CHAR';
+         'TodayDir',              BBCI.Tp.Dir,      'CHAR';
+         'VpCode',                BBCI.Tp.Code,     'CHAR';
          'Basename',              '',               'CHAR';
          'OutputProtocol',        [],               'CHAR';
          'Host',                 'localhost',       'CHAR';
@@ -172,15 +176,6 @@ if isdefault.Os
   end
 end
 
-switch(opt.Os)
-  case 'win'
-    opt= opt_setDefaults(opt, {'Dir','D:\svn\pyff\src'});
-  case 'unix'
-    opt= opt_setDefaults(opt, {'Dir','~/svn/pyff/src'; 'BVplugin',0});
-end
-
-if isempty(opt.TodayDir), 	opt.TodayDir = '';end
-if isempty(opt.VpCode), opt.VpCode = '';end
                
 %% Execute command
 res = [];
@@ -194,10 +189,10 @@ switch(command)
       % also sets the path back to the normal system variable. Matlab adds a
       % reference to itself to the beginning of the system path which
       % breaks PyQT.QtCore (possibly also other imports that require dll)
-      comstr = ['set PATH=' curr_path '& cmd /C "cd ' opt.Dir ' & python FeedbackController.py'];
+      comstr = ['set PATH=' curr_path '& cmd /C "cd ' opt.PyffDir ' & python FeedbackController.py'];
       opt.A= strrep(opt.A, '/', filesep);
     elseif strcmp(opt.Os,'unix')
-      comstr = ['xterm -e python ' opt.Dir  '/FeedbackController.py'];
+      comstr = ['xterm -e python ' opt.PyffDir  '/FeedbackController.py'];
 %       opt.A= strrep(opt.A, '\', filesep); % probably unneccesary
     end
     
