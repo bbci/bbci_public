@@ -3,7 +3,7 @@ function startup_bbci_toolbox(varargin)
 global BBCI
 
 % Find directory of the BBCI Toolbox and path it to the path
-BBCI_DIR= fileparts(which(mfilename));
+BBCI_DIR= [fileparts(which(mfilename)) filesep];
 addpath(genpath(BBCI_DIR));
 rmpath(genpath(fullfile(BBCI_DIR, '.git')));
 
@@ -31,15 +31,16 @@ if ~exist(PYFF_DIR, 'dir'),
   PYFF_DIR= '';
 end
 
-props= {'Dir'            BBCI_DIR        'CHAR'
-        'DataDir'        ''              'CHAR'
-        'RawDir'         BBCI_RAW_DIR    'CHAR'
-        'MatDir'         BBCI_MAT_DIR    'CHAR'
-        'TmpDir'         TMP_DIR         'CHAR'
-        'PyffDir'        PYFF_DIR        'CHAR'
-        'Tp'             struct          'STRUCT'
-        'Acq'            struct          'STRUCT'
-        'History'        1               '!BOOL'
+props= {'Dir'            BBCI_DIR        'CHAR';
+        'DataDir'        ''              'CHAR';
+        'RawDir'         BBCI_RAW_DIR    'CHAR';
+        'MatDir'         BBCI_MAT_DIR    'CHAR';
+        'TmpDir'         TMP_DIR         'CHAR';
+        'PyffDir'        PYFF_DIR        'CHAR';
+        'FigDir'         ''              'CHAR';
+        'Tp'             struct          'STRUCT';
+        'Acq'            struct          'STRUCT';
+        'History'        1               '!BOOL';
         'TypeChecking'   1               '!BOOL'
        };
 BBCI= opt_setDefaults(BBCI, props);
