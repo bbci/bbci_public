@@ -121,7 +121,7 @@ end
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
-opt_checkProplist(opt_substruct(opt,props(:,1)), props);
+opt_checkProplist(opt, props, props_gridOverPatches);
 
 [opt, isdefault]= ...
     opt_overrideIfDefault(opt, isdefault, ...

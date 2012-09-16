@@ -33,7 +33,8 @@ log_format= '%fs | [%f] | {cl_output=%f}';
 [time, cfy, ctrl]= textread(data.log.filename, log_format, ...
                             'delimiter','','commentstyle','shell');
 
-cnt_cfy= struct('fs',25, 'x',cfy, 'clab',{{'cfy'}});
+cnt_cfy= struct('fs',25, 'x',cfy, ...
+                'clab', {{sprintf('cfy %s vs %s', calib.result.classes{:})}});
 epo_cfy= proc_segmentation(cnt_cfy, calib.mrk, [0 5000]);
 fig_set(1, 'name','classifier output'); clf;
-plot_channel(epo_cfy, 1);
+plot_channel(epo_cfy, 1, 'YUnit','[a.u.]');
