@@ -41,22 +41,23 @@ function band= select_bandnarrow(cnt, mrk, ival, varargin)
 %in the same manner.
 %[There is some more heuristic for the borders of the band, but I 
 %will not describe them here.]
-%
+
 % Author(s): Benjamin Blankertz
 %            06-12 Javier Pascual. Modified to allow subsets of electrodes
 %            07-12 Johannes Hoehne, modified documentation and parameter
 %            naming
 
+
 motor_areas= {{'FC5,3','CFC5,3','C5,3','CCP5,3','CP5,3'},
               {'FC1-2','CFC1-2','C1-2','CCP1-2','CP1-2'}, 
               {'FC4,6','CFC4,6','C4,6','CCP4,6','CP4,6'}};
 
-done_laplace = regexpi(cnt.clab,'^\w+ lap\w*');
-done_laplace = any(cell2mat(done_laplace));
+done_laplace= regexpi(cnt.clab,'^\w+ lap\w*');
+done_laplace= any(cell2mat(done_laplace));
 
-props={ 'band'          [5 35]
+props= {'band'          [5 35]
         'bandTopscore' [7 35]
-        'scoreProc'    'r_square_signed'
+        'scoreProc'    @proc_rSquareSigned
         'areas'         motor_areas
         'doLaplace'    ~done_laplace
         'laplaceRequireNeighborhood'      1
@@ -69,7 +70,7 @@ if nargin==0,
   ival = props; return
 end
 
-misc_checkType(erd, 'STRUCT(x clab)'); 
+misc_checkType(cnt, 'STRUCT(x clab fs)'); 
 misc_checkType(mrk, 'STRUCT(time)'); 
 
 opt= opt_proplistToStruct(varargin{:});
@@ -91,7 +92,7 @@ if opt.bandTopscore(2) > opt.band(2)
   warning(sprintf('opt.bandTopscore automatically adapted in select_bandnarrow: [%d %d]\n', opt.bandTopscore));
 end
 
-[score_fcn, score_param]= getFuncParam(opt.scoreProc);
+[score_fcn, score_param]= misc_getFuncParam(opt.scoreProc);
 
 if opt.doLaplace,
   cnt= proc_laplacian(cnt,'requireCompleteNeighborhood', opt.laplaceRequireNeighborhood);
@@ -108,13 +109,13 @@ else
     spec_ival= ival;                                          
   end                                                             
 end                                                               
-spec= cntToEpo(cnt, mrk, spec_ival, 'clab', cat(2, opt.areas{:}));
-spec= proc_spectrum(spec, opt.band, 'win',kaiser(winlen,2));
+spec= proc_segmentation(cnt, mrk, spec_ival, 'CLab', cat(2, opt.areas{:}));
+spec= proc_spectrum(spec, opt.band, 'Win',kaiser(winlen,2));
 %% or this?
-%spec= proc_spectrum(spec, opt.band, 'win',kaiser(winlen,2), 'db_scaled',0);
-score= feval(['proc_' score_fcn], spec, score_param{:});
+%spec= proc_spectrum(spec, opt.band, 'Win',kaiser(winlen,2), 'DBScaled',0);
+score= score_fcn(spec, score_param{:});
 if opt.smoothSpectrum,
-  score.x= movingAverage(score.x, 3, 'method','centered','window',[.5 1 .5]');
+  score.x= procutil_movingAverage(score.x, 3, 'Method','centered', 'Window',[.5 1 .5]');
 end
 
 %% choose good channels (CAUTION: pos and neg scores are summed up!)
@@ -133,7 +134,7 @@ end
 
 %% choose initial band as limited by the top score frequency
 tempscore= mean(abs(score.x(idx,chansel)),2);
-[topscore,topidx]= max(tempscore);
+[dmy, topidx]= max(tempscore);
 topfreq= idx(topidx);
 
 %% correct sign and redo
@@ -143,13 +144,13 @@ for ci= 1:length(chansel),
   xx(:,ci)= xx(:,ci) * sgn;
 end
 freqscore= mean(xx,2);
-[topscore,topfreq]= max(freqscore);
+[topscore, topfreq]= max(freqscore);
 bandsel= [topfreq topfreq];
 bandext= [0 0];
 
 %% iteratively enlarge band
 goon= 1;
-while goon & bandsel(1)>1,
+while goon && bandsel(1)>1,
   fsc= freqscore(bandsel(1)-1);
   if fsc >= topscore*opt.threshold,
     bandsel(1)= bandsel(1)-1;
@@ -165,7 +166,7 @@ while goon & bandsel(1)>1,
   end
 end
 goon= 1;
-while goon & bandsel(2)<length(freqscore),
+while goon && bandsel(2)<length(freqscore),
   fsc= freqscore(bandsel(2)+1);
   if fsc >= topscore*opt.threshold,
     bandsel(2)= bandsel(2)+1;

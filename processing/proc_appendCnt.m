@@ -47,10 +47,10 @@ if nargin==0,
 end
 
 cnt = misc_history(cnt);
-misc_checkType(cnt, 'STRUCT(title x clab fs)|CELL(STRUCT)'); 
-misc_checkType(cnt2, 'STRUCT(title x clab fs)|CELL(STRUCT)');
-misc_checkTypeIfExists('mrk','STRUCT(time y)|CELL(STRUCT)');
-misc_checkTypeIfExists('mrk2','STRUCT(time y)|CELL(STRUCT)');
+misc_checkType(cnt, 'STRUCT(title x clab fs)|CELL{STRUCT}'); 
+misc_checkType(cnt2, 'STRUCT(title x clab fs)|CELL{STRUCT}');
+misc_checkTypeIfExists('mrk','STRUCT(time y)|CELL{STRUCT}');
+misc_checkTypeIfExists('mrk2','STRUCT(time y)|CELL{STRUCT}');
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);

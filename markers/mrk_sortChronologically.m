@@ -29,7 +29,7 @@ end
 
 opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
+opt_checkProplist(opt, props, props_selectEvents);
 
 misc_checkType(mrk, 'STRUCT(time)');
 

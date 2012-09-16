@@ -72,9 +72,9 @@ props= { 'NIvals'               5               '!INT[1]';
          'Clab'                 '*'             'CHAR|CELL{CHAR}';
          'ScalpChannelsOnly'    0               '!BOOL';
          'ClabPickPeak'         '*'             'CHAR|CELL{CHAR}';
-         'IvalPickPeak'         []              '!DOUBLE';
-         'IvalMax'              []              '!DOUBLE';
-         'MinWidth'             []              '!DOUBLE';
+         'IvalPickPeak'         []              'DOUBLE';
+         'IvalMax'              []              'DOUBLE';
+         'MinWidth'             []              'DOUBLE';
          'Sort'                 0               '!BOOL';
          'Visualize'            0               '!BOOL';
          'VisuScalps'           0               '!BOOL';
@@ -84,29 +84,28 @@ props= { 'NIvals'               5               '!INT[1]';
          'Constraint'           {}              'CELL';
          'IntersampleTiming'    0               '!DOUBLE';
          'Verbose'              1               '!BOOL'};
+props_plot= plot_scoreMatrix;
 
 if nargin==0,
-  ival = props; return
+  ival= opt_catProps(props, props_plot); 
+  return;
 end
 
 misc_checkType(epo_r, 'STRUCT(x)'); 
 
-
 opt= opt_proplistToStruct(varargin{:});
-
 [opt, isdefault]= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
-
+opt_checkProplist(opt, props, props_plot);
 
 if opt.ScalpChannelsOnly,
-  scalpchans= intersect(strtok(epo_r.clab), scalpChannels);
+  scalpchans= intersect(strtok(epo_r.clab), util_scalpChannels);
   if length(scalpchans) < length(epo_r.clab),
     if isequal(opt.Clab, '*'),
-      opt.Clab= clab_in_preserved_order(epo_r, scalpchans);
+      opt.Clab= intersect(epo_r.clab, util_scalpchans, 'stable');
     else
       selchans= epo_r.clab(util_chanind(epo_r, opt.Clab));
-      opt.Clab= clab_in_preserved_order(epo_r, ...
-                                        intersect(selchans, scalpChannels));
+      opt.Clab= intersect(epo_r, ...
+                          intersect(selchans, util_scalpChannels), 'stable');
     end
   end
   % in recursive calls we do not need to do this again
@@ -181,7 +180,7 @@ if ~isempty(opt.Constraint),
 end
 
 if opt.Verbose,
-  nonscalp= setdiff(strtok(epo_r.clab), scalpChannels);
+  nonscalp= setdiff(strtok(epo_r.clab), util_scalpChannels);
   if ~isempty(nonscalp),
     warning(['Presumably non-scalp channel(s) found: ' str_vec2str(nonscalp)]);
   end
@@ -209,7 +208,8 @@ if opt.NIvals>1,
   end
   if opt.Visualize,
     epo_r.x= X_memo;
-    H= visualize_score_matrix(epo_r, nfo, opt);
+    opt_plot= opt_substruct(opt, props_plot(:,1));
+    H= plot_scoreMatrix(epo_r, cat(1, nfo.ival), opt_plot);
   else 
     H= [];
   end
@@ -279,93 +279,14 @@ end
 
 if opt.Visualize,
   epo_r.x= X_memo;
-  H= visualize_score_matrix(epo_r, nfo, opt);
+  opt_plot= opt_substruct(opt, props_plot(:,1));
+  H= plot_scoreMatrix(epo_r, cat(1, nfo.ival), opt_plot);
 else
   H= [];
 end
 
 return
 
-
-
-
-function H= visualize_score_matrix(epo_r, nfo, opt)
-
-[optVisu, isdefault]= ...
-    set_defaults(opt.OptVisu, ...
-                 'clf', 1, ...
-                 'colormap', cmap_posneg(51), ...
-                 'markClab', {'Fz','FCz','Cz','CPz','Pz','Oz'}, ...
-                 'xunit', 'ms', ...
-                 'titleProp', {});
-
-% order channels for visualization:
-%  scalp channels first, ordered from frontal to occipital (as returned
-%  by function scalpChannels),
-%  then non-scalp channels
-clab= clab_in_preserved_order(scalpChannels, strtok(epo_r.clab));
-clab_nonscalp= clab_in_preserved_order(epo_r, ...
-                       setdiff(strtok(epo_r.clab), scalpChannels));
-epo_r= proc_selectChannels(epo_r, cat(2, clab, clab_nonscalp)); 
-clf;
-colormap(optVisu.colormap);
-if opt.VisuScalps,
-  if isempty(opt.Title),
-    subplotxl(2, 1, 1, [0.05 0 0.01], [0.06 0 0.1]);
-  else
-    subplotxl(2, 1, 1, [0.05 0 0.05], [0.06 0 0.1]);
-  end
-end
-H.image= imagesc(epo_r.t, 1:length(epo_r.clab), epo_r.x'); 
-H.ax= gca;
-set(H.ax, 'CLim',[-1 1]*max(abs(epo_r.x(:)))); 
-H.cb= colorbar;
-if isfield(epo_r, 'yUnit'),
-  ylabel(H.cb, sprintf('[%s]', epo_r.yUnit));
-end
-cidx= find(ismember(epo_r.clab,optVisu.markClab));
-set(H.ax, 'YTick',cidx, 'YTickLabel',optVisu.markClab, ...
-          'TickLength',[0.005 0]);
-if isdefault.xunit && isfield(epo_r, 'xUnit'),
-  optVisu.xunit= epo_r.xUnit;
-end
-xlabel(['[' optVisu.xunit ']']);
-ylabel('channels');
-ylimits= get(H.ax, 'YLim');
-set(H.ax, 'YLim',ylimits+[-2 2], 'NextPlot','add');
-ylimits= ylimits+[-1 1];
-for ii= 1:numel(nfo),
-  if ~isempty(nfo(ii).ival),
-    xx= nfo(ii).ival + [-1 1]*1000/epo_r.fs/2;
-    H.box(:,ii)= line(xx([1 2; 2 2; 2 1; 1 1]), ...
-                      ylimits([1 1; 1 2; 2 2; 2 1]), ...
-                      'color',[0 0.5 0], 'LineWidth',0.5);
-  end
-end
-if ~isempty(opt.Title),
-  H.title= axis_title(opt.Title, 'vpos',0, 'verticalAlignment','bottom', ...
-                      'fontWeight','bold', 'fontSize',16, ...
-                      'color',0.3*[1 1 1], ...
-                      optVisu.titleProp{:});
-end
-
-%set(H.ax_overlay, 'Visible','off');
-if opt.VisuScalps,
-  nIvals= numel(nfo);
-  for ii= 1:nIvals,
-    H.ax_scalp(ii)= subplotxl(2, nIvals, nIvals + ii);
-  end
-  ival_scalps= visutil_correctIvalsForDisplay(cat(1,nfo.ival), 'fs',epo_r.fs);
-  H.h_scalp= plot_scalpEvolution(epo_r, opt.Mnt, round(ival_scalps), defopt_scalp_r, ...
-                            'Subplot', H.ax_scalp, ...
-                            'IvalColor', [0 0 0], ...
-                            'GlobalCLim', 1, ...
-                            'ScalePos','none',...
-                            'Extrapolate', 0);
-  delete(H.h_scalp.text);
-end
-
-return;
 
 
 

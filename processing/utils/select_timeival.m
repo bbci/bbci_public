@@ -54,17 +54,17 @@ motor_areas= {{'FC5,3','CFC5,3','C5,3','CCP5,3','CP5,3'},
               {'FC1-2','CFC1-2','C1-2','CCP1-2','CP1-2'}, 
               {'FC4,6','CFC4,6','C4,6','CCP4,6','CP4,6'}};
 
-done_laplace = regexpi(cnt.clab,'^\w+ lap\w*');
+done_laplace = regexpi(erd.clab,'^\w+ lap\w*');
 done_laplace = any(cell2mat(done_laplace));
 
 props= { 'filter'         []
          'maxIval'        [250 5000]
          'startIval'      [750 3500]
-         'scoreProc'      'r_square_signed'
+         'scoreProc'      @proc_rSquareSigned
          'areas'           motor_areas
          'doLaplace'       ~done_laplace
          'laplaceRequireReighborhood'     1
-         'threshold'       0.80, ...
+         'threshold'       0.80
          'channelwise'     0 };
 
 if nargin==0,
@@ -76,40 +76,33 @@ misc_checkType(mrk, 'STRUCT(time)');
 
 opt= opt_proplistToStruct(varargin{:});
 
-[opt, isdefault]= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
+[opt, isdefault]= opt_setDefaults(opt, props, 1);
               
 if isempty(opt.areas),
   opt.areas= {erd.clab};
 end
 
-[score_fcn, score_param]= getFuncParam(opt.scoreProc);
+[score_fcn, score_param]= misc_getFuncParam(opt.scoreProc);
 
-
+if opt.doLaplace,
+  erd= proc_laplacian(erd,'requireCompleteNeighborhood', opt.laplaceRequireReighborhood);
+end
 if opt.channelwise
-    if opt.doLaplace,
-        erd= proc_channelwise(erd, 'laplace');
-    end
-    if ~isempty(opt.filter),
-        erd= proc_channewise(erd, 'filt', opt.filter.b, opt.filter.a);
-    end
-
-    erd= proc_channelwise(erd, 'envelope', 'movAvgMilisec', 200);
-    erd= proc_channelwise(erd, 'baseline', [], 'trialwise',0);
+  if ~isempty(opt.filter),
+    erd= proc_channewise(erd, 'filt', opt.filter.b, opt.filter.a);
+  end
+  erd= proc_channelwise(erd, 'envelope', 'movAvgMsec', 200);
+  erd= proc_channelwise(erd, 'baseline', [], 'trialwise',0);
 else
-    if opt.doLaplace,
-        erd= proc_laplacian(erd,'require_complete_neighborhood', opt.laplaceRequireReighborhood);
-    end
-    if ~isempty(opt.filter),
-        erd= proc_filt(erd, opt.filter.b, opt.filter.a);
-    end
-    
-    erd= proc_envelope(erd, 'movAvgMilisec', 200);
-    erd= proc_baseline(erd, [], 'trialwise',0);
+  if ~isempty(opt.filter),
+    erd= proc_filt(erd, opt.filter.b, opt.filter.a);
+  end
+  erd= proc_envelope(erd, 'movAvgMsec', 200);
+  erd= proc_baseline(erd, [], 'trialwise',0);
 end
 
-erd= cntToEpo(erd, mrk, opt.maxIval, 'clab', cat(2, opt.areas{:}));
-score= feval(['proc_' score_fcn], erd, score_param{:});
+erd= proc_segmentation(erd, mrk, opt.maxIval, 'CLab', cat(2, opt.areas{:}));
+score= score_fcn(erd, score_param{:});
 
 %% for each channel calc a positive (class 1 > class 2) and a
 %% negative score (class 2 > class 1)
@@ -145,7 +138,7 @@ end
 smooth_msec= 250;
 smooth_sa= smooth_msec/1000*erd.fs;
 timescore= max(scp, scn);
-timescore= movingAverage(timescore, smooth_sa, 'centered');
+timescore= procutil_movingAverage(timescore, smooth_sa, 'centered');
 timescore= mean(timescore(:,chansel),2);
 tempscore= zeros(size(timescore));
 idx= procutil_getIvalIndices(opt.startIval, erd);

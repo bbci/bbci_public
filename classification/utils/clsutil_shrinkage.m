@@ -45,7 +45,7 @@ function [Cstar, gamma, T] = clsutil_shrinkage(X, varargin)
 
 
 props= {'Target'     'B'     'CHAR(A B C D)'
-        'Gamma'      'auto'  'CHAR(auto)|FLOAT|DOUBLE'
+        'Gamma'      'auto'  'CHAR(auto)|!DOUBLE'
         'Verbose'    0       'BOOL'};
 
 if nargin==0,

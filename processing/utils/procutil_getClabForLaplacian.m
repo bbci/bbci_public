@@ -50,7 +50,7 @@ props= {'CLab'                         '*'                    'CHAR|CELL{CHAR}'
         'RequireCompleteNeighborhood'  1                      'BOOL'};
 
 if mod(nargin,2)==0,
-  misc_checkType(varargin{1}, 'CHAR|CELL(CHAR)', 'CLAB');
+  misc_checkType(varargin{1}, 'CHAR|CELL{CHAR}', 'CLAB');
   opt= opt_proplistToStruct(varargin{2:end});
   opt.CLab= varargin{1};
 else
@@ -59,7 +59,7 @@ end
 
 [opt,isdefault] = opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
-misc_checkType(dat, 'CELL(CHAR)|STRUCT(clab)');
+misc_checkType(dat, 'CELL{CHAR}|STRUCT(clab)');
 tcstate= bbci_typechecking('off');
 
 if ~iscell(opt.IgnoreCLab),

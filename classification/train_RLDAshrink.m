@@ -19,7 +19,7 @@ function C = train_RLDAshrink(xTr, yTr, varargin)
 %        the projected means becomes 2. Scaling only implemented for 2 classes so far. Using Scaling=1 will disable the use of a prior.
 %     'StoreMeans' - BOOL (default 0): If true, the classwise means of the feature vectors
 %        are stored in the classifier structure C. This can be used, e.g., for bbci_adaptation_pmean
-%     'usePcov' - BOOL (default 0): If true, the pooled covariance matrix is used instead of the average classwise covariance matrix.
+%     'UsePcov' - BOOL (default 0): If true, the pooled covariance matrix is used instead of the average classwise covariance matrix.
 %     'StoreCov',  - BOOL (default 0): If true, the covariance matrix will be stored with the classifier in C.cov
 %     'StoreInvcov' - BOOL (default 0): If true, the inverse of the covariance matrix is stored in
 %        the classifier structure C. This can be used, e.g., for bbci_adaptation_pcovmean
@@ -65,7 +65,7 @@ nClasses= size(yTr,1);
 
 props= {'ExcludeInfs'      0                             'BOOL'
         'Prior'            ones(nClasses, 1)/nClasses    'DOUBLE[- 1]'
-        'usePcov'          0                             'BOOL'
+        'UsePcov'          0                             'BOOL'
         'StorePrior'       0                             'BOOL'
         'StoreMeans'       0                             'BOOL'
         'StoreCov'         0                             'BOOL'
@@ -83,7 +83,8 @@ if nargin==0,
 end
 
 opt= opt_proplistToStruct(varargin{:});
-[opt, isdefault]= opt_setDefaults(opt, props,1);
+[opt, isdefault]= opt_setDefaults(opt, props);
+opt_checkProplist(opt, props, props_shrinkage);
 
 % empirical class priors as an option (I leave 1/nClasses as default, haufe)
 if isnan(opt.Prior)
@@ -102,12 +103,12 @@ C_mean= zeros(d, nClasses);
 for ci= 1:nClasses,
   idx= find(yTr(ci,:));
   C_mean(:,ci)= mean(xTr(:,idx),2);
-  if ~opt.usePcov,
+  if ~opt.UsePcov,
     X= [X, xTr(:,idx) - C_mean(:,ci)*ones(1,length(idx))];
   end
 end
-opt_shrinkage= opt_substruct(opt, props_shrinkage);
-if opt.usePcov,
+opt_shrinkage= opt_substruct(opt, props_shrinkage(:,1));
+if opt.UsePcov,
   [C_cov, C.gamma]= clsutil_shrinkage(xTr, opt_shrinkage);
 else
   [C_cov, C.gamma]= clsutil_shrinkage(X, opt_shrinkage);

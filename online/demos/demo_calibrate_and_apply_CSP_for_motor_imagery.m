@@ -1,10 +1,12 @@
 BC= [];
-BC.fcn= @bbci_calibrate_csp_tiny;
+BC.fcn= @bbci_calibrate_csp;
 BC.folder= BBCI.RawDir;
 BC.file= 'VPkg_08_08_07/imag_arrowVPkg';
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
-BC.marker_param= {{1, 2; 'left', 'right'}};
+BC.marker_param= {{1, 2, 3; 'left', 'right', 'foot'}};
+%BC.fcn= @bbci_calibrate_csp_tiny;
+%BC.marker_param= {{1, 2; 'left', 'right'}};
 
 % In demos, we just write to the temp folder. Otherwise, the default
 % choice would be fine.
