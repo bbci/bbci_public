@@ -22,7 +22,7 @@ function [epo, iArte]= proc_rejectArtifactsMaxMin(epo, threshold, varargin)
 %            is exceeded for all channels. Otherwise, one channel for  
 %            which the threshold is exceeded suffices to reject the epoch.
 %    'verbose': When true, an output informs
-%            about the number of rejected trials (if any)
+%            about the number of rejected trials (if any).
 %
 %Returns:
 %  EPO - Data structure where artifact epochs have been eliminited.
@@ -30,7 +30,7 @@ function [epo, iArte]= proc_rejectArtifactsMaxMin(epo, threshold, varargin)
 
 % 05-2011 Benjamin Blankertz
 % 09-2012 toolbox conformity stefan.haufe@tu-berlin.de
-%
+% 
 
 props= {'Clab'          []          'CHAR';
         'Ival'          ''          'DOUBLE[2]';
