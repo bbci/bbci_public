@@ -1,5 +1,5 @@
 BC= [];
-BC.fcn= @bbci_calibrate_ERP_Speller_tiny;
+BC.fcn= @bbci_calibrate_ERP_Speller;
 BC.settings.nClasses= 6;
 BC.folder= fullfile(BBCI.RawDir, 'VPibq_11_05_18');
 BC.file= 'calibration_CenterSpellerFixedSequenceVPibq';
