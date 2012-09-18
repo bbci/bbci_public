@@ -19,12 +19,12 @@ if ndim==2
   
 elseif ndim==3 
   % Could be 1D or 2D (time-frequency) data
-  nt = numel(dat.t);
-  nc = numel(dat.clab);
+  nchan = numel(dat.clab);
   ss = size(dat.x);
-  if ss(1)==nt && ss(2)==nc
+  if ss(2)==nchan && isfield(dat,'y') && length(dat.y)==ss(3)
+    % 3rd dimension should be epochs
     datadim = 1;
-  elseif ss(2)==nt && ss(3)==nc
+  elseif ss(3)==nchan
     datadim = 2;
   else
     error('Number of elements in t (%d) and clab (%d) does not match with size of x (%s).\n', ...
