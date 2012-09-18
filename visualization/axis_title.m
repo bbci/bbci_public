@@ -20,10 +20,12 @@ function ht= axis_title(title_list, varargin)
 % The position of the text object is defined *within* the axis. So you should
 % set XLimMode and YLimMode to 'manual' before calling AXIS_TITLE.
 
-props = {   'VPos'                  1.02                '!DOUBLE';
-            'Color'                 [0 0 0]             '!CHAR|!DOUBLE[3]';
-            'HorizontalAlignment'   'center'            '!CHAR(left center right)';
-            'VerticalAlignment'     'bottom'            '!CHAR(bottom center baseline top)';
+props = {   'VPos'                  1.02                   '!DOUBLE';
+            'Color'                 [0 0 0]                '!CHAR|!DOUBLE[3]';
+            'HorizontalAlignment'   'center'               '!CHAR(left center right)';
+            'VerticalAlignment'     'bottom'               '!CHAR(bottom center baseline top)';
+            'FontWeight'            get(gca, 'FontWeight') '!CHAR(normal bold light demi)';
+            'FontSize'              get(gca, 'FontSize')   '!INT'
             };
 
 if nargin==0,
@@ -36,7 +38,7 @@ opt_checkProplist(opt, props);
 misc_checkType(title_list,'CHAR|CELL{CHAR}');
 
 
-if opt.VPos<=0 && isdefault.verticalAlignment,
+if opt.VPos<=0 && isdefault.VerticalAlignment,
   opt.VerticalAlignment= 'top';
 end
 
