@@ -126,7 +126,7 @@ end
 fileNames = cell(1,length(file));
 % use BBCI.RawDir as default dir
 for filePos = 1:length(file)
-  if fileutil_isAbsolutePath(file{filePos}(1)),
+  if fileutil_isAbsolutePath(file{filePos}),
     fileNames{filePos}= file{filePos};
   else
     fileNames{filePos} = fullfile(BBCI.RawDir, file{filePos});
