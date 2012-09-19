@@ -6,7 +6,7 @@ function [epo, complete]= proc_segmentation(cnt, mrk, ival, varargin)
 %  [EPO, IDX]= proc_segmentation(CNT, TIME, IVAL, <OPT>)
 %
 %Arguments:
-%  CNT:  STRUCT       - Continuous data (see file_readBV, file_loadMatlab)
+%  CNT:  STRUCT       - Continuous 1D or 2D data (see file_readBV, file_loadMatlab)
 %  MRK:  STRUCT       - Marker structure, with obligatory field 'time',
 %                       which specifies the time points which define the t=0
 %                       for each segment that is cut out from the continuous
@@ -120,16 +120,22 @@ end
 
 epo= struct('fs', cnt.fs);
 if isequal(opt.CLab, '*'),
-  epo.clab= cnt.clab;
-  epo.x= reshape(cnt.x(IV, :), [len_sa nMarkers size(cnt.x,2)]);
+  cidx = 1:numel(cnt.clab);
 else
   cidx= util_chanind(cnt, opt.CLab);
-  epo.clab= cnt.clab(cidx);
+end
+epo.clab= cnt.clab(cidx);
+if util_getDataDimension(cnt)==1
+  % 1D data
   epo.x= reshape(cnt.x(IV, cidx), [len_sa nMarkers length(cidx)]);
+  epo.x= permute(epo.x, [1 3 2]);
+else
+  % 2D data
+  epo.x= reshape(cnt.x(IV,:,cidx), [len_sa nMarkers size(cnt.x,2) length(cidx)]);
+  epo.x= permute(epo.x, [1 3 4 2]);  
 end
 clear IV
 
-epo.x= permute(epo.x, [1 3 2]);
 timeival= si*(core_ival + [1 addone]);
 %timeival= round(10000*timeival)/10000;
 epo.t= linspace(timeival(1), timeival(2), len_sa);
