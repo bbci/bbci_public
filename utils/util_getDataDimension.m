@@ -12,6 +12,8 @@ function datadim = util_getDataDimension(dat)
 %Output:
 % datadim - dimensionality (1 or 2) of the data
 
+% Matthias Treder
+
 ndim = ndims(dat.x);
 
 if ndim==2
@@ -21,7 +23,20 @@ elseif ndim==3
   % Could be 1D or 2D (time-frequency) data
   nchan = numel(dat.clab);
   ss = size(dat.x);
-  if ss(2)==nchan && isfield(dat,'y') && length(dat.y)==ss(3)
+  if ss(2)==nchan && ss(3)==nchan
+      % This is the ambiguous case because it could be epoched 1D data with
+      % second dimension=channels and 3rd dimension=epochs
+      % or 
+      % non-epoched 2D data with second dimension frequencies and 3rd
+      % dimension=channels.
+      % Try to solve using heuristics
+      if isfield(dat,'y') && size(dat.y,1)==ss(3)  
+        datadim = 1;
+      else
+        % assume 2D
+        datadim = 2;
+      end
+  elseif ss(2)==nchan
     % 3rd dimension should be epochs
     datadim = 1;
   elseif ss(3)==nchan
