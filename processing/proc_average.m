@@ -162,3 +162,4 @@ if opt.Stats,
   out.p = reshape(out.p, [sz(1:end-1) nClasses]);
   out.sgnlogp = -log10(out.p).*sign(out.x);
 end
+
