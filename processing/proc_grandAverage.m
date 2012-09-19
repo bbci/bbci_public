@@ -55,8 +55,8 @@ misc_checkType(erps,'CELL{STRUCT}');
 
 %% Get common electrode set
 clab= erps{1}.clab;
-for ii= 2:length(erps),
-  clab= intersect(clab, erps{ii}.clab);
+for vp= 2:length(erps),
+  clab= intersect(clab, erps{vp}.clab);
 end
 if isempty(clab),
   error('intersection of channels is empty');
@@ -68,170 +68,131 @@ if numel(datadim) > 1
   error('Datasets have different dimensionalities');
 end
 
+if strcmp(opt.Average, 'INVVARweighted') && ~isfield(erps{1}, 'sem')
+   warning('No SEM given to perform inverse variance weighted averaging. Performing arithmetic (unweighted) averaging instead.') 
+   opt.Average = 'arithmetic';
+end
+
+if opt.Stats && ~isfield(erps{1}, 'sem')
+%    warning('No SEM given for statistical analysis. Performing a plain t-test across subjects.') 
+   opt.Stats = 0;
+end
+
 ga= rmfield(erps{1},intersect(fieldnames(erps{1}),{'x', 'std'}));
 must_be_equal= intersect(opt.MustBeEqual, fieldnames(ga));
 should_be_equal= intersect(opt.ShouldBeEqual, fieldnames(ga));
 
+K = length(erps);
+ci= util_chanind(erps{1}, clab);
+C = length(ci);
 if datadim==1
   T= size(erps{1}.x, 1);
   E= size(erps{1}.x, 3);
-  ci= util_chanind(erps{1}, clab);
-  X= zeros([T length(ci) E length(erps)]);
+  F = 1;
 else
-  ci= util_chanind(erps{1}, clab);
   % Timefrequency data
   if ndims(erps{1}.x)==3   % no classes, erps are averages over single class
     F= size(erps{1}.x, 1);
     T= size(erps{1}.x, 2);
-    X= zeros([F T length(ci) length(erps)]);
+    E = 1;
   elseif ndims(erps{1}.x)==4
     F= size(erps{1}.x, 1);
     T= size(erps{1}.x, 2);
     E= size(erps{1}.x, 4);
-    X= zeros([F T length(ci) E length(erps)]);
   end
 end
 
-%% Store all erp data in X
-for ii= 1:length(erps),
+
+for vp= 1:K,
   for jj= 1:length(must_be_equal),
     fld= must_be_equal{jj};
-    if ~isequal(getfield(ga,fld), getfield(erps{ii},fld)),
+    if ~isequal(getfield(ga,fld), getfield(erps{vp},fld)),
       error('inconsistency in field %s.', fld);
     end
   end
   for jj= 1:length(should_be_equal),
     fld= should_be_equal{jj};
-    if ~isequal(getfield(ga,fld), getfield(erps{ii},fld)),
+    if ~isequal(getfield(ga,fld), getfield(erps{vp},fld)),
       warning('inconsistency in field %s.', fld);
     end
   end
-  ci= util_chanind(erps{ii}, clab);
-%   if isfield(ga, 'V')
-%     iV(:,:,:,ii)= 1./erps{ii}.V;  
-%   end
+  ci= util_chanind(erps{vp}, clab);
 
   if datadim==1
-    X(:,:,:,ii)= erps{ii}.x(:,ci,:);
+    erps{vp}.x = reshape(erps{vp}.x(:,ci,:), [], E);
+    if opt.Stats
+      erps{vp}.sem = reshape(erps{vp}.sem(:,ci,:), [], E);
+    end
   else
     if ndims(erps{1}.x)==3
-      X(:,:,:,ii)= erps{ii}.x(:,:,ci);
+      erps{vp}.x = reshape(erps{vp}.x(:,:,ci), [], E);
+      if opt.Stats
+        erps{vp}.sem = reshape(erps{vp}.sem(:,:,ci), [], E);
+      end
     elseif ndims(erps{1}.x)==4
-      X(:,:,:,:,ii)= erps{ii}.x(:,:,ci,:);
+      erps{vp}.x = reshape(erps{vp}.x(:,:,ci,:), [], E);
+      if opt.Stats
+        erps{vp}.sem = reshape(erps{vp}.sem(:,:,ci,:), [], E);
+      end
     end
   end
-end
-X = reshape(X, [], length(erps));
 
-if strcmp(opt.Average, 'INVVARweighted') && ~isfield(ga, 'sem')
-   warning('No SEM given to perform inverse variance weighted averaging. Performing arithmetic (unweighted) averaging instead.') 
-   opt.Average = 'arithmetic';
+  %% Pre-transformation to make the data (more) Gaussian for some known statistics
+  if isfield(ga, 'yUnit') 
+    switch ga.yUnit
+      case 'dB'
+        erps{vp}.x = 10.^(erps{vp}.x/10); % actually, staying on dB scale would not be that bad
+      case 'r',
+        erps{vp}.x = atanh(erps{vp}.x);
+      case 'r^2',
+        erps{vp}.x = atanh(sqrt(erps{vp}.x));
+      case 'sgn r^2',
+        erps{vp}.x = atanh(sqrt(abs(erps{vp}.x)).*sign(erps{vp}.x));
+      case 'auc'
+        erps{vp}.x = erps{vp}.x - 0.5;
+    end
+  end
+  
 end
 
-if opt.Stats && ~isfield(ga, 'sem')
-   warning('No SEM given for statistical analysis. Performing a plain t-test across subjects.') 
-   opt.Stats = 0;
-end
 
-%% Pre-transformation to make the data (more) Gaussian for some known statistics
-if isfield(ga, 'yUnit') 
-  switch ga.yUnit
-    case 'dB'
-      X= 10.^(X/10); % actually, staying on dB scale would not be that bad
-    case 'r',
-      X = atanh(X);
-%       ga.p = reshape(2*normal_cdf(-abs(z(:)), zeros(size(z(:))), sqrt(ga.V(:))), size(z));
-    case 'r^2',
-      X = atanh(sqrt(X));
-    case 'sgn r^2',
-      X = atanh(sqrt(abs(X)).*sign(X));
-    case 'auc'
-      X = X - 0.5;
+ga.x = zeros([F*T*C E]);
+ga.sem = zeros([F*T*C E]);
+for cc= 1:E,  %% for each class
+  sW= 0;
+  swV = 0;
+  for vp= 1:K,  %% average across subjects
+    % TODO: sort out NaNs
+    switch opt.Average
+      case 'Nweighted',
+        W = erps{vp}.N(cc);
+      case 'INVVARweighted'
+        W = 1./erps{vp}.sem(:, cc).^2;
+      otherwise % case 'arithmetic'
+        W = 1;
+    end
+    sW= sW + W;
+    ga.x(:, cc)= ga.x(:, cc) + W.*erps{vp}.x(:, cc); 
+    if opt.Stats
+      swV = swV + W.^2.*erps{vp}.sem(:, cc).^2;
+    end
+  end
+  ga.x(:, cc)= ga.x(:, cc)./sW;
+  if opt.Stats
+    ga.sem(:, cc) = sqrt(swV)./sW;
   end
 end
 
 if datadim==1
-  ga.x= zeros([T length(ci) E]);
-  for cc= 1:size(X, 3),  %% for each class
-    sW= 0;
-    swV = 0;
-    for vp= 1:size(X, 4),  %% average across subjects
-      % TODO: sort out NaNs
-      switch opt.Average
-        case 'Nweighted',
-          W = erps{vp}.N(cc);
-        case 'INVVARweighted'
-          W = 1./erps{vp}.sem(:, :, cc).^2;
-        otherwise % case 'arithmetic'
-          W = 1;
-      end
-      sW= sW + W;
-      ga.x(:,:,cc)= ga.x(:,:,cc) + W.*X(:,:,cc,vp);
-      if opt.Stats
-        swV = swV + W.^2.*erps{vp}.sem(:, :, cc).^2;
-      end
-    end
-    ga.x(:,:,cc)= ga.x(:,:,cc)./sW;
-    if opt.Stats
-      ga.sem(:, :, cc) = sqrt(swV)./sW;
-    end
-  end
+  ga.x = reshape(ga.x, [T C E]);
 else
   % Timefrequency data
   if ndims(erps{1}.x)==3   % only one class
-    ga.x= zeros([F T length(ci)]);
-    sW= 0;
-    swV = 0;
-    for vp= 1:size(X, 4),  %% average across subjects
-      % TODO: sort out NaNs
-      switch opt.Average
-        case 'Nweighted',
-          W = erps{vp}.N;
-        case 'INVVARweighted'
-          W = 1./erps{vp}.sem.^2;
-        otherwise % case 'arithmetic'
-          W = 1;
-      end
-      sW = sW + W;
-      ga.x = ga.x + W*X(:,:,:,vp);
-      if opt.Stats
-        swV = swV + W.^2.*erps{vp}.sem.^2;
-      end
-    end
-    ga.x = ga.x./sW;
-    if opt.Stats
-      ga.sem = sqrt(swV)./sW;
-    end
+    ga.x = reshape(ga.x, [F T C]);  
   elseif ndims(erps{1}.x)==4
-    ga.x= zeros([F T length(ci) E]);
-    for cc= 1:size(X, 4),  %% for each class
-      nTotalTrials= 0;
-      sW= 0;
-      swV = 0;
-      for vp= 1:size(X, 5),  %% average across subjects
-        % TODO: sort out NaNs
-        switch opt.Average
-          case 'Nweighted',
-            W = erps{vp}.N(cc);
-          case 'INVVARweighted'
-            W = 1./erps{vp}.sem(:, :, :, cc).^2;
-          otherwise % case 'arithmetic'
-            W = 1;
-        end
-        sW = sW + W;
-        ga.x(:,:,:,cc)= ga.x(:,:,:,cc) + W*X(:,:,:,cc,vp);
-        if opt.Stats
-          swV = swV + W.^2.*erps{vp}.sem(:, :, :, cc).^2;
-        end
-      end
-      ga.x(:,:,:,cc)= ga.x(:,:,:,cc)./sW;
-      if opt.Stats
-        ga.sem(:, :, :, cc) = sqrt(swV)./sW;
-      end
-    end
+    ga.x = reshape(ga.x, [F T C E]);
   end
 end
-  
 
 if opt.Stats
   ga.p = reshape(2*normal_cdf(-abs(ga.x(:)), zeros(size(ga.x(:))), ga.sem(:)), size(ga.x));
