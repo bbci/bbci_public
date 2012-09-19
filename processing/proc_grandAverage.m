@@ -23,11 +23,14 @@ function ga= proc_grandAverage(varargin)
 %Output:
 % ga: Grand average
 %
+% 09-2012 stefan.haufe@tu-berlin.de
 
-props = {   'Average'               'unweighted'                '!CHAR(weighted unweighted)';
+% TODO: avoid making a full copy of the data into array X
+
+props = {   'Average'               'arithmetic'                '!CHAR(Nweighted INVVARweighted arithmetic)';
             'MustBeEqual'           {'fs','y','className'}      'CHAR|CELL{CHAR}';
             'ShouldBeEqual'         {'yUnit'}                   'CHAR|CELL{CHAR}';
-            };
+            'Stats'                 0                           '!BOOL'};
 
 if nargin==0,
   ga=props; return
@@ -104,9 +107,9 @@ for ii= 1:length(erps),
     end
   end
   ci= util_chanind(erps{ii}, clab);
-  if isfield(ga, 'V')
-    iV(:,:,:,ii)= 1./erps{ii}.V;  
-  end
+%   if isfield(ga, 'V')
+%     iV(:,:,:,ii)= 1./erps{ii}.V;  
+%   end
 
   if datadim==1
     X(:,:,:,ii)= erps{ii}.x(:,ci,:);
@@ -119,74 +122,157 @@ for ii= 1:length(erps),
   end
 end
 
-%% Perform averaging
-if isfield(ga, 'yUnit') && strcmp(ga.yUnit, 'dB'),
-  X= 10.^(X/10);
+if strcmp(opt.Average, 'INVVARweighted') && ~isfield(ga, 'sem')
+   warning('No SEM given to perform inverse variance weighted averaging. Performing arithmetic (unweighted) averaging instead.') 
+   opt.Average = 'arithmetic';
 end
-if isfield(ga, 'yUnit') && strcmp(ga.yUnit, 'r'),
-  if strcmp(opt.Average, 'weighted'),
-    % does it make sense to use weighting here?
-    warning('weighted averaging not implemented for this case - ask Stefan');
+
+if opt.Stats && ~isfield(ga, 'sem')
+   warning('No SEM given to perform statistical analysis.') 
+   opt.Stats = 0;
+end
+
+%% Pre-transformation to make the data (more) Gaussian for some known statistics
+if isfield(ga, 'yUnit') 
+  switch ga.yUnit
+    case 'dB'
+      X= 10.^(X/10); % actually, staying on dB scale would not be that bad
+    case 'r',
+      X = atanh(X);
+%       ga.p = reshape(2*normal_cdf(-abs(z(:)), zeros(size(z(:))), sqrt(ga.V(:))), size(z));
+    case 'r^2',
+      X = atanh(sqrt(X));
+    case 'sgn r^2',
+      X = atanh(sqrt(abs(X)).*sign(X));
+    case 'auc'
+      X = X - 0.5;
   end
-  ga.V = 1./sum(iV, 4);
-  z = sum(atanh(X).*iV, 4).*ga.V;
-  ga.x= tanh(z);
-  ga.p = reshape(2*normal_cdf(-abs(z(:)), zeros(size(z(:))), sqrt(ga.V(:))), size(z));
-else
-  if strcmp(opt.Average, 'weighted'),
-    if datadim==1
-      ga.x= zeros([T length(ci) E]);
-      for cc= 1:size(X, 3),  %% for each class
-        nTotalTrials= 0;
-        for vp= 1:size(X, 4),  %% average across subjects
-          % TODO: sort out NaNs
-          ga.x(:,:,cc)= ga.x(:,:,cc) + erps{vp}.N(cc)*X(:,:,cc,vp);
-          nTotalTrials= nTotalTrials + erps{vp}.N(cc);
-        end
-        ga.x(:,:,cc)= ga.x(:,:,cc)/nTotalTrials;
-      end
-    else
-      % Timefrequency data
-      if ndims(erps{1}.x)==3   % only one class
-        ga.x= zeros([F T length(ci)]);
-        nTotalTrials= 0;
-        for vp= 1:size(X, 4),  %% average across subjects
-          % TODO: sort out NaNs
-          ga.x = ga.x + erps{vp}.N*X(:,:,:,vp);
-          nTotalTrials= nTotalTrials + erps{vp}.N;
-        end
-        ga.x = ga.x/nTotalTrials;
+end
 
-      elseif ndims(erps{1}.x)==4
-        ga.x= zeros([F T length(ci) E]);
-        for cc= 1:size(X, 4),  %% for each class
-          nTotalTrials= 0;
-          for vp= 1:size(X, 5),  %% average across subjects
-            % TODO: sort out NaNs
-            ga.x(:,:,:,cc)= ga.x(:,:,:,cc) + erps{vp}.N(cc)*X(:,:,:,cc,vp);
-            nTotalTrials= nTotalTrials + erps{vp}.N(cc);
-          end
-          ga.x(:,:,:,cc)= ga.x(:,:,:,cc)/nTotalTrials;
-        end
+switch opt.Average
+  case 'Nweighted',
+  if datadim==1
+    ga.x= zeros([T length(ci) E]);
+    for cc= 1:size(X, 3),  %% for each class
+      nTotalTrials= 0;
+      siV = 0;
+      for vp= 1:size(X, 4),  %% average across subjects
+        % TODO: sort out NaNs
+        ga.x(:,:,cc)= ga.x(:,:,cc) + erps{vp}.N(cc)*X(:,:,cc,vp);
+        nTotalTrials= nTotalTrials + erps{vp}.N(cc);
+        siV = siV + erps{vp}.sem(:, :, cc).^2;
       end
-
+      ga.x(:,:,cc)= ga.x(:,:,cc)/nTotalTrials;
+      if opt.Stats
+        ga.sem(:, :, cc) = sqrt(1./siV);
+      end
     end
   else
-    % Unweighted
-    if datadim==1 || ndims(erps{1}.x)==3
-      ga.x= nanmean(X, 4);
-    else
-      ga.x= nanmean(X, 5);
+    % Timefrequency data
+    if ndims(erps{1}.x)==3   % only one class
+      ga.x= zeros([F T length(ci)]);
+      nTotalTrials= 0;
+      for vp= 1:size(X, 4),  %% average across subjects
+        % TODO: sort out NaNs
+        ga.x = ga.x + erps{vp}.N*X(:,:,:,vp);
+        nTotalTrials= nTotalTrials + erps{vp}.N;
+      end
+      ga.x = ga.x/nTotalTrials;
+
+    elseif ndims(erps{1}.x)==4
+      ga.x= zeros([F T length(ci) E]);
+      for cc= 1:size(X, 4),  %% for each class
+        nTotalTrials= 0;
+        for vp= 1:size(X, 5),  %% average across subjects
+          % TODO: sort out NaNs
+          ga.x(:,:,:,cc)= ga.x(:,:,:,cc) + erps{vp}.N(cc)*X(:,:,:,cc,vp);
+          nTotalTrials= nTotalTrials + erps{vp}.N(cc);
+        end
+        ga.x(:,:,:,cc)= ga.x(:,:,:,cc)/nTotalTrials;
+      end
     end
   end
+  case 'INVVARweighted',        
+    if datadim==1
+    ga.x= zeros([T length(ci) E]);
+    for cc= 1:size(X, 3),  %% for each class
+      siV= 0;
+      for vp= 1:size(X, 4),  %% average across subjects
+        % TODO: sort out NaNs
+        iV = 1./erps{vp}.sem(:, :, cc).^2;
+        ga.x(:,:,cc)= ga.x(:,:,cc) + X(:,:,cc,vp).*iV;
+        siV = siV + iV;
+      end
+      ga.x(:,:,cc)= ga.x(:,:,cc)./siV;
+      if opt.Stats
+        ga.sem(:, :, cc) = sqrt(1./siV);
+      end
+    end
+  else
+    % Timefrequency data
+    if ndims(erps{1}.x)==3   % only one class
+      ga.x= zeros([F T length(ci)]);
+      siV= 0;
+      for vp= 1:size(X, 4),  %% average across subjects
+        % TODO: sort out NaNs
+        iV = 1./erps{vp}.sem.^2;
+        ga.x = ga.x + X(:,:,:,vp).*iV;
+        siV = siV + iV;
+      end
+      ga.x = ga.x./siV;
+      if opt.Stats
+        ga.sem = sqrt(1./siV);
+      end
+    elseif ndims(erps{1}.x)==4
+      ga.x= zeros([F T length(ci) E]);
+      for cc= 1:size(X, 4),  %% for each class
+        siV= 0;
+        for vp= 1:size(X, 5),  %% average across subjects
+          % TODO: sort out NaNs
+          iV = 1./erps{vp}.sem(:, :, :, cc).^2;
+          ga.x(:,:,:,cc)= ga.x(:,:,:,cc) + X(:,:,:,cc,vp).*iV;
+          siV = siV + iV;
+        end
+        ga.x(:,:,:,cc)= ga.x(:,:,:,cc)./siV;
+        if opt.Stats
+          ga.sem(:, :, :, cc) = sqrt(1./siV);
+        end
+      end
+    end
+  end
+  otherwise    
+  % arithmetic
+  if datadim==1 || ndims(erps{1}.x)==3
+    ga.x= nanmean(X, 4);
+  else
+    ga.x= nanmean(X, 5);
+  end
 end
-if isfield(ga, 'yUnit') && strcmp(ga.yUnit, 'dB'),
-  ga.x= 10*log10(ga.x);
+
+if opt.Stats
+  switch opt.Average
+      ga.p = reshape(2*normal_cdf(-abs(ga.x(:)), zeros(size(ga.x(:))), ga.sem(:), size(ga.x)));
+      ga.sgnlogp = -log10(ga.p).*sign(ga.x);      
+  end
+end
+  
+%% Post-transformation to bring the GA data to the original unit
+if isfield(ga, 'yUnit') 
+  switch ga.yUnit
+    case 'dB'
+      ga.x= 10*log10(ga.x);
+    case 'r',
+      ga.x= tanh(ga.x);
+    case 'r^2',
+      ga.x= tanh(ga.x).^2;
+    case 'sgn r^2',
+      ga.x= tanh(ga.x).*abs(tanh(ga.x));
+    case 'auc'
+      X = min(max(X + 0.5, 0), 1);
+  end
 end
 
 ga.clab= clab;
-%% TODO should allow for weighting accoring to field N
-%% (but this has to happen classwise)
 
 ga.title= 'grand average';
 ga.N= length(erps);

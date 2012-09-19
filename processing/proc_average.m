@@ -10,9 +10,12 @@ function out= proc_average(epo, varargin)
 %            (can handle more than 3-dimensional data, the average is
 %            calculated across the last dimension)
 % OPT struct or property/value list of optional arguments:
-%  .policy - 'mean' (default), 'nanmean', or 'median'
-%  .std    - if true, standard deviation is calculated also 
-%  .classes - classes of which the average is to be calculated,
+%  .Policy - 'mean' (default), 'nanmean', or 'median'
+%  .Std    - if true, standard deviation is calculated also 
+%  .Stats  - if true, additional statistics are calculated, including the
+%            standard error of the mean, the p-value for the null 
+%            Hypothesis that the mean is zero, and the "signed log p-value"
+%  .Classes - classes of which the average is to be calculated,
 %            names of classes (strings in a cell array), or 'ALL' (default)
 %
 % For compatibility PROC_AVERAGE can be called in the old format with CLASSES
@@ -23,15 +26,19 @@ function out= proc_average(epo, varargin)
 %Returns:
 % EPO     - updated data structure with new field(s)
 %  .N     - vector of epochs per class across which average was calculated
-%  .std   - standard deviation, if requested (opt.Std==1),
-%           format as epo.x.
+%  .std   - standard deviation, if requested (opt.Std==1), format as epo.x
+%  .sem   - contains the standard error of the mean, if opt.Stats==1
+%  .p     - contains the p value of zero mean null hypothesis, if opt.Stats==1
+%  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
 
 % Benjamin Blankertz
+% 09-2012 stefan.haufe@tu-berlin.de
 
 
-props= {  'Policy'   'mean' '!CHAR(mean nanmean median)'
-          'Classes' 'ALL'   '!CHAR'
-          'Std'      0      '!BOOL'  };
+props= {  'Policy'   'mean' '!CHAR(mean nanmean median)';
+          'Classes' 'ALL'   '!CHAR';
+          'Std'      0      '!BOOL';
+          'Stats'      0      '!BOOL'};
 
 if nargin==0,
   out = props; return
@@ -98,6 +105,18 @@ if opt.Std,
     out= mrk_addIndexedField(out, 'std');
   end
 end
+if opt.Stats,
+  out.sem = zeros(prod(sz(1:end-1)), nClasses);
+  out.p = zeros(prod(sz(1:end-1)), nClasses);
+  out.sgnlogp = zeros(prod(sz(1:end-1)), nClasses);
+  if exist('mrk_addIndexedField')==2,
+    %% The following line is only to be executed if the BBCI Toolbox
+    %% is loaded.
+    out= mrk_addIndexedField(out, 'sem');
+    out= mrk_addIndexedField(out, 'p');
+    out= mrk_addIndexedField(out, 'sgnlogp');
+  end
+end
 out.y= eye(nClasses);
 out.className= classes;
 out.N= zeros(1, nClasses);
@@ -109,6 +128,7 @@ for ic= 1:nClasses,
    case 'nanmean',
     out.x(:,ic)= nanmean(epo.x(:,evInd{ic}), 2);
    case 'median',
+    warning('median computation will be handled by proc_percentiles in the future');
     out.x(:,ic)= median(epo.x(:,evInd{ic}), 2);
    otherwise,
     error('unknown policy');
@@ -121,9 +141,24 @@ for ic= 1:nClasses,
     end
   end
   out.N(ic)= length(evInd{ic});
+  if opt.Stats,
+    if strcmpi(opt.Policy,'nanmean'),
+      [H out.p(:, ic) ci stats] = ttest(epo.x(:,evInd{ic}), [], [], [], 2);
+      out.sem(:,ic)= stats.sd/sqrt(out.N(ic));
+    else
+      [H out.p(:, ic) ci stats] = ttest(epo.x(:,evInd{ic}), [], [], [], 2);
+      out.sem(:,ic)= stats.sd/sqrt(out.N(ic));
+    end
+  end
 end
 
 out.x= reshape(out.x, [sz(1:end-1) nClasses]);
 if opt.Std,
   out.std= reshape(out.std, [sz(1:end-1) nClasses]);
+end
+
+if opt.Stats,
+  out.sem = reshape(out.sem, [sz(1:end-1) nClasses]);
+  out.p = reshape(out.p, [sz(1:end-1) nClasses]);
+  out.sgnlogp = -log10(out.p).*sign(out.x);
 end

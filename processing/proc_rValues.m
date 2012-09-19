@@ -92,7 +92,7 @@ fv_rval.x= rval;
 fv_rval.V= 1./iV;
 fv_rval.z = atanh(fv_rval.x).*sqrt(iV);
 fv_rval.p = reshape(2*normal_cdf(-abs(fv_rval.z(:)), zeros(size(fv_rval.z(:))), ones(size(fv_rval.z(:)))), size(fv_rval.z));
-if exist('normcdf','file'),
+if exist('normcdfln','file'),
   fv_rval.sgn_log10_p = reshape(((log(2)+normcdfln(-abs(fv_rval.z(:))))./log(10)), size(fv_rval.z)).*-sign(fv_rval.z);
 end
 if isfield(fv, 'className'),
