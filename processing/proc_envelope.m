@@ -7,10 +7,10 @@ function dat= proc_envelope(dat, varargin)
 %Arguments:
 % DAT: data structure, continuous or epoched signals.
 % OPT: struct or property/value list of optinal properties
-%  .envelopMethod: 'hilbert' (only choice so far)
-%  .movAvgMethod: 'centered' (default) or 'causal'
-%  .movAvgMilisec: window length [msec] for moving average, deafult: 100.
-%  .channelwise: useful in case of memory problems
+%  .EnvelopMethod: 'hilbert' (only choice so far)
+%  .MovAvgMethod: 'centered' (default) or 'causal'
+%  .MovAvgMsec: window length [msec] for moving average, deafult: 100.
+%  .Channelwise: useful in case of memory problems
 %
 %Returns:
 % DAT: output data structure, continuous or epoched as input
@@ -25,11 +25,11 @@ function dat= proc_envelope(dat, varargin)
 % Author(s): Benjamin Blankertz
 % added channelwise option by Claudia
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
-props= {'envelopMethod'     'hilbert'    '!CHAR(hilbert)'
-        'movAvgMethod'      'centered'   '!CHAR'
-        'movAvgMsec'        100          'DOUBLE[1]'
-        'movAvgOpts'        {}           'CELL'
-        'channelwise'       false        'BOOL'};
+props= {'EnvelopMethod'     'hilbert'    '!CHAR(hilbert)'
+        'MovAvgMethod'      'centered'   '!CHAR(centered causal)'
+        'MovAvgMsec'        100          'DOUBLE[1]'
+        'MovAvgOpts'        {}           'CELL'
+        'Channelwise'       false        'BOOL'};
 
 if nargin==0,
   dat= props; return
@@ -46,9 +46,9 @@ dat = misc_history(dat);
 opt_checkProplist(opt, props);
 
 sz= size(dat.x);
-switch(lower(opt.envelopMethod)),
+switch(lower(opt.EnvelopMethod)),
  case 'hilbert',
-  if opt.channelwise
+  if opt.Channelwise
     for ch = 1:sz(2)
       x(:,ch,:) = abs(hilbert(squeeze(dat.x(:,ch,:))));
     end
@@ -62,8 +62,8 @@ switch(lower(opt.envelopMethod)),
   error('unknown envelop method');
 end
 
-if ~isempty(opt.movAvgOpts),
-  dat= proc_movingAverage(dat, opt.movAvgMsec, opt.movAvgOpts{:});
-elseif ~isempty(opt.movAvgMsec) && opt.movAvgMsec>0,
-  dat= proc_movingAverage(dat, opt.movAvgMsec, opt.movAvgMethod);
+if ~isempty(opt.MovAvgOpts),
+  dat= proc_movingAverage(dat, opt.MovAvgMsec, opt.MovAvgOpts{:});
+elseif ~isempty(opt.MovAvgMsec) && opt.MovAvgMsec>0,
+  dat= proc_movingAverage(dat, opt.MovAvgMsec, opt.MovAvgMethod);
 end

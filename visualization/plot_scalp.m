@@ -335,9 +335,9 @@ if strcmp(opt.ScalePos, 'none'),
   H.cb= [];
 else
   if verLessThan('matlab', '7.14')
-    H.cb= Colorbarv6(opt.ScalePos);
+    H.cb= colorbarv6(opt.ScalePos);
   else
-    H.cb= Colorbar(opt.ScalePos);
+    H.cb= colorbar(opt.ScalePos);
   end
   if opt.TicksAtContourLevels && opt.Contour,
     if strcmpi(opt.ScalePos, 'vert'),

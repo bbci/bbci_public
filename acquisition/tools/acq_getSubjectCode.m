@@ -1,4 +1,4 @@
-function subject_code = getSubjectCode(varargin)
+function subject_code = acq_getSubjectCode(varargin)
 %GET_SUBJECT_CODE - Gets a new subject code
 % 
 %Synopsis:
@@ -14,13 +14,12 @@ function subject_code = getSubjectCode(varargin)
 % getSubjectCode('code_prefix', 'subject_')
 % 06-12 Javier Pascual. From code from acq_makeDataFolder
 
-global EEG_RAW_DIR 
 
+global BBCI
 
 props = {   'code_prefix'       'VP'    'CHAR'
             'prefix_letter'     'a'     'CHAR'
             'letter_start'      'a'     'CHAR'
-            'letter_reserved'   ''      'CHAR'
             'log_dir'           0       'BOOL'};
 
 if nargin==0,
@@ -41,7 +40,7 @@ subject_code = [];
 
 %% Generate a Subject Code and folder name to save the EEG data in
 while isempty(subject_code),
-  dd= dir([EEG_RAW_DIR opt.code_prefix opt.prefix_letter opt.letter_start '*']);
+  dd= dir([BBCI.RawDir opt.code_prefix opt.prefix_letter opt.letter_start '*']);
   if isempty(dd),
     subject_code = [opt.code_prefix opt.prefix_letter opt.letter_start 'a'];
     continue;
@@ -49,12 +48,10 @@ while isempty(subject_code),
 
   is= find(dd(end).name=='_', 1, 'first');
   last_letter= dd(end).name(is-1);
-  if last_letter~='z',
-    subject_code = [opt.code_prefix opt.prefix_letter opt.letter_start last_letter+1];
-  else,
-    opt.letter_start= char(min(setdiff([char(opt.letter_start+1):'z'], opt.letter_reserved)));
+  if last_letter=='z',
+    opt.letter_start= char(opt.letter_start+1);
+    last_letter= 'a'-1;
   end;
+  subject_code = [opt.code_prefix opt.prefix_letter opt.letter_start ...
+                  char(last_letter+1)];
 end;
-
-
-end

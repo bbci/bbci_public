@@ -28,9 +28,9 @@ function obj = misc_history(obj)
 %See also: misc_applyHistory
 
 % 08-2012 Matthias Treder
-global BBCI_HISTORY
+global BBCI
 
-if ~isempty(BBCI_HISTORY) && BBCI_HISTORY==0
+if ~isempty(BBCI.History) && BBCI.History==0
   return
 end
 

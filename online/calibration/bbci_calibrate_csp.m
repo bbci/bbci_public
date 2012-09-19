@@ -63,7 +63,6 @@ function [bbci, data]= bbci_calibrate_csp(bbci, data)
 % 11-2011 Benjamin Blankertz
 % 06-2012 Javier Pascual. Added  'laplace_require_neighborhood', 1
 
-opt= bbci.calibrate.settings;
 
 default_clab=  {'not','E*','Fp*','AF*','OI*','I*','*9','*10'};
 default_grd= ...
@@ -74,38 +73,37 @@ default_grd= ...
              'P5,P3,P1,Pz,P2,P4,P6']);
 default_colDef= {'left',      'right',   'foot',  'rest'; ...
                  [0.8 0 0.8], [0 0.7 0], [0 0 1], [0 0 0]};
-default_model= {'RLDAshrink', 'gamma',0, 'store_means',1, 'scaling',1};
+default_model= {@train_RLDAshrink, 'Gamma',0, 'StoreMeans',1, 'Scaling',1};
 
-[opt, isdefault]= ...
-    set_defaults(opt, ...
-                 'classes', 'auto', ...
-                 'visu_ival', [-500 5000], ...
-                 'visu_band', [5 35], ...
-                 'visu_laplace', 1, ...
-                 'clab', default_clab, ...
-                 'laplace_require_neighborhood', 1,...
-                 'ival', 'auto', ...
-                 'band', 'auto', ...
-                 'nPatterns', 3, ...
-                 'patterns', 'auto', ...
-                 'model', default_model, ...
-                 'reject_artifacts', 1, ...
-                 'reject_channels', 1, ... 
-                 'reject_artifacts_opts', {'clab', default_clab}, ...
-                 'reject_outliers', 0, ...
-                 'check_ival', [500 4500], ...
-                 'default_ival', [1000 3500], ...
-                 'min_ival_length', 300, ...
-                 'enlarge_ival_append', 'end', ...
-                 'selband_opt', [], ...
-                 'selival_opt', [], ...
-                 'filtOrder', 5, ...
-                 'do_laplace', 1, ...
-                 'grd', default_grd, ...
-                 'colDef', default_colDef);
-%% TODO: optional visu_specmaps, visu_erdmaps
+props= {'classes'    'auto'  
+        'visu_ival'    [-500 5000]
+        'visu_band'    [5 35]
+        'visu_laplace'    1
+        'clab'    default_clab
+        'laplace_require_neighborhood'    1
+        'ival'    'auto'  
+        'band'    'auto'  
+        'nPatterns'    3
+        'patterns'    'auto'  
+        'model'    default_model
+        'reject_artifacts'    1
+        'reject_channels'    1 
+        'reject_artifacts_opts'    {'clab', default_clab}
+        'reject_outliers'    0
+        'check_ival'    [500 4500]
+        'default_ival'    [1000 3500]
+        'min_ival_length'    300
+        'enlarge_ival_append'    'end'  
+        'selband_opt'    []
+        'selival_opt'    []
+        'filtOrder'    5
+        'do_laplace'    1
+        'grd'    default_grd
+        'colDef'    default_colDef
+       };
 
-if isdefault.visu_laplace & ~opt.do_laplace,
+[opt, isdefault]= opt_setDefaults('bbci.calibrate.settings', props);
+if isdefault.visu_laplace && ~opt.do_laplace,
   opt.visu_laplace= 0;
 end
 
@@ -114,10 +112,9 @@ end
 %
 
 mnt= mnt_setGrid(data.mnt, opt.grd);
-opt_grid= defopt_erps('scale_leftshift',0.075);
+opt_grid= defopt_erps;
 %% TODO: extract good channel (like 'Pz' here) from grid
-opt_grid_spec= defopt_spec('scale_leftshift',0.075, ...
-                           'xTickAxes','Pz');
+opt_grid_spec= defopt_spec('XTickAxes','Pz');
 
 if sum(ismember(opt.colDef(1,:), data.mrk.className)) < ...
       length(data.mrk.className),
@@ -155,8 +152,8 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
     fig_set(3, 'name','Artifact rejection');
     [mk_clean , rClab, rTrials]= ...
         reject_varEventsAndChannels(data.cnt, mrk_all, opt.check_ival, ...
-                                    'do_multipass', 1, ...
-                                    'visualize', 1, ...
+                                    'DoMultipass', 1, ...
+                                    'Visualize', 1, ...
                                     opt.reject_artifacts_opts{:});
     if opt.reject_artifacts,
       bbci_log_write(data, 'Rejected: %d trial(s).', length(rTrials));
@@ -168,7 +165,7 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
     end
   else
     % Avoid confusion with old figure from previous run
-    close_if_exists(3);
+    fig_closeIfExists(3);
   end
   if iscell(BC_result.rejected_clab),   %% that means rejected_clab is not NaN
     cidx= find(ismember(BC_result.clab, BC_result.rejected_clab));
@@ -213,7 +210,8 @@ mrk2= mrk_selectClasses(mrk_all, classes);
 BC_result.mrk= mrk2;
 BC_result.classes= classes;
 
-opt_grid.colorOrder= choose_colors(mrk_all.className, opt.colDef);
+[~, cidx]= intersect(opt.colDef(1,:), mrk_all.className, 'stable');
+opt_grid.colorOrder= cat(1, opt.colDef{2,cidx});
 opt_grid.lineStyleOrder= {'--','--','--'};
 clidx= find(ismember(mrk_all.className, classes));
 opt_grid.lineStyleOrder(clidx)= {'-'};
@@ -235,7 +233,7 @@ if isequal(opt.band, 'auto') || isempty(opt.band);
     ival_for_bandsel= opt.default_ival;
   end
   opt.band= select_bandnarrow(data.cnt, mrk2, ival_for_bandsel, ...
-                              opt.selband_opt, 'do_laplace',opt.do_laplace);
+                              opt.selband_opt, 'DoLaplace',opt.do_laplace);
   bbci_log_write(data, ' -> [%g %g] Hz', opt.band);
   band_fresh_selected= 1;
 end
@@ -247,7 +245,7 @@ cnt_flt= proc_filt(data.cnt, filt_b, filt_a);
 if isequal(opt.ival, 'auto') || isempty(opt.ival),
   bbci_log_write(data, 'No ival specified, automatic selection:');
   opt.ival= select_timeival(cnt_flt, mrk2, ...
-                            opt.selival_opt, 'do_laplace',opt.do_laplace);
+                            opt.selival_opt, 'DoLaplace',opt.do_laplace);
   bbci_log_write(data, ' -> [%i %i] msec', opt.ival);
 end
 
@@ -255,7 +253,7 @@ if band_fresh_selected && ~isequal(opt.ival, ival_for_bandsel),
   bbci_log_write(data, 'Redoing selection of freq. band for new interval:');
   first_selection= opt.band;
   opt.band= select_bandnarrow(data.cnt, mrk2, opt.ival, ...
-                              opt.selband_opt, 'do_laplace',opt.do_laplace);
+                              opt.selband_opt, 'DoLaplace',opt.do_laplace);
   bbci_log_write(data, ' -> [%g %g] Hz', opt.band);
   if ~isequal(opt.band, first_selection),
     clear cnt_flt
@@ -268,9 +266,9 @@ end
 %% -- Visualization of Spectra and ERD/ERS curves --
 %
 
-disp_clab= getClabOfGrid(mnt);
+disp_clab= gridutil_getClabOfGrid(mnt);
 if opt.visu_laplace,
-  requ_clab= getClabForLaplace(data.cnt, disp_clab);
+  requ_clab= procutil_getClabForLaplacian(data.cnt, disp_clab);
 else
   requ_clab= disp_clab;
 end
@@ -291,10 +289,10 @@ else
     error('opt.enlarge_ival_append option unknown.')
   end
 end
-spec= cntToEpo(data.cnt, mrk_all, tmp_ival, 'clab',requ_clab);
+spec= proc_segmentation(data.cnt, mrk_all, tmp_ival, 'CLab',requ_clab);
 
 if opt.visu_laplace,
-  spec= proc_laplacian(spec, 'require_complete_neighborhood', opt.laplace_require_neighborhood);
+  spec= proc_laplacian(spec, 'requireCompleteNeighborhood', opt.laplace_require_neighborhood);
 end
 if data.cnt.fs>size(spec.x,1)
   winlen= size(spec.x,1);
@@ -302,11 +300,11 @@ else
   winlen= data.cnt.fs;
 end
 spec= proc_spectrum(spec, opt.visu_band, kaiser(winlen, 2));
-spec_rsq= proc_r_square_signed(proc_selectClasses(spec, classes));
+spec_rsq= proc_rSquareSigned(proc_selectClasses(spec, classes));
 
 h= grid_plot(spec, mnt, opt_grid_spec);
-grid_markIval(opt.band);
-grid_addBars(spec_rsq, 'h_scale', h.scale);
+grid_markInterval(opt.band);
+grid_addBars(spec_rsq, 'HScale', h.scale);
 set(gcf, 'Visible','on');  
 clear spec spec_rqs
 
@@ -316,16 +314,16 @@ name= sprintf('ERD-ERS for [%g %g] Hz', opt.band);
 fig_set(figno_offset + 2, 'name',name, 'set', {'Visible','off'});
 erd= proc_selectChannels(cnt_flt, requ_clab);
 if opt.visu_laplace,
-  erd= proc_laplacian(erd,'require_complete_neighborhood', opt.laplace_require_neighborhood);
+  erd= proc_laplacian(erd,'RequireCompleteNeighborhood', opt.laplace_require_neighborhood);
 end
-erd= proc_envelope(erd, 'ms_msec', 200);
-erd= cntToEpo(erd, mrk_all, opt.visu_ival);
+erd= proc_envelope(erd, 'MovAvgMsec', 200);
+erd= proc_segmentation(erd, mrk_all, opt.visu_ival);
 erd= proc_baseline(erd, [], 'trialwise',0);
-erd_rsq= proc_r_square_signed(proc_selectClasses(erd, classes));
+erd_rsq= proc_rSquareSigned(proc_selectClasses(erd, classes));
 
 h= grid_plot(erd, mnt, opt_grid);
-grid_markIval(opt.ival);
-grid_addBars(erd_rsq, 'h_scale', h.scale);
+grid_markInterval(opt.ival);
+grid_addBars(erd_rsq, 'HScale', h.scale);
 set(gcf, 'Visible','on');  
 clear erd erd_rsq;
 
@@ -340,18 +338,17 @@ BC_result.csp_a= filt_a;
 
 bbci.signal.clab= BC_result.clab;
 
-fv= cntToEpo(cnt_flt, mrk2, BC_result.ival, 'clab',bbci.signal.clab);
+fv= proc_segmentation(cnt_flt, mrk2, BC_result.ival, 'CLab',bbci.signal.clab);
 clear cnt_flt
 
 if isequal(opt.patterns,'auto'),
-  [fv2, csp_w, la, A]= proc_csp_auto(fv, 'patterns',opt.nPatterns);
+  [fv2, csp_w, la, A]= proc_cspAuto(fv, 'Patterns',opt.nPatterns);
 else
-  [fv2, csp_w, la, A]= proc_csp3(fv, 'patterns',opt.nPatterns);
+  [fv2, csp_w, la, A]= proc_csp3(fv, 'Patterns',opt.nPatterns);
 end
 fig_set(figno_offset + 4, 'name', sprintf('CSP %s vs %s', classes{:}));
-opt_scalp_csp= strukt('colormap', cmap_greenwhitelila(31));
 if isequal(opt.patterns,'auto'),
-  plotCSPanalysis(fv, mnt, csp_w, A, la, opt_scalp_csp, ...
+  plotCSPanalysis(fv, mnt, csp_w, A, la, ...
                   'row_layout',1, 'title','');
 else
   plotCSPanalysis(fv, mnt, csp_w, A, la, opt_scalp_csp, ...
@@ -360,7 +357,7 @@ end
 drawnow;
 
 bbci.feature.ival= [-750 0];
-bbci.feature.fcn= {@proc_variance, @proc_logarithm};
+bbci.feature.proc= {@proc_variance, @proc_logarithm};
 
 fv2= bbci_calibrate_evalFeature(fv2, bbci.feature);
 if ~isequal(opt.patterns,'auto'),
@@ -381,7 +378,7 @@ bbci.quit_condition.marker= 255;
 %% BB: I propose a different validation. For test samples always take a
 %%  FIXED interval, e.g. opt.default_ival. Practically this can be done
 %%  with bidx, train_jits, test_jits.
-opt_xv= strukt('sample_fcn',{'chronKfold',8}, ...
+opt_xv= struct('sample_fcn',{{@sample_chronKfold,8}}, ...
                'std_of_means',0, ...
                'verbosity',0, ...
                'progress_bar',0);
@@ -391,7 +388,7 @@ proc_logvar= 'fv= proc_variance(fv); fv= proc_logarithm(fv);';
 proc= struct('memo', 'csp_w');
 proc.apply= ['fv= proc_linearDerivation(fv, csp_w); ' proc_logvar];
 if isequal(opt.patterns,'auto'),
-  proc.train= ['[fv,csp_w]= proc_csp_auto(fv, ' int2str(opt.nPatterns) ...
+  proc.train= ['[fv,csp_w]= proc_cspAuto(fv, ' int2str(opt.nPatterns) ...
                '); ' proc_logvar];
   [loss,loss_std]= xvalidation(fv, opt.model, opt_xv, 'proc',proc);
   bbci_log_write(data, 'CSP auto inside: %4.1f +/- %3.1f', ...
@@ -420,7 +417,7 @@ clear fv*
 BC_result.figure_handles= figno_offset + [1 2 4];
 data.result(ci)= BC_result;
 cfy_fields= {'signal', 'feature', 'classifier', 'quit_condition'};
-bbci_all(ci)= copy_struct(bbci, cfy_fields);
+bbci_all(ci)= struct_copyFields(bbci, cfy_fields);
 
 end  %% for ci  (class combinations)
 
@@ -430,7 +427,7 @@ end  %% for ci  (class combinations)
 
 data.all_results= data.result;
 [dmy, bi]= min(mean_loss + 0.1*std_loss);
-bbci= copy_fields(bbci, bbci_all(bi), cfy_fields);
+bbci= struct_copyFields(bbci, bbci_all(bi), cfy_fields);
 data.result= data.all_results(bi);
 data.result.class_selection_loss= [mean_loss; std_loss];
 

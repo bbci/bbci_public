@@ -1,7 +1,7 @@
 function str= bbciutil_strrepGlobals(str, replace_list)
 
 if nargin<2,
-  replace_list= {'TODAY_DIR', 'VP_CODE', 'TMP_DIR'};
+  replace_list= {'BBCI.Tp.Dir', 'BBCI.Tp.Code', 'BBCI.TmpDir'};
 end
 
 eval(['global ' sprintf('%s ', replace_list{:})]);

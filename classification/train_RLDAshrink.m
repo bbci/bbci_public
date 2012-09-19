@@ -12,18 +12,18 @@ function C = train_RLDAshrink(xTr, yTr, varargin)
 %                     Y_TR(i,j)==1 if the point j belongs to class i.
 %   OPT: PROPLIST - Structure or property/value list of optional
 %                   properties. Options are also passed to clsutil_shrinkage.
-%     'exclude_infs' - BOOL (default 0): If true, training data points with value 'inf' are excluded from XTR
-%     'prior' - DOUBLE (default ones(nClasses, 1)/nClasses): Empirical class priors
-%     'store_prior' - BOOL (default 0): If true, the prior will be stored with the classifier in C.prior
-%     'scaling' - BOOL (default 0): scale projection vector such that the distance between
-%        the projected means becomes 2. Scaling only implemented for 2 classes so far. Using scaling=1 will disable the use of a prior.
-%     'store_means' - BOOL (default 0): If true, the classwise means of the feature vectors
+%     'ExcludeInfs' - BOOL (default 0): If true, training data points with value 'inf' are excluded from XTR
+%     'Prior' - DOUBLE (default ones(nClasses, 1)/nClasses): Empirical class priors
+%     'StorePrior' - BOOL (default 0): If true, the prior will be stored with the classifier in C.prior
+%     'Scaling' - BOOL (default 0): scale projection vector such that the distance between
+%        the projected means becomes 2. Scaling only implemented for 2 classes so far. Using Scaling=1 will disable the use of a prior.
+%     'StoreMeans' - BOOL (default 0): If true, the classwise means of the feature vectors
 %        are stored in the classifier structure C. This can be used, e.g., for bbci_adaptation_pmean
-%     'store_cov',  - BOOL (default 0): If true, the average classwise covariance matrix will be stored with the classifier in C.cov
-%     'store_invcov' - BOOL (default 0): If true, the inverse of the covariance matrix is stored in
+%     'UsePcov' - BOOL (default 0): If true, the pooled covariance matrix is used instead of the average classwise covariance matrix.
+%     'StoreCov',  - BOOL (default 0): If true, the covariance matrix will be stored with the classifier in C.cov
+%     'StoreInvcov' - BOOL (default 0): If true, the inverse of the covariance matrix is stored in
 %        the classifier structure C. This can be used, e.g., for bbci_adaptation_pcovmean
-%     'use_pcov' - BOOL (default 0): If true, the pooled covariance matrix is used instead of the average classwise covariance matrix.
-%     'store_extinvcov' - BOOL (default 0): If true, the extended inverse of the covariance will be stored with the classifier in C.extinvcov
+%     'StoreExtinvcov' - BOOL (default 0): If true, the extended inverse of the covariance will be stored with the classifier in C.extinvcov
 %
 %Returns:
 %   C: STRUCT - Trained classifier structure, with the hyperplane given by
@@ -48,44 +48,50 @@ function C = train_RLDAshrink(xTr, yTr, varargin)
 %
 %Examples:
 %   train_RLDA(X, labels)
-%   train_RLDA(X, labels, 'target', 'D')
+%   train_RLDA(X, labels, 'Target', 'D')
 %   
 %See also:
 %   APPLY_SEPARATINGHYPERPLANE, CLSUTIL_SHRINKAGE, 
 %   TRAIN_LDA, TRAIN_RDAREJECT
 
 % Benjamin Blankertz
+% 12-09-2012: revised to fit with new naming standards and automatic
+% opt-type checking (Michael Tangermann)
+
 
 
 if size(yTr,1)==1, yTr= [yTr<0; yTr>0]; end
 nClasses= size(yTr,1);
 
-props= {'exclude_infs'      0                    'BOOL'
-        'prior'             ones(nClasses, 1)/nClasses    'DOUBLE[- 1]'
-        'se_pcov'          0                             'BOOL'
-        'store_prior'       0                             'BOOL'
-        'store_means'       0                             'BOOL'
-        'store_cov'         0                             'BOOL'
-        'store_invcov'      0                             'BOOL'
-		    'store_extinvcov'   0                             'BOOL'
-        'scaling'           0                             'BOOL'
+props= {'ExcludeInfs'      0                             'BOOL'
+        'Prior'            ones(nClasses, 1)/nClasses    'DOUBLE[- 1]'
+        'UsePcov'          0                             'BOOL'
+        'StorePrior'       0                             'BOOL'
+        'StoreMeans'       0                             'BOOL'
+        'StoreCov'         0                             'BOOL'
+        'StoreInvcov'      0                             'BOOL'
+		'StoreExtinvcov'   0                             'BOOL'
+        'Scaling'          0                             'BOOL'
        };
+   
+% get props list of the subfunction
 props_shrinkage= clsutil_shrinkage;
 
 if nargin==0,
-  mrk= opt_catProps(props, props_shrinkage); 
+  C= opt_catProps(props, props_shrinkage); 
   return
 end
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
+opt_checkProplist(opt, props, props_shrinkage);
 
 % empirical class priors as an option (I leave 1/nClasses as default, haufe)
-if isnan(opt.prior)
-  opt.prior = sum(yTr, 2)/sum(sum(yTr));
+if isnan(opt.Prior)
+  opt.Prior = sum(yTr, 2)/sum(sum(yTr));
 end
 
-if opt.exclude_infs,
+if opt.ExcludeInfs,
   ind = find(sum(abs(xTr),1)==inf);
   xTr(:,ind) = [];
   yTr(:,ind) = [];
@@ -97,12 +103,12 @@ C_mean= zeros(d, nClasses);
 for ci= 1:nClasses,
   idx= find(yTr(ci,:));
   C_mean(:,ci)= mean(xTr(:,idx),2);
-  if ~opt.use_pcov,
+  if ~opt.UsePcov,
     X= [X, xTr(:,idx) - C_mean(:,ci)*ones(1,length(idx))];
   end
 end
-opt_shrinkage= opt_substruct(opt, props_shrinkage);
-if opt.use_pcov,
+opt_shrinkage= opt_substruct(opt, props_shrinkage(:,1));
+if opt.UsePcov,
   [C_cov, C.gamma]= clsutil_shrinkage(xTr, opt_shrinkage);
 else
   [C_cov, C.gamma]= clsutil_shrinkage(X, opt_shrinkage);
@@ -110,37 +116,37 @@ end
 C_invcov= pinv(C_cov);
 
 C.w= C_invcov*C_mean;
-C.b= -0.5*sum(C_mean.*C.w,1)' + log(opt.prior);
+C.b= -0.5*sum(C_mean.*C.w,1)' + log(opt.Prior);
 
 if nClasses==2
   C.w= C.w(:,2) - C.w(:,1);
   C.b= C.b(2)-C.b(1);
 end
 
-if opt.scaling,
+if opt.Scaling,
   if nClasses>2,
-    error('scaling only implemented for 2 classes so far (TODO!)');
+    error('Scaling only implemented for 2 classes so far (TODO!)');
   end
-  if ~isdefault.prior,
+  if ~isdefault.Prior,
     warning('prior ignored, when scaling (TODO!)');
   end
   C.w= C.w/(C.w'*diff(C_mean, 1, 2))*2;
   C.b= -C.w' * mean(C_mean,2);
 end
 
-if opt.store_prior,
-  C.prior= opt.prior;
+if opt.StorePrior,
+  C.prior= opt.Prior;
 end
-if opt.store_means,
+if opt.StoreMeans,
   C.mean= C_mean;
 end
-if opt.store_cov,
+if opt.StoreCov,
   C.cov= C_cov;
 end
-if opt.store_invcov,
+if opt.StoreInvcov,
   C.invcov= C_invcov;
 end
-if opt.store_extinvcov,
+if opt.StoreExtinvcov,
   % pooled(!) covariance
   feat= [ones(1,size(xTr,2)); xTr];
   C.extinvcov= inv(feat*feat'/size(xTr,2));

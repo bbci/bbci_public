@@ -8,7 +8,7 @@ function [varargout] = file_readBV(file, varargin)
 %
 % Arguments:
 %   FILE: file name (no extension),
-%         relative to EEG_RAW_DIR unless beginning with '/' (resp '\').
+%         relative to BBCI.RawDir unless beginning with '/' (resp '\').
 %         FILE may also contain the wildcard symbol '*'. In this case
 %         make sure that the order of the files (printed to the terminal)
 %         is appropriate.
@@ -76,7 +76,7 @@ function [varargout] = file_readBV(file, varargin)
 %               - There was an bug in the check for the lag
 
 
-global BBCI_RAW_DIR
+global BBCI
 
 props= {'CLab'              ''      'CHAR|CELL{CHAR}'
         'Fs'                'raw'   'CHAR|DOUBLE'
@@ -124,12 +124,12 @@ if ~iscell(file)
 end
 
 fileNames = cell(1,length(file));
-% use BBCI_RAW_DIR as default dir
+% use BBCI.RawDir as default dir
 for filePos = 1:length(file)
-  if fileutil_isAbsolutePath(file{filePos}(1)),
+  if fileutil_isAbsolutePath(file{filePos}),
     fileNames{filePos}= file{filePos};
   else
-    fileNames{filePos} = fullfile(BBCI_RAW_DIR, file{filePos});
+    fileNames{filePos} = fullfile(BBCI.RawDir, file{filePos});
   end
 end
 

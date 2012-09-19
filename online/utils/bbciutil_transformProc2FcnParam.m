@@ -23,9 +23,10 @@ function S= bbciutil_transformProc2FcnParam(S)
 % 02-2011 Benjamin Blankertz
 
 
-if ~isfield(S, 'proc'),
-  if ~isfield(S, 'param') && isfield(S, 'fcn'),
-    for k=1:length(S)
+if ~isfield(S, 'proc') || isempty(S.proc),
+  if (~isfield(S,'param') || isempty(S.param)) && ...
+          isfield(S, 'fcn') && ~isempty(S.fcn),
+    for k= 1:length(S),
       S(k).param= repmat({{}}, [1 length(S(k).fcn)]);
     end
   end
@@ -33,7 +34,7 @@ if ~isfield(S, 'proc'),
 end
 
 for k= 1:length(S),
-  if isfield(S(k), 'fcn') && ~isempty(S(k).fcn),
+  if isfield(S(k),'fcn') && ~isempty(S(k).fcn),
 %    warning('struct has already nonempty field fcn');
     continue;
   end

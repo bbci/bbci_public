@@ -26,7 +26,7 @@ bbci.feedback.opt= ...
            'countdown', 3000, ...
            'trials_per_run', 6);
 bbci.feedback.log.output= 'file';
-bbci.feedback.log.folder= TMP_DIR;
+bbci.feedback.log.folder= BBCI.TmpDir;
 
 data= bbci_apply_uni(bbci);
 
@@ -49,7 +49,7 @@ bbci.feedback.log.folder= '/tmp/';
 
 bbci.feedback(2)= bbci.feedback;
 bbci.feedback(2).opt.fig= 2;
-bbci.feedback(2).opt.geometry= VP_SCREEN + [VP_SCREEN(3) 0 0 0];
+bbci.feedback(2).opt.geometry= BBCI.Tp.Geometry + [BBCI.Tp.Geometry(3) 0 0 0];
 bbci.feedback(2).opt.trigger_fcn= '';
 
 bbci.quit_condition.marker= 255;

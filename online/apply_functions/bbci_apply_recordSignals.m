@@ -9,7 +9,7 @@ function DS_record= bbci_apply_recordSignals(varargin)
 % 02-2012 Benjamin Blankertz
 
 
-global TODAY_DIR
+global BBCI
 
 if ischar(varargin{1}),
   cmd= varargin{1};
@@ -27,7 +27,7 @@ if ischar(varargin{1}),
     DS_record.opt= set_defaults(DS_record.opt, ...
                                 'internal', 0, ...
                                 'checkimpedances', 0, ...
-                                'folder', TODAY_DIR);
+                                'folder', BBCI.Tp.Dir);
     filebase= BS.record_basename;
     if ~fileutil_isAbsolutePath(filebase),
       filebase= fullfile(DS_record.opt.folder, filebase);

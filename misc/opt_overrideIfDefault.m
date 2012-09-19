@@ -22,8 +22,8 @@ function [opt, isdefault]= opt_overrideIfDefault(opt, isdefault, varargin)
 %              to false for all given fields.
 %
 %Example:
-%  opt= struct('type', 'large');
-%  [opt, isdefault]= set_defaults(opt, ...
+%  props= {'type'   'large'   'CHAR(small normal large)'};
+%  [opt, isdefault]= opt_setDefaults(opt, ...
 %    'lineWidth', 1, ...
 %    'fontSize', 10, ...
 %    'type', 'normal');
@@ -33,10 +33,14 @@ function [opt, isdefault]= opt_overrideIfDefault(opt, isdefault, varargin)
 %        'fontSize', 18);
 %  end
 %
-%See also: propertylist2struct, set_defaults
+%See also: opt_proplistToStruct, opt_setDefaults
 
 % Author(s): Benjamin Blankertz, Jan 2005
 
+
+misc_checkType(opt, 'STRUCT');
+misc_checkType(isdefault, 'STRUCT');
+misc_checkType(varargin, 'PROPLIST');
 
 %if ~isequal(fieldnames(opt), fieldnames(isdefault)),
 %  warning('opt and isdefault (i.e. 1st and 2nd argument) have different fields');

@@ -29,8 +29,8 @@ function res = pyff(command, varargin)
 %  feedback  - strint containing the name of the feedback
 %
 % pyff('setdir',<OPT>): set directory and filename for EEG recording. 
-%  .TodayDir - directory for saving EEG data (default TODAY_DIR)
-%  .VpCode   - the code of the VP (Versuchsperson) (default VP_CODE)
+%  .TodayDir - directory for saving EEG data (default BBCI.Tp.Dir)
+%  .VpCode   - the code of the VP (Versuchsperson) (default BBCI.Tp.Code)
 %  .Basename  - the basename of the EEG file (default '')
 % Special cases: If OPT=='' all entries are set to '', ensuring that no EEG is 
 % recorded. If OPT is not given at all, all entries are set to default.
@@ -66,7 +66,7 @@ function res = pyff(command, varargin)
 % pyff('saveSettings', FILENAME): load or save the parameters of the feedback
 %   to FILENAME. The appendix '.json' is automatically appended.
 %   If FILENAME does not contain file separators '\' or '/',
-%   TODAY_DIR is prepended.
+%   BBCI.Tp.Dir is prepended.
 %
 %
 % General OPT:
@@ -83,18 +83,22 @@ function res = pyff(command, varargin)
 
 % Matthias Treder 2010
 
-global IO_ADDR TODAY_DIR VP_CODE acquire_func general_port_fields
+
+global BBCI
+%% TODO: get rid of these (change bvr_* functions to more general ones)
+global acquire_func general_port_fields
 persistent ACQ_STARTED
 
 props = {'Os',                    'win',            '!CHAR(win unix)';
+         'PyffDir'                BBCI.PyffDir      'CHAR';
          'ReplaceHtmlEntities',   1,                '!BOOL';
-         'Parport',               IO_ADDR,          'DOUBLE[1]';
+         'Parport',               BBCI.IOAaddr,     'DOUBLE[1]';
          'A',                     [],               'CHAR';
          'Gui',                   0,                'BOOL';
          'L',                     'debug',          'CHAR';
          'Bvplugin',              1,                '!BOOL';
-         'TodayDir',              TODAY_DIR,        'CHAR';
-         'VpCode',                VP_CODE,          'CHAR';
+         'TodayDir',              BBCI.Tp.Dir,      'CHAR';
+         'VpCode',                BBCI.Tp.Code,     'CHAR';
          'Basename',              '',               'CHAR';
          'OutputProtocol',        [],               'CHAR';
          'Host',                 'localhost',       'CHAR';
@@ -151,7 +155,7 @@ switch(command)
     misc_checkType(filename,'!CHAR');
     settings_file= [filename '.json'];
     if ~any(ismember('/\', settings_file)),
-      settings_file= [TODAY_DIR settings_file];
+      settings_file= [BBCI.Tp.Dir settings_file];
   %   % Avoid overwriting? - Maybe it is intended, so we don't.
   %    if strcmp(command,'saveSettings') && exists(settings_file, 'file'),
   %      new_str= datestr(now, 'yyyy-mm-dd_HH:MM:SS.FFF');
@@ -172,15 +176,6 @@ if isdefault.Os
   end
 end
 
-switch(opt.Os)
-  case 'win'
-    opt= opt_setDefaults(opt, {'Dir','D:\svn\pyff\src'});
-  case 'unix'
-    opt= opt_setDefaults(opt, {'Dir','~/svn/pyff/src'; 'BVplugin',0});
-end
-
-if isempty(opt.TodayDir), 	opt.TodayDir = '';end
-if isempty(opt.VpCode), opt.VpCode = '';end
                
 %% Execute command
 res = [];
@@ -194,10 +189,10 @@ switch(command)
       % also sets the path back to the normal system variable. Matlab adds a
       % reference to itself to the beginning of the system path which
       % breaks PyQT.QtCore (possibly also other imports that require dll)
-      comstr = ['set PATH=' curr_path '& cmd /C "cd ' opt.Dir ' & python FeedbackController.py'];
+      comstr = ['set PATH=' curr_path '& cmd /C "cd ' opt.PyffDir ' & python FeedbackController.py'];
       opt.A= strrep(opt.A, '/', filesep);
     elseif strcmp(opt.Os,'unix')
-      comstr = ['xterm -e python ' opt.Dir  '/FeedbackController.py'];
+      comstr = ['xterm -e python ' opt.PyffDir  '/FeedbackController.py'];
 %       opt.A= strrep(opt.A, '\', filesep); % probably unneccesary
     end
     
@@ -234,8 +229,8 @@ switch(command)
     send_udp_xml('interaction-signal', 's:_feedback', feedback,'command','sendinit');
     
   case 'setdir'
-    send_udp_xml('interaction-signal', 's:TODAY_DIR',opt.TodayDir, ...
-      's:VP_CODE',opt.VpCode, 's:BASENAME',opt.Basename);
+    send_udp_xml('interaction-signal', 's:BBCI.Tp.Dir',opt.TodayDir, ...
+      's:BBCI.Tp.Code',opt.VpCode, 's:BASENAME',opt.Basename);
     
   case 'set'
     settings= {};
@@ -278,7 +273,7 @@ switch(command)
       ACQ_STARTED= 0;
     else
       ACQ_STARTED= 1;
-      bvr_startrecording(varargin{2}, 'append_VP_CODE',1, varargin{3:end});
+      bvr_startrecording(varargin{2}, 'append_BBCI.Tp.Code',1, varargin{3:end});
       pause(0.01);
     end
     send_udp_xml('interaction-signal', 'command', 'play'); 

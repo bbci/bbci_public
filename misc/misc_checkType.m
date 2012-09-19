@@ -89,9 +89,9 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 % 06-2012 Benjamin Blankertz
 
 
-global BBCI_TYPECHECKING
+global BBCI
 
-if ~BBCI_TYPECHECKING, return; end
+if ~BBCI.TypeChecking, return; end
 
 if nargin<4,
   toplevel= 1;

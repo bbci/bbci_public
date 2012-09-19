@@ -1,7 +1,7 @@
 BC= [];
-BC.fcn= @bbci_calibrate_ERP_Speller_tiny;
+BC.fcn= @bbci_calibrate_ERP_Speller;
 BC.settings.nClasses= 6;
-BC.folder= fullfile(EEG_RAW_DIR, 'VPibq_11_05_18');
+BC.folder= fullfile(BBCI.RawDir, 'VPibq_11_05_18');
 BC.file= 'calibration_CenterSpellerFixedSequenceVPibq';
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
@@ -9,8 +9,8 @@ BC.marker_param= {{[31:49], [11:29]; 'target', 'nontarget'}};
 
 % In demos, we just write to the temp folder. Otherwise, the default
 % choice would be fine.
-BC.save.folder= TMP_DIR;
-BC.log.folder= TMP_DIR;
+BC.save.folder= BBCI.TmpDir;
+BC.log.folder= BBCI.TmpDir;
 
 bbci= struct('calibrate', BC);
 
@@ -23,7 +23,7 @@ bbci.source.acquire_fcn= @bbci_acquire_offline;
 bbci.source.acquire_param= {calib.cnt, calib.mrk};
 
 bbci.log.output= 'screen&file';
-bbci.log.folder= TMP_DIR;
+bbci.log.folder= BBCI.TmpDir;
 bbci.log.classifier= 1;
 
 data= bbci_apply_uni(bbci);

@@ -74,6 +74,7 @@ props= {'YDir',                           'normal',               'CHAR';
         'XTickAxes',                      '*',                    'CHAR';
         'FigureColor',                    [0.8 0.8 0.8],          'DOUBLE[3]';
         'TitleDir',                       'horizontal',           'CHAR';
+        'TitleAppendix',                  '',                     'CHAR';
         'AxisTitleHorizontalAlignment',   'center',               'CHAR';
         'AxisTitleVerticalAlignment',     'top',                  'CHAR';
         'AxisTitleColor',                 'k',                    'CHAR[1]|DOUBLE[3]';
@@ -359,7 +360,7 @@ for ia= 1:nDisps,
       leg_pos(3:4)= leg_pos_orig(3:4);  %% use original size
       set(H.leg, 'position', leg_pos);
       ud= get(H.leg, 'userData');
-      ud= opt_setDefaults(ud,{ 'type','ERP plus', 'chan','legend'});
+      ud= opt_setDefaults(ud,{ 'type','ERP plus'; 'chan','legend'});
       set(H.leg, 'userData',ud);
       if exist('verLessThan')~=2 || verLessThan('matlab','7'),
         set(H.leg, 'Visible','off');

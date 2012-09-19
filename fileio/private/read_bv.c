@@ -65,7 +65,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "mex.h"
-#include "../../online/communication/filter.h"
+#include "../../online/acquisition/lib/filter.h"
 
 
 /* the field names for HDR and OPT*/
