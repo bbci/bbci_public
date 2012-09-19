@@ -1,4 +1,4 @@
-file= 'VPibv_10_11_02\calibration_CenterSpellerMVEP_VPibv';
+file= 'VPibv_10_11_02/calibration_CenterSpellerMVEP_VPibv';
 
 
 %% Load data
