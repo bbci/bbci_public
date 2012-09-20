@@ -7,10 +7,10 @@ function dat= proc_envelope(dat, varargin)
 %Arguments:
 % DAT: data structure, continuous or epoched signals.
 % OPT: struct or property/value list of optinal properties
-%  .envelopMethod: 'hilbert' (only choice so far)
-%  .movAvgMethod: 'centered' (default) or 'causal'
-%  .movAvgMilisec: window length [msec] for moving average, deafult: 100.
-%  .channelwise: useful in case of memory problems
+%  .EnvelopMethod: 'hilbert' (only choice so far)
+%  .MovAvgMethod: 'centered' (default) or 'causal'
+%  .MovAvgMsec: window length [msec] for moving average, deafult: 100.
+%  .Channelwise: useful in case of memory problems
 %
 %Returns:
 % DAT: output data structure, continuous or epoched as input
