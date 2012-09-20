@@ -27,7 +27,7 @@ function out= proc_average(epo, varargin)
 % EPO     - updated data structure with new field(s)
 %  .N     - vector of epochs per class across which average was calculated
 %  .std   - standard deviation, if requested (opt.Std==1), format as epo.x
-%  .sem   - contains the standard error of the mean, if opt.Stats==1
+%  .se    - contains the standard error of the mean, if opt.Stats==1
 %  .p     - contains the p value of zero mean null hypothesis, if opt.Stats==1
 %  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
 

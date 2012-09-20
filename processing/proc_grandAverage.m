@@ -11,21 +11,36 @@ function ga= proc_grandAverage(varargin)
 %      erpn  -  erp structure
 %
 % <OPT> - struct or property/value list of optional fields/properties:
-%   Average   - If 'weighted', each ERP is weighted for the number of
+%   Average   - If 'Nweighted', each ERP is weighted for the number of
 %               epochs (giving less weight to ERPs made from a small number
-%               of epochs). Default 'unweighted'
+%               of epochs). This amounts to computing the arithmetic mean
+%               across all epochs of all subjects.
+%               If 'INVVARweighted', each individual quantity is weighted
+%               by the inverse of its variance. For this, the square root
+%               of the variance must be provided in erp{:}.se. The inverse
+%               variance weigting is optimal in the sense that the weighted
+%               mean has minimum variance.
+%               Default 'unweighted'
 %   MustBeEqual - fields in the erp structs that must be equal across
 %                 different structs, otherwise an error is issued
 %                 (default {'fs','y','className'})
 %   ShouldBeEqual - fields in the erp structs that should be equal across
 %                   different structs, gives a warning otherwise
 %                   (default {'yUnit'})
+%   Stats       if true, additional statistics are calculated, including the
+%               standard error of the GA, the p-value for the null 
+%               Hypothesis that the GA mean is zero, and the "signed log p-value"
+%
 %Output:
 % ga: Grand average
+%  .se   - contains the standard error of the GA, if opt.Stats==1
+%  .p     - contains the p value of zero mean null hypothesis, if opt.Stats==1
+%  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
 %
 % 09-2012 stefan.haufe@tu-berlin.de
 
-% TODO: avoid making a full copy of the data into array X
+% TODO: if opt.Stats == 1, but epo{:}.se is not provided, perform a simple
+% t-test across subjects
 
 props = {   'Average'               'arithmetic'                '!CHAR(Nweighted INVVARweighted arithmetic)';
             'MustBeEqual'           {'fs','y','className'}      'CHAR|CELL{CHAR}';
@@ -68,13 +83,18 @@ if numel(datadim) > 1
   error('Datasets have different dimensionalities');
 end
 
-if strcmp(opt.Average, 'INVVARweighted') && ~isfield(erps{1}, 'sem')
-   warning('No SEM given to perform inverse variance weighted averaging. Performing arithmetic (unweighted) averaging instead.') 
+if strcmp(opt.Average, 'INVVARweighted') && ~isfield(erps{1}, 'se')
+   warning('No SE given to perform inverse variance weighted averaging. Performing arithmetic (unweighted) averaging instead.') 
    opt.Average = 'arithmetic';
 end
 
-if opt.Stats && ~isfield(erps{1}, 'sem')
-%    warning('No SEM given for statistical analysis. Performing a plain t-test across subjects.') 
+if strcmp(opt.Average, 'Nweighted') && ~isfield(erps{1}, 'N')
+   warning('Weighting with the number of trials is not possible for this data. Switching to arithmetic averaging.') 
+   opt.Average = 'arithmetic';
+end
+
+if opt.Stats && ~isfield(erps{1}, 'se')
+   warning('No SE given for statistical analysis.') 
    opt.Stats = 0;
 end
 
@@ -121,18 +141,18 @@ for vp= 1:K,
   if datadim==1
     erps{vp}.x = reshape(erps{vp}.x(:,ci,:), [], E);
     if opt.Stats
-      erps{vp}.sem = reshape(erps{vp}.sem(:,ci,:), [], E);
+      erps{vp}.se = reshape(erps{vp}.se(:,ci,:), [], E);
     end
   else
     if ndims(erps{1}.x)==3
       erps{vp}.x = reshape(erps{vp}.x(:,:,ci), [], E);
       if opt.Stats
-        erps{vp}.sem = reshape(erps{vp}.sem(:,:,ci), [], E);
+        erps{vp}.se = reshape(erps{vp}.se(:,:,ci), [], E);
       end
     elseif ndims(erps{1}.x)==4
       erps{vp}.x = reshape(erps{vp}.x(:,:,ci,:), [], E);
       if opt.Stats
-        erps{vp}.sem = reshape(erps{vp}.sem(:,:,ci,:), [], E);
+        erps{vp}.se = reshape(erps{vp}.se(:,:,ci,:), [], E);
       end
     end
   end
@@ -148,8 +168,6 @@ for vp= 1:K,
         erps{vp}.x = atanh(sqrt(erps{vp}.x));
       case 'sgn r^2',
         erps{vp}.x = atanh(sqrt(abs(erps{vp}.x)).*sign(erps{vp}.x));
-      case 'auc'
-        erps{vp}.x = erps{vp}.x - 0.5;
     end
   end
   
@@ -157,7 +175,7 @@ end
 
 
 ga.x = zeros([F*T*C E]);
-ga.sem = zeros([F*T*C E]);
+ga.se = zeros([F*T*C E]);
 for cc= 1:E,  %% for each class
   sW= 0;
   swV = 0;
@@ -167,19 +185,19 @@ for cc= 1:E,  %% for each class
       case 'Nweighted',
         W = erps{vp}.N(cc);
       case 'INVVARweighted'
-        W = 1./erps{vp}.sem(:, cc).^2;
+        W = 1./erps{vp}.se(:, cc).^2;
       otherwise % case 'arithmetic'
         W = 1;
     end
     sW= sW + W;
     ga.x(:, cc)= ga.x(:, cc) + W.*erps{vp}.x(:, cc); 
     if opt.Stats
-      swV = swV + W.^2.*erps{vp}.sem(:, cc).^2;
+      swV = swV + W.^2.*erps{vp}.se(:, cc).^2;
     end
   end
   ga.x(:, cc)= ga.x(:, cc)./sW;
   if opt.Stats
-    ga.sem(:, cc) = sqrt(swV)./sW;
+    ga.se(:, cc) = sqrt(swV)./sW;
   end
 end
 
@@ -193,14 +211,21 @@ else
     ga.x = reshape(ga.x, [F T C E]);
   end
 end
-
-if opt.Stats
-  ga.p = reshape(2*normal_cdf(-abs(ga.x(:)), zeros(size(ga.x(:))), ga.sem(:)), size(ga.x));
-%   ga.sgnlogp = -log10(ga.p).*sign(ga.x);
-  ga.sgnlogp = reshape(((log(2)+normcdfln(-abs(ga.x(:))))./log(10)), size(ga.x)).*-sign(ga.x);
-end
   
-%% Post-transformation to bring the GA data to the original unit
+if opt.Stats
+  ga.p = reshape(2*normal_cdf(-abs(ga.x(:)), zeros(size(ga.x(:))), ga.se(:)), size(ga.x));
+  ga.sgnlogp = reshape(((log(2)+normcdfln(-abs(ga.x(:)./ga.se(:))))./log(10)), size(ga.x)).*-sign(ga.x);
+  
+  if exist('mrk_addIndexedField')==2,
+    %% The following line is only to be executed if the BBCI Toolbox
+    %% is loaded.  
+    ga = mrk_addIndexedField(ga, 'se');
+    ga = mrk_addIndexedField(ga, 'p');
+    ga = mrk_addIndexedField(ga, 'sgnlogp');
+  end
+end
+
+%% Post-transformation to bring the GA data back to the original unit
 if isfield(ga, 'yUnit') 
   switch ga.yUnit
     case 'dB'
@@ -212,7 +237,7 @@ if isfield(ga, 'yUnit')
     case 'sgn r^2',
       ga.x= tanh(ga.x).*abs(tanh(ga.x));
     case 'auc'
-      X = min(max(X + 0.5, 0), 1);
+      ga.x = min(max(ga.x, 0), 1);
   end
 end
 

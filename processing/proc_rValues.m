@@ -18,6 +18,9 @@ function fv_rval= proc_rValues(fv, varargin)
 % 'MulticlassPolicy': possible options: 'pairwise' (default), 
 %    'all-against-last', 'each-against-rest', or provide specified
 %    pairs as an [nPairs x 2] sized matrix. ('specified_pairs' is obsolete)
+% 'Stats' - if true, additional statistics are calculated, including the
+%           standard error, the p-value for the null 
+%           Hypothesis that the mean is zero, and the "signed log p-value"
 % 
 %Description:
 % This function calculates the bi-serial correlation coefficient in
@@ -34,9 +37,12 @@ function fv_rval= proc_rValues(fv, varargin)
 %See also:  proc_tTest, proc_rSquare
 
 % Benjamin Blankertz
+% 09-2012 stefan.haufe@tu-berlin.de
+
 props= { 'TolerateNans',      0,           'BOOL|DOUBLE'
          'ValueForConst',     NaN,         'DOUBLE'
-         'MulticlassPolicy',  'pairwise',  'CHAR(pairwise all-against-last each-against-rest)|INT[- 2]'  };
+         'MulticlassPolicy',  'pairwise',  'CHAR(pairwise all-against-last each-against-rest)|INT[- 2]'  
+         'Stats',             0,           '!BOOL'};
 
 if nargin==0,
   fv_rval= props; return
@@ -72,11 +78,15 @@ lq= length(c2);
 if opt.TolerateNans,
   stdi= @nanstd;
   meani= @nanmean;
-  iV = reshape(sum(~isnan(fv.x), 2), [sz(1:end-1) 1])-3;
+  if opt.Stats
+    iV = reshape(sum(~isnan(fv.x), 2), [sz(1:end-1) 1])-3;
+  end
 else
   stdi= @std;
   meani= @mean;
-  iV = sz(end)*ones(sz(1:end-1))-3;
+  if opt.Stats
+    iV = sz(end)*ones(sz(1:end-1))-3;
+  end
 end
 div= stdi(fv.x,0,2);
 iConst= find(div==0);
@@ -85,16 +95,25 @@ rval= ( (meani(fv.x(:,c1),2)-meani(fv.x(:,c2),2)) * sqrt(lp*lq) ) ./ ...
         ( div*(lp+lq) );
 rval(iConst)= opt.ValueForConst;
 rval= reshape(rval, [sz(1:end-1) 1]);
-iV= reshape(iV, [sz(1:end-1) 1]);
 
 fv_rval= fv;
 fv_rval.x= rval;
-fv_rval.V= 1./iV;
-fv_rval.z = atanh(fv_rval.x).*sqrt(iV);
-fv_rval.p = reshape(2*normal_cdf(-abs(fv_rval.z(:)), zeros(size(fv_rval.z(:))), ones(size(fv_rval.z(:)))), size(fv_rval.z));
-if exist('normcdfln','file'),
-  fv_rval.sgn_log10_p = reshape(((log(2)+normcdfln(-abs(fv_rval.z(:))))./log(10)), size(fv_rval.z)).*-sign(fv_rval.z);
+
+if opt.Stats
+  iV= reshape(iV, [sz(1:end-1) 1]);
+  fv_rval.se = 1./sqrt(iV);
+  fv_rval.p = reshape(2*normal_cdf(-abs(atanh(fv_rval.x(:))), zeros(size(fv_rval.x(:))), fv_rval.se(:)), size(fv_rval.x));
+  fv_rval.sgnlogp = reshape(((log(2)+normcdfln(-abs(atanh(fv_rval.x(:)).*sqrt(iV(:)))))./log(10)), size(fv_rval.x)).*-sign(fv_rval.x);
+      
+  if exist('mrk_addIndexedField')==2,
+    %% The following line is only to be executed if the BBCI Toolbox
+    %% is loaded.  
+    fv_rval= mrk_addIndexedField(fv_rval, 'se');
+    fv_rval= mrk_addIndexedField(fv_rval, 'p');
+    fv_rval= mrk_addIndexedField(fv_rval, 'sgnlogp');
+  end
 end
+
 if isfield(fv, 'className'),
   fv_rval.className= {sprintf('r( %s , %s )', fv.className{1:2})};
 end
