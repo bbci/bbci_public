@@ -157,7 +157,7 @@ for vp= 1:K,
     end
   end
 
-  %% Pre-transformation to make the data (more) Gaussian for some known statistics
+  %% Pre-transformation to make the data (more) zero-mean Gaussian for some known statistics
   if isfield(ga, 'yUnit') 
     switch ga.yUnit
       case 'dB'
@@ -168,6 +168,10 @@ for vp= 1:K,
         erps{vp}.x = atanh(sqrt(erps{vp}.x));
       case 'sgn r^2',
         erps{vp}.x = atanh(sqrt(abs(erps{vp}.x)).*sign(erps{vp}.x));
+      case 'sgn r^2',
+        erps{vp}.x = atanh(sqrt(abs(erps{vp}.x)).*sign(erps{vp}.x));
+      case 'auc',
+        erps{vp}.x = erps{vp}.x - 0.5;
     end
   end
   
@@ -237,7 +241,7 @@ if isfield(ga, 'yUnit')
     case 'sgn r^2',
       ga.x= tanh(ga.x).*abs(tanh(ga.x));
     case 'auc'
-      ga.x = min(max(ga.x, 0), 1);
+      ga.x = min(max(ga.x + 0.5, 0), 1);
   end
 end
 
