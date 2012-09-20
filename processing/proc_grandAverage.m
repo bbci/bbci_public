@@ -84,17 +84,17 @@ if numel(datadim) > 1
 end
 
 if strcmp(opt.Average, 'INVVARweighted') && ~isfield(erps{1}, 'se')
-   warning('No SE given to perform inverse variance weighted averaging. Performing arithmetic (unweighted) averaging instead.') 
+   warning('Weighting with the inverse variance is not possible for this data. Performing arithmetic (unweighted) averaging instead.') 
    opt.Average = 'arithmetic';
 end
 
 if strcmp(opt.Average, 'Nweighted') && ~isfield(erps{1}, 'N')
-   warning('Weighting with the number of trials is not possible for this data. Switching to arithmetic averaging.') 
+   warning('Weighting with the number of trials is not possible for this data. Performing arithmetic (unweighted) averaging instead.') 
    opt.Average = 'arithmetic';
 end
 
 if opt.Stats && ~isfield(erps{1}, 'se')
-   warning('No SE given for statistical analysis.') 
+   warning('No standard errors given for statistical analysis.') 
    opt.Stats = 0;
 end
 

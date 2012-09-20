@@ -106,13 +106,13 @@ if opt.Std,
   end
 end
 if opt.Stats,
-  out.sem = zeros(prod(sz(1:end-1)), nClasses);
+  out.se = zeros(prod(sz(1:end-1)), nClasses);
   out.p = zeros(prod(sz(1:end-1)), nClasses);
   out.sgnlogp = zeros(prod(sz(1:end-1)), nClasses);
   if exist('mrk_addIndexedField')==2,
     %% The following line is only to be executed if the BBCI Toolbox
     %% is loaded.
-    out= mrk_addIndexedField(out, 'sem');
+    out= mrk_addIndexedField(out, 'se');
     out= mrk_addIndexedField(out, 'p');
     out= mrk_addIndexedField(out, 'sgnlogp');
   end
@@ -144,10 +144,10 @@ for ic= 1:nClasses,
   if opt.Stats,
     if strcmpi(opt.Policy,'nanmean'),
       [H out.p(:, ic) ci stats] = ttest(epo.x(:,evInd{ic}), [], [], [], 2);
-      out.sem(:,ic)= stats.sd/sqrt(out.N(ic));
+      out.se(:,ic)= stats.sd/sqrt(out.N(ic));
     else
       [H out.p(:, ic) ci stats] = ttest(epo.x(:,evInd{ic}), [], [], [], 2);
-      out.sem(:,ic)= stats.sd/sqrt(out.N(ic));
+      out.se(:,ic)= stats.sd/sqrt(out.N(ic));
     end
   end
 end
@@ -158,7 +158,7 @@ if opt.Std,
 end
 
 if opt.Stats,
-  out.sem = reshape(out.sem, [sz(1:end-1) nClasses]);
+  out.se = reshape(out.se, [sz(1:end-1) nClasses]);
   out.p = reshape(out.p, [sz(1:end-1) nClasses]);
   out.sgnlogp = -log10(out.p).*sign(out.x);
 end
