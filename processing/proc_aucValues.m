@@ -9,6 +9,10 @@ function fv_aucval= proc_aucValues(fv, varargin)
 %
 %Returns:
 % FV_AUC - data structure of auc values 
+%  .se    - contains the standard error of fv_auc.x, if opt.Stats==1
+%  .p     - contains the p value of null hypothesis that the auc is 0.5, 
+%           if opt.Stats==1
+%  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
 %
 %Properties:
 % 'Stats' - if true, additional statistics are calculated, including the
@@ -62,13 +66,6 @@ if opt.Stats
   fv_aucval.se = repmat(sqrt((0.25 + (sum(sum(fv.y'))-2)*(1/12))./prod(sum(fv.y'))), sz(1:end-1));
   fv_aucval.p = reshape(fv_aucval.p, sz(1:end-1));
   fv_aucval.sgnlogp = reshape(fv_aucval.sgnlogp, sz(1:end-1));
-  if exist('mrk_addIndexedField')==2,
-    %% The following line is only to be executed if the BBCI Toolbox
-    %% is loaded.
-    fv_aucval= mrk_addIndexedField(fv_aucval, 'se');
-    fv_aucval= mrk_addIndexedField(fv_aucval, 'p');
-    fv_aucval= mrk_addIndexedField(fv_aucval, 'sgnlogp');
-  end
 end
 
 if isfield(fv, 'className'),

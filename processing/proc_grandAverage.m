@@ -16,11 +16,11 @@ function ga= proc_grandAverage(varargin)
 %               of epochs). This amounts to computing the arithmetic mean
 %               across all epochs of all subjects.
 %               If 'INVVARweighted', each individual quantity is weighted
-%               by the inverse of its variance. For this, the square root
-%               of the variance must be provided in erp{:}.se. The inverse
-%               variance weigting is optimal in the sense that the weighted
+%               by the inverse of its variance. For this, the standard error
+%               must be provided in erp{:}.se. The inverse
+%               variance weighting is optimal in the sense that the weighted
 %               mean has minimum variance.
-%               Default 'unweighted'
+%               Default 'arithmetic'
 %   MustBeEqual - fields in the erp structs that must be equal across
 %                 different structs, otherwise an error is issued
 %                 (default {'fs','y','className'})
@@ -29,12 +29,28 @@ function ga= proc_grandAverage(varargin)
 %                   (default {'yUnit'})
 %   Stats       if true, additional statistics are calculated, including the
 %               standard error of the GA, the p-value for the null 
-%               Hypothesis that the GA mean is zero, and the "signed log p-value"
+%               Hypothesis, and the "signed log p-value"
+%  
+%               Note that for general data, the null-Hypothesis states that
+%               the GA has zero mean. For certain specific quantities the 
+%               null hypothesis may however be different. For example, the 
+%               null hypothesis for 'r', 'r^2', 'sgn r^2' values states that 
+%               there is zero linear correlation between feature and class
+%               label. For 'auc' scores zero nonlinear (nonparametric)
+%               correlation is tested.
+%
+%               Since 'r', 'r^2', 'sgn r^2' scores are not
+%               Gaussian distributed quantities, appropriate
+%               transformations are applied before grand-averaging, which
+%               make these quantities approximately Gaussian-distributed
+%               with standard error erps{}.se . After averaging, the
+%               inverse transformation is applied to obtain grand-average 
+%               'r', 'r^2' or 'sgn r^2' scores.              
 %
 %Output:
 % ga: Grand average
 %  .se   - contains the standard error of the GA, if opt.Stats==1
-%  .p     - contains the p value of zero mean null hypothesis, if opt.Stats==1
+%  .p     - contains the p value of the null hypothesis, if opt.Stats==1
 %  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
 %
 % 09-2012 stefan.haufe@tu-berlin.de
@@ -219,14 +235,6 @@ end
 if opt.Stats
   ga.p = reshape(2*normal_cdf(-abs(ga.x(:)), zeros(size(ga.x(:))), ga.se(:)), size(ga.x));
   ga.sgnlogp = reshape(((log(2)+normcdfln(-abs(ga.x(:)./ga.se(:))))./log(10)), size(ga.x)).*-sign(ga.x);
-  
-  if exist('mrk_addIndexedField')==2,
-    %% The following line is only to be executed if the BBCI Toolbox
-    %% is loaded.  
-    ga = mrk_addIndexedField(ga, 'se');
-    ga = mrk_addIndexedField(ga, 'p');
-    ga = mrk_addIndexedField(ga, 'sgnlogp');
-  end
 end
 
 %% Post-transformation to bring the GA data back to the original unit

@@ -99,23 +99,11 @@ sz= size(epo.x);
 out.x= zeros(prod(sz(1:end-1)), nClasses);
 if opt.Std,
   out.std= zeros(prod(sz(1:end-1)), nClasses);
-  if exist('mrk_addIndexedField')==2,
-    %% The following line is only to be executed if the BBCI Toolbox
-    %% is loaded.
-    out= mrk_addIndexedField(out, 'std');
-  end
 end
 if opt.Stats,
   out.se = zeros(prod(sz(1:end-1)), nClasses);
   out.p = zeros(prod(sz(1:end-1)), nClasses);
   out.sgnlogp = zeros(prod(sz(1:end-1)), nClasses);
-  if exist('mrk_addIndexedField')==2,
-    %% The following line is only to be executed if the BBCI Toolbox
-    %% is loaded.
-    out= mrk_addIndexedField(out, 'se');
-    out= mrk_addIndexedField(out, 'p');
-    out= mrk_addIndexedField(out, 'sgnlogp');
-  end
 end
 out.y= eye(nClasses);
 out.className= classes;

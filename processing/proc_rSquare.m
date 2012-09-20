@@ -15,8 +15,25 @@ function fv= proc_rSquare(fv, varargin)
 %           all-against-last', 'each-against-rest', or provide specified
 %           pairs as an [nPairs x 2] sized matrix. 
 %
+%Properties:
+% 'TolerateNans': observations with NaN value are skipped
+%    (nanmean/nanstd are used instead of mean/std). Deafult: 0
+% 'ValueForConst': constant feauture dimensions are assigned this
+%    value. Default: NaN.
+% 'MulticlassPolicy': possible options: 'pairwise' (default), 
+%    'all-against-last', 'each-against-rest', or provide specified
+%    pairs as an [nPairs x 2] sized matrix. ('specified_pairs' is obsolete)
+% 'Stats' - if true, additional statistics are calculated, including the
+%           standard error of atanh(r), the p-value for the null 
+%           Hypothesis that the correlation is zero, 
+%           and the "signed log p-value"
+%
 %Returns:
-%   fv: data structure with x-field containing r^2 values (one sample only)
+%   fv: data structure with x-field containing r^2 values 
+%  .se    - contains the standard error of atanh(r), if opt.Stats==1
+%  .p     - contains the p value of null hypothesis that there is zero
+%           correlation between feature and class-label, if opt.Stats==1
+%  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
 %
 %Description:
 % Computes the r^2 value for each feature. The r^2 value is a measure
