@@ -16,8 +16,8 @@ function fv_aucval= proc_aucValues(fv, varargin)
 %
 %Properties:
 % 'Stats' - if true, additional statistics are calculated, including the
-%           standard error of the mean, the p-value for the null 
-%           Hypothesis that the mean is zero, and the "signed log p-value"
+%           standard error, the p-value for the null 
+%           Hypothesis that the auc is 0.5, and the "signed log p-value"
 % 
 % Description
 %  Computes the area under the curve (AUC) score for each feature.
