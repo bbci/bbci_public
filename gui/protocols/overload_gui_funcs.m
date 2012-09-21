@@ -3,7 +3,7 @@ function varargout = overload_gui_functions(fnc, paradigm, handles, varargin)
 % check if the overloader file exposes this function
 %  if not, proceed with default
 %  if so, use the overloaded file
-opt = propertylist2struct(varargin{:});
+opt = opt_proplistToStruct(varargin{:});
 
 paradigm = str2func(strcat('funcs_', paradigm));
 default_func = @funcs_default;

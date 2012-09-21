@@ -129,15 +129,15 @@ function load_data_button_Callback(hObject, eventdata, handles)
 % hObject    handle to load_data_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global BBCI.RawDir
 
 if check_state(handles,1),
     try,
+        GB = manage_parameters('get', 'global_bbci');
         set_button_state(handles, 'off', {''});
         add_to_message_box(handles, 'Loading data. Please wait.....');drawnow;
         bbci = manage_parameters('get', 'bbci');
         sel_files = get_selected_item(handles.file_list_box);
-        bbci.calibrate.file = cellfun(@(X) strcat(BBCI.RawDir, X), ...
+        bbci.calibrate.file = cellfun(@(X) strcat(GB.RawDir, X), ...
             sel_files, 'UniformOutput', false);
         bbci.calibrate.folder = []; 
         data = bbci_load(bbci);
@@ -162,20 +162,21 @@ function init_button_Callback(hObject, eventdata, handles)
 % hObject    handle to init_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if strcmp(get(handles.vp_code_box, 'string'), 'Enter BBCI.Tp.Code'),
-    add_to_message_box(handles, 'Error: No BBCI.Tp.Code set.');
-elseif isempty(strmatch('VP', get(handles.vp_code_box, 'string'))) && ~isempty(get(handles.vp_code_box, 'string')),
-    add_to_message_box(handles, ...
-        'Error: Invalid BBCI.Tp.Code set. BBCI.Tp.Code should start with VP');
+if strcmp(get(handles.vp_code_box, 'string'), 'Enter usercode'),
+    add_to_message_box(handles, 'Error: No valid usercode set.');
+%elseif isempty(strmatch('VP', get(handles.vp_code_box, 'string'))) && ~isempty(get(handles.vp_code_box, 'string')),
+%    add_to_message_box(handles, ...
+%        'Error: Invalid BBCI.Tp.Code set. BBCI.Tp.Code should start with VP');
 else
-    global BBCI.Tp.Dir BBCI.Tp.Code acquire_func
+    global BBCI;
+    GB = BBCI;
     if isempty(get(handles.vp_code_box, 'string')),
-        clear BBCI.Tp.Code;
-        set(handles.vp_code_box, 'string', BBCI.Tp.Code);
+        %clear BBCI.Tp.Code;
+        set(handles.vp_code_box, 'string', GB.Tp.Code);
     else
-        BBCI.Tp.Code = get(handles.vp_code_box, 'string');
+        GB.Tp.Code = get(handles.vp_code_box, 'string');
     end
-    acq_makeDataFolder('log_dir',1);
+    acq_makeDataFolder();
     
     % get all the parameters in buffer
     try
@@ -186,13 +187,14 @@ else
         state.sigserv_started = false;
     end
     manage_parameters('reset');
+    manage_parameters('set', 'global_bbci', GB);    
     [study, study_id] = get_selected_item(handles.study_box); 
     study = study{1};
     experiments = manage_parameters('set', 'experiment_settings', ...
         overload_gui_funcs('experiment_settings', study, handles));  
     BC = overload_gui_funcs('calibration_settings', study, handles); 
     bbci = manage_parameters('set', 'bbci', ...
-        overload_gui_funcs('online_settings', study, handles, BC)); 
+       overload_gui_funcs('online_settings', study, handles, BC)); 
     set(handles.experiment_box, 'string', experiments.experiment_names);
     look_for_existing_files(handles, ...
         experiments.allowed_files, '.eeg', get(handles.individual_files_tick, 'value'), ...
@@ -200,17 +202,17 @@ else
     look_for_existing_files(handles, ...
         experiments.classifier_name, '.mat', 1, ...
         get(handles.today_only_classifier_tick, 'value'),handles.run_classifier_menu);
-    state.inited = true; state.trained = false; state.loaded = false;state.vpcode = BBCI.Tp.Code; state.study = study;
+    state.inited = true; state.trained = false; state.loaded = false;state.vpcode = GB.Tp.Code; state.study = study;
     manage_parameters('set', 'state', state);
     handle_experiment_parameters(handles, 'init');
     manage_parameters('dump');
-    send_tobi_c_udp('init', '127.0.0.1', 12345);
-    send_xmlcmd_udp('init', '127.0.0.1', 12345);
-    if handles.amp_button_gtec, 
-        acquire_func = @acquire_sigserv;
-    else
-        acquire_func = @acquire_bv;
-    end
+    %send_tobi_c_udp('init', '127.0.0.1', 12345);
+%    send_xmlcmd_udp('init', '127.0.0.1', 12345);
+%    if handles.amp_button_gtec, 
+%        acquire_func = @acquire_sigserv;
+%    else
+%        acquire_func = @acquire_bv;
+%    end
 end
 
 % --- Executes on button press in create_images_button.
@@ -267,7 +269,7 @@ function vp_code_box_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-global BBCI.Tp.Code
+global BBCI
 if ~isempty(BBCI.Tp.Code),
     set(hObject, 'string', BBCI.Tp.Code);
 end
@@ -508,7 +510,7 @@ function run_experiment_button_Callback(hObject, eventdata, handles)
 % hObject    handle to run_experiment_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global BBCI.Tp.Code
+GB = manage_parameters('get', 'global_bbci');
 state = manage_parameters('get', 'state');
 ES = manage_parameters('get', 'experiment_settings');
 bbci = manage_parameters('get', 'bbci');
@@ -530,7 +532,7 @@ if check_state(handles,1),
                     opt.aux = ES.aux;
                     opt.bbci = bbci;
                     if isfield(opt.aux, 'custom_settings_folder'),
-                        cust_file = [opt.aux.custom_settings_folder BBCI.Tp.Code '_pb_setup.m'];
+                        cust_file = [opt.aux.custom_settings_folder GB.Tp.Code '_pb_setup.m'];
                         if exist(cust_file, 'file') && isempty(strmatch('Calibration', run_exp)),
                             run(cust_file);
                             opt.parameters.filename = strcat(opt.parameters.filename, stored_set.file_suffix);
@@ -776,7 +778,7 @@ function use_channels_button_Callback(hObject, eventdata, handles)
 % hObject    handle to use_channels_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global BCI_DIR BBCI.Tp.Code
+GB = manage_parameters('get', 'global_bbci');
 
 if check_state(handles,2),
     try,
@@ -799,7 +801,7 @@ if check_state(handles,2),
         
         if isfield(ES, 'aux') && isfield(ES.aux, 'sigserv_template'),
             template = ES.aux.sigserv_template;
-            target = [BCI_DIR 'online\communication\signalserver\config_sigserv_' BBCI.Tp.Code '.xml'];
+            target = [GB.dir 'online\communication\signalserver\config_sigserv_' GB.Tp.Code '.xml'];
             
             fid = fopen(template, 'r');
             str = fread(fid, [1 inf], 'uint8=>char');
@@ -810,7 +812,7 @@ if check_state(handles,2),
                 chans = [chans sprintf('<ch nr="%i" name="%s" type="eeg" />\r', i, clab{i})];
             end
             
-            str = sprintf(str, BBCI.Tp.Code, ES.aux.gtec_serial,length(clab), chans);
+            str = sprintf(str, GB.Tp.Code, ES.aux.gtec_serial,length(clab), chans);
             
             fid = fopen(target, 'w');
             fwrite(fid, str);
@@ -969,9 +971,9 @@ function start_signalserver_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-global BCI_DIR BBCI.Tp.Code
+GB = manage_parameters('get', 'global_bbci');
 if check_state(handles,1),
-    personal_file = [BCI_DIR 'online\communication\signalserver\config_sigserv_' BBCI.Tp.Code '.xml'];
+    personal_file = [GB.dir 'online\communication\signalserver\config_sigserv_' GB.Tp.Code '.xml'];
     if exist(personal_file, 'file')
         start_signalserver(personal_file);
     else
@@ -988,9 +990,9 @@ function start_impedance_button_Callback(hObject, eventdata, handles)
 % hObject    handle to start_impedance_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global BCI_DIR BBCI.Tp.Code
+GB = manage_parameters('get', 'global_bbci');
 if check_state(handles,1),
-    personal_file = ['config_sigserv_' BBCI.Tp.Code '.xml'];
+    personal_file = ['config_sigserv_' GB.Tp.Code '.xml'];
     if exist(personal_file, 'file')
         signalserver_impedance(personal_file);
     else
@@ -1052,15 +1054,15 @@ function adaptation_checkbox_Callback(hObject, eventdata, handles)
 % Non callback functions (helper functions)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function start_recording(handles, filename),
-global BBCI.Tp.Dir BBCI.Tp.Code
+GB = manage_parameters('get', 'global_bbci');
 if get(handles.amp_button_bv, 'value'),
     % this is easy
     rec_opt.impedances = 0;
-    rec_opt.append_BBCI.Tp.Code = 1;
+    rec_opt.append_VP_CODE = 1;
     bvr_startrecording(filename, rec_opt);
 else
     % gTec sucks bigtime!
-    signalServer_startrecoding([filename BBCI.Tp.Code]);
+    signalServer_startrecoding([filename GB.Tp.Code]);
 end
 
 function stop_recording(handles),
@@ -1073,13 +1075,13 @@ end
 
 function exp_opt = start_classifier(handles)
 experiments = manage_parameters('get', 'experiment_settings');
-global BBCI.RawDir BBCI.Tp.Code BBCI.Tp.Dir BBCI.TmpDir
+GB = manage_parameters('get', 'global_bbci');
 exp_opt = struct();
 
 if check_state(handles,1),
     classifier = get_selected_item(handles.run_classifier_menu);
     if ~strcmp(classifier, 'Initialize first') && ~isempty(classifier) && ~strcmp(classifier, 'No files found.'),
-        cls = load([BBCI.RawDir filesep classifier{1} '.mat']);  
+        cls = load([GB.RawDir filesep classifier{1} '.mat']);  
         if get(handles.amp_button_gtec, 'value'),
             cls.source.acquire_fcn = @bbci_acquire_sigserv;
         else
@@ -1100,10 +1102,10 @@ if check_state(handles,1),
                 add_to_message_box(handles, 'No early stopping parameters found.');                
             end
         end
-        save([BBCI.TmpDir filesep 'tmp_classifier'], '-struct', 'cls');
+        save([GB.TmpDir filesep 'tmp_classifier'], '-struct', 'cls');
         
-        cmd_init= sprintf('BBCI.Tp.Code= ''%s''; BBCI.Tp.Dir= ''%s'';set_general_port_fields(''localhost'');general_port_fields.feedback_receiver = ''pyff'';', BBCI.Tp.Code, BBCI.Tp.Dir);
-        bbci_cfy= [BBCI.TmpDir filesep 'tmp_classifier.mat'];
+        cmd_init= sprintf('BBCI.Tp.Code= ''%s''; BBCI.Tp.Dir= ''%s'';set_general_port_fields(''localhost'');general_port_fields.feedback_receiver = ''pyff'';', GB.Tp.Code, GB.Tp.Dir);
+        bbci_cfy= [GB.TmpDir filesep 'tmp_classifier.mat'];
         cmd_bbci= ['dbstop if error; bbci = load(''' bbci_cfy '''); bbci_apply(bbci);'];
         system(['matlab -nosplash -nojvm -r "' cmd_init cmd_bbci '; exit;" &']);
     else
@@ -1187,7 +1189,7 @@ function [value index] = get_selected_item(hObject),
     value = content(index);
     
 function val_file = find_classifier_name(handles),
-    global BBCI.Tp.Dir
+    global BBCI
     bbci = manage_parameters('get', 'bbci');
     base_file = bbci.calibrate.save.file;
     val_file = base_file;
@@ -1239,21 +1241,21 @@ function add_to_message_box(handles, str),
     set(handles.message_box, 'string', newMes);
     
 function files = look_for_existing_files(handles, names, ext, individual, today_only, hObject),
-global BBCI.Tp.Code BBCI.RawDir BBCI.Tp.Dir
-if ~isempty(BBCI.Tp.Code),
+GB = manage_parameters('get', 'global_bbci');
+if ~isempty(GB.Tp.Code),
 %     experiments = manage_parameters('get', 'experiment_settings');
     set(handles.file_list_box, 'value', 1);
     val_file = names;
     if today_only,
-        if BBCI.Tp.Dir(end) == '\' || BBCI.Tp.Dir(end) == '/'
-            [dum d(1).name] = fileparts(BBCI.Tp.Dir(1:end-1));
+        if GB.Tp.Dir(end) == '\' || GB.Tp.Dir(end) == '/'
+            [dum d(1).name] = fileparts(GB.Tp.Dir(1:end-1));
         else
-            [dum d(1).name] = fileparts(BBCI.Tp.Dir);
+            [dum d(1).name] = fileparts(GB.Tp.Dir);
         end
         val_id = 1;
     else
-        d = dir(BBCI.RawDir);
-        val_id = strmatch([BBCI.Tp.Code '_'], {d(:).name});
+        d = dir(GB.RawDir);
+        val_id = strmatch([GB.Tp.Code '_'], {d(:).name});
     end
     % select valid dirs and sort
     d = d(val_id);
@@ -1261,7 +1263,7 @@ if ~isempty(BBCI.Tp.Code),
     d = d(fliplr(id));
     files = {};
     for d_id = 1:length(d),
-        d2 = dir([BBCI.RawDir d(d_id).name filesep '*' ext]);
+        d2 = dir([GB.RawDir d(d_id).name filesep '*' ext]);
         for f_id = 1:length(val_file),
             val_f_id = strmatch(val_file{f_id}, {d2(:).name});
             if ~isempty(val_f_id),
@@ -1510,14 +1512,14 @@ function data_folder_button_Callback(hObject, eventdata, handles)
 % hObject    handle to data_folder_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global BBCI.RawDir
+GB = manage_parameters('get', 'global_bbci');
 if check_state(handles, 1),
     file = get_selected_item(handles.file_list_box);
     if length(file) > 1,
         add_to_message_box(handles, 'Multiple files selected. Going to folder of newest one');
     end
     [directory file] = fileparts(file{1});
-    winopen([BBCI.RawDir filesep directory]);
+    winopen([GB.RawDir filesep directory]);
     add_to_message_box(handles, 'Directory opened.');    
 else
     add_to_message_box(handles, 'Please initialize first');

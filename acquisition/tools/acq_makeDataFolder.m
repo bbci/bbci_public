@@ -20,7 +20,7 @@ function [varargout] = acq_makeDataFolder(varargin)
 
 global BBCI
 
-BBCI.Tp.Code = [];
+%BBCI.Tp.Code = [];
 
 %% Get the date
 today_vec= clock;
