@@ -95,7 +95,7 @@ end
 %%  For Unix systems, absolute paths start with '\'.
 %%  For Windoze, identify absolute paths by the ':' (e.g., H:\some\path).
 if (isunix && (file(1)==filesep)) || (ispc && (file(2)==':')),
-  if ~isdefault.path,
+  if ~isdefault.Path,
     warning('opt.Path is ignored, since file is given with absolute path');
   end
   opt.Path= '';
