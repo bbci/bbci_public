@@ -131,7 +131,7 @@ function load_data_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 if check_state(handles,1),
-    try,
+    %try,
         GB = manage_parameters('get', 'global_bbci');
         set_button_state(handles, 'off', {''});
         add_to_message_box(handles, 'Loading data. Please wait.....');drawnow;
@@ -147,12 +147,12 @@ if check_state(handles,1),
         reset_channel_names(handles);      
         update_nr_chan_selected(handles);
         add_to_message_box(handles, 'Data loaded.');    
-    catch
-        error = lasterror;
-        disp(error.message);
-        set_button_state(handles, 'on', {''});
-        add_to_message_box(handles, 'Something went wrong, so I didn''t load any data. I don''t deal well with interrupted trials, so don''t load those.');
-    end
+   % catch
+    %    error = lasterror;
+     %   disp(error.message);
+      %  set_button_state(handles, 'on', {''});
+       % add_to_message_box(handles, 'Something went wrong, so I didn''t load any data. I don''t deal well with interrupted trials, so don''t load those.');
+    %end
 else
     add_to_message_box(handles, 'Please initialize first...');        
 end            
@@ -169,14 +169,13 @@ if strcmp(get(handles.vp_code_box, 'string'), 'Enter usercode'),
 %        'Error: Invalid BBCI.Tp.Code set. BBCI.Tp.Code should start with VP');
 else
     global BBCI;
-    GB = BBCI;
     if isempty(get(handles.vp_code_box, 'string')),
         %clear BBCI.Tp.Code;
         set(handles.vp_code_box, 'string', GB.Tp.Code);
     else
-        GB.Tp.Code = get(handles.vp_code_box, 'string');
+        BBCI.Tp.Code = get(handles.vp_code_box, 'string');
     end
-    acq_makeDataFolder();
+    acq_makeDataFolder('multiple_folders', 0);
     
     % get all the parameters in buffer
     try
@@ -187,7 +186,8 @@ else
         state.sigserv_started = false;
     end
     manage_parameters('reset');
-    manage_parameters('set', 'global_bbci', GB);    
+    manage_parameters('set', 'global_bbci', BBCI); 
+    GB = BBCI;
     [study, study_id] = get_selected_item(handles.study_box); 
     study = study{1};
     experiments = manage_parameters('set', 'experiment_settings', ...
@@ -1312,7 +1312,9 @@ function parameters = manage_parameters(action, varargin),
             if isempty(varargin),
                 internal_memory = [];
             else 
-                internal_memory = rmfields(internal_memory, varargin{1});
+                try
+                    internal_memory = rmfield(internal_memory, varargin{1});
+                end
             end
         case 'update'
             % check if we have to update a struct
@@ -1519,7 +1521,11 @@ if check_state(handles, 1),
         add_to_message_box(handles, 'Multiple files selected. Going to folder of newest one');
     end
     [directory file] = fileparts(file{1});
-    winopen([GB.RawDir filesep directory]);
+    if isunix,
+        system(sprintf('open %s', [GB.RawDir filesep directory]));
+    else
+        winopen([GB.RawDir filesep directory]);
+    end
     add_to_message_box(handles, 'Directory opened.');    
 else
     add_to_message_box(handles, 'Please initialize first');

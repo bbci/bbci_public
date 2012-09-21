@@ -122,7 +122,9 @@ fill_defaults = false;
 
 % filenames to use
 experiments.classifier_name = {'bbci_classifier'};
-experiments.allowed_files = {'PhotoBrowser_train_full', 'PhotoBrowser_train_mask', 'PhotoBrowser_train_flash'};
+experiments.allowed_files = {'calibration_Hexo', 'calibration_Center', 'calibration_Cake', ...
+    'online_copy_Hexo', 'online_copy_Center', 'online_copy_Cake', ... 
+    'online_free_Hexo', 'online_free_Center', 'online_free_Cake'};
 
 % define the types of experiments and some GUI settings for them
 experiments.experiment_names = {'Offline simulation', 'Offline simulation (adaptation)'};
