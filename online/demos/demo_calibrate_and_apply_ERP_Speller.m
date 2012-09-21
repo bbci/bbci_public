@@ -39,7 +39,7 @@ ref_ival= bbci.feature.proc{1}{2};
 cfy_ival= bbci.feature.proc{2}{2};
 epo= proc_segmentation(calib.cnt, calib.mrk, bbci.feature.ival, ...
                        'clab', bbci.signal.clab);
-fv= proc_baseline(epo, ref_ival, 'beginning_exact');
+fv= proc_baseline(epo, ref_ival);
 fv= proc_jumpingMeans(fv, cfy_ival);
 out= applyClassifier(fv, 'LDA', bbci.classifier.C);
 

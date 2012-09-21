@@ -1,4 +1,4 @@
-function [bbci, data]= bbci_calibrate_csp_plus_lap(bbci, data)
+function [bbci, data]= bbci_calibrate_cspPlusLap(bbci, data)
 %BBCI_CALIBRATE_CSP_PLUS_LAP - Calibrate for SMR Modulations with CSP plus some selected Laplacians
 %
 %This function is called by bbci_calibrate 
@@ -110,6 +110,9 @@ default_area= {area_LH, area_C, area_RH};
                  'filtOrder', 5, ...
                  'grd', default_grd, ...
                  'colDef', default_colDef);
+
+% store chosen default settings back in bbci variable
+bbci.calibrate.settings= opt;
 
 
 %% -- Prepare visualization --
