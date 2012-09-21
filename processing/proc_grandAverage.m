@@ -61,7 +61,9 @@ function ga= proc_grandAverage(varargin)
 props = {   'Average'               'arithmetic'                '!CHAR(Nweighted INVVARweighted arithmetic)';
             'MustBeEqual'           {'fs','y','className'}      'CHAR|CELL{CHAR}';
             'ShouldBeEqual'         {'yUnit'}                   'CHAR|CELL{CHAR}';
-            'Stats'                 0                           '!BOOL'};
+            'Stats'                 0                           '!BOOL';
+            'Bonferroni' 0    '!BOOL';
+            'Alphalevel' []   'DOUBLE'};
 
 if nargin==0,
   ga=props; return
@@ -186,8 +188,6 @@ for vp= 1:K,
         erps{vp}.x = atanh(sqrt(abs(erps{vp}.x)).*sign(erps{vp}.x));
       case 'sgn r^2',
         erps{vp}.x = atanh(sqrt(abs(erps{vp}.x)).*sign(erps{vp}.x));
-      case 'auc',
-        erps{vp}.x = erps{vp}.x - 0.5;
     end
   end
   
@@ -234,7 +234,17 @@ end
   
 if opt.Stats
   ga.p = reshape(2*normal_cdf(-abs(ga.x(:)), zeros(size(ga.x(:))), ga.se(:)), size(ga.x));
-  ga.sgnlogp = reshape(((log(2)+normcdfln(-abs(ga.x(:)./ga.se(:))))./log(10)), size(ga.x)).*-sign(ga.x);
+  if opt.Bonferroni
+    ga.corrfac = F*T*C*E;
+    ga.p = min(ga.p*ga.corrfac, 1);
+    ga.sgnlogp = -reshape(((log(2)+normcdfln(-abs(ga.x(:)./ga.se(:))))./log(10)+abs(log10(ga.corrfac))), size(ga.x)).*sign(ga.x);
+  else
+    ga.sgnlogp = -reshape(((log(2)+normcdfln(-abs(ga.x(:)./ga.se(:))))./log(10)), size(ga.x)).*sign(ga.x);
+  end  
+  if ~isempty(opt.Alphalevel)
+    ga.alphalevel = opt.Alphalevel;
+    ga.sigmask = ga.p < opt.Alphalevel;
+  end
 end
 
 %% Post-transformation to bring the GA data back to the original unit
@@ -249,7 +259,7 @@ if isfield(ga, 'yUnit')
     case 'sgn r^2',
       ga.x= tanh(ga.x).*abs(tanh(ga.x));
     case 'auc'
-      ga.x = min(max(ga.x + 0.5, 0), 1);
+      ga.x = min(max(ga.x, -1), 1);
   end
 end
 

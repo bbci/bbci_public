@@ -34,10 +34,12 @@ function fv_aucval= proc_aucValues(fv, varargin)
 % 09-2012 stefan.haufe@tu-berlin.de
 % 07-2012 Johannes Hoehne   - Updated the help documentation & probs
 
-props= { 'Stats',             0,           '!BOOL'};
+props= { 'Stats',             0,           '!BOOL';
+         'Bonferroni' 0    '!BOOL';
+         'Alphalevel' []   'DOUBLE'};
 
 if nargin==0,
-  fv_rval= props; return
+  fv_aucval= props; return
 end
 
 fv = misc_history(fv);
@@ -52,20 +54,37 @@ fv.x= reshape(fv.x, [prod(sz(1:end-1)), sz(end)]);
 
 fv_aucval = fv;
 fv_aucval.x = zeros(prod(sz(1:end-1)), 1);
+
+if opt.Bonferroni
+  fv_aucval.corrfac = prod(sz(1:end-1));
+end
+
 for ii = 1:prod(sz(1:end-1))
     [p, h, stats] = ranksum(fv.x(ii, find(fv.y(1, :)))', fv.x(ii, find(fv.y(2, :)))');
     fv_aucval.x(ii) = (stats.ranksum-(min(sum(fv.y'))*(min(sum(fv.y'))+1)/2))/prod(sum(fv.y'));
     if opt.Stats
       fv_aucval.p(ii) = p;
-      fv_aucval.sgnlogp(ii) = -((log(2)+normcdfln(-abs(stats.zval)))./log(10))*sign(stats.zval);
+      if opt.Bonferroni
+        fv_aucval.sgnlogp(ii) = -((log(2)+normcdfln(-abs(stats.zval)))./log(10)+abs(log10(fv_aucval.corrfac)))*sign(stats.zval);
+      else
+        fv_aucval.sgnlogp(ii) = -((log(2)+normcdfln(-abs(stats.zval)))./log(10))*sign(stats.zval);
+      end 
     end
 end
 
 fv_aucval.x= reshape(fv_aucval.x, sz(1:end-1));
+fv_aucval.x = (fv_aucval.x-0.5)*2;
 if opt.Stats
-  fv_aucval.se = repmat(sqrt((0.25 + (sum(sum(fv.y'))-2)*(1/12))./prod(sum(fv.y'))), sz(1:end-1));
+  fv_aucval.se = 2*repmat(sqrt((0.25 + (sum(sum(fv.y'))-2)*(1/12))./prod(sum(fv.y'))), sz(1:end-1));
   fv_aucval.p = reshape(fv_aucval.p, sz(1:end-1));
   fv_aucval.sgnlogp = reshape(fv_aucval.sgnlogp, sz(1:end-1));
+  if opt.Bonferroni
+    fv_aucval.p = min(fv_aucval.p*fv_aucval.corrfac, 1);
+  end  
+  if isfield(opt, 'Alphalevel')
+    fv_aucval.alphalevel = opt.Alphalevel;
+    fv_aucval.sigmask = fv_aucval.p < opt.Alphalevel;
+  end
 end
 
 if isfield(fv, 'className'),
