@@ -31,11 +31,11 @@ function dat= proc_baseline(dat, ival, varargin)
 %
 % SEE proc_medianBaseline
 
-% bb, ida.first.fhg.de
+% Benjamin Blankertz
 % Matthias Treder Aug 2010: Added time-frequency data support
 
 
-props= {'pos'      'beginning'  'CHAR(beginning end beginning_exact end_exact)'
+props= {'pos'      'beginning_exact'  'CHAR(beginning end beginning_exact)'
         'classwise'     0       'BOOL'   
         'trialwise'     1       'BOOL'
         'channelwise'   0       'BOOL'};
@@ -46,7 +46,7 @@ end
 
 dat = misc_history(dat);
 misc_checkType(dat, 'STRUCT(x clab)'); 
-misc_checkType(ival,'DOUBLE[2]'); 
+misc_checkType(ival,'DOUBLE[1-2]'); 
 
 if length(varargin)==1,
   opt= struct('pos', varargin{1});
@@ -95,10 +95,9 @@ else
   else
     switch(lower(opt.pos)),
      case 'beginning_exact', % [-150 0] = 15 samples not 16 (at fs= 100 Hz)
-      len= round(diff(ival)/1000*dat.fs);
-      Ti= procutil_getIvalIndices(ival, dat);
-      Ti= Ti(1:len);
-     case 'end_exact',
+%      len= round(diff(ival)/1000*dat.fs);
+%      Ti= procutil_getIvalIndices(ival, dat);
+%      Ti= Ti(1:len);
       len= round(diff(ival)/1000*dat.fs);
       Ti= procutil_getIvalIndices(ival, dat);
       Ti= Ti(end-len+1:end);

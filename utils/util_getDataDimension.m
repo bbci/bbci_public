@@ -42,8 +42,8 @@ elseif ndim==3
   elseif ss(3)==nchan
     datadim = 2;
   else
-    error('Number of elements in t (%d) and clab (%d) does not match with size of x (%s).\n', ...
-      nt,nc,num2str(size(dat.x)))
+    error('Number of channels in clab field (%d) does not match size of second [%d] or third dimension [%d] of .x.\n', ...
+      nchan,size(dat.x,2),size(dat.x,3))
   end
   
 elseif ndim==4

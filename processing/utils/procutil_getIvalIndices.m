@@ -76,6 +76,7 @@ if isstruct(dat),
     return
   end
   
+  %% TODO !!! -> Revise this code !!!
   iv= procutil_getIvalIndices(ival, dat.fs);
   if isfield(dat, 't'),
     segStart= dat.t(1);
@@ -89,11 +90,11 @@ if isstruct(dat),
   end
   
   %%added by rklein on may 16th 2008
-    id0 = find(iv==0);
-    iv(id0) = [];
-  
-  return;
+  id0 = find(iv==0);
+  iv(id0) = [];  
+
+else
+  fs= dat;
+  iv= floor(ival(1)*fs/1000):ceil(ival(end)*fs/1000);
 end
 
-fs= dat;
-iv= floor(ival(1)*fs/1000):ceil(ival(end)*fs/1000);
