@@ -130,7 +130,7 @@ if opt.Stats
   else
     fv_rval.sgnlogp = -reshape(((log(2)+normcdfln(-abs(atanh(fv_rval.x(:)).*sqrt(iV(:)))))./log(10)), size(fv_rval.x)).*sign(fv_rval.x);
   end  
-  if isfield(opt, 'Alphalevel')
+  if ~isempty(opt.Alphalevel)
     fv_rval.alphalevel = opt.Alphalevel;
     fv_rval.sigmask = fv_rval.p < opt.Alphalevel;
   end

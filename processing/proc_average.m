@@ -167,7 +167,7 @@ if opt.Stats,
     out.p = min(out.p*out.corrfac, 1);
   end  
   out.sgnlogp = -log10(out.p).*sign(out.x);
-  if isfield(opt, 'Alphalevel')
+  if ~isempty(opt.Alphalevel)
     out.alphalevel = opt.Alphalevel;
     out.sigmask = out.p < opt.Alphalevel;
   end
