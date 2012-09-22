@@ -40,10 +40,10 @@ props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
         'cfy_ival_pick_peak'          [100 700]        'DOUBLE[1 2]'
         'band'                        []               'DOUBLE[1 2]'
         'control_per_stimulus'        0                'BOOL'
-        'model'         @train_RLDAshrink              'FUNC|CELL'
+        'model'             @train_RLDAshrink          'FUNC|CELL'
         'nSequences'                  5                'INT'
         'nClasses'                    0                'INT'
-        'cue_markers'   [11:16,21:26,31:36,41:46]      '!DOUBLE[1 -]'
+        'cue_markers'       [11:16,21:26,31:36,41:46]  '!DOUBLE[1 -]'
         'cfy_maxival'                 []               'DOUBLE[1 2]'
         'reject_artifacts'            1                'BOOL'
         'reject_artifacts_opts'       {}               'PROPLIST'
@@ -54,7 +54,7 @@ props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
         'clab_erp'                    {'CPz','PO7'}    'CHAR|CELL{CHAR}'
         'clab_rsq'                    {'CPz','PO7'}    'CHAR|CELL{CHAR}'
         'target_dist'                 0                'INT'
-        'mrk2feedback_fcn'            @(x)x            'FUNC'
+        'mrk2feedback_fcn'  @(x)(1+mod(x-11,10))       'FUNC'
         'create_figs'                 1                'BOOL'
        };
 [opt, isdefault]= opt_setDefaults('bbci.calibrate.settings', props);
@@ -68,7 +68,7 @@ default_crit_ival(1)= max(opt.disp_ival(1), default_crit_ival(1));
 default_crit_ival(2)= min(opt.disp_ival(2), default_crit_ival(2));
 default_crit= {'maxmin'  100                        'DOUBLE[1]'
                'clab'    {{'EOG*','F9,10','Fp*'}}   'CHAR|CELL{CHAR}'
-               'ival'    [100 800]                  'DOUBLE[1 2]'
+               'ival'    default_crit_ival          'DOUBLE[1 2]'
               };
 [opt, isdefault]= ...
   opt_overrideIfDefault(opt, isdefault, 'reject_eyemovements_crit', ...

@@ -1,6 +1,5 @@
 BC= [];
 BC.fcn= @bbci_calibrate_csp;
-BC.folder= BBCI.RawDir;
 BC.file= 'VPkg_08_08_07/imag_arrowVPkg';
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
@@ -36,5 +35,5 @@ log_format= '%fs | [%f] | {cl_output=%f}';
 cnt_cfy= struct('fs',25, 'x',cfy, ...
                 'clab', {{sprintf('cfy %s vs %s', calib.result.classes{:})}});
 epo_cfy= proc_segmentation(cnt_cfy, calib.mrk, [0 5000]);
-fig_set(1, 'name','classifier output'); clf;
+fig_set(1, 'name','classifier output', 'clf',1);
 plot_channel(epo_cfy, 1, 'YUnit','[a.u.]');

@@ -68,9 +68,9 @@ else
 end
 nCE= nC*nE;  
   
-if ~exist('ival', 'var') | isempty(ival),
+if ~exist('ival', 'var') || isempty(ival),
   Ti= 1:size(dat.x,1);
-  if isfield(dat, 't') & opt.trialwise,
+  if isfield(dat, 't') && opt.trialwise,
     dat.refIval= dat.t([1 end]);
   end
 else
@@ -110,7 +110,7 @@ end
 
 %% for dim==5, opt.channelwise is not yet implemented
 if opt.classwise,
-  if opt.trialwise & ~isdefault.trialwise,
+  if opt.trialwise && ~isdefault.trialwise,
     error('you cannot use both, classwise and trialwise');
   end
   if dim<=3
