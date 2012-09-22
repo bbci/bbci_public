@@ -48,12 +48,12 @@ To start the toolbox in Matlab do:
 
 Furthermore, you should specify, where the EEG files are located. The
 convention for the toolbox is that there is one data folder (on the
-cluster it is `/home/bbci/data/`{.backtick}) which has the subfolders
-`bbciRaw`{.backtick} and `bbciMat`{.backtick}. When relative file name
-are used, the functions `eegfile_loadBV`{.backtick} and
-`eegfile_loadMatlab`{.backtick} would look in those folders. \
+cluster it is `/home/bbci/data/`) which has the subfolders
+`bbciRaw` and `bbciMat`. When relative file name
+are used, the functions `eegfile_loadBV` and
+`eegfile_loadMatlab` would look in those folders. 
  For a complete setup you should add something like the following to
-your local `startup.m`{.backtick}:
+your local `startup.m`:
 
     global DATA_DIR BBCI_PRINTER
     DATA_DIR='/home/bbci/data/';
