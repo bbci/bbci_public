@@ -17,6 +17,10 @@ function out= proc_average(epo, varargin)
 %            Hypothesis that the mean is zero, and the "signed log p-value"
 %  .Classes - classes of which the average is to be calculated,
 %            names of classes (strings in a cell array), or 'ALL' (default)
+% 'Bonferroni' - if true, Bonferroni corrected is used to adjust p-values
+%                and their logarithms
+% 'Alphalevel' - if provided, a binary indicator of the significance to the
+%                alpha level is returned for each feature in fv_rval.sigmask
 %
 % For compatibility PROC_AVERAGE can be called in the old format with CLASSES
 % as second argument (which is now set via opt.Classes):
@@ -24,16 +28,24 @@ function out= proc_average(epo, varargin)
 %           names of classes (strings in a cell array), or 'ALL' (default)
 %
 %Returns:
-% EPO     - updated data structure with new field(s)
+% EPO     - updated data structure with fields
+%  .x     - classwise means
 %  .N     - vector of epochs per class across which average was calculated
 %  .std   - standard deviation, if requested (opt.Std==1), format as epo.x
 %  .se    - contains the standard error of the mean, if opt.Stats==1
 %  .p     - contains the p value of zero mean null hypothesis, if opt.Stats==1
+%           If opt.Bonferroni==1, the p-value is multiplied by
+%           epo.corrfac
 %  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
+%           if opt.Bonferroni==1, the p-value is multiplied by
+%           epo.corrfac and then logarithmized
+%  .sigmask - binary array indicating significance at alpha level
+%             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
+%  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
+%             if opt.Bonferroni==1
 
 % Benjamin Blankertz
 % 09-2012 stefan.haufe@tu-berlin.de
-
 
 props= {  'Policy'   'mean' '!CHAR(mean nanmean median)';
           'Classes' 'ALL'   '!CHAR';

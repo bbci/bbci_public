@@ -9,10 +9,19 @@ function fv_rval= proc_rValues(fv, varargin)
 %
 %Returns:
 % FV_RVAL - data structure of r values 
+%  .x     - biserial correlation between each featur and the class label
 %  .se    - contains the standard error of atanh(r), if opt.Stats==1
 %  .p     - contains the p value of null hypothesis that there is zero
 %           correlation between feature and class-label, if opt.Stats==1
+%           If opt.Bonferroni==1, the p-value is multiplied by
+%           fv_rval.corrfac
 %  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
+%           if opt.Bonferroni==1, the p-value is multiplied by
+%           fv_rval.corrfac and then logarithmized
+%  .sigmask - binary array indicating significance at alpha level
+%             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
+%  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
+%             if opt.Bonferroni==1
 %
 %Properties:
 % 'TolerateNans': observations with NaN value are skipped
@@ -26,6 +35,10 @@ function fv_rval= proc_rValues(fv, varargin)
 %           standard error of atanh(r), the p-value for the null 
 %           Hypothesis that the correlation is zero, 
 %           and the "signed log p-value"
+% 'Bonferroni' - if true, Bonferroni corrected is used to adjust p-values
+%                and their logarithms
+% 'Alphalevel' - if provided, a binary indicator of the significance to the
+%                alpha level is returned for each feature in fv_rval.sigmask
 % 
 %Description:
 % This function calculates the bi-serial correlation coefficient in

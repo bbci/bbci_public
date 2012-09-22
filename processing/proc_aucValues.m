@@ -8,16 +8,31 @@ function fv_aucval= proc_aucValues(fv, varargin)
 % FV - data structure of feature vectors of two classes
 %
 %Returns:
-% FV_AUC - data structure of auc values 
+% FV_AUC - data structure of auc values
+%  .x     - area under the curve scores shifted and scaled to be in [-1 1],
+%           i.e. fv_auc.x = (auc-0.5)*2
 %  .se    - contains the standard error of fv_auc.x, if opt.Stats==1
 %  .p     - contains the p value of null hypothesis that the auc is 0.5, 
-%           if opt.Stats==1
+%           if opt.Stats==1.
+%           if opt.Bonferroni==1, the p-value is multiplied by
+%           fv_auc.corrfac
 %  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
+%           if opt.Bonferroni==1, the p-value is multiplied by
+%           fv_auc.corrfac and then logarithmized
+%  .sigmask - binary array indicating significance at alpha level
+%             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
+%  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
+%             if opt.Bonferroni==1
 %
 %Properties:
 % 'Stats' - if true, additional statistics are calculated, including the
 %           standard error, the p-value for the null 
-%           Hypothesis that the auc is 0.5, and the "signed log p-value"
+%           Hypothesis that the area under the curve is 0.5,
+%           and the "signed log p-value"
+% 'Bonferroni' - if true, Bonferroni corrected is used to adjust p-values
+%                and their logarithms
+% 'Alphalevel' - if provided, a binary indicator of the significance to the
+%                alpha level is returned for each feature in fv_auc.sigmask
 % 
 % Description
 %  Computes the area under the curve (AUC) score for each feature.
@@ -29,7 +44,7 @@ function fv_aucval= proc_aucValues(fv, varargin)
 %  epo_auc = proc_auc_values(epo);
 %
 %
-%See also:  proc_tTest, proc_rSquare, proc_rValues
+%See also: proc_rSquareSigned, proc_rValues, proc_classmeanDiff
 
 % 09-2012 stefan.haufe@tu-berlin.de
 % 07-2012 Johannes Hoehne   - Updated the help documentation & probs

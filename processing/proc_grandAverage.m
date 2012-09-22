@@ -1,6 +1,6 @@
 function ga= proc_grandAverage(varargin)
-% PROC_GRANDAVERAGE -  calculates the grand average ERPs or ERD/ERS from given set of
-% data.
+% PROC_GRANDAVERAGE -  calculates the grand average ERPs or ERD/ERS,
+% r, r^2, sgn r^2, or auc scores from given set of data.
 %
 %Usage:
 %ga= proc_grandAverage(erps)
@@ -19,8 +19,10 @@ function ga= proc_grandAverage(varargin)
 %               by the inverse of its variance. For this, the standard error
 %               must be provided in erp{:}.se. The inverse
 %               variance weighting is optimal in the sense that the weighted
-%               mean has minimum variance.
-%               Default 'arithmetic'
+%               average has minimum variance.
+%               Default 'arithmetic': this is the arithmetic mean of all
+%               individual means, disregarding potentially different
+%               variances and numbers of trials 
 %   MustBeEqual - fields in the erp structs that must be equal across
 %                 different structs, otherwise an error is issued
 %                 (default {'fs','y','className'})
@@ -45,13 +47,27 @@ function ga= proc_grandAverage(varargin)
 %               make these quantities approximately Gaussian-distributed
 %               with standard error erps{}.se . After averaging, the
 %               inverse transformation is applied to obtain grand-average 
-%               'r', 'r^2' or 'sgn r^2' scores.              
+%               'r', 'r^2' or 'sgn r^2' scores.  
+%
+% 'Bonferroni' - if true, Bonferroni corrected is used to adjust p-values
+%                and their logarithms
+% 'Alphalevel' - if provided, a binary indicator of the significance to the
+%                alpha level is returned for each feature in fv_rval.sigmask
 %
 %Output:
 % ga: Grand average
+%  .x    - grand average data
 %  .se   - contains the standard error of the GA, if opt.Stats==1
 %  .p     - contains the p value of the null hypothesis, if opt.Stats==1
+%           If opt.Bonferroni==1, the p-value is multiplied by
+%           epo.corrfac
 %  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
+%           if opt.Bonferroni==1, the p-value is multiplied by
+%           epo.corrfac and then logarithmized
+%  .sigmask - binary array indicating significance at alpha level
+%             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
+%  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
+%             if opt.Bonferroni==1
 %
 % 09-2012 stefan.haufe@tu-berlin.de
 
