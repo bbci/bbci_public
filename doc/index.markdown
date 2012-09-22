@@ -49,66 +49,35 @@ Contents
 -   ToolboxVisualization - *How to visualize EEG data [TODO]*
 -   ToolboxClassification  - *How to use classifiers and tools for validation [TODO]*
 -   [ToolboxAutomation  - *Automatic analysis of a set of experiments, and generation of  PDFs (includes calculation of Grand Average ERPs)* ](ToolboxAutomation.html)
--   ToolboxExperimentalStudy
-    - *Preparing scripts for an experimental study (acquisition and data
+-   ToolboxExperimentalStudy - *Preparing scripts for an experimental study (acquisition and data
     conversion)  [TODO]*
-
--   [ToolboxOnline](ToolboxOnline.html)
-    - All about the online system
-
+-   [ToolboxOnline   - All about the online system ](ToolboxOnline.html)
 -   Function reference: Basti please add the link here!
 
 Advanced topics
 ---------------
-
 #### Preprocessing
-
--   ToolboxFilter
-    - *Filter design [TODO]*
-
+-   ToolboxFilter - *Filter design [TODO]*
+    
 #### Neurophysiology
-
--   [ToolboxTimeFrequency](ToolboxTimeFrequency.html)
-    - *Time-frequency analysis using wavelets and short-time Fourier
-    transform [in progress(Matthias)]*
-
+-   [ToolboxTimeFrequency - *Time-frequency analysis using wavelets and short-time Fourier
+    transform [in progress(Matthias)]*](ToolboxTimeFrequency.html)
 -   ToolboxSource
-    - *EEG source localization [TODO]*
-
--   ToolboxCoherence
-    - *Coherence and phase locking\* [TODO]*
+- *EEG source localization [TODO]*
+-   ToolboxCoherence  - *Coherence and phase locking\* [TODO]*
 
 #### Machine Learning
-
--   ToolboxClassifier
-    - *Classifier selection (linear vs non-linear etc) [TODO]*
-
--   ToolboxPca
-    - *Principal components analysis (PCA) [TODO]*
-
--   ToolboxIca
-    - *Independent components analysis (ICA) [TODO]*
-
--   ToolboxCsp
-    - *Common Spatial Patterns (CSP), CSP patches, stationary CSP
-    [TODO]*
-
--   ToolboxSsa
-    - *Stationary Subspace Analysis (SSA) [TODO]*
-
--   ToolboxCca
-    - *Canonical Correlation Analysis (CCA) [TODO]*
+-   ToolboxClassifier  - *Classifier selection (linear vs non-linear etc) [TODO]*
+-   ToolboxPca  - *Principal components analysis (PCA) [TODO]*
+-   ToolboxIca  - *Independent components analysis (ICA) [TODO]*
+-   ToolboxCsp  - *Common Spatial Patterns (CSP), CSP patches, stationary CSP [TODO]*
+-   ToolboxSsa  - *Stationary Subspace Analysis (SSA) [TODO]*
+-   ToolboxCca  - *Canonical Correlation Analysis (CCA) [TODO]*
 
 #### Statistics & Math
-
--   [ToolboxStatisticsTtest](ToolboxStatisticsTtest.html)
-    - *T-test*
-
--   [ToolboxStatisticalAnova](ToolboxStatisticalAnova.html)
-    - *Analysis of variance* (ANOVA)
-
--   ToolboxStatisticsNonparametric
-    - *Nonparametric statistics [TODO]*
+-   [ToolboxStatisticsTtest](ToolboxStatisticsTtest.html)  - *T-test*
+-   [ToolboxStatisticalAnova](ToolboxStatisticalAnova.html)  - *Analysis of variance* (ANOVA)
+-   ToolboxStatisticsNonparametric  - *Nonparametric statistics [TODO]*
 
 \*Depending on permission to include Guido's code into the BBCI toolbox.
 
