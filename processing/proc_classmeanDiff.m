@@ -11,7 +11,7 @@ function fv_diff=proc_classmeanDiff(fv, varargin)
 % FV_DIFF - data structure of class mean differences
 %  .x     - difference of the class means for each feature and class
 %           combination
-%  .se    - contains the standard error of fv_diff.x, if opt.Stats==1
+%  .se    - contains the standard error of the difference, if opt.Stats==1
 %  .p     - contains the p value of null hypothesis that the difference 
 %           is zero, if opt.Stats==1
 %           If opt.Bonferroni==1, the p-value is multiplied by
@@ -27,7 +27,7 @@ function fv_diff=proc_classmeanDiff(fv, varargin)
 %Properties:
 % 'Stats' - if true, additional statistics are calculated, including the
 %           standard error of the difference, the p-value for the null 
-%           Hypothesis that the correlation is zero, 
+%           Hypothesis that the difference is zero, 
 %           and the "signed log p-value"
 % 'Bonferroni' - if true, Bonferroni corrected is used to adjust p-values
 %                and their logarithms
@@ -112,7 +112,7 @@ if opt.Stats
     fv_diff.p = min(fv_diff.p*fv_diff.corrfac, 1);
   end  
   fv_diff.sgnlogp = -log10(fv_diff.p).*sign(fv_diff.x);
-  if isfield(opt, 'Alphalevel')
+  if ~isempty(opt.Alphalevel)
     fv_diff.alphalevel = opt.Alphalevel;
     fv_diff.sigmask = fv_diff.p < opt.Alphalevel;
   end
