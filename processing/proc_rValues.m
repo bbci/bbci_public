@@ -47,7 +47,9 @@ function fv_rval= proc_rValues(fv, varargin)
 props= { 'TolerateNans',      0,           'BOOL|DOUBLE'
          'ValueForConst',     NaN,         'DOUBLE'
          'MulticlassPolicy',  'pairwise',  'CHAR(pairwise all-against-last each-against-rest)|INT[- 2]'  
-         'Stats',             0,           '!BOOL'};
+         'Stats',             0,           '!BOOL';
+         'Bonferroni' 0    '!BOOL';
+         'Alphalevel' []   'DOUBLE'};
 
 if nargin==0,
   fv_rval= props; return
@@ -108,7 +110,17 @@ if opt.Stats
   iV= reshape(iV, [sz(1:end-1) 1]);
   fv_rval.se = 1./sqrt(iV);
   fv_rval.p = reshape(2*normal_cdf(-abs(atanh(fv_rval.x(:))), zeros(size(fv_rval.x(:))), fv_rval.se(:)), size(fv_rval.x));
-  fv_rval.sgnlogp = reshape(((log(2)+normcdfln(-abs(atanh(fv_rval.x(:)).*sqrt(iV(:)))))./log(10)), size(fv_rval.x)).*-sign(fv_rval.x);
+  if opt.Bonferroni
+    fv_rval.corrfac = prod(sz(1:end-1));
+    fv_rval.p = min(fv_rval.p*fv_rval.corrfac, 1);
+    fv_rval.sgnlogp = -reshape(((log(2)+normcdfln(-abs(atanh(fv_rval.x(:)).*sqrt(iV(:)))))./log(10))+abs(log10(fv_rval.corrfac)), size(fv_rval.x)).*sign(fv_rval.x);
+  else
+    fv_rval.sgnlogp = -reshape(((log(2)+normcdfln(-abs(atanh(fv_rval.x(:)).*sqrt(iV(:)))))./log(10)), size(fv_rval.x)).*sign(fv_rval.x);
+  end  
+  if isfield(opt, 'Alphalevel')
+    fv_rval.alphalevel = opt.Alphalevel;
+    fv_rval.sigmask = fv_rval.p < opt.Alphalevel;
+  end
 end
 
 if isfield(fv, 'className'),

@@ -38,7 +38,9 @@ function out= proc_average(epo, varargin)
 props= {  'Policy'   'mean' '!CHAR(mean nanmean median)';
           'Classes' 'ALL'   '!CHAR';
           'Std'      0      '!BOOL';
-          'Stats'      0      '!BOOL'};
+          'Stats'      0    '!BOOL';
+          'Bonferroni' 0    '!BOOL';
+          'Alphalevel' []   'DOUBLE'};
 
 if nargin==0,
   out = props; return
@@ -148,6 +150,14 @@ end
 if opt.Stats,
   out.se = reshape(out.se, [sz(1:end-1) nClasses]);
   out.p = reshape(out.p, [sz(1:end-1) nClasses]);
+  if opt.Bonferroni
+    out.corrfac = prod(sz(1:end-1));
+    out.p = min(out.p*out.corrfac, 1);
+  end  
   out.sgnlogp = -log10(out.p).*sign(out.x);
+  if isfield(opt, 'Alphalevel')
+    out.alphalevel = opt.Alphalevel;
+    out.sigmask = out.p < opt.Alphalevel;
+  end
 end
 
