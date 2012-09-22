@@ -30,7 +30,7 @@ portion of the original code) would cite an article dedicated on this toolbox (t
 or the following article:
 
    Blankertz B, Tangermann M, Vidaurre C, Fazli S, Sannelli C, Haufe S, Maeder C, Ramsey LE, Sturm I, 
-   Curio G, MŸller KR, The Berlin Brain-Computer Interface: Non-Medical Uses of BCI Technology, 
+   Curio G, Mueller KR, The Berlin Brain-Computer Interface: Non-Medical Uses of BCI Technology, 
    Open   Access  Front Neuroscience, 4:198, 2010
    http://www.frontiersin.org/neuroprosthetics/10.3389/fnins.2010.00198/abstract
 
@@ -41,33 +41,14 @@ Contents
 --------
 
 -   [ToolboxRequirements](ToolboxRequirements.html)
-
-
--   [ToolboxSetup](ToolboxSetup.html)
-    - *Installation, configuration and starting the toolbox*
-
--   [ToolboxData](ToolboxData.html)
-    - *Data formats, data structures, functions for fileio*
-
--   [ToolboxIntro](ToolboxIntro.html)
-    - *A gentle introduction to the toolbox*
-
--   [ToolboxPracticalExamples](ToolboxPracticalExamples.html)
-    - *Of investigating ERPs, and Spectral Analysis*
-
--   [ToolboxFileio](ToolboxFileio.html)
-    - *Functions for reading and writing EEG data*
-
--   ToolboxVisualization
-    - *How to visualize EEG data [TODO]*
-
--   ToolboxClassification
-    - *How to use classifiers and tools for validation [TODO]*
-
--   [ToolboxAutomation](ToolboxAutomation.html)
-    - *Automatic analysis of a set of experiments, and generation of
-    PDFs* (includes calculation of Grand Average ERPs)
-
+-   [ToolboxSetup   - *Installation, configuration and starting the toolbox* ](ToolboxSetup.html)
+-   [ToolboxData -  *Data formats, data structures, functions for fileio*](ToolboxData.html)
+-   [ToolboxIntro - *A gentle introduction to the toolbox*](ToolboxIntro.html)
+-   [ToolboxPracticalExamples  - *Of investigating ERPs, and Spectral Analysis* ](ToolboxPracticalExamples.html)
+-   [ToolboxFileio  - *Functions for reading and writing EEG data*](ToolboxFileio.html)
+-   ToolboxVisualization - *How to visualize EEG data [TODO]*
+-   ToolboxClassification  - *How to use classifiers and tools for validation [TODO]*
+-   [ToolboxAutomation  - *Automatic analysis of a set of experiments, and generation of  PDFs (includes calculation of Grand Average ERPs)* ](ToolboxAutomation.html)
 -   ToolboxExperimentalStudy
     - *Preparing scripts for an experimental study (acquisition and data
     conversion)  [TODO]*
