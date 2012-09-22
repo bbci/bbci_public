@@ -1,8 +1,7 @@
 BC= [];
 BC.fcn= @bbci_calibrate_ERP_Speller;
 BC.settings.nClasses= 6;
-BC.folder= fullfile(BBCI.RawDir, 'VPibq_11_05_18');
-BC.file= 'calibration_CenterSpellerFixedSequenceVPibq';
+BC.file= 'VPibq_11_05_18/calibration_CenterSpellerFixedSequenceVPibq';
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
 BC.marker_param= {{[31:49], [11:29]; 'target', 'nontarget'}};

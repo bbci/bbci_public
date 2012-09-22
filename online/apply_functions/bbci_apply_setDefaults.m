@@ -112,7 +112,11 @@ for ic= 1:length(bbci.control),
   feat_list= [bbci.classifier(cfy_list).feature];
   cp_list= [bbci.feature(feat_list).signal];
   bbci.control(ic).source_list= unique([bbci.signal(cp_list).source]);
-  if ~isempty(bbci.control(ic).condition),
+  if isempty(bbci.control(ic).condition),
+    if any(max(cat(1, bbci.feature(feat_list).ival)) > 0),
+      error('bbci.feature.ival extends to future data');
+    end
+  else
     if isfield(bbci.control(ic).condition, 'marker')
       if length(bbci.control(ic).source_list) > 1,
         error(['Controls that are conditioned on markers may acquire ' ...
@@ -129,6 +133,9 @@ for ic= 1:length(bbci.control),
                'have a field ''marker'', or ''interval''.']);
       end
       misc_checkType('bbci.control(ic).condition.interval', '!DOUBLE[1]');
+      if any(max(cat(1, bbci.feature(feat_list).ival)) > 0),
+        error('bbci.feature.ival extends to future data');
+      end
     end
   end
 end
