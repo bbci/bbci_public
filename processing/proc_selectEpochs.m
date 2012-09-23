@@ -56,7 +56,7 @@ if isfield(epo, 'y'),
   epo.y= epo.y(:,idx);
 
   nonvoidClasses= find(any(epo.y==1,2));
-  if length(nonvoidClasses)<size(epo.y,1) && opt.removevoidclasses
+  if length(nonvoidClasses)<size(epo.y,1) && opt.RemoveVoidClasses
     msg= sprintf('void classes removed, %d classes remaining', ...
                  length(nonvoidClasses));
     bbci_warning(msg, 'selection', mfilename);
