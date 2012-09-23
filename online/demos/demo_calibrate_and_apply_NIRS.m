@@ -1,11 +1,10 @@
-global NIRS_MAT_DIR
-NIRS_MAT_DIR = [DATA_DIR 'nirs/uni/unsorted/'];
+BBCI.NirsMatDir = [BBCI.DataDir 'nirs/uni/'];
 
 BC= [];
 BC.fcn= @bbci_calibrate_NIRS_tiny;
 BC.read_fcn=@file_NIRSreadMatlab;
-BC.folder= NIRS_MAT_DIR;
-BC.file= 'ni_imag_fbarrow_pcovmeanVPeag';
+BC.folder= BBCI.NirsMatDir;
+BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag';
 
 % define a tmp folder
 BC.save.folder= BBCI.TmpDir;
@@ -21,7 +20,7 @@ bbci= struct('calibrate', BC);
 %%
 
 % load feedback file:
-file = [NIRS_MAT_DIR 'ni_imag_fbarrow_pmeanVPeag'];
+file = [BBCI.NirsMatDir 'VPeag_10_06_17/ni_imag_fbarrow_pmeanVPeag'];
 [cnt, mrk]= file_NIRSreadMatlab(file);
 
 % test consistency of classifier outputs in simulated online mode
