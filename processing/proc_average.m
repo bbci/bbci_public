@@ -10,10 +10,17 @@ function out= proc_average(epo, varargin)
 %            (can handle more than 3-dimensional data, the average is
 %            calculated across the last dimension)
 % OPT struct or property/value list of optional arguments:
-%  .policy - 'mean' (default), 'nanmean', or 'median'
-%  .std    - if true, standard deviation is calculated also 
-%  .classes - classes of which the average is to be calculated,
+%  .Policy - 'mean' (default), 'nanmean', or 'median'
+%  .Std    - if true, standard deviation is calculated also 
+%  .Stats  - if true, additional statistics are calculated, including the
+%            standard error of the mean, the p-value for the null 
+%            Hypothesis that the mean is zero, and the "signed log p-value"
+%  .Classes - classes of which the average is to be calculated,
 %            names of classes (strings in a cell array), or 'ALL' (default)
+% 'Bonferroni' - if true, Bonferroni corrected is used to adjust p-values
+%                and their logarithms
+% 'Alphalevel' - if provided, a binary indicator of the significance to the
+%                alpha level is returned for each feature in fv_rval.sigmask
 %
 % For compatibility PROC_AVERAGE can be called in the old format with CLASSES
 % as second argument (which is now set via opt.Classes):
@@ -21,17 +28,31 @@ function out= proc_average(epo, varargin)
 %           names of classes (strings in a cell array), or 'ALL' (default)
 %
 %Returns:
-% EPO     - updated data structure with new field(s)
+% EPO     - updated data structure with fields
+%  .x     - classwise means
 %  .N     - vector of epochs per class across which average was calculated
-%  .std   - standard deviation, if requested (opt.Std==1),
-%           format as epo.x.
+%  .std   - standard deviation, if requested (opt.Std==1), format as epo.x
+%  .se    - contains the standard error of the mean, if opt.Stats==1
+%  .p     - contains the p value of zero mean null hypothesis, if opt.Stats==1
+%           If opt.Bonferroni==1, the p-value is multiplied by
+%           epo.corrfac
+%  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
+%           if opt.Bonferroni==1, the p-value is multiplied by
+%           epo.corrfac and then logarithmized
+%  .sigmask - binary array indicating significance at alpha level
+%             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
+%  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
+%             if opt.Bonferroni==1
 
 % Benjamin Blankertz
+% 09-2012 stefan.haufe@tu-berlin.de
 
-
-props= {  'Policy'   'mean' '!CHAR(mean nanmean median)'
-          'Classes' 'ALL'   '!CHAR'
-          'Std'      0      '!BOOL'  };
+props= {  'Policy'   'mean' '!CHAR(mean nanmean median)';
+          'Classes' 'ALL'   '!CHAR';
+          'Std'      0      '!BOOL';
+          'Stats'      0    '!BOOL';
+          'Bonferroni' 0    '!BOOL';
+          'Alphalevel' []   'DOUBLE'};
 
 if nargin==0,
   out = props; return
@@ -92,11 +113,11 @@ sz= size(epo.x);
 out.x= zeros(prod(sz(1:end-1)), nClasses);
 if opt.Std,
   out.std= zeros(prod(sz(1:end-1)), nClasses);
-  if exist('mrk_addIndexedField')==2,
-    %% The following line is only to be executed if the BBCI Toolbox
-    %% is loaded.
-    out= mrk_addIndexedField(out, 'std');
-  end
+end
+if opt.Stats,
+  out.se = zeros(prod(sz(1:end-1)), nClasses);
+  out.p = zeros(prod(sz(1:end-1)), nClasses);
+  out.sgnlogp = zeros(prod(sz(1:end-1)), nClasses);
 end
 out.y= eye(nClasses);
 out.className= classes;
@@ -109,6 +130,7 @@ for ic= 1:nClasses,
    case 'nanmean',
     out.x(:,ic)= nanmean(epo.x(:,evInd{ic}), 2);
    case 'median',
+    warning('median computation will be handled by proc_percentiles in the future');
     out.x(:,ic)= median(epo.x(:,evInd{ic}), 2);
    otherwise,
     error('unknown policy');
@@ -121,9 +143,33 @@ for ic= 1:nClasses,
     end
   end
   out.N(ic)= length(evInd{ic});
+  if opt.Stats,
+    if strcmpi(opt.Policy,'nanmean'),
+      [H out.p(:, ic) ci stats] = ttest(epo.x(:,evInd{ic}), [], [], [], 2);
+      out.se(:,ic)= stats.sd/sqrt(out.N(ic));
+    else
+      [H out.p(:, ic) ci stats] = ttest(epo.x(:,evInd{ic}), [], [], [], 2);
+      out.se(:,ic)= stats.sd/sqrt(out.N(ic));
+    end
+  end
 end
 
 out.x= reshape(out.x, [sz(1:end-1) nClasses]);
 if opt.Std,
   out.std= reshape(out.std, [sz(1:end-1) nClasses]);
 end
+
+if opt.Stats,
+  out.se = reshape(out.se, [sz(1:end-1) nClasses]);
+  out.p = reshape(out.p, [sz(1:end-1) nClasses]);
+  if opt.Bonferroni
+    out.corrfac = prod(sz(1:end-1));
+    out.p = min(out.p*out.corrfac, 1);
+  end  
+  out.sgnlogp = -log10(out.p).*sign(out.x);
+  if ~isempty(opt.Alphalevel)
+    out.alphalevel = opt.Alphalevel;
+    out.sigmask = out.p < opt.Alphalevel;
+  end
+end
+

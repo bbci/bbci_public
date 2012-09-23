@@ -323,9 +323,9 @@ end
 
 set(H.ax, axesStyle{:});
 hold off;
+set(H.ax, 'yLim', yLim);
 xLim= epo.t([1 end]);
 set(H.ax, 'xLim', xLim);
-
 oldUnits= get(H.ax, 'units');
 set(H.ax, 'units', 'pixel');
 pos_pixel= get(H.ax, 'position');

@@ -20,23 +20,22 @@ function [bbci, data]= bbci_calibrate_ERP_Speller_tiny(bbci, data)
 % 11-2011 Benjamin Blankertz
 
 
-props= {'ref_ival'      [-200 0]             '!DOUBLE[1 2]'
-        'cfy_ival'      [100 150; 150 200; 
-                         200 250; 250 300;
-                         300 400; 400 500;
-                         500 600; 600 700]   '!DOUBLE[- 2]'
-        'cfy_clab'      {'not','E*','Fp*','AF*','A*'}   'CHAR|CELL{CHAR}'
-        'model'         @train_RLDAshrink               'FUNC|CELL'
-        'nSequences'    5                               '!INT'
-        'nClasses'      6                               '!INT'
-        'cue_markers', [11:16,21:26,31:36,41:46]        '!DOUBLE[1 -]'
+props= {'ref_ival'        [-200 0]                        '!DOUBLE[1 2]'
+        'cfy_ival'        [100 150; 150 200; 
+                           200 250; 250 300;
+                           300 400; 400 500;
+                           500 600; 600 700]              '!DOUBLE[- 2]'
+        'cfy_clab'        {'not','E*','Fp*','AF*','A*'}   'CHAR|CELL{CHAR}'
+        'model'           @train_RLDAshrink               'FUNC|CELL'
+        'cue_markers'     [11:16,21:26,31:36,41:46]       '!DOUBLE[1 -]'
+        'mrk2feedback_fcn'  @(x)(1+mod(x-11,10))          'FUNC'
        };
 opt= opt_setDefaults('bbci.calibrate.settings', props);
-                  
+
 
 bbci.signal.clab= data.cnt.clab(util_chanind(data.cnt, opt.cfy_clab));
 
-bbci.feature.proc= {{@proc_baseline, opt.ref_ival, 'beginning_exact'}, ...
+bbci.feature.proc= {{@proc_baseline, opt.ref_ival}, ...
                     {@proc_jumpingMeans, opt.cfy_ival}};
 bbci.feature.ival= [opt.ref_ival(1) opt.cfy_ival(end)];
 
@@ -45,8 +44,9 @@ fv= proc_segmentation(data.cnt, data.mrk, bbci.feature.ival, ...
 fv= bbci_calibrate_evalFeature(fv, bbci.feature);
 bbci.classifier.C= trainClassifier(fv, opt.model);
 
-bbci.control.fcn= @bbci_control_ERP_Speller;
-bbci.control.param= {struct_copyFields(opt, {'nClasses', 'nSequences'})};
+bbci.control.fcn= @bbci_control_ERP_Speller_binary;
+bbci.control.param= {struct('nSequences', [], ...
+                            'mrk2feedback_fcn', opt.mrk2feedback_fcn)};
 bbci.control.condition.marker= opt.cue_markers;
 
 bbci.quit_condition.marker= 255;

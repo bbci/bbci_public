@@ -8,7 +8,20 @@ function fv_rval= proc_rValues(fv, varargin)
 % FV - data structure of feature vectors
 %
 %Returns:
-% FV_RVAL - data structute of r values (one sample only)
+% FV_RVAL - data structure of r values 
+%  .x     - biserial correlation between each featur and the class label
+%  .se    - contains the standard error of atanh(r), if opt.Stats==1
+%  .p     - contains the p value of null hypothesis that there is zero
+%           correlation between feature and class-label, if opt.Stats==1
+%           If opt.Bonferroni==1, the p-value is multiplied by
+%           fv_rval.corrfac
+%  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
+%           if opt.Bonferroni==1, the p-value is multiplied by
+%           fv_rval.corrfac and then logarithmized
+%  .sigmask - binary array indicating significance at alpha level
+%             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
+%  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
+%             if opt.Bonferroni==1
 %
 %Properties:
 % 'TolerateNans': observations with NaN value are skipped
@@ -18,6 +31,14 @@ function fv_rval= proc_rValues(fv, varargin)
 % 'MulticlassPolicy': possible options: 'pairwise' (default), 
 %    'all-against-last', 'each-against-rest', or provide specified
 %    pairs as an [nPairs x 2] sized matrix. ('specified_pairs' is obsolete)
+% 'Stats' - if true, additional statistics are calculated, including the
+%           standard error of atanh(r), the p-value for the null 
+%           Hypothesis that the correlation is zero, 
+%           and the "signed log p-value"
+% 'Bonferroni' - if true, Bonferroni corrected is used to adjust p-values
+%                and their logarithms
+% 'Alphalevel' - if provided, a binary indicator of the significance to the
+%                alpha level is returned for each feature in fv_rval.sigmask
 % 
 %Description:
 % This function calculates the bi-serial correlation coefficient in
@@ -31,12 +52,17 @@ function fv_rval= proc_rValues(fv, varargin)
 %  epo= proc_segmentation(cnt, mrk, [-200 800], 'CLab', {'Fz','Cz','Pz'});
 %  epo_r = proc_rValues(epo);
 %
-%See also:  proc_tTest, proc_rSquare
+%See also:  proc_tTest, proc_rSquare, proc_rSquareSigned
 
 % Benjamin Blankertz
+% 09-2012 stefan.haufe@tu-berlin.de
+
 props= { 'TolerateNans',      0,           'BOOL|DOUBLE'
          'ValueForConst',     NaN,         'DOUBLE'
-         'MulticlassPolicy',  'pairwise',  'CHAR(pairwise all-against-last each-against-rest)|INT[- 2]'  };
+         'MulticlassPolicy',  'pairwise',  'CHAR(pairwise all-against-last each-against-rest)|INT[- 2]'  
+         'Stats',             0,           '!BOOL';
+         'Bonferroni' 0    '!BOOL';
+         'Alphalevel' []   'DOUBLE'};
 
 if nargin==0,
   fv_rval= props; return
@@ -72,11 +98,15 @@ lq= length(c2);
 if opt.TolerateNans,
   stdi= @nanstd;
   meani= @nanmean;
-  iV = reshape(sum(~isnan(fv.x), 2), [sz(1:end-1) 1])-3;
+  if opt.Stats
+    iV = reshape(sum(~isnan(fv.x), 2), [sz(1:end-1) 1])-3;
+  end
 else
   stdi= @std;
   meani= @mean;
-  iV = sz(end)*ones(sz(1:end-1))-3;
+  if opt.Stats
+    iV = sz(end)*ones(sz(1:end-1))-3;
+  end
 end
 div= stdi(fv.x,0,2);
 iConst= find(div==0);
@@ -85,16 +115,27 @@ rval= ( (meani(fv.x(:,c1),2)-meani(fv.x(:,c2),2)) * sqrt(lp*lq) ) ./ ...
         ( div*(lp+lq) );
 rval(iConst)= opt.ValueForConst;
 rval= reshape(rval, [sz(1:end-1) 1]);
-iV= reshape(iV, [sz(1:end-1) 1]);
 
 fv_rval= fv;
 fv_rval.x= rval;
-fv_rval.V= 1./iV;
-fv_rval.z = atanh(fv_rval.x).*sqrt(iV);
-fv_rval.p = reshape(2*normal_cdf(-abs(fv_rval.z(:)), zeros(size(fv_rval.z(:))), ones(size(fv_rval.z(:)))), size(fv_rval.z));
-if exist('normcdf','file'),
-  fv_rval.sgn_log10_p = reshape(((log(2)+normcdfln(-abs(fv_rval.z(:))))./log(10)), size(fv_rval.z)).*-sign(fv_rval.z);
+
+if opt.Stats
+  iV= reshape(iV, [sz(1:end-1) 1]);
+  fv_rval.se = 1./sqrt(iV);
+  fv_rval.p = reshape(2*normal_cdf(-abs(atanh(fv_rval.x(:))), zeros(size(fv_rval.x(:))), fv_rval.se(:)), size(fv_rval.x));
+  if opt.Bonferroni
+    fv_rval.corrfac = prod(sz(1:end-1));
+    fv_rval.p = min(fv_rval.p*fv_rval.corrfac, 1);
+    fv_rval.sgnlogp = -reshape(((log(2)+normcdfln(-abs(atanh(fv_rval.x(:)).*sqrt(iV(:)))))./log(10))+abs(log10(fv_rval.corrfac)), size(fv_rval.x)).*sign(fv_rval.x);
+  else
+    fv_rval.sgnlogp = -reshape(((log(2)+normcdfln(-abs(atanh(fv_rval.x(:)).*sqrt(iV(:)))))./log(10)), size(fv_rval.x)).*sign(fv_rval.x);
+  end  
+  if ~isempty(opt.Alphalevel)
+    fv_rval.alphalevel = opt.Alphalevel;
+    fv_rval.sigmask = fv_rval.p < opt.Alphalevel;
+  end
 end
+
 if isfield(fv, 'className'),
   fv_rval.className= {sprintf('r( %s , %s )', fv.className{1:2})};
 end

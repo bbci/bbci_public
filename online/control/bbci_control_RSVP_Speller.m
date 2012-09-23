@@ -44,7 +44,8 @@ if event.desc==199,
 end
 state.lastcall= thiscall;
 
-this_cue= mod(event.desc-30, 40);
+this_cue= opt.mrk2feedback_fcn(event.desc);
+%this_cue= mod(event.desc-30, 40);
 state.counter(this_cue)= state.counter(this_cue) + 1;
 state.output(this_cue)= state.output(this_cue) + cfy_out;
 
