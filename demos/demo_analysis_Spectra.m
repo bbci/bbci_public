@@ -1,16 +1,7 @@
-file= 'Pavel_01_11_23/selfpaced2sPavel';
+file= 'demo_Pavel_01_11_23/selfpaced2sPavel';
 
 %% Load data
-hdr= file_readBVheader(file);
-Wps= [42 49]/hdr.fs*2;
-[n, Ws]= cheb2ord(Wps(1), Wps(2), 3, 40);
-[filt.b, filt.a]= cheby2(n, 50, Ws);
-[cnt, mrk_orig]= file_readBV(file, 'Fs',100, 'Filt',filt);
-
-%% Marker struct
-stimDef= {[65 70], [74 192];
-          'left','right'};
-mrk= mrk_defineClasses(mrk_orig, stimDef);
+[cnt, mrk, mnt] = file_loadMatlab(file);
 
 %% Electrode Montage
 grd= sprintf(['EOGh,_,F3,Fz,F4,_,EOGv\n' ...
@@ -18,7 +9,6 @@ grd= sprintf(['EOGh,_,F3,Fz,F4,_,EOGv\n' ...
               'C5,C3,C1,Cz,C2,C4,C6\n' ...
               'CP5,CP3,CP1,CPz,CP2,CP4,CP6\n' ...
               'EMGl,scale,O1,_,O2,legend,EMGr']);
-mnt= mnt_setElectrodePositions(cnt.clab);
 mnt= mnt_setGrid(mnt, grd);
 
 colOrder= [245 159 0; 0 150 200]/255;

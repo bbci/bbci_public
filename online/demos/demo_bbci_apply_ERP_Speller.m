@@ -24,8 +24,10 @@ bbci.feature.ival= [ref_ival(1) cfy_ival(end)];
 bbci.classifier.C= C;
 
 bbci.control.fcn= @bbci_control_ERP_Speller;
-bbci.control.param= {struct('nClasses',6, 'nSequences',10)};
-bbci.control.condition.marker= [11:16,21:26,31:36,41:46];
+bbci.control.param= {struct('nClasses', 6, ...
+                            'nSequences', 10, ...
+                            'mrk2feedback_fcn', @(x)(1+mod(x-11,10)))};
+bbci.control.condition.marker= [11:16, 21:26, 31:36, 41:46];
 
 bbci.quit_condition.marker= 255;
 bbci.quit_condition.running_time= 2*60;
