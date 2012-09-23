@@ -1,14 +1,36 @@
 files = {
+    {'VPibq_10_09_24', 'calibration_CenterSpellerMVEP_VPibq'}
+    {'VPiac_10_10_13', 'calibration_CenterSpellerMVEP_VPiac'}
+    {'VPibs_10_10_20', 'calibration_CenterSpellerMVEP_VPibs'}
+    {'VPibt_10_10_21', 'calibration_CenterSpellerMVEP_VPibt'}
+    {'VPfat_10_10_27', 'calibration_CenterSpellerMVEP_VPfat'}
+    {'VPibu_10_10_28', 'calibration_CenterSpellerMVEP_VPibu'}
     {'VPibv_10_11_02', 'calibration_CenterSpellerMVEP_VPibv'}
+    {'VPibw_10_11_04', 'calibration_CenterSpellerMVEP_VPibw'}
+    {'VPibx_10_11_10', 'calibration_CenterSpellerMVEP_VPibx'}
+    {'VPiby_10_11_12', 'calibration_CenterSpellerMVEP_VPiby'}
+    {'VPice_10_12_17', 'calibration_CenterSpellerMVEP_VPice'}
+    {'VPgdf_11_06_09', 'calibration_CenterSpellerMVEP_VPgdf'}
+    {'VPicv_11_06_10', 'calibration_CenterSpellerMVEP_VPicv'}
+    {'VPgdg_11_06_22', 'calibration_CenterSpellerMVEP_VPgdg'}
+    {'VPibe_11_06_16', 'calibration_CenterSpellerMVEP_VPibe'}
+    {'VPiba_11_06_23', 'calibration_CenterSpellerMVEP_VPiba'}
     };
 
 Fs = 100; % new sampling rate
 stimDef= {[31:46], [11:26];
           'target','nontarget'};
+      
+% global BBCI
+% BBCI.RawDir = '/home/bbci/data/bbciRaw/';
+% BBCI.MatDir = '/home/bbci/data/bbciMat/';
+
 
 %% load raw files and save in matlab format
 
 for k=1:length(files);
+    
+    fprintf('converting %s\n', files{k}{2})
     % header of the raw EEG files
     raw_file = fullfile(files{k}{1},files{k}{2});
     hdr= file_readBVheader(raw_file);
@@ -23,7 +45,7 @@ for k=1:length(files);
     % create mrk and mnt, and the new filename
     mrk = mrk_defineClasses(mrk_orig, stimDef);
     mnt = mnt_setElectrodePositions(cnt.clab);
-    mat_file_name = sprintf('demo_%s', files{k}{1});
+    mat_file_name = fullfile(sprintf('demo_%s', files{k}{1}), files{k}{2});
     
     % save in matlab format
     fprintf('saving %s\n', mat_file_name)
