@@ -146,10 +146,10 @@ if isequal(opt.Title, 1),
 end
 
 if isdefault.XUnit && isfield(epo, 'xUnit'),
-  opt.XUnit= ['[' epo.XUnit ']'];
+  opt.XUnit= ['[' epo.xUnit ']'];
 end
 if isdefault.YUnit && isfield(epo, 'yUnit'),
-  opt.YUnit= ['[' epo.YUnit ']'];
+  opt.YUnit= ['[' epo.yUnit ']'];
 end
 
 if isdefault.RefYPos,

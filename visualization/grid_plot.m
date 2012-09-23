@@ -137,11 +137,11 @@ if isdefault.ShiftAxesUp && ...
       (isfield(opt, 'xTick') && ~isempty(opt.xTick)), ...
       opt.ShiftAxesUp= 0.05;
 end
-if isdefault.XUnit && isfield(epo, 'XUnit'),
-  opt.XUnit= epo.XUnit;
+if isdefault.XUnit && isfield(epo, 'xUnit'),
+  opt.XUnit= epo.xUnit;
 end
-if isdefault.YUnit && isfield(epo, 'YUnit'),
-  opt.YUnit= epo.YUnit;
+if isdefault.YUnit && isfield(epo, 'yUnit'),
+  opt.YUnit= epo.yUnit;
 end
 if ~isempty(opt.YLim),
   if ~isdefault.ScalePolicy,
