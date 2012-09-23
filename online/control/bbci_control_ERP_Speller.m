@@ -27,7 +27,7 @@ if isempty(state),
   state.output= zeros(1, opt.nClasses);
 end
 
-this_cue= 1 + mod(event.desc-11, 10);
+this_cue= opt.mrk2feedback_fcn(event.desc);
 state.counter(this_cue)= state.counter(this_cue) + 1;
 state.output(this_cue)= state.output(this_cue) + cfy_out;
 

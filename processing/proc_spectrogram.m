@@ -1,117 +1,165 @@
-function [dat] = proc_spectrogram(epo, band, chan, varargin)
-%   [dat] = proc_spectrogram(epo, band, chan, varargin)
+function dat = proc_spectrogram(dat, freq, varargin)
+% PROC_SPECTROGRAM -  calculates the spectrogram using short-time Fourier
+% transformation.
+%
+%Usage:
+%   dat = proc_spectrogram(dat, freq, <OPT>)
+%   dat = proc_spectrogram(dat, freq, Window, <OPT>)
+%   dat = proc_spectrogram(dat, freq, Window, NOverlap,<OPT>)
 % 
-%   IN: epo    - struct of epoched data
-%       band   - range of the frequency range [minF maxF]Hz
-%       chan   - cellarray/indexvalues/string with the selection of channels
-%    
-%       varargin - list of additional optional values, by default those
-%                  values are 'Nfft' = 64, 'db_scaled' = 1, 'Window' =
-%                  2*ceil(size(epo.x, 1)/10), 'Noverlap' = ceil(size(epo.x,
-%                  1)/10)
+%Arguments:
+% DAT          - data structure of continuous or epoched data
+% FREQ         - desired frequency bins (eg 1:100)
+% OPT - struct or property/value list of optional properties:
+% 'Window' -   if a vector, divides the data  into segments of length equal 
+%              to the length of WINDOW, and then windows each
+%              segment with the vector specified in WINDOW.  If WINDOW is an integer,
+%              the data is divided into segments of length equal to that integer value, and a
+%              Hamming window of equal length is used.  If WINDOW is not specified, the
+%              default is used. Default dat.fs/2 (ie a 500 ms window).
+% 'NOverlap' - number of samples each segment of X overlaps. Must be an 
+%              integer smaller than the window length. Default: 
+%              window length -1 (so that a time x frequency 
+%              representation is defined for each sample)
+% 'CLab'     - specifies for which channels the spectrogram is calculated.
+%              (default '*')
+% 'Output'   - Determines if and how the FFT coefficients are processed.
+%              'complex' preserves the complex output (with both phase and
+%              amplitude information), 'amplitude' returns the absolute
+%              value, 'power' the squared absolute value, 'db' log power, 
+%              and 'phase' the phase in radians. Default 'complex'.
+% 'DbScaled' -  
+%Returns:
+% DAT    -    updated data structure with a higher dimension.
+%             For continuous data, the dimensions correspond to 
+%             time x frequency x channels. For epoched data, time x
+%             frequency x channels x epochs.
+%             The coefficients are complex. You can obtain the amplitude by
+%             abs(dat.x), power by abs(dat.x).^2, and phase by
+%             phase(dat.x);
 %
-%  OUT: dat   - struct different from classical epo or cnt struct,
-%               but very similar sizeof(dat.x) = (freqs X time X chans X epochs)
-%               
-%               the number of time samples is determined by the parameters
-%               Window und Noverlap. Each time sample in dat is the spectral
-%               response within a window of length 'Window'. Window centers
-%               start from the first sample and are shifted by 'Noverlap' 
-%               samples. Spectral response for border windows are
-%               calculated by padding the signal.
-%               Per default, the Window length is set
-%               to 1/10 of the signal length and the Overlap is 1/20 of the
-%               signal length, leading to 11 windows with 1/2 overlap.
+% Note: Requires signal processing toolbox.
 %
-%               The number of frequency samples is determined by Nfft,
-%               which should be less or equal than 'Window'. If it is
-%               less than 'Window', the end of the window is not used 
-%               by the fft. 
-%               If somebody is interested, he or she could implement an
-%               overlap-and-add scheme for within-window spectral power 
-%               estimation (if 'db_scaled=1' option is set) that uses all data.
-%
-%
-% in case of open questions read the source code or contact
-%
-% stl, haufe, Berlin 2004, 2010
-%
-% See also SPECTROGRAM, FFT, PROC_WAVELETS
+% See also proc_wavelets, proc_spectrum
 
-misc_checkType(epo,'STRUCT(x fs)');
-% misc_checkType(dat.fs,'!DOUBLE[1]','dat.fs');
-% misc_checkType(dat.x,'DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]','dat.x');  % accept about everything except row vectors
+% Stefan Haufe, Berlin 2004, 2010
 
-props = {'Window',              2*floor(size(epo.x, 1)/10)  '!DOUBLE';
+props = {'Window',              []                          'DOUBLE';
          'DbScaled'             1                           '!BOOL';
-         'Nfft',                64,                         '!DOUBLE[1]';
-         'Noverlap'             floor(size(epo.x, 1)/10)    '!DOUBLE[1]';
+         'NOverlap'             []                          'DOUBLE[1]';
+         'CLab',                '*'                         'CHAR|CELL{CHAR}|DOUBLE[-]';
+         'Output'               'complex'                   '!CHAR(complex amplitude power db phase)';
          };
 
 if nargin==0,
   dat= props; return
 end
 
-if ~isempty(varargin) && isnumeric(varargin{1}),
-%% arguments given as <win/N, step>
-    opt.win= varargin{1};
-% if length(varargin)>=2 && isnumeric(varargin{2}),
-%   opt.step= varargin{2};
-% end
-else
-%% arguments given as <opt>
-    opt= opt_proplistToStruct(varargin{:});
+misc_checkType(dat,'!STRUCT(x fs)');
+misc_checkType(freq,'!DOUBLE[-]');
+
+% Parse other arguments
+if nargin>2 && isnumeric(varargin{1})
+  window = varargin{1};
+  remidx = 1;
+	if nargin>3 && isnumeric(varargin{2})
+    noverlap = varargin{2};
+    remidx =[remidx 2];
+    varargin = {'Window' varargin{1} 'NOverlap' varargin{2:end}};
+  else
+    varargin = {'Window' varargin{:}};
+  end
 end
 
+opt= opt_proplistToStruct(varargin{:});
 [opt,isdefault] = opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
-epo = misc_history(epo);
 
-%%
-  [T, nChan, nEvt] = size(epo.x) ;
+[opt,isdefault] = opt_overrideIfDefault(opt,isdefault,'Window',floor(dat.fs/2));
 
+% Determine length of fft window
+if numel(opt.Window)==1, winlen = opt.Window;
+else winlen =  numel(opt.Window);
+end
+[opt,isdefault] = opt_overrideIfDefault(opt,isdefault,'NOverlap',winlen-1);
 
+dat = misc_history(dat);
+
+%% Spectrogram
+dat = proc_selectChannels(dat,opt.CLab);
+
+% Strech out data matrix to single vector (spectrogram does not operate on
+% matrices). Interleave zero padding to prevent smearing between
+% successive channels/epochs.
+sz =size(dat.x);
+zero = zeros([winlen-1, sz(2:end)]);
+dat.x = cat(1,dat.x,zero);
+% if ndims(dat.x) == 2      % cnt
+  % Append also zeros at beginning and end
+  X = zeros(2*(winlen-1)+numel(dat.x),1);
+  X(winlen:end-winlen+1) = dat.x(:);
+% elseif ndims(dat.x)==3    % epoched
+% end
+
+[S,F,T] = spectrogram(X,opt.Window,opt.NOverlap,freq,dat.fs);
+clear X
+
+S = S(:,floor(winlen/2):end-ceil(winlen/2)); % cut off padded values at beginning and end
+
+% Reshape vector to matrix
+if ndims(dat.x) == 2      % cnt
+  dat.x = reshape(S',[sz(1)+winlen-1  sz(2) numel(freq)]);
+  dat.x = dat.x(1:end-(winlen-1),:,:);
+  dat.x = permute(dat.x,[1 3 2]);
+
+elseif ndims(dat.x)==3    % epoched
+  dat.x = reshape(S',[sz(1)+winlen-1  sz(2:end) numel(freq)]);
+  dat.x = dat.x(1:end-(winlen-1),:,:,:);
+  dat.x = permute(dat.x,[1 4 2 3]);
   
-  [B,F,T] = spectrogram([zeros(opt.Window/2,1);epo.x(:,1,1); zeros(opt.Window/2-1,1)], opt.Window, opt.Noverlap, opt.Nfft, epo.fs);
-    if ~exist('chan','var') || isempty(chan),
-      chan = 1: size(epo.x,2);
-    else
-      chan = chanind(epo,chan) ;
-    end;
+end
 
-    if ~exist('band','var') || isempty(band),
-      bandIdx = 1:length(F) ;
-    else
-      bandIdx = find(F>=band(1) & F<=band(2)) ;
-    end;
+% dat.t = (T-winlen/2/dat.fs)*1000 + dat.t(1);
+dat.f = freq;
+dat.zUnit = 'Hz';
 
-  
-  dat   = copyStruct(epo,'x','clab','t');
-  dat.clab = epo.clab(chan) ;
-  dat.t = (T-opt.Window/2/epo.fs)*1000 + epo.t(1);
-  dat.f = F(bandIdx);
-  dat.zUnit = 'Hz';
-  
-  dat.x = zeros(length(bandIdx), length(T), length(chan));
-  dat.x = zeros(length(bandIdx), length(T), length(chan), nEvt);
-
-  if opt.DbScaled,
-    for chIdx = 1: length(chan),
-      ch = chan(chIdx) ;
-      for evt = 1: nEvt,
-        [B,F,T] = spectrogram([mean(epo.x(1:min(end,opt.Window),ch,evt))*ones(opt.Window/2,1); epo.x(:,ch,evt);mean(epo.x(max(1,end-opt.Window):end,ch,evt))*ones(opt.Window/2-1,1)], opt.Window, opt.Noverlap, opt.Nfft, epo.fs);     
-        dat.x(:,:,chIdx, evt) = abs(B(bandIdx, :)).^2;
-      end ;
-      dat.x(:,:,chIdx, :) = 10*log10( dat.x(:,:,chIdx, :)+eps ) ;
-    end ;
-    dat.yUnit= 'dB';
-  else
-    for ch = chan,
-      for evt = 1: nEvt,
-        [B,F,T] = spectrogram([zeros(opt.Window/2,1);epo.x(:,ch,evt);zeros(opt.Window/2-1,1)], opt.Window, opt.Noverlap, opt.Nfft, epo.fs);      
-        dat.x(:,:,chIdx, evt) = abs(B(bandIdx, :)).^2;
-      end ;
-    end ;
+switch(opt.Output)
+  case 'complex'
+    % do nothing
+  case 'amplitude'
+    dat.x = abs(dat.x);
+    dat.yUnit= 'amplitude';
+  case 'power'
+    dat.x = abs(dat.x).^2;
     dat.yUnit= 'power';
-  end
+  case 'db'
+    dat.x = 10* log10( abs(dat.x).^2 );
+    dat.yUnit= 'log power';
+  case 'phase'
+    dat.x = angle(dat.x);
+    dat.yUnit= 'phase';
+end
+
+
+% DBSCALED implementation fehlt noch
+
+% if opt.DbScaled,
+%   for chIdx = 1: length(chan),
+%     ch = chan(chIdx) ;
+%     for evt = 1: nEvt,
+%       [B,F,T] = spectrogram([mean(epo.x(1:min(end,opt.Window),ch,evt))*ones(opt.Window/2,1); epo.x(:,ch,evt);mean(epo.x(max(1,end-opt.Window):end,ch,evt))*ones(opt.Window/2-1,1)], opt.Window, opt.Noverlap, opt.Nfft, epo.fs);     
+%       dat.x(:,:,chIdx, evt) = abs(B(bandIdx, :)).^2;
+%     end ;
+%     dat.x(:,:,chIdx, :) = 10*log10( dat.x(:,:,chIdx, :)+eps ) ;
+%   end ;
+%   dat.yUnit= 'dB';
+% else
+%   for ch = chan,
+%     for evt = 1: nEvt,
+%       [B,F,T] = spectrogram([zeros(opt.Window/2,1);epo.x(:,ch,evt);zeros(opt.Window/2-1,1)], opt.Window, opt.Noverlap, opt.Nfft, epo.fs);      
+%       dat.x(:,:,chIdx, evt) = abs(B(bandIdx, :)).^2;
+%     end ;
+%   end ;
+%   dat.yUnit= 'power';
+% end
 

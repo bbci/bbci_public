@@ -1,17 +1,9 @@
-file= 'VPibv_10_11_02/calibration_CenterSpellerMVEP_VPibv';
+file= 'demo_VPibv_10_11_02/calibration_CenterSpellerMVEP_VPibv';
 
 
 %% Load data
-hdr= file_readBVheader(file);
-Wps= [42 49]/hdr.fs*2;
-[n, Ws]= cheb2ord(Wps(1), Wps(2), 3, 40);
-[filt.b, filt.a]= cheby2(n, 50, Ws);
-[cnt, mrk_orig]= file_readBV(file, 'Fs',100, 'Filt',filt);
+[cnt, mrk, mnt] = file_loadMatlab(file);
 
-%% Marker struct
-stimDef= {[31:46], [11:26];
-          'target','nontarget'};
-mrk= mrk_defineClasses(mrk_orig, stimDef);
 
 %% Re-referencing to linked-mastoids
 A= eye(length(cnt.clab));
@@ -29,7 +21,6 @@ grd= sprintf(['scale,_,F5,F3,Fz,F4,F6,_,legend\n' ...
               'T7,C5,C3,C1,Cz,C2,C4,C6,T8\n' ...
               'P7,P5,P3,P1,Pz,P2,P4,P6,P8\n' ...
               'PO9,PO7,PO3,O1,Oz,O2,PO4,PO8,PO10']);
-mnt= mnt_setElectrodePositions(cnt.clab);
 mnt= mnt_setGrid(mnt, grd);
 
 % Define some settings
@@ -71,7 +62,7 @@ constraint= ...
                           'Clab',{'not','E*'}, ...
                           'Constraint', constraint);
 %printFigure('r_matrix', [18 13]);
-ival_scalps= visutil_correctIvalsForDisplay(ival_scalps, 'fs',epo.fs);
+ival_scalps= visutil_correctIvalsForDisplay(ival_scalps, 'Fs',epo.fs);
 
 fig_set(3)
 H= grid_plot(epo, mnt, defopt_erps, 'ColorOrder',colOrder);

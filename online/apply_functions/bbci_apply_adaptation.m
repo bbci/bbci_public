@@ -89,7 +89,7 @@ for k= 1:length(BA),
         % Or should we better issue an error here?
         warning(str);
       end
-      bbci_log_write(data.adaptation{k}.log.fid, escape_printf(str));
+      bbci_log_write(data.adaptation{k}.log.fid, str_escapePrintf(str));
     end
     [bbci.classifier(icls), data.adaptation{k}]= ...
         BA(k).fcn(bbci.classifier(icls), ...
