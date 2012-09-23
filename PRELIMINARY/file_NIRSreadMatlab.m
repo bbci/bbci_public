@@ -1,7 +1,7 @@
 function [cnt,mrk] = file_NIRSreadMatlab(filename)
+% [cnt,mrk] = file_NIRSreadMatlab(filename)
 % this is a temporary (and very rudimentary) function 
 % to read pre-processed NIRS files
-
 
 mnt=make_NIRSmnt;
 
@@ -49,5 +49,6 @@ else
     disp(sprintf('%s loaded',filename))
 
 end
-
-cnt.x=cnt.x(:,25:end);
+% select only oxy channels:
+% TODO: output both oxy and deoxy timeseries
+%cnt.x=cnt.x(:,25:end);

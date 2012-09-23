@@ -4,7 +4,7 @@ BC= [];
 BC.fcn= @bbci_calibrate_NIRS_tiny;
 BC.read_fcn=@file_NIRSreadMatlab;
 BC.folder= BBCI.NirsMatDir;
-BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag';
+BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';
 
 % define a tmp folder
 BC.save.folder= BBCI.TmpDir;
@@ -14,7 +14,8 @@ BC.log.folder= BBCI.TmpDir;
 bbci= struct('calibrate', BC);
 % do the calibration
 [bbci, calib]= bbci_calibrate(bbci);
-%bbci_save(bbci, calib);
+% save the classifier
+bbci_save(bbci, calib);
 
 
 %%
@@ -26,7 +27,7 @@ file = [BBCI.NirsMatDir 'VPeag_10_06_17/ni_imag_fbarrow_pmeanVPeag'];
 % test consistency of classifier outputs in simulated online mode
 bbci.source.acquire_fcn= @bbci_acquire_offline;
 %bbci.source.acquire_param= {calib.cnt, calib.mrk, struct('blocksize',100)};
-bbci.source.acquire_param= {cnt, mrk, struct('blocksize',500)};
+bbci.source.acquire_param= {cnt, mrk, struct('blocksize',80)};
 
 % define some logging
 bbci.log.output= 'screen&file';
@@ -43,6 +44,6 @@ log_format= '%fs | [%f] | {cl_output=%f}';
 
 cnt_cfy= struct('fs',25, 'x',cfy, ...
                 'clab', {{sprintf('cfy %s vs %s', calib.result.classes{:})}});
-epo_cfy= proc_segmentation(cnt_cfy, calib.mrk, [-2000 10000]);
+epo_cfy= proc_segmentation(cnt_cfy, calib.mrk, [-20000 30000]);
 fig_set(1, 'name','classifier output'); clf;
 plot_channel(epo_cfy, 1, 'YUnit','[a.u.]');
