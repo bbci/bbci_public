@@ -22,7 +22,7 @@ function varargout = erp_gui(varargin)
 
 % Edit the above text to modify the response to help p300_gui
 
-% Last Modified by GUIDE v2.5 03-Jul-2012 07:20:01
+% Last Modified by GUIDE v2.5 21-Sep-2012 16:43:44
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -131,7 +131,7 @@ function load_data_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 if check_state(handles,1),
-    %try,
+    try,
         GB = manage_parameters('get', 'global_bbci');
         set_button_state(handles, 'off', {''});
         add_to_message_box(handles, 'Loading data. Please wait.....');drawnow;
@@ -147,12 +147,12 @@ if check_state(handles,1),
         reset_channel_names(handles);      
         update_nr_chan_selected(handles);
         add_to_message_box(handles, 'Data loaded.');    
-   % catch
-    %    error = lasterror;
-     %   disp(error.message);
-      %  set_button_state(handles, 'on', {''});
-       % add_to_message_box(handles, 'Something went wrong, so I didn''t load any data. I don''t deal well with interrupted trials, so don''t load those.');
-    %end
+   catch
+       error = lasterror;
+       disp(error.message);
+       set_button_state(handles, 'on', {''});
+       add_to_message_box(handles, 'Something went wrong, so I didn''t load any data. I don''t deal well with interrupted trials, so don''t load those.');
+    end
 else
     add_to_message_box(handles, 'Please initialize first...');        
 end            
@@ -221,24 +221,24 @@ function create_images_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if check_state(handles,2),
-    try
+%     try
         set_button_state(handles, 'off', {''});
         data = manage_parameters('get', 'data');
         bbci = manage_parameters('get', 'bbci');
         [sel_class class_id] = get_selected_item(handles.choose_classifier_popup);
-        bbci.calibrate.settings.model = sel_class;        
+        bbci.calibrate.settings.model = str2func(['@train_' sel_class{1}]);        
         bbci.calibrate.settings.reject_channels = get(handles.reject_channels_tick, 'value');
         bbci.calibrate.settings.create_figs = 1;
         try,bbci.calibrate = rmfield(bbci.calibrate, 'early_stopping_fnc');end
         bbci_calibrate(bbci, data);           
         figure(handles.figure1);
         set_button_state(handles, 'on', {''});
-    catch
-        error = lasterror;
-        disp(error.message);
-        set_button_state(handles, 'on', {''});
-        add_to_message_box(handles, 'Visualization didn''t work. Is it implemented properly?');
-    end
+%     catch
+%         error = lasterror;
+%         disp(error.message);
+%         set_button_state(handles, 'on', {''});
+%         add_to_message_box(handles, 'Visualization didn''t work. Is it implemented properly?');
+%     end
 else
     add_to_message_box(handles, 'Please initialize and load data first...');
 end
@@ -361,7 +361,7 @@ restore_data = 1;
 if check_state(handles,2),
     [sel_class class_id] = get_selected_item(handles.choose_classifier_popup);
     if class_id > 1,
-        try
+%         try
             add_to_message_box(handles, 'Starting x-validation. Please wait...');drawnow;
             set_button_state(handles, 'off', {''});        
             bbci = manage_parameters('get', 'bbci');
@@ -372,10 +372,12 @@ if check_state(handles,2),
             end
             if exist('stopping', 'var') && ~isempty(stopping),
                 restore_data = 0;
-                bbci.calibrate = rmfield(bbci.calibrate, 'early_stopping_fnc');
+                if isfield(bbci.calibrate, 'early_stopping_fnc'),
+                    bbci.calibrate = rmfield(bbci.calibrate, 'early_stopping_fnc');
+                end
             end
             if iscell(bbci.calibrate.settings.model), %% HACK. Check this.
-                bbci.calibrate.settings.model{1} = sel_class{1};
+                bbci.calibrate.settings.model{1} = str2func(['@train_' sel_class{1}]);
             end
             bbci.calibrate.settings.reject_channels = get(handles.reject_channels_tick, 'value');
             bbci.calibrate.settings.reject_artifacts = get(handles.reject_artifacts_tick, 'value');
@@ -385,10 +387,12 @@ if check_state(handles,2),
                 manage_parameters('set', 'bbci', bbci);
                 manage_parameters('update', 'state.trained', true);                
             end
-            add_to_message_box(handles, sprintf('Warning: %i (%0.2f%%) trial(s) rejected.', ...
-                length(data.result.rejected_trials), ...
-                length(data.result.rejected_trials)/length(data.mrk.toe)));
-            if get(handles.reject_channels_tick, 'value') && ~isempty(data.result.rejected_clab),
+            if get(handles.reject_artifacts_tick, 'value') & ~isempty(data.result.rejected_trials) & ~isnan(data.result.rejected_trials),
+                add_to_message_box(handles, sprintf('Warning: %i (%0.2f%%) trial(s) rejected.', ...
+                    length(data.result.rejected_trials), ...
+                    length(data.result.rejected_trials)/length(data.mrk.desc)));
+            end
+            if get(handles.reject_channels_tick, 'value') & ~isempty(data.result.rejected_clab) & ~isnan(data.result.rejected_clab),
                 deleted_channels = [sprintf('%s,', data.result.rejected_clab{1:end-1}), ...
                     data.result.rejected_clab{end}];
                 add_to_message_box(handles, sprintf('Warning: %i channel(s) rejected [%s].', ...
@@ -398,12 +402,12 @@ if check_state(handles,2),
             add_to_message_box(handles, sprintf('Binary performance: %0.2f%%', ...
                 100*mean([data.result.me(1,1), data.result.me(2,2)])));
             set_button_state(handles, 'on', {''});
-        catch
-            error = lasterror;
-            disp(error.message);
-            set_button_state(handles, 'on', {''});
-            add_to_message_box(handles, 'Something went wrong and I didn''t do xvalidation. Please check the command window for errors');
-        end
+%         catch
+%             error = lasterror;
+%             disp(error.message);
+%             set_button_state(handles, 'on', {''});
+%             add_to_message_box(handles, 'Something went wrong and I didn''t do xvalidation. Please check the command window for errors');
+%         end
     else
         add_to_message_box(handles, 'No classifier selected...');
     end
@@ -519,7 +523,7 @@ if check_state(handles,1),
     if check_preflight_conditions(handles);
         switch get(handles.run_experiment_switch, 'UserData'),
             case 'stop'
-                try
+%                 try
                     add_to_message_box(handles, 'Starting experiment...');
                     set(handles.run_experiment_switch,'UserData','run');
                     set(handles.run_experiment_button, 'string', 'Pause');
@@ -529,9 +533,11 @@ if check_state(handles,1),
                     ES.parameters.(run_exp).test = get(handles.simulate_tick, 'value');
                     opt.experiment = run_exp;
                     opt.parameters = ES.parameters.(run_exp);
-                    opt.aux = ES.aux;
+                    if isfield(ES, 'aux'),
+                        opt.aux = ES.aux;
+                    end
                     opt.bbci = bbci;
-                    if isfield(opt.aux, 'custom_settings_folder'),
+                    if isfield(opt, 'aux') & isfield(opt.aux, 'custom_settings_folder'),
                         cust_file = [opt.aux.custom_settings_folder GB.Tp.Code '_pb_setup.m'];
                         if exist(cust_file, 'file') && isempty(strmatch('Calibration', run_exp)),
                             run(cust_file);
@@ -553,16 +559,16 @@ if check_state(handles,1),
                     overload_gui_funcs('run_experiments', state.study, handles, opt);
                     set_button_state(handles, 'on', {''});
                     add_to_message_box(handles, 'Experiment started...');
-                catch
-                    error = lasterror;
-                    disp(error.message);
-                    set_button_state(handles, 'on', {''});
-                    set(handles.run_experiment_switch,'UserData','stop');
-                    set_run_button_text(handles);
-                    ppTrigger(bbci.quit_condition.marker); %try to close classifier and recorder
-                    stop_recording(handles);
-                    add_to_message_box(handles, 'I tried, but the experiment would not run. Please check the command window');
-                end
+%                 catch
+%                     error = lasterror;
+%                     disp(error.message);
+%                     set_button_state(handles, 'on', {''});
+%                     set(handles.run_experiment_switch,'UserData','stop');
+%                     set_run_button_text(handles);
+%                     ppTrigger(bbci.quit_condition.marker); %try to close classifier and recorder
+%                     stop_recording(handles);
+%                     add_to_message_box(handles, 'I tried, but the experiment would not run. Please check the command window');
+%                 end
             case 'pause'
                 add_to_message_box(handles, 'Resuming experiment...');
                 pyff('play');
@@ -588,7 +594,7 @@ function stop_experiment_button_Callback(hObject, eventdata, handles)
 set_button_state(handles, 'on', {''});
 set(handles.run_experiment_switch,'UserData','stop');
 set_run_button_text(handles);
-stop_recording(handles);
+% stop_recording(handles);
 close_images_but_not_gui();
 try,
     pyff('quit');
@@ -706,7 +712,7 @@ if check_state(handles,3),
     try
         add_to_message_box(handles, 'Starting channel selection...');drawnow;
         data = manage_parameters('get', 'data');
-        featPerChan = size(data.feature.x, 1)/length(data.cnt.clab);
+        featPerChan = size(data.feature.x, 1)/length(data.result.cfy_clab);
         
         switch method{1},
             case 'SWLDA - featurewise',
@@ -749,7 +755,7 @@ function show_channels_button_Callback(hObject, eventdata, handles)
 if check_state(handles,2),
     clab = get(handles.channel_names_listbox, 'string')';
     sel_clab = get(handles.channel_names_listbox, 'value')';
-    mnt = getElectrodePositions(clab);
+    mnt = mnt_setElectrodePositions(clab);
     colOrder = [0.9 0 0.9; 0.4 0.57 1];
     labelProps = {'FontName','Times','FontSize',8,'FontWeight','normal'};
     markerProps = {'MarkerSize', 15, 'MarkerEdgeColor','k','MarkerFaceColor',[1 1 1]};
@@ -817,9 +823,9 @@ if check_state(handles,2),
             fid = fopen(target, 'w');
             fwrite(fid, str);
             fclose(fid);
-            add_to_message_box(handles, 'New signalserver file written');
-            set_button_state(handles, 'on', {''});            
+            add_to_message_box(handles, 'New signalserver file written');          
         end
+        set_button_state(handles, 'on', {''});  
     catch,
         error = lasterror;
         disp(error.message);
@@ -1016,7 +1022,7 @@ function unlock_menu_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set_button_state(handles, 'on', {});
-% evalin('base', 'dbquit(''all'');');
+evalin('base', 'dbquit(''all'');');
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1066,12 +1072,12 @@ else
 end
 
 function stop_recording(handles),
-bbci = manage_parameters('get', 'bbci');
-ppTrigger(bbci.quit_condition.marker);
-pause(1);
-if get(handles.amp_button_bv, 'value'),
-    bvr_sendcommand('stoprecording');
-end
+% bbci = manage_parameters('get', 'bbci');
+% % ppTrigger(bbci.quit_condition.marker);
+% pause(1);
+% if get(handles.amp_button_bv, 'value'),
+%     bvr_sendcommand('stoprecording');
+% end
 
 function exp_opt = start_classifier(handles)
 experiments = manage_parameters('get', 'experiment_settings');
@@ -1530,3 +1536,10 @@ if check_state(handles, 1),
 else
     add_to_message_box(handles, 'Please initialize first');
 end
+
+
+% --- Executes during object creation, after setting all properties.
+function simulate_tick_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to simulate_tick (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called

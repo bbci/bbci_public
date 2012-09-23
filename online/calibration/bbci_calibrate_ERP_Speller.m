@@ -38,7 +38,7 @@ props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
         'cfy_clab'      {'not','E*','Fp*','AF*','A*'}  'CHAR|CELL{CHAR}'
         'cfy_ival'                    'auto'           'CHAR(auto)|DOUBLE[- 2]'
         'cfy_ival_pick_peak'          [100 700]        'DOUBLE[1 2]'
-        'band'                        []               'DOUBLE[1 2]'
+        'band'                        []               'DOUBLE[1 2]|DOUBLE[1]'
         'control_per_stimulus'        0                'BOOL'
         'model'         @train_RLDAshrink              'FUNC|CELL'
         'nSequences'                  5                'INT'
@@ -185,7 +185,7 @@ epo= proc_baseline(epo, opt.ref_ival, 'channelwise', 1);
 %% --- Plot r^2 matrix and select intervals if requested ---
 %
 epo_r= proc_rSquareSigned(epo);
-epo_r= rmfield(epo_r, {'V','p'});
+%epo_r= rmfield(epo_r, {'V','p'});
 epo_r.className= {'sgn r^2 ( T , NT )'};  %% just make it shorter
 if opt.create_figs, 
   fig_set(6, 'name','r^2 Matrix'); 
