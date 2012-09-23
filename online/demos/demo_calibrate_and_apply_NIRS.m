@@ -4,7 +4,7 @@ BC= [];
 BC.fcn= @bbci_calibrate_NIRS_tiny;
 BC.read_fcn=@file_NIRSreadMatlab;
 BC.folder= BBCI.NirsMatDir;
-BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag';
+BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';
 
 % define a tmp folder
 BC.save.folder= BBCI.TmpDir;

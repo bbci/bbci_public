@@ -48,7 +48,7 @@ bbci.signal.proc={};
 bbci.signal.clab = data.cnt.clab;
 
 bbci.feature.ival =[-2000 0];
-bbci.feature.fcn = {@proc_meanAcrossTime};
+bbci.feature.proc = {@proc_meanAcrossTime};
 
 bbci.classifier.C=trainClassifier(fv,opt.model);
 
