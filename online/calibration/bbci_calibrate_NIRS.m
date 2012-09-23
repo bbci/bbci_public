@@ -211,7 +211,7 @@ if opt.plot
     % printFigure(['grid_deoxy' saveapp], [36 20], opt_fig);
 
     %% R-Square plots
-    dat_r = proc_r_square_signed(data.cnt,'multiclass_policy','pairwise');
+    dat_r = proc_rSquareSigned(data.cnt,'MulticlassPolicy','pairwise');
     npairs = size(dat_r.y,1);
     nclab = numel(data.cnt.clab)/2;
     for ii=1:npairs
@@ -245,7 +245,7 @@ if opt.plot
 end
 %% *** Classification ***
 % BBCI.FEATURE selection
-bbci.feature.fcn = {@proc_jumpingMeans};
+bbci.feature.proc = {@proc_jumpingMeans};
 
 % class combination
 if isequal(opt.classes, 'auto'),
@@ -268,7 +268,7 @@ for ci= 1:size(class_combination,1)
     fprintf('\nComparing classes %s vs %s.',fv.className{1},fv.className{2})
   
     % find the feature/time intervals
-    fvr = proc_r_square_signed(fv);
+    fvr = proc_rSquareSigned(fv);
     [ival_cfy{ci},nfo]= select_time_intervals(fvr,'nIvals',opt.nIvals,'ClabPickPeak', fv.clab,...
       'visualize',0,'IntersampleTiming',1);
 
