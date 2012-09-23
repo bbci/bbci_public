@@ -104,6 +104,7 @@ else
      otherwise,
       Ti= procutil_getIvalIndices(ival, dat);
     end
+    % siamac put this in (gives errors for NIRS data)
     if Ti(1) == -1
         Ti=Ti(2:end);
     end
