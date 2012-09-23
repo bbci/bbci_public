@@ -3,7 +3,7 @@ NIRS_MAT_DIR = [DATA_DIR 'nirs/uni/unsorted'];
 
 %%%% first do the calibration for the NIRS:
 BC= [];
-BC.fcn= @bbci_calibrate_NIRS;
+BC.fcn= @bbci_calibrate_nirs;
 BC.read_fcn=@file_NIRSreadMatlab;
 BC.folder= NIRS_MAT_DIR;
 BC.file= 'ni_imag_fbarrow_pcovmeanVPeag';
@@ -31,8 +31,8 @@ BC.read_fcn= @file_readBV;
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
 BC.marker_param= {{1, 2; 'left', 'right'}};
-BC.save.folder= TMP_DIR;
-BC.log.folder= TMP_DIR;
+BC.save.folder= BBCI.TmpDir;
+BC.log.folder= BBCI.TmpDir;
 
 bbci= struct('calibrate', BC);
 

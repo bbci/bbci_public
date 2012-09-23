@@ -24,7 +24,7 @@ bbci.calibrate.settings.lp=1;
 
 % test consistency of classifier outputs in simulated online mode
 bbci.source.acquire_fcn= @bbci_acquire_offline;
-bbci.source.acquire_param= {calib.cnt, calib.mrk, struct('blocksize',200)};
+bbci.source.acquire_param= {calib.cnt, calib.mrk, struct('blocksize',100)};
 
 bbci.log.output= 'screen&file';
 bbci.log.folder= BBCI.TmpDir;
@@ -35,13 +35,13 @@ bbci.log.classifier= 1;
 
 data= bbci_apply(bbci);
 
+
 log_format= '%fs | [%f] | {cl_output=%f}';
 [time, cfy, ctrl]= textread(data.log.filename, log_format, ...
                             'delimiter','','commentstyle','shell');
 
-cnt_cfy= struct('fs',2, 'x',cfy, 'clab',{{'cfy'}});
-mrk_cfy= mrk_selectClasses(calib.mrk, calib.mrk.className);
-mrk_cfy= mrk_resample(mrk_cfy, cnt_cfy.fs);
-epo_cfy= proc_segmentation(cnt_cfy, mrk_cfy, [0 5000]);
+cnt_cfy= struct('fs',25, 'x',cfy, ...
+                'clab', {{sprintf('cfy %s vs %s', calib.result.classes{:})}});
+epo_cfy= proc_segmentation(cnt_cfy, calib.mrk, [-50000 50000]);
 fig_set(1, 'name','classifier output'); clf;
-plotChannel(epo_cfy, 1);
+plot_channel(epo_cfy, 1, 'YUnit','[a.u.]');
