@@ -11,7 +11,7 @@ BBCI= opt_proplistToStruct(varargin{:});
 if ~isfield(BBCI, 'TypeChecking'),
   BBCI.TypeChecking= 1;
 end
-BBCI= opt_setDefaults(BBCI, {'DataDir'  ''});
+BBCI= opt_setDefaults(BBCI, {'DataDir'  '/home/bbci/data/'});
 
 % Guess what the location of other directories could be
 BBCI_RAW_DIR= fullfile(BBCI.DataDir, 'bbciRaw/');
