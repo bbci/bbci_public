@@ -99,7 +99,7 @@ end
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props, props_channel, props_addScale);
+%opt_checkProplist(opt, props, props_channel, props_addScale);
 
 opt_channel= opt_substruct(opt, props_channel(:,1));
 opt_addScale = opt_substruct(opt, props_addScale(:,1));

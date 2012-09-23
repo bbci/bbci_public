@@ -72,30 +72,32 @@ function [bbci, data]= bbci_calibrate_NIRS(bbci, data)
 
 calibrate = bbci.calibrate;
 opt= calibrate.settings;
-[opt, isdefault]= ...
-    set_defaults(opt, ...
-                 'classes', 'auto', ...
-                 'clab', {'*'}, ...
-                 'classifier','RLDAshrink',...
-                 'ref_ival',[-2000 0], ...
-                 'ival',[-2000,10000], ...
-                 'nIvals', 5, ...
-                 'signal','both', ...
-                 'doLowpass', 1, ...
-                 'derivative', 0, ...
-                 'baseline',1, ...
-                 'zscore',1, ...
-                 'grid',[] , ...
-                 'spectra', 1, ...
-                 'plot',1 ...
-                 );
 
+props = {'classes', 'auto';
+	 'clab', {'*'};
+	 'classifier',@train_RLDAshrink;
+	 'ref_ival',[-2000 0];
+	 'ival',[-2000,10000];
+	 'nIvals', 5;
+	 'signal','both';
+	 'doLowpass', 1;
+	 'derivative', 0;
+	 'baseline',1;
+	 'zscore',1;
+	 'grid',[];
+	 'spectra', 1;
+	 'plot',1;
+	 'lp',1;	
+	};
+
+[opt, isdefault]= opt_setDefaults(opt, props);
+opt_checkProplist(opt, props);
 
 opt_grid = {'scaleGroup' 'all'};
 opt_tit = {'Fontsize' 10 'Fontweight' 'bold'};
 
 %% Build dummy grid for grid_plot
-clab = strhead(data.cnt.clab(1:end/2));
+clab = str_head(data.cnt.clab(1:end/2));
 clab = {'scale',clab{:},'legend'};
 ii=1;
 grd = '';
@@ -150,8 +152,9 @@ if opt.derivative
 end
 
 %% Epoch data
-data.cnt = cntToEpo(data.cnt,data.mrk,opt.ival);
-    
+%data.cnt = cntToEpo(data.cnt,data.mrk,opt.ival);
+data.cnt = proc_segmentation(data.cnt,data.mrk,opt.ival);
+
 % baseline
 if opt.baseline   
   fprintf('Performing baseline correction\n')
@@ -178,10 +181,10 @@ if opt.plot
     if opt.spectra
       fig_set(2),clf
       subplot(2,1,1)
-      plot(spec.t,spec.x(:,1:end/2)), title(strtail(spec.clab{1}),opt_tit{:})
+      plot(spec.t,spec.x(:,1:end/2)), title(str_tail(spec.clab{1}),opt_tit{:})
       xlabel(sprintf('Frequency [%s]',spec.xUnit)),ylabel(sprintf('Power [%s]',spec.yUnit))
       subplot(2,1,2)
-      plot(spec.t,spec.x(:,1:end/2)), title(strtail(spec.clab{1}),opt_tit{:})
+      plot(spec.t,spec.x(:,1:end/2)), title(str_tail(spec.clab{1}),opt_tit{:})
       xlabel(sprintf('Frequency [%s]',spec.xUnit)),ylabel(sprintf('Power [%s]',spec.yUnit))
       annotation('textbox',[.01 .9 .1 .1 ],'String','Power spectra of CNT data ');
     end
@@ -191,7 +194,7 @@ if opt.plot
       fprintf('Calculating z-scores\n')
       m= mean(data.cnt.x,1);   % mean
       s= std(data.cnt.x,1);    % std
-      len_x = length(data.cnt.x);
+      len_x = size(data.cnt.x,1);
       data.cnt.x= (data.cnt.x - repmat(m,[len_x 1])) ./ repmat(s,[len_x 1]);
       clear m s 
     end
@@ -199,12 +202,12 @@ if opt.plot
     %% Grid plot -- signal
     fig_set(1),clf
     H = grid_plot(proc_selectChannels(data.cnt,1:numel(data.cnt.clab)/2), mnt, defopt_scalp_power,opt_grid{:});
-    set(gcf,'Name',['Epoched signal ' strtail(data.cnt.clab{1})])
+    set(gcf,'Name',['Epoched signal ' str_tail(data.cnt.clab{1})])
     % printFigure(['grid_oxy' saveapp], [36 20], opt_fig);  
 
-    fig_set(2),clf
-    H = grid_plot(proc_selectChannels(data.cnt,(numel(data.cnt.clab)/2)+1:numel(data.cnt.clab)), mnt, defopt_scalp_power,opt_grid{:});
-    set(gcf,'Name',['Epoched signal ' strtail(data.cnt.clab{end})])
+    %fig_set(2),clf
+    %H = grid_plot(proc_selectChannels(data.cnt,(numel(data.cnt.clab)/2)+1:numel(data.cnt.clab)), mnt, defopt_scalp_power,opt_grid{:});
+    %set(gcf,'Name',['Epoched signal ' str_tail(data.cnt.clab{end})])
     % printFigure(['grid_deoxy' saveapp], [36 20], opt_fig);
 
     %% R-Square plots
@@ -215,7 +218,7 @@ if opt.plot
     for od=[1 2]   %oxy-deoxy
       figure
       imagesc(dat_r.x(:,(od-1)*nclab+1:od*nclab,ii)')
-      title([dat_r.className{ii} ' ' strtail(dat_r.clab{od*nclab})],opt_tit{:})
+      title([dat_r.className{ii} ' ' str_tail(dat_r.clab{od*nclab})],opt_tit{:})
       ylabel('Channel',opt_tit{:}),xlabel('Time',opt_tit{:})
       xt=  str2num(get(gca,'XTickLabel'));
     %   yt=  str2num(get(gca,'YTickLabel'));
@@ -266,8 +269,8 @@ for ci= 1:size(class_combination,1)
   
     % find the feature/time intervals
     fvr = proc_r_square_signed(fv);
-    [ival_cfy{ci},nfo]= select_time_intervals(fvr,'nIvals',opt.nIvals,'clab_pick_peak', fv.clab,...
-      'visualize',0,'intersample_timing',1);
+    [ival_cfy{ci},nfo]= select_time_intervals(fvr,'nIvals',opt.nIvals,'ClabPickPeak', fv.clab,...
+      'visualize',0,'IntersampleTiming',1);
 
     bbci.feature.param = { {ival_cfy{ci}} };
     % Get feature vector ans train classifier
@@ -298,11 +301,13 @@ if nComb > 1,
 bi=2;
   bbci= copy_fields(bbci, bbci_all(bi), cfy_fields);
 %     bbci.feature.param = { {ival_cfy{ci}} };
+else
+    bi=1;
 end
 
 comb = class_combination(bi,:);
 fprintf('Chosen (best) combination: classes %s vs %s.\n',data.cnt.className{comb(1)},data.cnt.className{comb(2)})
-bbci.classifier.classes=data.cnt.className(comb);
+%bbci.classifier.classes=data.cnt.className(comb);
 %% Set the BBCI struct
 
 % BBCI.SIGNAL preprocessing (really just for online data?)
