@@ -1,12 +1,10 @@
-global NIRS_MAT_DIR
-NIRS_MAT_DIR = [DATA_DIR 'nirs/uni/unsorted'];
-
+BBCI.NirsMatDir = [BBCI.DataDir 'nirs/uni/'];
 %%%% first do the calibration for the NIRS:
 BC= [];
-BC.fcn= @bbci_calibrate_nirs;
+BC.fcn= @bbci_calibrate_NIRS_tiny;
 BC.read_fcn=@file_NIRSreadMatlab;
-BC.folder= NIRS_MAT_DIR;
-BC.file= 'ni_imag_fbarrow_pcovmeanVPeag';
+BC.folder= BBCI.NirsMatDir;
+BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';
 
 % In demos, we just write to the temp folder. Otherwise, the default
 % choice would be fine.
@@ -27,7 +25,7 @@ BC= [];
 BC.fcn= @bbci_calibrate_csp;
 BC.folder= BBCI.RawDir;
 BC.file= 'VPeag_10_06_17/imag_fbarrow_pcovmeanVPeag';
-BC.read_fcn=@file_loadBV;% @file_readBV;
+BC.read_fcn=@file_readBV;
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
 BC.marker_param= {{1, 2; 'left', 'right'}};
@@ -82,7 +80,7 @@ bbci.control(2).source_list=2;
 
 % for log:
 bbci.log.output= 'screen&file';
-bbci.log.folder= TMP_DIR;
+bbci.log.folder= BBCI.TmpDir;
 bbci.log.classifier= 1;
 
 % % or just load the predefined classifier
