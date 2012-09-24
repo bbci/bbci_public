@@ -49,20 +49,28 @@ function fv_aucval= proc_aucValues(fv, varargin)
 % 09-2012 stefan.haufe@tu-berlin.de
 % 07-2012 Johannes Hoehne   - Updated the help documentation & probs
 
-props= { 'Stats',             0,           '!BOOL';
-         'Bonferroni' 0    '!BOOL';
-         'Alphalevel' []   'DOUBLE'};
+props= {'Stats'         0    '!BOOL'
+        'Bonferroni'    0    '!BOOL'
+        'Alphalevel'    []   'DOUBLE'
+       };
+props_mcdiff= procutil_multiclassDiff;
 
 if nargin==0,
-  fv_aucval= props; return
+  fv_aucval= cat(3, props, props_mcdiff); return
 end
 
-fv = misc_history(fv);
+fv= misc_history(fv);
 misc_checkType(fv, 'STRUCT(x y)');
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
+opt_checkProplist(opt, props, props_mcdiff);
+
+if size(fv.y,1)>2,
+  opt_mcdiff= opt_substruct(opt, props_mcdiff);
+  fv_aucval= procutil_multiclassDiff(fv, {@proc_aucValues,opt}, opt_mcdiff);
+  return;
+end
 
 sz= size(fv.x);
 fv.x= reshape(fv.x, [prod(sz(1:end-1)), sz(end)]);

@@ -110,7 +110,7 @@ opt_addScale = opt_substruct(opt, props_addScale(:,1));
 % end
 
 if nargin<2 || isempty(mnt),
-  mnt= strukt('clab',epo.clab);
+  mnt= struct('clab',{epo.clab});
 else
   mnt= mnt_adaptMontage(mnt, epo);
 end
@@ -147,7 +147,7 @@ if ~isempty(opt.YLim),
   if ~isdefault.ScalePolicy,
     warning('opt.YLim overrides opt.ScalePolicy');
   end
-  opt.ScalePolicy= {opt.yLim};
+  opt.ScalePolicy= {opt.YLim};
   isdefault.ScalePolicy= 0;
 end
 if ~iscell(opt.ScalePolicy),

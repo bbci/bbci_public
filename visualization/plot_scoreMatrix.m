@@ -20,7 +20,7 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props, 1);
 [opt, isdefault]= ...
     opt_overrideIfDefault(opt, isdefault, ...
-                          'mnt', mnt_setElectrodePositions(epo_r.clab));
+                          'Mnt', mnt_setElectrodePositions(epo_r.clab));
 
 if isstruct(ival),
   ival= ival.ival;

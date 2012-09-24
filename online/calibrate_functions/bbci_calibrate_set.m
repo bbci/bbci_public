@@ -29,10 +29,14 @@ function bbci= bbci_calibrate_set(bbci, varargin)
 % 01-2012 Benjamin Blankertz
 
 
-BCS= bbci.calibrate.settings;
+if isfield(bbci.calibrate, 'settings'),
+  BCS= bbci.calibrate.settings;
+else
+  BCS= [];
+end
 
 if length(varargin)==0,
-  disp(bbci.calibrate.settings);
+  disp(BCS);
 %  bbci_prettyPrint(bbci.calibrate.settings);
   clear bbci
   return;
@@ -67,7 +71,7 @@ if isstruct(varargin{1}),
   flds= varargin(2:end);
 else
 % BBCI= bbci_calibrate_set(BBCI, 'Param1', Value1, ...)
-  data.result= propertylist2struct(varargin{:});
+  data.result= opt_proplistToStruct(varargin{:});
   flds= fieldnames(data.result);
 end
   
