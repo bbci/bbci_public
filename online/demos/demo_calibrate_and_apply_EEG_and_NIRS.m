@@ -22,7 +22,7 @@ bbci_nirs.source.acquire_param= {calib_nirs.cnt, calib_nirs.mrk, struct('realtim
 %%%% now do the calibration for the EEG data:
 
 BC= [];
-BC.fcn= @bbci_calibrate_csp;
+BC.fcn= @bbci_calibrate_csp_tiny;
 BC.folder= BBCI.RawDir;
 BC.file= 'VPeag_10_06_17/imag_fbarrow_pcovmeanVPeag';
 BC.read_fcn=@file_readBV;
