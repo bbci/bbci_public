@@ -23,8 +23,8 @@ function util_printFigure(file, varargin)
 
 
 props = {   
-        'PaperSize'         'auto'          '!CHAR(maxAspect)|!DOUBLE[- -]';
-        'Format'            'eps'           '!CHAR(eps pdf svg epspdf)';
+        'PaperSize'         'auto'          '!CHAR(auto maxAspect)|!DOUBLE[- -]';
+        'Format'            'eps'           '!CHAR(eps pdf svg epspdf png)';
         'Device'            'epsc2'         '!CHAR';
         'Folder'            ''              'CHAR';
         'Prefix'            ''              'CHAR';

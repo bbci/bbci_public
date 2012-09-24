@@ -54,7 +54,7 @@ if BS.figures,
       fig_name= strrep(fig_name, '.', '_');
     end
     filename= fullfile(fig_folder, sprintf('Fig-%02d_%s', ff, fig_name));
-    printFigure(filename, BS.figures_spec{:});
+    util_printFigure(filename, BS.figures_spec{:});
   end
   msg= [msg ' and figures in subfolder _figures'];
 end
