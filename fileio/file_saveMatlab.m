@@ -75,7 +75,7 @@ opt_checkProplist(opt, props);
 
 vers = version;
 if (str2double(vers(1)) == 7)
-  opt_save= {'-V6'};
+  opt_save= {'-v6'};
 else
   opt_save= {};
 end
