@@ -90,3 +90,9 @@ Advanced topics
 
 \*Depending on permission to include Guido's code into the BBCI toolbox.
 
+Miscellaneous
+-------------
+
+* [Git Info](git.html)
+* [Markdown help](markdown.html)
+
