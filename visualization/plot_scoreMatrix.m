@@ -20,11 +20,14 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props, 1);
 [opt, isdefault]= ...
     opt_overrideIfDefault(opt, isdefault, ...
-                          'mnt', mnt_setElectrodePositions(epo_r.clab));
+                          'Mnt', mnt_setElectrodePositions(epo_r.clab));
 
 if isstruct(ival),
   ival= ival.ival;
 end
+% Sort intervals
+[dmy, si]= sort(ival(:,1));
+ival= ival(si,:);
 
 % order channels for visualization:
 %  scalp channels first, ordered from frontal to occipital (as returned
@@ -64,7 +67,7 @@ ylimits= get(H.ax, 'YLim');
 set(H.ax, 'YLim',ylimits+[-2 2], 'NextPlot','add');
 ylimits= ylimits+[-1 1];
 for ii= 1:size(ival,1),
-  xx= ival(ii,:) + [-1 1]*1000/epo_r.fs/2;
+  xx= ival(ii,:) + [-1 0]*1000/epo_r.fs/2;
   H.box(:,ii)= line(xx([1 2; 2 2; 2 1; 1 1]), ...
                     ylimits([1 1; 1 2; 2 2; 2 1]), ...
                     'Color',[0 0.5 0], 'LineWidth',0.5);

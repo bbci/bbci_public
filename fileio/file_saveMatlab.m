@@ -18,7 +18,7 @@ function file_saveMatlab(file, dat, mrk, mnt, varargin)
 %                  channels. (default 1)
 %   'Format' - CHAR: 'double', 'float', 'int16', or 'auto' (default).
 %             In 'auto' mode, the function tries to find a lossless conversion
-%             of the signals to INT16 (see property '.resolution_list'). 
+%             of the signals to INT16 (see property '.ResolutionList'). 
 %             If this is possible '.format' is set to 'INT16', otherwise it is
 %             set to 'DOUBLE'.
 %   'Resolution' - CHAR|INT : Resolution of signals, when saving in format INT16.
@@ -59,7 +59,7 @@ props = {'Path',            BBCI.MatDir    'CHAR';
          'Channelwise',     1               '!BOOL';
          'Format'           'auto'          '!CHAR(double float int16 auto)';
          'Resolution'       'auto'          '!CHAR(auto)|!DOUBLE[1]|!DOUBLE[-]';
-         'Resolution_list'  [1 0.5 0.1]     '!DOUBLE[-]';
+         'ResolutionList'  [1 0.5 0.1]     '!DOUBLE[-]';
          'Accuracy'         10e-10          '!DOUBLE[1]';
          'AddChannels'      0               '!BOOL';
          'FsOrig'           []              'DOUBLE[1]';
@@ -75,7 +75,7 @@ opt_checkProplist(opt, props);
 
 vers = version;
 if (str2double(vers(1)) == 7)
-  opt_save= {'-V6'};
+  opt_save= {'-v6'};
 else
   opt_save= {};
 end

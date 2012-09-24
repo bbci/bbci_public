@@ -23,10 +23,10 @@ function S= bbciutil_transformProc2FcnParam(S)
 % 02-2011 Benjamin Blankertz
 
 
-if ~isfield(S, 'proc') || isempty(S.proc),
-  if (~isfield(S,'param') || isempty(S.param)) && ...
-          isfield(S, 'fcn') && ~isempty(S.fcn),
-    for k= 1:length(S),
+if ~isfield(S, 'proc'),
+  for k= 1:length(S),
+    if (~isfield(S,'param') || isempty(S(k).param)) && ...
+          isfield(S(k), 'fcn') && ~isempty(S(k).fcn),
       S(k).param= repmat({{}}, [1 length(S(k).fcn)]);
     end
   end

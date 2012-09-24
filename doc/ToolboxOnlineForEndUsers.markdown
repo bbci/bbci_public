@@ -3,207 +3,85 @@ BBCI Toolbox for Users
 
 For the 'end user' of the BBCI online system, essentially two operations
 are required: *calibration* of the system and online *application* of
-the system. These operations are performed by the functions
-`bbci_calibration`{.backtick} and `bbci_apply`{.backtick} respectively.
-After calibration, the calibrated system can be saved via
-`bbci_save`{.backtick} (advisable, but not required).
+the system. These operations are performed by the functions `bbci_calibration` and `bbci_apply` respectively.
+After calibration, the calibrated system can be saved via `bbci_save` (advisable, but not required).
+Here is a simple (but complete) example, how the system can be calibrated and started in online operation:
 
-Here is a simple (but complete) example, how the system can be
-calibrated and started in online operation:
+	% Define in 'bbci' the type of calibration and calibration specific parameters:
+	bbci= struct('calibrate');
+	bbci.calibrate.fcn= @bbci_calibrate_csp;
+	bbci.calibrate.settings.classes= {'left', 'right'};
 
+	% Run calibration:
+	[bbci, data]= bbci_calibrate(bbci);
+	
+	% Optionally specify in 'bbci' application specific parameters:
+	bbci.feedback.receiver= 'matlab';
+	bbci.feedback.fcn= @bbci_feedback_cursor;
+	bbci.feedback.opt= strukt('trials_per_run', 80);
 
-~~~~ {#CA-b36aacc73efc7280f89c909f1da83907338191a3 dir="ltr" lang="en"}
-% Define in 'bbci' the type of calibration and calibration specific parameters:
-bbci= struct('calibrate');
-bbci.calibrate.fcn= @bbci_calibrate_csp;
-bbci.calibrate.settings.classes= {'left', 'right'};
+	% Saving the classifier is not necessary for operation, but advisable.
+	% Optinally feature vectors and figures of the calibration can be saved.
+	bbci_save(bbci, data);
 
-% Run calibration:
-[bbci, data]= bbci_calibrate(bbci);
-
-% Optionally specify in 'bbci' application specific parameters:
-bbci.feedback.receiver= 'matlab';
-bbci.feedback.fcn= @bbci_feedback_cursor;
-bbci.feedback.opt= strukt('trials_per_run', 80);
-
-% Saving the classifier is not necessary for operation, but advisable.
-% Optinally feature vectors and figures of the calibration can be saved.
-bbci_save(bbci, data);
-
-% Start online operation of the BBCI system:
-[bbci, data]= bbci_apply(bbci);
-~~~~
+	% Start online operation of the BBCI system:
+	[bbci, data]= bbci_apply(bbci);
 
 * * * * *
 
 The user can control the calibration via the fields of
-`bbci.calibrate`{.backtick}:
+`bbci.calibrate`:
 
 I. Defining the calibration file:
 
-<table border="1" f>
-    <tr> <td>
-`.folder`{.backtick}
-</td><td>
-CHAR, default `TODAY_DIR`{.backtick} (global variable)</td></tr>
-        <tr> <td>
-
-`.file`{.backtick}
-</td><td>
-CHAR, no default: must be specified </td></tr>
-        <tr> <td>
-
-`.read_fcn`{.backtick}
-</td><td>
-FUNC HANDLE, default `@eegfile_readBV`{.backtick} </td></tr>
-        <tr> <td>
-
-`.read_param`{.backtick}
-</td><td>
-CELL, default `{}`{.backtick} </td></tr>
-        <tr> <td>
-
-`.marker_fcn`{.backtick}
-</td><td>
-FUNC HANDLE, default `[]`{.backtick} </td></tr>
-        <tr> <td>
-
-`.marker_param`{.backtick}
-</td><td>
-CELL, default `{}`{.backtick} </td></tr>
-        <tr> <td>
-
-`.montage_fcn`{.backtick}
-</td><td>
-FUNC HANDLE, default `@getElectrodePositions`{.backtick} </td></tr>
-        <tr> <td>
-
-`.montage_param`{.backtick}
-</td><td>
-CELL, default `{}`{.backtick}
-
-</td>
-    </tr>
+<table border="1" > <tr> <td> .folder </td><td> CHAR, default TODAY_DIR (global variable)</td></tr>
+<tr> <td> .file </td><td> CHAR, no default: must be specified </td></tr>
+<tr> <td> .read_fcn </td><td> FUNC HANDLE, default @eegfile_readBV </td></tr>
+<tr> <td> .read_param </td><td> CELL, default {} </td></tr>
+<tr> <td> .marker_fcn </td><td> FUNC HANDLE, default [] </td></tr>
+<tr> <td> .marker_param </td><td> CELL, default {} </td></tr>
+<tr> <td> .montage_fcn </td><td> FUNC HANDLE, default @getElectrodePositions </td></tr>
+<tr> <td> .montage_param </td><td> CELL, default {} </td> </tr>
 </table>
 
-​II. Defining the type of calibration and calibration specific
+II. Defining the type of calibration and calibration specific
 parameters
 
-<table border="1" f>
-    <tr> <td>`.fcn`{.backtick}
-</td><td>
-FUNC HANDLE, no default: must be specified; this function should have
-the prefix `bbci_calbrate_`{.backtick} and is called by the wrapper
-function `bbci_calibrate`{.backtick} </td></tr>
-        <tr> <td>
- 
-
-`.settings`{.backtick}
-</td><td>
-STRUCT defining the calibration specific parameters. Which parameters
-can be specified and their meaning should be described in the help of
-the specific calibration function. There is no general format.
-</td>
-    </tr>
+<table border="1" > <tr> <td>.fcn </td><td> FUNC HANDLE, no default: must be specified; this function should have the 
+prefix bbci_calbrate_ and is called by the wrapper
+function bbci_calibrate </td></tr>
+<tr> <td> .settings </td><td> STRUCT defining the calibration specific parameters. Which parameters
+can be specified and their meaning should be described in the help of the specific calibration function. There is no general format. </td> </tr>
 </table>
 
-​III. Defining whether and how information should be logged
+III. Defining whether and how information should be logged
 
 
-<table border="1" f>
-    <tr> <td>`.log`{.backtick}
-</td><td>
-<table border="1" f>
-    <tr> <td>
-`.output`{.backtick}
-</td><td>
-CHAR, default `'screen&file'`{.backtick} </td></tr>
-        <tr> <td>
-
-
-`.folder`{.backtick}
-</td><td>
-CHAR, default `TODAY_DIR`{.backtick} </td></tr>
-        <tr> <td>
-
-
-`.file`{.backtick}
-</td><td>
-CHAR, default 'bbci\_calibrate\_log' </td></tr>
-        <tr> <td>
-
-
-`.force_overwriting`{.backtick}
-</td><td>
-BOOL, default `0`{.backtick}
-</td>
-    </tr>
+<table border="1" > <tr> <td>.log </td><td>
+<table border="1" >
+<tr> <td> .output </td><td> CHAR, default 'screen&file' </td></tr>
+<tr> <td> .folder </td><td> CHAR, default TODAY_DIR </td></tr>
+<tr> <td> .file </td><td> CHAR, default 'bbci_calibrate_log' </td></tr>
+<tr> <td> .force_overwriting </td><td> BOOL, default 0 </td></tr>
+</table> </td> </tr>
 </table>
 
-</td>
-    </tr>
-</table>
+IV. Defining what and how calibration data should be saved
 
-​IV. Defining what and how calibration data should be saved
-
+<table border="1" f> <tr> <td> .save </td><td>
 <table border="1" f>
-    <tr> <td>
-`.save`{.backtick} </td><td>
-
-<table border="1" f>
-    <tr> <td>
-    
-`'.file`{.backtick}
-</td><td>
-CHAR, default 'bbci\_classifier' </td></tr>
-        <tr> <td>
-
-
-`.folder`{.backtick}
-</td><td>
-CHAR, default `TODAY_DIR`{.backtick} </td></tr>
-        <tr> <td>
-
- 
-`.overwrite`{.backtick}
-</td><td>
-BOOL, default `1`{.backtick}. If `0`{.backtick}, numbers are appended </td></tr>
-        <tr> <td>
-
-
-`.raw_data`{.backtick}
-</td><td>
-BOOL, default `0`{.backtick}. If `1`{.backtick}, also calibration source
-data (fields `cnt`{.backtick}, `mrk`{.backtick}, and `mnt`{.backtick})
-are stored. Otherwise only the other fields of `data`{.backtick} are
+<tr> <td> .file </td><td> CHAR, default 'bbci_classifier' </td></tr>
+<tr> <td> .folder </td><td> CHAR, default TODAY_DIR </td></tr>
+<tr> <td> .overwrite </td><td> BOOL, default 1. If 0, numbers are appended </td></tr>
+<tr> <td> `.raw_data </td><td> BOOL, default 0. If 1, also calibration source
+data (fields cnt, mrk, and mnt) are stored. Otherwise only the other fields of data are
 stored </td></tr>
-        <tr> <td>
-
-
-`.data`{.backtick}
-</td><td>
-CHAR, default `separately`{.backtick} </td></tr>
-        <tr> <td>
-
-
-`.figures`{.backtick}
-</td><td>
-BOOL, default `0`{.backtick}. If true, Matlab figures generated by
-calibration are saved in a subfolder `figures`{.backtick} </td></tr>
-        <tr> <td>
-
-
-`.figures_spec`{.backtick}
-</td><td>
-CELL, default `{'paperSize','auto'}`{.backtick}: specification for
-saving the figures: this is passed to the function
-`printFigure`{.backtick}
-</td>
-    </tr>
-</table>
-
-</td>
-    </tr>
+<tr> <td> .data </td><td> CHAR, default separately </td></tr>
+<tr> <td> .figures </td><td> BOOL, default 0. If true, Matlab figures generated by
+calibration are saved in a subfolder figures </td></tr>
+<tr> <td> .figures_spec </td><td> CELL, default {'paperSize','auto'}: specification for
+saving the figures: this is passed to the function printFigure </td> </tr>
+</table> </td></tr>
 </table>
 
 * * * * *
@@ -218,31 +96,31 @@ view point is debateble.) Anyway, for exploratory studies, interactive
 optimization of the calibration process to the data of each participant
 is desirable. In the BBCI Online System this can be done by iterating
 the specification of calibration parameters in
-`bbci.calibrate.settings`{.backtick} and rerunning
-`bbci_calibrate`{.backtick}. In order to speed up and facilitate this
+`bbci.calibrate.settings` and rerunning
+`bbci_calibrate`. In order to speed up and facilitate this
 process, some tricks are good to know (which also have to be taken into
 account when writing new *calibrate functions*.
 
 To avoid re-loading the calibration data each time, you can provide the
-`data`{.backtick} structure, which is obtained as second output argument
-of `bbci_calibrate`{.backtick}, as further input argument to
-`bbci_calibrate`{.backtick}:
+`data` structure, which is obtained as second output argument
+of `bbci_calibrate`, as further input argument to
+`bbci_calibrate`:
 
 
-~~~~ {#CA-c855fc06666c40f4b52e38888cc78fa1dc486b03 dir="ltr" lang="en"}
-% Run calibration for the first time
-[bbci, data]= bbci_calibrate(bbci);
 
-% Change some calibration specific settings, e.g.,
-bbci.calibrate.settings.band= [10 13];
+	% Run calibration for the first time
+	[bbci, data]= bbci_calibrate(bbci);
 
-% Run calibration again. Calibration data is stored in the variable data,
-% so it needs not to be reloaded.
-[bbci, data]= bbci_calibrate(bbci, data);
-~~~~
+	% Change some calibration specific settings, e.g.,
+	bbci.calibrate.settings.band= [10 13];
+
+	% Run calibration again. Calibration data is stored in the variable data,
+	% so it needs not to be reloaded.
+	[bbci, data]= bbci_calibrate(bbci, data);
+
 
 More over, the calibration-specific function
-`bbci_calibrate_*`{.backtick} might be implemented such that some
+`bbci_calibrate_*` might be implemented such that some
 processing steps re be reused (without the user having to take care
 about that). For example, it might not be required to run artifact
 rejection again in subsequent runs (unless parameters that would affect
@@ -252,10 +130,10 @@ Another mechanism (which also has to be taken into account by
 programmers of new calibrate functions) lets users take over selections
 that might have been performed by a calibration run: All results of
 parameter selections during calibration should be store in
-`data.result`{.backtick}. In particular, the selected values for
+`data.result`. In particular, the selected values for
 parameters that have been declared as 'auto' in
-`bbci.calibrate.settings`{.backtick} are stored in
-`data.result`{.backtick} in the same field. For example,
+`bbci.calibrate.settings` are stored in
+`data.result` in the same field. For example,
 
     % This example assumes bbci.calibrate.fcn= @bbci_calibrate_csp
     % The following is default anyway, but made explicit here for demonstration

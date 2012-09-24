@@ -107,6 +107,9 @@ if isdefault.visu_laplace && ~opt.do_laplace,
   opt.visu_laplace= 0;
 end
 
+% store chosen default settings back in bbci variable
+bbci.calibrate.settings= opt;
+
 
 %% -- Prepare visualization --
 %
@@ -129,6 +132,7 @@ end
 
 if ~data.isnew && isfield(data, 'result'),
   previous= data.result;
+  data= rmfield(data, 'result');
 else
   previous= struct;
 end
@@ -145,10 +149,10 @@ mrk_all= data.mrk;
 flds= {'reject_artifacts', 'reject_channels', ...
        'reject_artifacts_opts', 'clab'};
 if data.isnew || ~isfield(data, 'previous_settings') || ...
-      ~fieldsareequal(opt, data.previous_settings, flds),
+      ~struct_areFieldsEqual(opt, data.previous_settings, flds),
   BC_result.rejected_trials= NaN;
   BC_result.rejected_clab= NaN;
-  if opt.reject_artifacts | opt.reject_channels,
+  if opt.reject_artifacts || opt.reject_channels,
     fig_set(3, 'name','Artifact rejection');
     [mk_clean , rClab, rTrials]= ...
         reject_varEventsAndChannels(data.cnt, mrk_all, opt.check_ival, ...
@@ -173,7 +177,7 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
   end
 else
   result_flds= {'rejected_trials', 'rejected_clab', 'clab'};
-  BC_result= copy_fields(BC_result, previous, result_flds);
+  BC_result= struct_copyFields(BC_result, previous, result_flds);
 end
 
 if isequal(opt.classes, 'auto'),

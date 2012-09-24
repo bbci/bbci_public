@@ -31,7 +31,6 @@ function fv_out= procutil_multiclassDiff(fv, diff_fnc, varargin)
 
 % 10-2010 Benjamin Blankertz
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
-fv = misc_history(fv);
 
 
 props= {'policy'  'pairwise'  'DOUBLE[- 2]|CHAR(pairwise each-against-last each-against-rest)'};
@@ -39,19 +38,17 @@ props= {'policy'  'pairwise'  'DOUBLE[- 2]|CHAR(pairwise each-against-last each-
 if nargin==0,
   fv_out= props; return
 end
+fv = misc_history(fv);
 
-if length(varargin)==1 && ~isstruct(varargin{1}),
+if length(varargin)==1 && ~isstruct(varargin{1}) && ~isempty(varargin{1}),
   opt= struct('policy', varargin{1});
 else
   opt= opt_proplistToStruct(varargin{:});
 end
-[opt, isdefault]= opt_setDefaults(opt, props);
-opt= propertylist2struct(varargin{:});
-
-opt_checkProplist(opt, props);
+[opt, isdefault]= opt_setDefaults(opt, props, 1);
 
 
-[fcn, params]= getFuncParam(diff_fnc);
+[fcn, params]= misc_getFuncParam(diff_fnc);
 
 if ischar(opt.policy),
   switch(opt.policy),
@@ -66,9 +63,9 @@ end
 fv_out= [];
 if isnumeric(opt.policy),
   for ic= 1:size(opt.policy,1),
-    ep= proc_selectClasses_keepVoids(fv, opt.policy(ic,:));
-    fv_tmp= feval(['proc_' fcn], ep, params{:});
-    fv_out = proc_appendEpochs(fv_out, fv_tmp);
+    ep= proc_selectClasses(fv, opt.policy(ic,:), 'RemoveVoidClasses',0);
+    fv_tmp= fcn(ep, params{:});
+    fv_out= proc_appendEpochs(fv_out, fv_tmp);
   end
   return;
 else

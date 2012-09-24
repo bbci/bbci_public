@@ -16,20 +16,20 @@ BC= bbci.calibrate;
 if exist('data','var') && isfield(data,'cnt'),
   data.isnew= 0;  
 else
-  data = bbci_load(bbci);
+  data= bbci_load(bbci);
 end
 
 data.log= bbci_log_open(BC.log);
 
 % Log info about calibration files and BBCI settings
 bbci_log_write(data, '#Calibration files from folder <%s>:', BC.folder);
-file_counter = 1;
+file_counter= 1;
 for k= 1:length(data.fileinfo),
-  for f = 1:length(data.fileinfo{k}),
+  for f= 1:length(data.fileinfo{k}),
     msg= sprintf('File %d: %s <%s>, size %d', file_counter, data.fileinfo{k}(f).name, ...
                  data.fileinfo{k}(f).date, data.fileinfo{k}(f).bytes);
     bbci_log_write(data, ['#' msg]);
-    file_counter = file_counter + 1;
+    file_counter= file_counter + 1;
   end
 end
 bbci_log_write(data, '\n#Settings of BBCI:');

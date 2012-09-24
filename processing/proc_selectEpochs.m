@@ -32,13 +32,9 @@ end
 misc_checkType(epo, 'STRUCT(x clab fs)');
 epo= misc_history(epo);
 
-if mod(length(varargin),2)==1,
-  if isequal(idx, 'not'),
-    idx= setdiff(1:size(epo.y,2), varargin{1});
-    varargin= varargin(2:end);
-  else
-    error('if 3rd argument is given, the 2nd must be ''not''');
-  end
+if isequal(idx, 'not'),
+  idx= setdiff(1:size(epo.y,2), varargin{1});
+  varargin= varargin(2:end);
 end
 
 opt= opt_proplistToStruct(varargin{:});
@@ -56,10 +52,10 @@ if isfield(epo, 'y'),
   epo.y= epo.y(:,idx);
 
   nonvoidClasses= find(any(epo.y==1,2));
-  if length(nonvoidClasses)<size(epo.y,1) && opt.removevoidclasses
+  if length(nonvoidClasses)<size(epo.y,1) && opt.RemoveVoidClasses
     msg= sprintf('void classes removed, %d classes remaining', ...
                  length(nonvoidClasses));
-    bbci_warning(msg, 'selection', mfilename);
+    warning(msg, 'selection', mfilename);
     epo.y= epo.y(nonvoidClasses,:);
     if isfield(epo, 'className'),
       epo.className= {epo.className{nonvoidClasses}};

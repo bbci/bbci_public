@@ -38,7 +38,7 @@ opt_checkProplist(opt, props, props_scalp);
 
 opt_scalp= opt_substruct(opt, props_scalp(:,1));
 
-if isdefault.YUnit && isfield(erp, 'YUnit'),
+if isdefault.YUnit && isfield(erp, 'yUnit'),
   opt.YUnit= ['[' erp.yUnit ']'];
 end
 

@@ -1,4 +1,4 @@
-function dat  = proc_wavelets(dat,varargin)
+function dat  = proc_wavelets(dat,freq,varargin)
 % PROC_WAVELETS -  calculates the continuous wavelet transform for a
 % specified range of scales. (Wavelet coefficients are obtained in Fourier
 % space.
@@ -8,18 +8,17 @@ function dat  = proc_wavelets(dat,varargin)
 % dat = proc_wavelets(dat,freq,<OPT>)
 %
 %Arguments:
-% DAT      -  data structure of continuous or epoched data (2D or 3D)
+% DAT      -  data structure of continuous or epoched data
+% FREQ     -  Fourier center frequencies of the wavelets (eg [1:100] Hz)
 % OPT - struct or property/value list of optional properties:
 % 'Mother' -  mother wavelet (default 'morlet'). Morlet is currently the
 %             only implemented wavelet.
-% 'Freq'   -  Fourier center frequencies of the wavelets (default: alpha
-%             band [8:12]). 
 % 'w0'    -   unitless frequency constant defining the trade-off between
 %             frequency resolution and time resolution. For Morlet
 %             wavelets, it sets the width of the Gaussian window. (default 7)
 %
 %Returns:
-% DAT    -    updated data structure with a higher dimension (3D or 4D).
+% DAT    -    updated data structure with a higher dimension.
 %             For continuous data, the dimensions correspond to 
 %             time x frequency x channels. For epoched data, time x
 %             frequency x channels x epochs.
@@ -40,16 +39,8 @@ function dat  = proc_wavelets(dat,varargin)
 
 % Author: Matthias Treder (2010,2012)
 
-if numel(varargin)>0 && ~ischar(varargin{1})
-  freq = varargin{1};
-  varargin(1) = [];
-else
-  freq = 8:12;
-end
-
 props = {'Mother',             'morlet',            '!CHAR(morlet)';
-         'w0',                 7,                   '!DOUBLE[1]';
-         'Freq',                freq,               '!DOUBLE';
+         'w0',                 7,                   '!DOUBLE[1]'
          };
 
 if nargin==0,
@@ -63,6 +54,7 @@ opt_checkProplist(opt, props);
 misc_checkType(dat,'STRUCT(x fs)');
 misc_checkType(dat.fs,'!DOUBLE[1]','dat.fs');
 misc_checkType(dat.x,'DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]','dat.x');  % accept about everything except row vectors
+misc_checkType(freq,'DOUBLE[-]');
 
 %% Prepare
 clear pi
@@ -72,7 +64,7 @@ dt = 1/dat.fs;  % time resolution (determined by sampling frequency)
 % Prepare output stuff
 info = struct();
 info.fun = cell(1,numel(freq));
-info.frequency = opt.Freq;
+info.frequency = freq;
 
 % Needed for Fourier version
 N = size(dat.x,1);      % Length of signal = length of FFT
@@ -82,7 +74,7 @@ if siz(end)==1; siz(end)=[]; end  % cope with vectors with singleton dimensions
 w = [(2*pi*[1:floor(N/2)])/(N*dt)  -(2*pi*[floor(N/2)+1:N])/(N*dt)]; % Angular frequency for k<= N/2
 
 F = fft(dat.x);
-dat.x = zeros([N length(opt.Freq) siz]);
+dat.x = zeros([N length(freq) siz]);
 
 %% Define mother wavelet, normalization factor, and fourier period
 % [ and normalization ..]
@@ -94,9 +86,9 @@ switch(opt.Mother)
 end
 
 %% Define scales corresponding to the desired frequencies
-scales = zeros(1,numel(opt.Freq));    % Wavelet scales
-for ii=1:numel(opt.Freq)
-  f=opt.Freq(ii);
+scales = zeros(1,numel(freq));    % Wavelet scales
+for ii=1:numel(freq)
+  f=freq(ii);
   scales(ii) = eval(scf);
 end
 

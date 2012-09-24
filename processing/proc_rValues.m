@@ -9,10 +9,19 @@ function fv_rval= proc_rValues(fv, varargin)
 %
 %Returns:
 % FV_RVAL - data structure of r values 
+%  .x     - biserial correlation between each featur and the class label
 %  .se    - contains the standard error of atanh(r), if opt.Stats==1
 %  .p     - contains the p value of null hypothesis that there is zero
 %           correlation between feature and class-label, if opt.Stats==1
+%           If opt.Bonferroni==1, the p-value is multiplied by
+%           fv_rval.corrfac
 %  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
+%           if opt.Bonferroni==1, the p-value is multiplied by
+%           fv_rval.corrfac and then logarithmized
+%  .sigmask - binary array indicating significance at alpha level
+%             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
+%  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
+%             if opt.Bonferroni==1
 %
 %Properties:
 % 'TolerateNans': observations with NaN value are skipped
@@ -26,6 +35,10 @@ function fv_rval= proc_rValues(fv, varargin)
 %           standard error of atanh(r), the p-value for the null 
 %           Hypothesis that the correlation is zero, 
 %           and the "signed log p-value"
+% 'Bonferroni' - if true, Bonferroni corrected is used to adjust p-values
+%                and their logarithms
+% 'Alphalevel' - if provided, a binary indicator of the significance to the
+%                alpha level is returned for each feature in fv_rval.sigmask
 % 
 %Description:
 % This function calculates the bi-serial correlation coefficient in
@@ -44,26 +57,28 @@ function fv_rval= proc_rValues(fv, varargin)
 % Benjamin Blankertz
 % 09-2012 stefan.haufe@tu-berlin.de
 
-props= { 'TolerateNans',      0,           'BOOL|DOUBLE'
-         'ValueForConst',     NaN,         'DOUBLE'
-         'MulticlassPolicy',  'pairwise',  'CHAR(pairwise all-against-last each-against-rest)|INT[- 2]'  
-         'Stats',             0,           '!BOOL'};
+props= {'TolerateNans',      0,      'BOOL|DOUBLE'
+        'ValueForConst',     NaN,    'DOUBLE'
+        'Stats',             0,      '!BOOL'
+        'Bonferroni'         0       '!BOOL'
+        'Alphalevel'         []      'DOUBLE'
+       };
+props_mcdiff= procutil_multiclassDiff;
 
 if nargin==0,
-  fv_rval= props; return
+  fv_rval= cat(3, props, props_mcdiff); return
 end
 
-fv = misc_history(fv);
+fv= misc_history(fv);
 misc_checkType(fv, 'STRUCT(x y)');
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
-
+opt_checkProplist(opt, props, props_mcdiff);
 
 if size(fv.y,1)>2,
-  fv_rval= procutil_multiclassDiff(fv, {'rValues',opt}, ...
-                                   opt.MulticlassPolicy);
+  opt_mcdiff= opt_substruct(opt, props_mcdiff);
+  fv_rval= procutil_multiclassDiff(fv, {@proc_rValues,opt}, opt_mcdiff);
   return;
 elseif size(fv.y,1)==1,
   bbci_warning('1 class only: calculating r-values against flat-line of same var', 'r_policy');
@@ -108,7 +123,17 @@ if opt.Stats
   iV= reshape(iV, [sz(1:end-1) 1]);
   fv_rval.se = 1./sqrt(iV);
   fv_rval.p = reshape(2*normal_cdf(-abs(atanh(fv_rval.x(:))), zeros(size(fv_rval.x(:))), fv_rval.se(:)), size(fv_rval.x));
-  fv_rval.sgnlogp = reshape(((log(2)+normcdfln(-abs(atanh(fv_rval.x(:)).*sqrt(iV(:)))))./log(10)), size(fv_rval.x)).*-sign(fv_rval.x);
+  if opt.Bonferroni
+    fv_rval.corrfac = prod(sz(1:end-1));
+    fv_rval.p = min(fv_rval.p*fv_rval.corrfac, 1);
+    fv_rval.sgnlogp = -reshape(((log(2)+normcdfln(-abs(atanh(fv_rval.x(:)).*sqrt(iV(:)))))./log(10))+abs(log10(fv_rval.corrfac)), size(fv_rval.x)).*sign(fv_rval.x);
+  else
+    fv_rval.sgnlogp = -reshape(((log(2)+normcdfln(-abs(atanh(fv_rval.x(:)).*sqrt(iV(:)))))./log(10)), size(fv_rval.x)).*sign(fv_rval.x);
+  end  
+  if ~isempty(opt.Alphalevel)
+    fv_rval.alphalevel = opt.Alphalevel;
+    fv_rval.sigmask = fv_rval.p < opt.Alphalevel;
+  end
 end
 
 if isfield(fv, 'className'),
