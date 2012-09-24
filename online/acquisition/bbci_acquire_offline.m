@@ -79,7 +79,7 @@ else
       error('file is closed');
     end
     if state.cnt_idx(end) > size(state.cnt.x,1),
-      state.running= false;
+      state.running= 0;
       output= {[], [], [], state};
       varargout= output(1:nargout);
       return;
