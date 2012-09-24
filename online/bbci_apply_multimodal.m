@@ -39,7 +39,7 @@ while run,
     end
     events= bbci_apply_evalCondition(data.marker, data.control(ic), ...
                                      bbci.control(ic));
-    data.control(ic).lastcheck= data.control(ie).time;
+    data.control(ic).lastcheck= data.control(ic).time;
     for ev= 1:length(events),
       data.event= events(ev);
       cfy_list= bbci.control(ic).classifier;
