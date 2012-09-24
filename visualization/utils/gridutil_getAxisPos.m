@@ -10,7 +10,7 @@ end
 
 if ~isfield(mnt, 'box'),
   figure;
-  ha= suplot(nChans+1, ic, .01, .01);
+  ha= subplotxl(nChans+1, [], ic, .01, .01);
   pos= get(ha, 'position');
   close(gcf);
   return;

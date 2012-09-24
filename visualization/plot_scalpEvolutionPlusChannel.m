@@ -80,14 +80,14 @@ opt_channel= opt_substruct(opt, props_channel(:,1));
 %   jvm= jvm_hideFig;
 % end
 
-if isfield(erp, 'XUnit'),
+if isfield(erp, 'xUnit'),
   [opt,isdefault]= opt_overrideIfDefault(opt, isdefault, ...
-                                         'XUnit', erp.XUnit);
+                                         'XUnit', erp.xUnit);
 end
 
-if isfield(erp, 'YUnit'),
+if isfield(erp, 'yUnit'),
   [opt,isdefault]= opt_overrideIfDefault(opt, isdefault, ...
-                                         'YUnit', erp.YUnit);
+                                         'YUnit', erp.yUnit);
 end
 
 if isfield(opt, 'ColorOrder'),

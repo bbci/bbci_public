@@ -152,7 +152,7 @@ if ismember(opt.ScalePos, {'horiz','vert'}),
   ud.orientation= opt.ScalePos;
   set(h.cb, 'UserData',ud);
   %% put YUnit on top of Colorbar
-  if isfield(erp, 'YUnit'),
+  if isfield(erp, 'yUnit'),
     axes(h.cb);
     yl= get(h.cb, 'YLim');
     h.YUnit= text(mean(xlim), yl(2), erp.yUnit);

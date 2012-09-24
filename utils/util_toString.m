@@ -48,7 +48,8 @@ if islogical(var)
     str = '[';
     for i = 1:size(var,1)
       for j = 1:size(var,2)
-        str = [str , util_toString(var(i,j), opt),','];
+%        str = [str , util_toString(var(i,j), opt),','];
+        str = [str , util_toString(var(i,j), opt),' '];
       end
       str = [str(1:end-1),';'];
     end
@@ -81,7 +82,8 @@ elseif isnumeric(var)
     str = '[';
     for i = 1:size(var,1)
       for j = 1:size(var,2)
-        str = [str , util_toString(var(i,j), opt),','];
+%        str = [str , util_toString(var(i,j), opt),','];
+        str = [str , util_toString(var(i,j), opt),' '];
       end
       str = [str(1:end-1),';'];
     end
