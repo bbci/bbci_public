@@ -15,6 +15,7 @@ function [bbci_cls, data_adapt]= ...
 %This function is called internally by bbci_apply_adaptation.
 %
 %The selectable parameters are
+%  'UC'       - Update coefficient, default 0.05.
 %  'ival', [] - Time interval relative to the start marker, during which
 %              features are averaged and used for adaptation; 
 %              no default - needs to be set.
@@ -41,6 +42,7 @@ if ischar(marker) && strcmp(marker, 'init'),
           'mrk_start'        []      'INT'
           'mrk_end'          []      'INT'
           'log_mean_limit'   100     '!INT'
+          'tag'              ''      'CHAR'
          };
   opt= opt_proplistToStruct(varargin{:});
   opt= opt_setDefaults(opt, props, 2);

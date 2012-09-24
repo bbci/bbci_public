@@ -54,6 +54,17 @@ Ordered lists look like this:
 
 Text can be *italic*, **bold**, and ***bold italic***
 
-Code fragments are written `like this`
+Inline code fragments are written `like this`. Code blocks are indented by at
+least four spaces or one tab and look like this:
 
+
+    #!/usr/bin/env python
+
+    def foo():
+        print 'Markdown rocks!'
+        print '(And so does Python!)'
+
+
+    if __name__ == '__main__':
+        foo()
 

@@ -20,11 +20,15 @@ function bbci= bbci_calibrate_set(bbci, varargin)
 %Short hand: bc_set
 %
 %Example:
-%  [bbci, data]= bbci_calibrate(bbci);
-%  bbci= bc_set(bbci, data, 'band', 'ival');
-%This copies the band and the time interval that was selected during
-%calibration into the bbci.settings such that it will be used again in 
-%next runs of bbci_calibrate without the time-consuming reselection.
+%  [bbci, calib]= bbci_calibrate(bbci);
+%  Check the value of one parameter in the calbiration settings:
+%  bc_set(bbci, 'band')
+%     -> The value of 'band' is: 'auto'
+%
+%  %Copy the band and the time interval that was selected during
+%  %calibration into the bbci.settings such that it will be used again in 
+%  %next runs of bbci_calibrate without the time-consuming reselection:
+%  bbci= bc_set(bbci, calib, 'band', 'ival');
 
 % 01-2012 Benjamin Blankertz
 
