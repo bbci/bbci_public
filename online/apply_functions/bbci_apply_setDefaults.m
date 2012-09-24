@@ -148,6 +148,7 @@ bbci.control= bbciutil_transformProc2FcnParam(bbci.control);
 
 props= {'control'     1             '!INT'
         'receiver'    ''            'CHAR(pyff matlab tobi_c)'
+        'fcn'         []            'FUNC'
         'opt'         []            'STRUCT'
         'log'         struct        'STRUCT'
         'host'        '127.0.0.1'   'CHAR'

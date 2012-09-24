@@ -42,6 +42,7 @@ if ischar(marker) && strcmp(marker, 'init'),
           'mrk_start'        []      'INT'
           'mrk_end'          []      'INT'
           'log_mean_limit'   100     '!INT'
+          'tag'              ''      'CHAR'
          };
   opt= opt_proplistToStruct(varargin{:});
   opt= opt_setDefaults(opt, props, 2);
