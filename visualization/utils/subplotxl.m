@@ -17,9 +17,9 @@ if length(mh)==2, mh= [mh mh(1)]; end
 if iscell(p),
   p1= p{1};
   p2= p{2};
-  if length(p1)==1 & length(p2)>1,
+  if length(p1)==1 && length(p2)>1,
     p1= p1*ones(1, length(p2));
-  elseif length(p2)==1 & length(p1)>1,
+  elseif length(p2)==1 && length(p1)>1,
     p2= p2*ones(1, length(p1));
   end
   ax= zeros(1, length(p1));
@@ -27,6 +27,12 @@ if iscell(p),
     ax(ii)= subplotxl(m, n, [p1(ii) p2(ii)], mv, mh);
   end
   return;
+end
+
+if isempty(n),
+  mn= m;
+  m= floor(sqrt(mn));
+  n= ceil(mn/m);
 end
 
 pv= ( 0.999 - mv(1) - mv(3) - mv(2)*(m-1) ) / m;

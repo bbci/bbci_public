@@ -54,9 +54,11 @@ for k= 1:size(optDefaults, 1),
   fld= optDefaults{k,1};
   if isfield(opt, fld),
     fielddisplayname= [structname '.' fld];
-    [ok, msg]= misc_checkType(opt.(fld), optDefaults{k,3}, fielddisplayname);
-    if ~ok,
-      error(msg);
+    for n= 1:length(opt),
+      [ok, msg]= misc_checkType(opt(n).(fld), optDefaults{k,3}, fielddisplayname);
+      if ~ok,
+        error(msg);
+      end
     end
   end
 end

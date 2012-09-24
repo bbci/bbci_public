@@ -99,8 +99,8 @@ if opt.AlphaStepsMode,
                             'Colormap', flipud(gray(nValues+1)), ...
                             'ScaleUnit', '%');
 end
-if isdefault.ScaleUnit && isfield(fv, 'YUnit'),
-  opt.ScaleUnit= fv.YUnit;
+if isdefault.ScaleUnit && isfield(fv, 'yUnit'),
+  opt.ScaleUnit= fv.yUnit;
 end
 if isdefault.ScaleVPos && isempty(opt.ScaleUnit),
   opt.ScaleVPos= 0.5;

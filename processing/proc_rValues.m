@@ -57,28 +57,28 @@ function fv_rval= proc_rValues(fv, varargin)
 % Benjamin Blankertz
 % 09-2012 stefan.haufe@tu-berlin.de
 
-props= { 'TolerateNans',      0,           'BOOL|DOUBLE'
-         'ValueForConst',     NaN,         'DOUBLE'
-         'MulticlassPolicy',  'pairwise',  'CHAR(pairwise all-against-last each-against-rest)|INT[- 2]'  
-         'Stats',             0,           '!BOOL';
-         'Bonferroni' 0    '!BOOL';
-         'Alphalevel' []   'DOUBLE'};
+props= {'TolerateNans',      0,      'BOOL|DOUBLE'
+        'ValueForConst',     NaN,    'DOUBLE'
+        'Stats',             0,      '!BOOL'
+        'Bonferroni'         0       '!BOOL'
+        'Alphalevel'         []      'DOUBLE'
+       };
+props_mcdiff= procutil_multiclassDiff;
 
 if nargin==0,
-  fv_rval= props; return
+  fv_rval= cat(3, props, props_mcdiff); return
 end
 
-fv = misc_history(fv);
+fv= misc_history(fv);
 misc_checkType(fv, 'STRUCT(x y)');
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
-
+opt_checkProplist(opt, props, props_mcdiff);
 
 if size(fv.y,1)>2,
-  fv_rval= procutil_multiclassDiff(fv, {'rValues',opt}, ...
-                                   opt.MulticlassPolicy);
+  opt_mcdiff= opt_substruct(opt, props_mcdiff);
+  fv_rval= procutil_multiclassDiff(fv, {@proc_rValues,opt}, opt_mcdiff);
   return;
 elseif size(fv.y,1)==1,
   bbci_warning('1 class only: calculating r-values against flat-line of same var', 'r_policy');
