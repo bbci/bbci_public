@@ -11,14 +11,14 @@ BBCI= opt_proplistToStruct(varargin{:});
 if ~isfield(BBCI, 'TypeChecking'),
   BBCI.TypeChecking= 1;
 end
-BBCI= opt_setDefaults(BBCI, {'DataDir'  ''});
+BBCI= opt_setDefaults(BBCI, {'DataDir'  '/home/bbci/data/'});
 
 % Guess what the location of other directories could be
-BBCI_RAW_DIR= fullfile(BBCI.DataDir, 'bbciRaw');
+BBCI_RAW_DIR= fullfile(BBCI.DataDir, 'bbciRaw/');
 if ~exist(BBCI_RAW_DIR, 'dir'),
   BBCI_RAW_DIR= '';
 end
-BBCI_MAT_DIR= fullfile(BBCI.DataDir, 'bbciMat');
+BBCI_MAT_DIR= fullfile(BBCI.DataDir, 'bbciMat/');
 if ~exist(BBCI_MAT_DIR, 'dir'),
   BBCI_MAT_DIR= '';
 end

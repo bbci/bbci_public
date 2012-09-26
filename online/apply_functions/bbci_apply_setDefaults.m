@@ -76,6 +76,7 @@ props= {'source'        1         '!INT'
         'fcn'           []        'FUNC|CELL{FUNC}'
         'param'         {}        'CELL'
        };
+bbci.signal= opt_overwriteVoids(bbci.signal, 'source', 1);
 bbci.signal= opt_setDefaults('bbci.signal', props);
 opt_checkExclusiveProps('bbci.signal', {'proc','fcn'; 'proc','param'});
 bbci.signal= bbciutil_transformProc2FcnParam(bbci.signal);
@@ -87,6 +88,7 @@ props= {'signal'         1      '!INT'
         'param'          {}     'CELL'
         'ival'           []     '!DOUBLE[2]'
        };
+bbci.feature= opt_overwriteVoids(bbci.feature, 'signal', 1);
 bbci.feature= opt_setDefaults('bbci.feature', props);
 opt_checkExclusiveProps('bbci.feature', {'proc','fcn'; 'proc','param'});
 bbci.feature= bbciutil_transformProc2FcnParam(bbci.feature);
@@ -96,6 +98,7 @@ props= {'feature'     1                             '!INT'
         'fcn'         @apply_separatingHyperplane   'FUNC'
         'C'           struct                        '!STRUCT'
        };
+bbci.classifier= opt_overwriteVoids(bbci.classifier, 'feature', 1);
 bbci.classifier= opt_setDefaults('bbci.classifier', props);
 
 
@@ -104,6 +107,7 @@ props= {'classifier'     1      '!INT'
         'fcn'            ''     'FUNC'
         'param'          {}     'CELL'
         'condition'      []     'STRUCT(marker)|STRUCT(interval)'};
+bbci.control= opt_overwriteVoids(bbci.control, 'classifier', 1);
 bbci.control= opt_setDefaults('bbci.control', props);
 opt_checkExclusiveProps('bbci.control', {'proc','fcn'; 'proc','param'});
 
@@ -112,7 +116,11 @@ for ic= 1:length(bbci.control),
   feat_list= [bbci.classifier(cfy_list).feature];
   cp_list= [bbci.feature(feat_list).signal];
   bbci.control(ic).source_list= unique([bbci.signal(cp_list).source]);
-  if ~isempty(bbci.control(ic).condition),
+  if isempty(bbci.control(ic).condition),
+    if any(max(cat(1, bbci.feature(feat_list).ival)) > 0),
+      error('bbci.feature.ival extends to future data');
+    end
+  else
     if isfield(bbci.control(ic).condition, 'marker')
       if length(bbci.control(ic).source_list) > 1,
         error(['Controls that are conditioned on markers may acquire ' ...
@@ -129,19 +137,23 @@ for ic= 1:length(bbci.control),
                'have a field ''marker'', or ''interval''.']);
       end
       misc_checkType('bbci.control(ic).condition.interval', '!DOUBLE[1]');
+      if any(max(cat(1, bbci.feature(feat_list).ival)) > 0),
+        error('bbci.feature.ival extends to future data');
+      end
     end
   end
 end
 bbci.control= bbciutil_transformProc2FcnParam(bbci.control);
 
 
-props= {'control'     1             'INT'
+props= {'control'     1             '!INT'
         'receiver'    ''            'CHAR(pyff matlab tobi_c)'
         'opt'         []            'STRUCT'
         'log'         struct        'STRUCT'
         'host'        '127.0.0.1'   'CHAR'
         'port'        12345         'INT'
        };
+bbci.feedback= opt_overwriteVoids(bbci.feedback, 'control', 1);
 [bbci.feedback, isdefault]=  opt_setDefaults('bbci.feedback', props);
 % defaults for bbci.feedback.log are set below
 % (because it refers to bbci.log)
@@ -161,18 +173,19 @@ for k= 1:length(bbci.feedback),
 end
 
 
-props= {'active'            1                   'BOOL'
+props= {'active'            1                   '!BOOL'
         'mode'              'classifier'        'CHAR(classifier everything_at_once)'
         'classifier'        1                   '!INT'
         'proc'              []                  'CELL'
         'fcn'               []                  'FUNC'
         'param'             {}                  'CELL'
-        'folder'            BBCI.Tp.Dir           'CHAR'
+        'folder'            BBCI.Tp.Dir         'CHAR'
         'file'              'bbci_adaptation'   'CHAR'
         'save_everytime'    0                   '!BOOL'
         'load_classifier'   0                   '!BOOL'
         'log'               struct('output','screen')   'STRUCT(output)'
        };
+bbci.adaptation= opt_overwriteVoids(bbci.adaptation, 'classifier', 1);
 [bbci.adaptation, adapt_default]= opt_setDefaults('bbci.adaptation', props);
 opt_checkExclusiveProps('bbci.adaptation', {'proc','fcn'; 'proc','param'});
 
@@ -204,15 +217,15 @@ else
   default_output= 0;
 end
 header_line= '# Logfile of BBCI online - <TIME>';
-props= {'output'       default_output    'BOOL|CHAR(screen file screen&file)'
-        'folder'       BBCI.Tp.Dir         'CHAR'
-        'file'         'bbci_apply_log'  'CHAR'
-        'header'       {header_line}     'CELL{CHAR}'
-        'force_overwriting'   0          '!BOOL'
-        'time_fmt'     '%08.3fs'         'CHAR'
-        'clock'        0                 '!BOOL'
-        'classifier'   0                 '!BOOL'
-        'markers'      0                 '!BOOL'
+props= {'output'       default_output     '!BOOL|CHAR(screen file screen&file)'
+        'folder'       BBCI.Tp.Dir        'CHAR'
+        'file'         'bbci_apply_log'   'CHAR'
+        'header'       {header_line}      'CELL{CHAR}'
+        'force_overwriting'   0           '!BOOL'
+        'time_fmt'     '%08.3fs'          'CHAR'
+        'clock'        0                  '!BOOL'
+        'classifier'   0                  '!BOOL'
+        'markers'      0                  '!BOOL'
        };
 bbci.log= opt_setDefaults('bbci.log', props);
 if ~strcmp(bbci.log.header{1}, header_line),
@@ -231,11 +244,11 @@ for k= 1:length(bbci.feedback),
     no_str= '';
   end
   header_line= ['# Log file of BBCI Feedback' no_str ' - <TIME>'];
-  props= {'output'       0                 'BOOL|CHAR(screen file screen&file)'
-          'folder'       bbci.log.folder   'CHAR'
-          'file'         ''                'CHAR'
-          'header'       {header_line}     'CELL{CHAR}'
-          'force_overwriting'   0          '!BOOL'
+  props= {'output'       0                '!BOOL|CHAR(screen file screen&file)'
+          'folder'       bbci.log.folder  'CHAR'
+          'file'         ''               'CHAR'
+          'header'       {header_line}    'CELL{CHAR}'
+          'force_overwriting'   0         '!BOOL'
          };
   bbci.feedback(k).log= opt_setDefaults('bbci.feedback(k).log', props);
   if isempty(bbci.feedback(k).log.file),

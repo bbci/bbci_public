@@ -40,10 +40,10 @@ props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
         'cfy_ival_pick_peak'          [100 700]        'DOUBLE[1 2]'
         'band'                        []               'DOUBLE[1 2]|DOUBLE[1]'
         'control_per_stimulus'        0                'BOOL'
-        'model'         @train_RLDAshrink              'FUNC|CELL'
+        'model'             @train_RLDAshrink          'FUNC|CELL'
         'nSequences'                  5                'INT'
-        'nClasses'                    6                'INT'
-        'cue_markers'   [11:16,21:26,31:36,41:46]      '!DOUBLE[1 -]'
+        'nClasses'                    0                'INT'
+        'cue_markers'       [11:16,21:26,31:36,41:46]  '!DOUBLE[1 -]'
         'cfy_maxival'                 []               'DOUBLE[1 2]'
         'reject_artifacts'            1                'BOOL'
         'reject_artifacts_opts'       {}               'PROPLIST'
@@ -54,17 +54,21 @@ props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
         'clab_erp'                    {'CPz','PO7'}    'CHAR|CELL{CHAR}'
         'clab_rsq'                    {'CPz','PO7'}    'CHAR|CELL{CHAR}'
         'target_dist'                 0                'INT'
-        'mrk2feedback_fcn'            []               'FUNC'
+        'mrk2feedback_fcn'  @(x)(1+mod(x-11,10))       'FUNC'
         'create_figs'                 1                'BOOL'
        };
 [opt, isdefault]= opt_setDefaults('bbci.calibrate.settings', props);
+
+nClassesGuess= length(unique(opt.mrk2feedback_fcn(opt.cue_markers)));
+[opt, isdefault]= ...
+  opt_overrideIfDefault(opt, isdefault, 'nClasses', nClassesGuess);
 
 default_crit_ival= [100 800];
 default_crit_ival(1)= max(opt.disp_ival(1), default_crit_ival(1));
 default_crit_ival(2)= min(opt.disp_ival(2), default_crit_ival(2));
 default_crit= {'maxmin'  100                        'DOUBLE[1]'
                'clab'    {{'EOG*','F9,10','Fp*'}}   'CHAR|CELL{CHAR}'
-               'ival'    [100 800]                  'DOUBLE[1 2]'
+               'ival'    default_crit_ival          'DOUBLE[1 2]'
               };
 [opt, isdefault]= ...
   opt_overrideIfDefault(opt, isdefault, 'reject_eyemovements_crit', ...
@@ -77,6 +81,9 @@ opt.reject_eyemovements_crit= ...
 [opt, isdefault]= ...
   opt_overrideIfDefault(opt, isdefault, ...
                         'clab_rsq', opt.clab_erp);
+
+% store chosen default settings back in bbci variable
+bbci.calibrate.settings= opt;
 
 opt_scalp_erp= defopt_scalp_erp('colorOrder', [0.9 0 0.9; 0.4 0.4 0.4]);
 opt_scalp_r= defopt_scalp_r;
@@ -118,7 +125,7 @@ end
 flds= {'reject_artifacts', 'reject_channels', ...
        'reject_artifacts_opts', 'target_dist', 'clab'};
 if data.isnew || ~isfield(data, 'previous_settings') || ...
-      ~fieldsareequal(opt, data.previous_settings, flds),
+      ~struct_areFieldsEqual(opt, data.previous_settings, flds),
   BC_result.rejected_trials= NaN;
   BC_result.rejected_clab= NaN;
   if opt.reject_artifacts | opt.reject_channels,
@@ -185,10 +192,9 @@ epo= proc_baseline(epo, opt.ref_ival, 'channelwise', 1);
 %% --- Plot r^2 matrix and select intervals if requested ---
 %
 epo_r= proc_rSquareSigned(epo);
-%epo_r= rmfield(epo_r, {'V','p'});
 epo_r.className= {'sgn r^2 ( T , NT )'};  %% just make it shorter
 if opt.create_figs, 
-  fig_set(6, 'name','r^2 Matrix'); 
+  fig_set(6, 'name','r^2 Matrix', 'set',{'Visible','off'});
 end
 if isempty(opt.cfy_ival) || isequal(opt.cfy_ival, 'auto'),
   [BC_result.cfy_ival, nfo]= ...
@@ -207,6 +213,9 @@ else
     plot_scoreMatrix(epo_r, BC_result.cfy_ival); 
   end
 end
+if opt.create_figs, 
+  set(gcf,  'Visible','on');
+end
 
 
 %% --- Visualize ERPs ---
@@ -214,7 +223,7 @@ end
 if opt.create_figs,
   fig_set(1, 'name','ERP - grid plot', 'set',{'Visible','off'});
   H= grid_plot(epo, mnt, defopt_erps, 'ColorOrder',opt_scalp_erp.colorOrder);
-  grid_markInterval(BC_result.cfy_ival);
+  %grid_markInterval(BC_result.cfy_ival);
   if isfield(H, 'scale'),
     grid_addBars(epo_r, 'HScale',H.scale);
   else
@@ -222,18 +231,20 @@ if opt.create_figs,
   end
   set(gcf,  'Visible','on');
   
-  fig_set(2, 'name','ERP - scalp maps');
+  fig_set(2, 'name','ERP - scalp maps', 'set',{'Visible','off'});
   H= plot_scalpEvolutionPlusChannel(epo, mnt, opt.clab_erp, BC_result.cfy_ival, ...
                                opt_scalp_erp);
   grid_addBars(epo_r);
+  set(gcf,  'Visible','on');
   
   if isempty(opt.clab_rsq) || isequal(opt.clab_rsq,'auto'),
     opt.clab_rsq= unique_unsort({nfo.peak_clab}, 4);
   end
-  fig_set(4, 'name','ERP - r^2 scalp maps');
+  fig_set(4, 'name','ERP - r^2 scalp maps', 'set',{'Visible','off'});
   plot_scalpEvolutionPlusChannel(epo_r, mnt, opt.clab_rsq, ...
                                  BC_result.cfy_ival, ...
                                  opt_scalp_r);
+  set(gcf,  'Visible','on');
   clear epo*
 end
 
@@ -266,14 +277,9 @@ if opt.control_per_stimulus,
 else
   bbci.control.fcn= @bbci_control_ERP_Speller;
 end
-if isempty(opt.mrk2feedback_fcn),
-  mrk2feedback_fcn= @(x)x;
-else
-  mrk2feedback_fcn= opt.mrk2feedback_fcn;
-end
 bbci.control.param= {struct('nClasses',         opt.nClasses, ...
                             'nSequences',       BC_result.nSequences, ...
-                            'mrk2feedback_fcn', mrk2feedback_fcn)};
+                            'mrk2feedback_fcn', opt.mrk2feedback_fcn)};
 bbci.control.condition.marker= opt.cue_markers;
 if ~isfield(bbci, 'quit_condition') || ~isfield(bbci.quit_condition, 'marker'),
   bbci.quit_condition.marker = 255;
