@@ -79,7 +79,7 @@ else
       error('file is closed');
     end
     if state.cnt_idx(end) > size(state.cnt.x,1),
-      state.running= false;
+      state.running= 0;
       output= {[], [], [], state};
       varargout= output(1:nargout);
       return;
@@ -96,7 +96,7 @@ else
     mrk_idx= find(state.mrk.time-TIMEEPS > (state.cnt_idx(1)-1)*si & ...
                   state.mrk.time-TIMEEPS <= state.cnt_idx(end)*si);
     mrkTime= state.mrk.time(mrk_idx) - (state.cnt_idx(1)-1)*si;
-    mrkDesc= state.mrk.desc(mrk_idx);         
+    mrkDesc= state.mrk.desc(mrk_idx);
     state.cnt_idx= state.cnt_idx + state.cnt_step;
     output= {cntx, mrkTime, mrkDesc, state};
   else

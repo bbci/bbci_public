@@ -35,7 +35,7 @@ default_grd= sprintf(['scale,FC3,FC1,FCz,FC2,FC4,legend\n' ...
 props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
         'disp_ival'     [-200 800]                     '!DOUBLE[1 2]'
         'clab'          '*'                            'CHAR|CELL[CHAR}'
-        'cfy_clab'      {'not','E*','Fp*','AF*','A*'}  'CHAR|CELL{CHAR}'
+        'cfy_clab'      {'not','E*','Fp*','A*'}        'CHAR|CELL{CHAR}'
         'cfy_ival'                    'auto'           'CHAR(auto)|DOUBLE[- 2]'
         'cfy_ival_pick_peak'          [100 700]        'DOUBLE[1 2]'
         'band'                        []               'DOUBLE[1 2]|DOUBLE[1]'
@@ -51,10 +51,10 @@ props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
         'reject_eyemovements'         0                'BOOL'
         'reject_eyemovements_crit'    []               'STRUCT'
         'grd'                         default_grd      'CHAR'
-        'clab_erp'                    {'CPz','PO7'}    'CHAR|CELL{CHAR}'
-        'clab_rsq'                    {'CPz','PO7'}    'CHAR|CELL{CHAR}'
+        'clab_erp'                    {'Cz','PO7'}     'CHAR|CELL{CHAR}'
+        'clab_rsq'                    {}               'CHAR|CELL{CHAR}'
         'target_dist'                 0                'INT'
-        'mrk2feedback_fcn'  @(x)(1+mod(x-11,10))       'FUNC'
+        'mrk2feedback_fcn'   @(x)(1+mod(x-1,10))       'FUNC'
         'create_figs'                 1                'BOOL'
        };
 [opt, isdefault]= opt_setDefaults('bbci.calibrate.settings', props);
@@ -62,6 +62,8 @@ props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
 nClassesGuess= length(unique(opt.mrk2feedback_fcn(opt.cue_markers)));
 [opt, isdefault]= ...
   opt_overrideIfDefault(opt, isdefault, 'nClasses', nClassesGuess);
+[opt, isdefault]= ...
+  opt_overrideIfDefault(opt, isdefault, 'clab_rsq', opt.clab_erp);
 
 default_crit_ival= [100 800];
 default_crit_ival(1)= max(opt.disp_ival(1), default_crit_ival(1));
@@ -191,6 +193,7 @@ epo= proc_baseline(epo, opt.ref_ival, 'channelwise', 1);
 
 %% --- Plot r^2 matrix and select intervals if requested ---
 %
+%epo_r= proc_rSquareSigned(proc_selectChannels(epo,BC_result.cfy_clab));
 epo_r= proc_rSquareSigned(epo);
 epo_r.className= {'sgn r^2 ( T , NT )'};  %% just make it shorter
 if opt.create_figs, 
@@ -202,7 +205,6 @@ if isempty(opt.cfy_ival) || isequal(opt.cfy_ival, 'auto'),
                             'VisuScalps', opt.create_figs, ...
                             'Sort', 1, ...
                             'IntersampleTiming', 1, ...
-                            'CLabPickPeak',opt.cfy_clab, ...
                             'IvalPickPeak', opt.cfy_ival_pick_peak, ...
                             'IvalMax', opt.cfy_maxival);
   bbci_log_write(data.log.fid, 'Selected time intervals:');

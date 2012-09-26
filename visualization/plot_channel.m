@@ -24,6 +24,10 @@ if nargin==0,
   return
 end
 
+if nargin<2,
+  clab= 1;
+end
+
 if util_getDataDimension(epo)==1
   H= plotutil_channel1D(epo, clab, varargin{:});
 else

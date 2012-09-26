@@ -38,8 +38,8 @@ function [bbci_cls, data_adapt]= bbci_adaptation_pcovmean(bbci_cls, data_adapt, 
 %              should be (re-) scaled.
 %  'log_mean_limit' - [INT, default 100].
 
-% 04-2011 Claudia Sannelli
 % 01-2012 Benjamin Blankertz
+% 04-2011 Claudia Sannelli
 
 
 if ischar(marker) && strcmp(marker, 'init'),
@@ -50,9 +50,10 @@ if ischar(marker) && strcmp(marker, 'init'),
           'mrk_start'        {}      'CELL'
           'mrk_end'          []      'INT'
           'log_mean_limit'   100     '!INT'
+          'tag'              ''      'CHAR'
          };
   opt= opt_proplistToStruct(varargin{:});
-  opt= opt_setDefaults(opt, props, 1);
+  opt= opt_setDefaults(opt, props, 2);
   data_adapt.opt= opt;
   data_adapt.feature= zeros(size(bbci_cls.C.w));
   data_adapt.trial_start= NaN;

@@ -102,9 +102,9 @@ N2= length(c2);
 dont_copy= {'x','y','className'};
 fv_diff = rmfield(fv, dont_copy);
 
-[h, p, ci, stats] = ttest2(fv.x(:,c1)', fv.x(:,c2)', [], [], 'equal');
 fv_diff.x = reshape(mean(fv.x(:,c1),2)-mean(fv.x(:,c2),2), sz(1:end-1));
 if opt.Stats 
+  [h, p, ci, stats] = ttest2(fv.x(:,c1)', fv.x(:,c2)', [], [], 'equal');
   fv_diff.se = reshape(sqrt(stats.sd.^2/N1 + stats.sd.^2/N2), sz(1:end-1));  
   fv_diff.p = reshape(p, sz(1:end-1));
   if opt.Bonferroni

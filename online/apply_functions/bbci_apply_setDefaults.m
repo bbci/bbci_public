@@ -42,10 +42,10 @@ props= {'acquire_fcn'           @bbci_acquire_bv   '!FUNC'
         'acquire_param'         {}                 'CELL'
         'min_blocklength'       40                 '!DOUBLE[1]'
         'clab'                  '*'                'CHAR|CELL{CHAR}'
-        'marker_mapping_fcn'    []                 'FUNC'
         'record_signals'        0                  '!BOOL'
         'record_basename'       ''                 'CHAR'
         'record_param'          {}                 'CELL'
+        'marker_mapping_fcn'    []                 'FUNC'
         'log'                   struct             'STRUCT'
        };
 [bbci.source, isdefault_source]= opt_setDefaults('bbci.source', props);
@@ -82,11 +82,11 @@ opt_checkExclusiveProps('bbci.signal', {'proc','fcn'; 'proc','param'});
 bbci.signal= bbciutil_transformProc2FcnParam(bbci.signal);
 
 
-props= {'signal'         1      '!INT'
+props= {'signal'         1      '!INT[1]'
+        'ival'           []     '!DOUBLE[2]'
         'proc'           {}     'CELL'
         'fcn'            []     'FUNC|CELL{FUNC}'
         'param'          {}     'CELL'
-        'ival'           []     '!DOUBLE[2]'
        };
 bbci.feature= opt_overwriteVoids(bbci.feature, 'signal', 1);
 bbci.feature= opt_setDefaults('bbci.feature', props);
@@ -148,6 +148,7 @@ bbci.control= bbciutil_transformProc2FcnParam(bbci.control);
 
 props= {'control'     1             '!INT'
         'receiver'    ''            'CHAR(pyff matlab tobi_c)'
+        'fcn'         []            'FUNC'
         'opt'         []            'STRUCT'
         'log'         struct        'STRUCT'
         'host'        '127.0.0.1'   'CHAR'

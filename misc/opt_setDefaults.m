@@ -86,8 +86,14 @@ for k= 1:size(props,1),
 end
 
 if check,
+  if check==2,
+    tcstate= bbci_typechecking('on');
+  end
   if isempty(structname),
     structname= inputname(1);
   end
   opt_checkProplist(opt, props, structname);
+  if check==2,
+    bbci_typechecking(tcstate);
+  end
 end
