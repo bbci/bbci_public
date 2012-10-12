@@ -30,7 +30,7 @@ end
 
 dat = misc_history(dat);
 misc_checkType(dat, 'STRUCT(x clab)'); 
-misc_checkType(dat_append, 'STRUCT(x clab)');
+misc_checkType(dat_append, 'STRUCT(x clab)|DOUBLE[2- 1-]|DOUBLE[2- 1- 1-]');
 
 if isempty(dat)
     dat = dat_append;
