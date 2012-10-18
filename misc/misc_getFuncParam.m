@@ -5,7 +5,7 @@ function [func, params]= misc_getFuncParam(proc)
 %   [FUNC,PARAMS]= misc_getFuncParam(PROC)
 %   
 % Arguments:
-%   PROC: String or cell array. Allowed cases:
+%   PROC: String, function handle or cell array. Allowed cases:
 %         'funcName' (name of the function to call, no params)
 %         {'funcName', 'Param1', 'Param2', ...}
 %           (name of the function to call, list of params)
@@ -13,8 +13,8 @@ function [func, params]= misc_getFuncParam(proc)
 %           (name of the function to call, list of params)
 %   
 % Returns:
-%   FUNC: String. The name of the actual function to call
-%   PARAMS: Cell array. Parameters to be passed to the function given in 'FUNC'
+%   FUNC:   [HANDLE]	Handle to the actual function to call
+%   PARAMS: [CELL]    Parameters to be passed to the function given in 'FUNC'
 %   
 % Description:
 %   The toolbox uses a standardized format of passing function name and
@@ -33,7 +33,7 @@ function [func, params]= misc_getFuncParam(proc)
 
 
 error(nargchk(1, 1, nargin));
-misc_checkType(proc, 'FUNC|CELL');
+misc_checkType(proc, 'CHAR|FUNC|CELL');
 
 if iscell(proc),
   func= proc{1};
@@ -43,8 +43,11 @@ if iscell(proc),
   else
     params= proc(2:end);
   end
-  misc_checkType(func, 'FUNC');
 else
   func= proc;
-  params= {};
+  params={};
+end
+
+if ischar(func)
+  func= str2func(func);
 end
