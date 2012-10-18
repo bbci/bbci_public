@@ -12,7 +12,7 @@ else
 end
 
 if ~iscell(cstr), 
-  cstr= strhead({cstr},delim); 
+  cstr= str_head({cstr},delim); 
   cstr= cstr{1};
   return
 end

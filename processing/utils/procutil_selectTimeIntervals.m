@@ -1,4 +1,4 @@
-function [ival, nfo, X_rem,H]= select_time_intervals(epo_r, varargin)
+function [ival, nfo, X_rem,H]= procutil_selectTimeIntervals(epo_r, varargin)
 % SELECT_TIME_INTERVALS - Select Discriminative Intervals from r-Matrix.
 % Specially suited for ERP data. Caution: for oscillatory (ERD) data preferably
 % select_timeival is used.
