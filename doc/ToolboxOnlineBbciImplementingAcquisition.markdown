@@ -4,17 +4,17 @@ A Guide for Implementing new Acquisition Functions
 The implementation of new acquisition functions is only necessary if new
 hardware is to be used, but which no implementation exists. Note, that
 there is an interface to the TOBI signal server (via
-bbci_acquire_sigserv.m), which already offers access to a
+`bbci_acquire_sigserv.m`), which already offers access to a
 variety of biosignal acquisition hardware. WHO CAN ADD A LIST HERE? LINK
 TO WEBSITE?
 
-The function bbci_apply_acquireData is called by
-bbci_apply to get incoming data packets of bio signals.
+The function `bbci_apply_acquireData` is called by
+`bbci_apply` to get incoming data packets of bio signals.
 That function is a wrapper that calls hardware specific subfunctions,
-which should be named bbci_acquire_XYZ with 'XYZ' being a
+which should be named `bbci_acquire_XYZ` with 'XYZ' being a
 specific and compact description of the type of acquisition hardware.
-The calling convention for the bbci_acquire_* functions is
-described in online/acquisition/Contents.m. When you have
+The calling convention for the `bbci_acquire_*` functions is
+described in `online/acquisition/Contents.m`. When you have
 written a new acuisition function, please, add a short description in
 the Contents.m file.
 
@@ -44,7 +44,7 @@ Formally, the convention of the BBCI toolbox for specifying optional
 parameters should be followed (property/value list or struct). If
 functionality is existing in other acquisition function, it would be good
 to use the same name for that property (e.g., fs for target
-fampling rate of subsampling; filt_b, filt_a
+fampling rate of subsampling; `filt_b`, `filt_a`
 for specifying an IIR filter).
 
 **Data Fetching:** In this mode, the state is passed as

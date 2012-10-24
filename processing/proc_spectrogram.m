@@ -9,7 +9,9 @@ function dat = proc_spectrogram(dat, freq, varargin)
 % 
 %Arguments:
 % DAT          - data structure of continuous or epoched data
-% FREQ         - desired frequency bins (eg 1:100)
+% FREQ         - vector with desired frequency bins (eg 1:100). If a single 
+%                integer is given, it specifies the number of frequency 
+%                bins whcih are then automatically chosen (this is usally faster).
 % OPT - struct or property/value list of optional properties:
 % 'Window' -   if a vector, divides the data  into segments of length equal 
 %              to the length of WINDOW, and then windows each
@@ -39,10 +41,11 @@ function dat = proc_spectrogram(dat, freq, varargin)
 %             phase(dat.x);
 %
 % Note: Requires signal processing toolbox.
+% ** TODO ** : DBSCALED is not implemented yet! 
 %
 % See also proc_wavelets, proc_spectrum
 
-% Stefan Haufe, Berlin 2004, 2010
+% Steven Lemm, Stefan Haufe, Matthias Treder, Berlin 2004, 2010
 
 props = {'Window',              []                          'DOUBLE';
          'DbScaled'             1                           '!BOOL';
@@ -85,6 +88,16 @@ end
 
 dat = misc_history(dat);
 
+if ~isdefault.DbScaled
+  warning('Optional parameter DbScaled not implemented yet!')
+end
+
+if numel(freq)==1
+  nfreq = freq;
+else
+  nfreq = numel(freq);
+end
+
 %% Spectrogram
 dat = proc_selectChannels(dat,opt.CLab);
 
@@ -102,18 +115,19 @@ dat.x = cat(1,dat.x,zero);
 % end
 
 [S,F,T] = spectrogram(X,opt.Window,opt.NOverlap,freq,dat.fs);
+
 clear X
 
 S = S(:,floor(winlen/2):end-ceil(winlen/2)); % cut off padded values at beginning and end
 
 % Reshape vector to matrix
 if ndims(dat.x) == 2      % cnt
-  dat.x = reshape(S',[sz(1)+winlen-1  sz(2) numel(freq)]);
+  dat.x = reshape(S',[sz(1)+winlen-1  sz(2) nfreq]);
   dat.x = dat.x(1:end-(winlen-1),:,:);
   dat.x = permute(dat.x,[1 3 2]);
 
 elseif ndims(dat.x)==3    % epoched
-  dat.x = reshape(S',[sz(1)+winlen-1  sz(2:end) numel(freq)]);
+  dat.x = reshape(S',[sz(1)+winlen-1  sz(2:end) nfreq]);
   dat.x = dat.x(1:end-(winlen-1),:,:,:);
   dat.x = permute(dat.x,[1 4 2 3]);
   
