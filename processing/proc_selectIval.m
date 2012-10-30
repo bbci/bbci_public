@@ -84,10 +84,7 @@ if isfield(dat, 't'),
   end
 end
 
-if isfield(dat, 'p'),
-  out.p= dat.p(iv,:);
-end
-
-if isfield(dat, 'V'),
-  out.V= dat.V(iv,:);
-end
+if isfield(dat, 'p'), out.p= dat.p(iv,:); end
+if isfield(dat, 'V'), out.V= dat.V(iv,:); end
+if isfield(dat, 'sgnlogp'), out.sgnlogp= dat.sgnlogp(iv,:); end
+if isfield(dat, 'se'), out.se= dat.se(iv,:); end
