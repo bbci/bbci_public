@@ -88,9 +88,9 @@ if ~exist(filepath, 'dir'),
   if status~=1,
     error(msg);
   end
-  if isunix,
-    unix(sprintf('chmod a-rwx,ug+rwx %s', filepath));
-  end
+%  if isunix,
+%    unix(sprintf('chmod a-rwx,ug+rwx %s', filepath));
+%  end
   fprintf('new directory <%s%s%s> created\n', parentdir, filesep, newdir);
 end
 
@@ -121,15 +121,10 @@ if strcmpi(opt.Format, 'PDF') || strcmpi(opt.Format, 'EPSPDF'),
   if ~strncmp('eps', opt.Device, 3),
     error('For output in PDF format, OPT.Device must be eps*');
   end
-%  if opt.Embed && ~iscluster,
-    cmd= sprintf('cd %s; epstopdf --embed %s.eps', filepath, filename);
-%  else
-%    %% for old epstopdf version on the cluster
-%    cmd= sprintf('cd %s; epstopdf %s.eps', filepath, filename);
-%  end
-  unix_cmd(cmd, 'could not convert EPS to PDF');
+  cmd= sprintf('cd %s; epstopdf --embed %s.eps', filepath, filename);
+  util_unixCmd(cmd, 'could not convert EPS to PDF');
   if strcmpi(opt.Format, 'PDF'),
     cmd= sprintf('cd %s; rm %s.eps', filepath, filename);
-    unix_cmd(cmd, 'could not remove EPS');
+    util_unixCmd(cmd, 'could not remove EPS');
   end
 end
