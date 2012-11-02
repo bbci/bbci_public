@@ -104,7 +104,7 @@ fv_diff = rmfield(fv, dont_copy);
 
 fv_diff.x = reshape(mean(fv.x(:,c1),2)-mean(fv.x(:,c2),2), sz(1:end-1));
 if opt.Stats 
-  fv_diff.indexedByEpochs = {'p', 'sgnlogp', 'se'};
+%   fv_diff.indexedByEpochs = {'p', 'sgnlogp', 'se'};
   [h, p, ci, stats] = ttest2(fv.x(:,c1)', fv.x(:,c2)', [], [], 'equal');
   fv_diff.se = reshape(sqrt(stats.sd.^2/N1 + stats.sd.^2/N2), sz(1:end-1));  
   fv_diff.p = reshape(p, sz(1:end-1));
@@ -116,7 +116,7 @@ if opt.Stats
   if ~isempty(opt.Alphalevel)
     fv_diff.alphalevel = opt.Alphalevel;
     fv_diff.sigmask = fv_diff.p < opt.Alphalevel;
-    fv_diff.indexedByEpochs = {fv_diff.indexedByEpochs{:}, 'sigmask'}; 
+%     fv_diff.indexedByEpochs = {fv_diff.indexedByEpochs{:}, 'sigmask'}; 
   end
 end
 
