@@ -160,6 +160,7 @@ if opt.Std,
 end
 
 if opt.Stats,
+  out.indexedByEpochs = {'p', 'sgnlogp', 'se'};
   out.se = reshape(out.se, [sz(1:end-1) nClasses]);
   out.p = reshape(out.p, [sz(1:end-1) nClasses]);
   if opt.Bonferroni
@@ -170,6 +171,9 @@ if opt.Stats,
   if ~isempty(opt.Alphalevel)
     out.alphalevel = opt.Alphalevel;
     out.sigmask = out.p < opt.Alphalevel;
+    out.indexedByEpochs = {out.indexedByEpochs{:}, 'sigmask'}; 
   end
 end
+
+out.indexedByEpochs = {}; 
 
