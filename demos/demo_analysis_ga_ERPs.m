@@ -69,7 +69,7 @@ for isub = 1:nsub
   % three different but almost equivalent ways to make statistics about class differences
   epos_diff{isub} = proc_classmeanDiff(epo, 'Stats', 1);
   epos_r{isub} = proc_rSquareSigned(epo, 'Stats', 1);
-%   epos_auc{isub} = proc_aucValues(epo, 'Stats', 1);
+  epos_auc{isub} = proc_aucValues(epo, 'Stats', 1);
 
 end
 
@@ -77,7 +77,7 @@ end
 epo_av = proc_grandAverage(epos_av, 'Average', 'INVVARweighted', 'Stats', 1, 'Bonferroni', 1, 'Alphalevel', 0.01);
 epo_r = proc_grandAverage(epos_r, 'Average', 'INVVARweighted', 'Stats', 1, 'Bonferroni', 1, 'Alphalevel', 0.01);
 epo_diff = proc_grandAverage(epos_diff, 'Average', 'INVVARweighted', 'Stats', 1, 'Bonferroni', 1, 'Alphalevel', 0.01);
-% epo_auc = proc_grandAverage(epos_auc, 'Average', 'INVVARweighted', 'Stats', 1, 'Bonferroni', 1, 'Alphalevel', 0.01);
+epo_auc = proc_grandAverage(epos_auc, 'Average', 'INVVARweighted', 'Stats', 1, 'Bonferroni', 1, 'Alphalevel', 0.01);
 
 mnt = mnt_setElectrodePositions(epo_av.clab);
 mnt= mnt_setGrid(mnt, grd);

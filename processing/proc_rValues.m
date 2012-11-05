@@ -120,6 +120,7 @@ fv_rval= fv;
 fv_rval.x= rval;
 
 if opt.Stats
+%   fv_rval.indexedByEpochs = {'p', 'sgnlogp', 'se'}; 
   iV= reshape(iV, [sz(1:end-1) 1]);
   fv_rval.se = 1./sqrt(iV);
   fv_rval.p = reshape(2*normal_cdf(-abs(atanh(fv_rval.x(:))), zeros(size(fv_rval.x(:))), fv_rval.se(:)), size(fv_rval.x));
@@ -133,6 +134,7 @@ if opt.Stats
   if ~isempty(opt.Alphalevel)
     fv_rval.alphalevel = opt.Alphalevel;
     fv_rval.sigmask = fv_rval.p < opt.Alphalevel;
+%     fv_rval.indexedByEpochs = {fv_rval.indexedByEpochs{:}, 'sigmask'}; 
   end
 end
 
@@ -141,3 +143,5 @@ if isfield(fv, 'className'),
 end
 fv_rval.y= 1;
 fv_rval.yUnit= 'r';
+
+

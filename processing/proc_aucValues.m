@@ -98,6 +98,7 @@ end
 fv_aucval.x= reshape(fv_aucval.x, sz(1:end-1));
 fv_aucval.x = (fv_aucval.x-0.5)*2;
 if opt.Stats
+%   fv_aucval.indexedByEpochs = {'p', 'sgnlogp', 'se'};
   fv_aucval.se = 2*repmat(sqrt((0.25 + (sum(sum(fv.y'))-2)*(1/12))./prod(sum(fv.y'))), sz(1:end-1));
   fv_aucval.p = reshape(fv_aucval.p, sz(1:end-1));
   fv_aucval.sgnlogp = reshape(fv_aucval.sgnlogp, sz(1:end-1));
@@ -107,6 +108,7 @@ if opt.Stats
   if ~isempty(opt.Alphalevel)
     fv_aucval.alphalevel = opt.Alphalevel;
     fv_aucval.sigmask = fv_aucval.p < opt.Alphalevel;
+%     fv_aucval.indexedByEpochs = {fv_aucval.indexedByEpochs{:}, 'sigmask'}; 
   end
 end
 
@@ -115,3 +117,4 @@ if isfield(fv, 'className'),
 end
 fv_aucval.y= 1;
 fv_aucval.yUnit= 'auc';
+fv_aucval.indexedByEpochs = {}; 

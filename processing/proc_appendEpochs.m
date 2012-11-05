@@ -71,10 +71,15 @@ epo.x= cat(ndims, epo.x, epo_append.x);
 if isfield(epo, 'p') && isfield(epo_append, 'p') % if epo is r-value
   epo.p= cat(ndims, epo.p, epo_append.p);
 end
-if isfield(epo, 'V') && isfield(epo_append, 'V') % if epo is r-value
-  epo.V= cat(ndims, epo.V, epo_append.V);
+if isfield(epo, 'sgnlogp') && isfield(epo_append, 'sgnlogp') % if epo is r-value
+  epo.sgnlogp= cat(ndims, epo.sgnlogp, epo_append.sgnlogp);
 end
-% end sthf
+if isfield(epo, 'se') && isfield(epo_append, 'se') % if epo is r-value
+  epo.se= cat(ndims, epo.se, epo_append.se);
+end
+if isfield(epo, 'sigmask') && isfield(epo_append, 'sigmask') % if epo is r-value
+  epo.sigmask= cat(ndims, epo.sigmask, epo_append.sigmask);
+end
 
 epo.y= cat(2, epo.y, zeros(size(epo.y,1),size(epo_append.y,2)));
 fie = {};
