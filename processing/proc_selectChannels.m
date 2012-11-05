@@ -66,3 +66,6 @@ end
 if isfield(dat,'V')
   dat2.V= dat.V(:,chans);
 end
+if isfield(dat,'sgnlogp')
+  dat2.sgnlogp= dat.sgnlogp(:,chans);
+end
