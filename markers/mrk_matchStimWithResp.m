@@ -99,8 +99,8 @@ if ~strcmp(opt.MissingresponsePolicy,'reject'),
 end
 mrk.event.latency= mrk_resp.time(iresp) - mrk.time;
 iresp2= iresp;
-if isfield(mrk, 'missingresponse') && ~isempty(mrk.event.missingresponse),
-  mrk.latency(mrk.event.missingresponse)= NaN;
+if isfield(mrk.event, 'missingresponse') && ~isempty(mrk.event.missingresponse),
+  mrk.event.latency(mrk.event.missingresponse)= NaN;
   iresp= iresp(~mrk.event.missingresponse);
   iresp2(mrk.event.missingresponse)= NaN;
 end
