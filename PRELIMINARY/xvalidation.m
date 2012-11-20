@@ -222,7 +222,7 @@ props = { 'SampleFcn'           @sample_divisions       'FUNC|CELL';
           'SaveProcParams'      []                      'CELL{CHAR}';
           'Debug'               0                       '!BOOL';
           'DsplyPrecision'      3                       'DOUBLE';
-          'DisplyPlusMinus'     char(177)               'CHAR';
+          'DisplayPlusMinus'     char(177)               'CHAR';
           'TwoClass2Bool'       1                       '!BOOL';          
          };
 
@@ -411,8 +411,8 @@ if ~isfield(epo, 'jit'),
 end
 
 opt= set_defaults(opt, ...
-                  'train_jits', unique(epo.jit), ...
-                  'test_jits', unique(epo.jit));
+                  'TrainJits', unique(epo.jit), ...
+                  'TestJits', unique(epo.jit));
 
 
 save_interm_vars = {};
@@ -468,7 +468,7 @@ if prochasfreevar(opt.Proc) || isstruct(model),
       if isstruct(model),
         if opt.Verbosity>0,
           fprintf(['chosen classifier: %s -> ' ...
-                   fmt opt.DsplyPlusminus fmt '\n'], ...
+                   fmt opt.DisplayPlusMinus fmt '\n'], ...
                   util_toString(classy), ml(1), mls(1));
         end
       end
@@ -495,7 +495,8 @@ else              %% classification model without free hyper parameters
   model= [];
 end
 
-[train_fcn, train_par]= misc_getFuncParam(classy);
+[dummy, train_par]= misc_getFuncParam(classy);
+train_fcn = str2func(['train_' classy]);
 applyFcn= misc_getApplyFunc(classy);
 
 [loss_fcn, loss_par]= misc_getFuncParam(opt.LossFcn);
@@ -802,7 +803,7 @@ for n= n0:nTrials,
                  'avErr','out_test', 'more_out_test', 'memo','out_valid','save_interm_vars');
           end
         end
-        if opt.ProgressBar, print_progress(k, nDiv*nTrials); end
+        if opt.ProgressBar, util_printProgress(k, nDiv*nTrials); end
         if opt.Clock, showClock(k, nDiv*nTrials); end
     end %% for d
     d0 = 1;
@@ -868,11 +869,11 @@ if nargout==0 || opt.Verbosity>0,
         infoStr= '';
     end
     if opt.OutTrainloss,
-        fprintf([opt.OutPrefix fmt opt.DsplyPlusminus fmt ...
-            ', [train: ' fmt opt.DsplyPlusminus fmt ']' ...
+        fprintf([opt.OutPrefix fmt opt.DisplayPlusMinus fmt ...
+            ', [train: ' fmt opt.DisplayPlusMinus fmt ']' ...
             infoStr '\n'], [loss_mean; loss_std]);
     else
-        fprintf([opt.OutPrefix fmt opt.DsplyPlusminus fmt infoStr '\n'], ...
+        fprintf([opt.OutPrefix fmt opt.DisplayPlusMinus fmt infoStr '\n'], ...
             loss_mean, loss_std);
     end
 end
