@@ -6,7 +6,7 @@ function [roc_y, auc, roc_x, hp, threshold]= val_rocCurve(label, out, varargin)
 % By default, class 1 is the one to be detected,
 % i.e., TP are samples of class 1 classified as '1' (out<0),
 % while FP are samples of class 2 classified as '1'.
-% This can be reversed by opt.detect_class.
+% This can be reversed by opt.DetectClass.
 %
 % Note that ties (two samples are mapped to the same classifier output)
 % are always counted against the classifier.
@@ -19,13 +19,13 @@ function [roc_y, auc, roc_x, hp, threshold]= val_rocCurve(label, out, varargin)
 %               the resulting curve is the average of the ROC curves
 %               of each shuffle.
 %      opt 
-%      .detect_class - index of class to be detected, 1 (default) or 2.
-%      .plot      - plot ROC curve, default when no output argument is given.
-%      .linestyle - cellarray of linestyle property pairs,
+%      .DetectClass - index of class to be detected, 1 (default) or 2.
+%      .Plot      - plot ROC curve, default when no output argument is given.
+%      .Linestyle - cellarray of linestyle property pairs,
 %                   default {'linewith',2}.
-%      .xlabel    - label of the x-axis, default 'false positive rate'.
-%      .ylabel    - label of the y-axis, default 'true positive rate'.
-%      .ignoreNaN - binary. If true, classifier outputs that are NaN in
+%      .XLabel    - label of the x-axis, default 'false positive rate'.
+%      .YLabel    - label of the y-axis, default 'true positive rate'.
+%      .IgnoreNaN - binary. If true, classifier outputs that are NaN in
 %                   any of the repetitions of the xvalidation will
 %                   be ignored in the computation of the ROC curve. 
 %                   Default: false (0). In the default setting, NaNs
@@ -55,33 +55,41 @@ function [roc_y, auc, roc_x, hp, threshold]= val_rocCurve(label, out, varargin)
 % Modifications for ignoring NaNs and logging thresholds by Anton Schwaighofer
 % $Id:$
 
-opt= propertylist2struct(varargin{:});
-opt= set_defaults(opt, ...
-                  'plot', nargout==0, ...
-                  'xlabel', 'false positive rate', ...
-                  'ylabel', 'true positive rate', ...
-                  'linestyle', {'linewidth',2}, ...
-                  'detect_class', 1, ...
-                  'ignoreNaN', 0);
+props = { 'Plot'                nargout==0             '!BOOL';
+          'XLabel'            'False Positive Rate'     'CHAR';
+          'YLabel'            'True Positive Rate'      'CHAR';
+          'Linestyle'         {'linewidth',2}           'CELL';
+          'DetectClass'       1                         '!BOOL';
+          'IgnoreNaN'         0                         '!BOOL';
+         };
 
+       
+if nargin==0,
+  roc_y= props; return
+end
+
+opt= opt_proplistToStruct(varargin{:});
+[opt,isdefault] = opt_setDefaults(opt, props);
+opt_checkProplist(opt, props);
+misc_checkType(label,'DOUBLE[1-2 -]|DOUBLE[- 1-2]|STRUCT(y)');
+misc_checkType(out,'DOUBLE[1 -]|DOUBLE[- 1]|DOUBLE[1 - -]');
+
+                
 if isstruct(label),
   label= label.y;
-end
-if size(label,1)>2,
-  error('roc works only for 2-class problems');
 end
 if size(out,1)~=1,
   error('??? first dimension of out should be singleton');
 end
-if opt.detect_class==2,
+if opt.DetectClass==2,
   % Just flip labels and classifier output, if class 2 is to be detected
   label = flipud(label);
   out = -out;
-elseif opt.detect_class~=1,
+elseif opt.DetectClass~=1,
   error('opt.detect must be 1 or 2');
 end
 
-if opt.ignoreNaN,
+if opt.IgnoreNaN,
   % Remove every point that is NaN in any of the repetitions. This
   % removes too much (a rejected point in one repetition kicks out this
   % point in the full evaluation). Yet, otherwise, we could not do
@@ -137,10 +145,10 @@ auc= sum(roc)/N(2);
 roc_y= [0 roc(floor(1:0.5:N(2)+0.5)) 1];
 threshold = [-Inf threshold(floor(1:0.5:N(2)+0.5)) Inf];
 
-if opt.plot,
-  hp= plot(roc_x, roc_y, opt.linestyle{:});
-  xlabel(opt.xlabel);
-  ylabel(opt.ylabel);
+if opt.Plot,
+  hp= plot(roc_x, roc_y, opt.Linestyle{:});
+  xlabel(opt.XLabel);
+  ylabel(opt.YLabel);
   title(sprintf('area under curve= %.4f', auc));
   axis([-0.05 1.05 -0.05 1.05], 'square');
 else

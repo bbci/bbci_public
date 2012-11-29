@@ -45,7 +45,7 @@ function [H, xx, xw]= plot_barWithAntenna(y, y_sem, varargin)
 % Benjamin Blankertz
 
 [nGroups, nCol]= size(y);
-cmap_default= cmap_bluewhite(nCol, 'min_val',0.15);
+cmap_default= cmap_bluewhite(nCol, 'MinVal',0.15);
 
 props = {'Clf',             1,              '!BOOL';
          'ColOrder',        cmap_default,   '!DOUBLE[- 3]';
