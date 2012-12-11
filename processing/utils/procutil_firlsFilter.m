@@ -10,7 +10,7 @@ function [b, a]= procutil_firlsFilter(freq, fs, varargin)
 %     If FREQ is a scalar, by default a high-pass filter is designed.
 %  FS - Sampling rate
 %  OPT - Struct or property/value list of optional properties:
-%    .lowpass
+%    .Lowpass
 %
 %Returns:
 %  A = 1 and
@@ -29,11 +29,11 @@ function [b, a]= procutil_firlsFilter(freq, fs, varargin)
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
 
 
-props= {'lowpass'   0
-        'bandstop'  0
-        'order'     []
-        'minorder'  15
-        'trans'     0.15};
+props= {'Lowpass'   0
+        'Bandstop'  0
+        'Order'     []
+        'Minorder'  15
+        'Trans'     0.15};
 
 if nargin==0,
   b = props; a= []; return
@@ -45,25 +45,25 @@ opt_checkProplist(opt, props);
 
 
 nyq= fs/2;
-if isempty(opt.order),
-  opt.order= max(opt.minorder, 3*fix(fs/min(freq)));
+if isempty(opt.Order),
+  opt.Order= max(opt.Minorder, 3*fix(fs/min(freq)));
 end
 
-if length(freq)==1 && ~opt.lowpass,
-  f= [0 freq*(1-opt.trans)/nyq freq/nyq 1];
+if length(freq)==1 && ~opt.Lowpass,
+  f= [0 freq*(1-opt.Trans)/nyq freq/nyq 1];
   amp= [0 0 1 1];
-elseif length(freq)==1 && opt.lowpass,
-  f= [0 freq/nyq freq*(1+opt.trans)/nyq 1];
+elseif length(freq)==1 && opt.Lowpass,
+  f= [0 freq/nyq freq*(1+opt.Trans)/nyq 1];
   amp= [1 1 0 0];
-elseif length(freq)==2 && ~opt.bandstop,
-  f= [0 freq(1)*(1-opt.trans)/nyq freq(1)/nyq ...
-      freq(2)/nyq freq(2)*(1+opt.trans)/nyq 1];
+elseif length(freq)==2 && ~opt.Bandstop,
+  f= [0 freq(1)*(1-opt.Trans)/nyq freq(1)/nyq ...
+      freq(2)/nyq freq(2)*(1+opt.Trans)/nyq 1];
   amp= [0 0 1 1 0 0];
-elseif length(freq)==2 && opt.bandstop,
-  f= [0 freq(1)*(1-opt.trans)/nyq freq(1)/nyq ...
-      freq(2)/nyq freq(2)*(1+opt.trans)/nyq 1];
+elseif length(freq)==2 && opt.Bandstop,
+  f= [0 freq(1)*(1-opt.Trans)/nyq freq(1)/nyq ...
+      freq(2)/nyq freq(2)*(1+opt.Trans)/nyq 1];
   amp= [1 1 0 0 1 1];
 end
 
-b= firls(opt.order, f, amp);
+b= firls(opt.Order, f, amp);
 a= 1;
