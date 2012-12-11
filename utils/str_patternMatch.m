@@ -18,7 +18,8 @@ if ~iscell(strs), strs= {strs}; end
 
 ind= [];
 for pp= 1:length(pats),
-  pat= strrep(pats{pp}, '*', '.*');
+%   pat= strrep(pats{pp}, '*', '.*');
+  pat= ['^' strrep(pats{pp}, '*', '.*') '$'];
   thismatch= cellfun(@(x)(~isempty(x)), regexpi(strs, pat));
   if pp==1,
     ismatch= thismatch;
