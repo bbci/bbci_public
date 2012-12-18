@@ -61,8 +61,7 @@ else
 %% class names given
   clInd= [];
   for desiredClass= classes,
-    dc= desiredClass{1};
-    clInd= [clInd, find(strcmp(dc,className))];
+    clInd= [clInd, str_patternMatch(desiredClass{:},className)];
   end
 end
 

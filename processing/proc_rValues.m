@@ -81,7 +81,8 @@ if size(fv.y,1)>2,
   fv_rval= procutil_multiclassDiff(fv, {@proc_rValues,opt}, opt_mcdiff);
   return;
 elseif size(fv.y,1)==1,
-  bbci_warning('1 class only: calculating r-values against flat-line of same var', 'r_policy');
+  warning('1 class only: calculating r-values against flat-line of same var', 'r_policy');
+%   bbci_warning('1 class only: calculating r-values against flat-line of same var', 'r_policy');
   fv2= fv;
   szx= size(fv.x);
   fv2.x= fv2.x - repmat(mean(fv2.x,3), [1 1 size(fv2.x,3)]);

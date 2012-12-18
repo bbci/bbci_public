@@ -28,12 +28,12 @@ function varargout = bbci_acquire_nirx(varargin)
 %                          (default [] yields all detectors)
 %                .wavelengths: vector of wavelength indices that should be streamed
 %                          (default [] yields all wavelengths)
-%                (NOT USED) .filt_b : The b part of the IIR filter.
+%                .filt_b : The b part of the IIR filter. TODO
 %                          (Default:  No filter)
-%                (NOT USED) .filt_a : The a part of the IIR filter.
+%                .filt_a : The a part of the IIR filter.
 %                           (Default:  No filter)
 %                .LB      : if 1 Lambert-Beer is applied, converts the two
-%                           wavelengths into oxy and deoxy (default 0)
+%                           wavelengths into oxy and deoxy (default 0) TODO
 %               
 %           Further fields acquired from the NIRx API are added, 
 %           all starting with .nirx_*
@@ -70,7 +70,7 @@ function varargout = bbci_acquire_nirx(varargin)
 % See also: BBCI_ACQUIRE_SIGSERV
 
 % AUTHOR
-%    Matthias Treder 12-2011
+%    Matthias Treder 2011-2012
 
 
 global BCI_DIR
@@ -98,6 +98,8 @@ if ischar(varargin{1}) && strcmp(varargin{1},'init') % && isstruct(varargin{2}) 
     'wavelengths',pv, ...
     'nFrames',1, ...
     'buffersize', 2, ...
+    'filt_a',[], ...
+    'filt_b', [], ...
     'LB', 0 ...
     );
 
@@ -144,6 +146,7 @@ if ischar(varargin{1}) && strcmp(varargin{1},'init') % && isstruct(varargin{2}) 
   % Start streaming
   elementsPerFrame = 0;
   pause(.5)
+  %% !! TODO !! check the numbers 1  64 etc is it OK?
    [out, sourcesO, detectorsO, wavelengthsO, elementsPerFrame] = ...
       calllib(LIB,'tsdk_start', ...
       state.sources, state.detectors, state.wavelengths, ...
@@ -156,9 +159,8 @@ if ischar(varargin{1}) && strcmp(varargin{1},'init') % && isstruct(varargin{2}) 
 %   nirxinfo.status = flag2status(statusFlag);
   nirxinfo.elementsPerFrame = elementsPerFrame;
   state.nirxinfo = nirxinfo;
-
-
-
+  
+  state.filterstate = [];
 
   varargout{1} = state;
   
@@ -178,9 +180,28 @@ elseif isstruct(varargin{1}) && nargin==1
   
   % 
   if frameCount>1
-    warning('No support for framecount > 1 so far')
+    error('No support for framecount > 1 so far')
   end
   
+  if size(data,1)==1
+    error('Should be row vector, please transpose!')
+  end
+  
+  % Apply filter
+  if ~(isempty(state.filt_a)||isempty(state.filt_b))
+    % Add dummy column of nans so that filter acts on each row separately
+    data = [data; nan(length(data),1)];
+    [data , state.filterstate] = filter(state.filt_b,state.filt_a,data,state.filterstate,1);
+    data = data(:,1);
+  end
+
+  % Apply Lambert-Beer
+  % TODO !!
+  if state.LB
+    error('Lambert-Beer online not implemented yet! Set LB to 0 for the time being...')
+  end
+    
+    
   % Check for markers
   if any(~isempty(timingBytes))
     if strcmp(state.marker_format,'numeric')
