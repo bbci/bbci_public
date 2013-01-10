@@ -39,7 +39,7 @@ if isempty(BBCI.Acq.StartLetter),
 end
 
 
-props = {'multiple_folders'	0	'BOOL'};
+props = {'MultipleFolders'	0	'BOOL'};
 
 if nargin==0,
   varargout{1} = opt_catProps(props, acq_getSubjectCode); 
@@ -53,16 +53,16 @@ opt_checkProplist(opt, props);
 %% Check whether a directory exists that is to be used
 dd= dir([BBCI.RawDir 'VP???_' today_str '*']);
 
-if ~opt.multiple_folders & length(dd)>1,
-  error('multiple folder of today exist, but opt.multiple_folder is set to 0.');
+if ~opt.MultipleFolders && length(dd)>1,
+  error('multiple folder of today exist, but opt.MultipleFolder is set to 0.');
 end
 
 k= 0;
 
-while isempty(BBCI.Tp.Code) & k<length(dd),
+while isempty(BBCI.Tp.Code) && k<length(dd),
   k= k+1;
   de= dir([BBCI.RawDir dd(k).name '\*.eeg']);
-  if ~opt.multiple_folders | isempty(de),
+  if ~opt.MultipleFolders || isempty(de),
     is= find(dd(k).name=='_', 1, 'first');
     BBCI.Tp.Code= dd(k).name(1:is-1);
     fprintf('!!Using existing directory <%s>!!\n', dd(k).name);
@@ -71,8 +71,8 @@ end
 
 % if BBCI.Tp.Code is empty, we generate a new one
 if(isempty(BBCI.Tp.Code)),
-    BBCI.Tp.Code= acq_getSubjectCode('prefix_letter', BBCI.Acq.Prefix, ...
-                                     'letter_start', BBCI.Acq.StartLetter);
+    BBCI.Tp.Code= acq_getSubjectCode('PrefixLetter', BBCI.Acq.Prefix, ...
+                                     'LetterStart', BBCI.Acq.StartLetter);
 end;
 
 BBCI.Tp.Dir= [BBCI.RawDir BBCI.Tp.Code '_' today_str filesep];
