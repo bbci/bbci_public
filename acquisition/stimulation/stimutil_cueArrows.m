@@ -10,7 +10,7 @@ if nargin==0,
 end
 
 opt= opt_proplistToStruct(varargin{:});
-opt= set_defaults(opt, props, 1);
+opt= opt_setDefaults(opt, props, 1);
 
 for dd= 1:length(dirs),
   if dd<length(dirs),

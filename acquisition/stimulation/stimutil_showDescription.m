@@ -7,13 +7,13 @@ function HANDLE= stimutil_showDescription(desc, varargin)
 %Arguments:
 % DESC: String or cell array of strings.
 % OPT: struct or property/value list of optional arguments:
-% 'handle_msg': Handle to text object which is used to display the countdown
+% 'HandleMsg': Handle to text object which is used to display the countdown
 %    message. If empty a new object is generated. Default [].
-% 'handle_background': Handle to axis object on which the message should be
+% 'HandleBackground': Handle to axis object on which the message should be
 %    rendered. If empty a new object is generated. Default [].
-% 'desc_textspec': Cell array. Text object specifications for description
+% 'DescTextspec': Cell array. Text object specifications for description
 %   text object. Default: {'FontSize',0.05, 'Color',[0 0 0]})
-% 'waitfor': Stop criterium. Possible values are numeric values specifying
+% 'Waitfor': Stop criterium. Possible values are numeric values specifying
 %   the time to wait in seconds, the string 'key' which means waiting
 %   until the experimentor hits a key in the matlab console or a string
 %   or cell arrow of strings which is interpreted as marker descriptions
@@ -21,11 +21,11 @@ function HANDLE= stimutil_showDescription(desc, varargin)
 %   marker is acquired).
 %   Use value 0 for no waiting.
 % 'delete': Delete graphic objects at the end. Default 1, except for
-%   opt.waitfor=0.
+%   opt.Waitfor=0.
 %
 %Returns:
 % HANDLE: Struct of handles to graphical objects (only available for
-%    opt.delete=0).
+%    opt.Delete=0).
 %
 %Example:
 % shows the message 'Hello World' for 5 seconds.
@@ -35,20 +35,23 @@ function HANDLE= stimutil_showDescription(desc, varargin)
 
 global BBCI
 
-props= {'clf'               0                               'BOOL'
-        'handle_background' []                              'HANDLE'
-        'desc_maxsize'      [0.9 0.8]                       'DOUBLE[2]'
-        'desc_textspec'     {   'FontSize',0.05, ...
-                                'Color',.0*[1 1 1]}         'STRUCT'
-        'desc_pos'          [0.5 0.5]                       'DOUBLE[2]'
-        'desc_boxgap'        0.05                           'DOUBLE[1]'
-        'delete'            1                               'BOOL'       
-        'position'          BBCI.Tp.Geometry                       'DOUBLE[2]'
-        'waitfor'           'R*'                            'CHAR'
-        'waitfor_msg'       'Press <ENTER> to continue: '   'CHAR'};
-    
+props= {'Clf'               0                               'BOOL'
+        'HandleBackground' []                              'HANDLE'
+        'DescMaxsize'      [0.9 0.8]                       'DOUBLE[2]'
+        'DescTextspec'     {   'FontSize',0.05, ...
+                                'Color',.0*[1 1 1]}         'CELL|STRUCT'
+        'DescPos'          [0.5 0.5]                       'DOUBLE[2]'
+        'DescBoxgap'        0.05                           'DOUBLE[1]'
+        'Delete'            1                               'BOOL'       
+        'Position'          BBCI.Tp.Geometry                       'DOUBLE[4]'
+        'Waitfor'           'R*'                            'DOUBLE|CHAR'
+        'WaitforMsg'       'Press <ENTER> to continue: '   'CHAR'
+        'Frame'             1                               '!BOOL'};
+
+props_marker= stimutil_waitForMarker;
+
 if nargin==0,
-  HANDLE = props; 
+  HANDLE = opt_catProps(props,props_marker);
   return
 end
 
@@ -56,14 +59,16 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-if isequal(opt.waitfor, 0),
-  opt.delete= 0;
+opt_marker= opt_substruct(opt, props_marker(:,1));
+
+if isequal(opt.Waitfor, 0),
+  opt.Delete= 0;
 end
 
 HANDLE= [];
-if opt.clf,
+if opt.Clf,
   clf;
-  set(gcf, 'Position',opt.position);
+  set(gcf, 'Position',opt.Position);
   set(gcf, 'ToolBar','none', 'MenuBar','none');
 end
 
@@ -84,13 +89,13 @@ if iscell(desc),
   nLines= length(desc);
   nChars= max(cellfun(@length,desc));
   while too_small,
-    desc_fontsize= factor * min( opt.desc_maxsize./[nChars nLines] );
-    ht= text(opt.desc_pos(1), opt.desc_pos(2), desc);
+    desc_fontsize= factor * min( opt.DescMaxsize./[nChars nLines] );
+    ht= text(opt.DescPos(1), opt.DescPos(2), desc);
     set(ht, 'FontUnits','normalized', 'FontSize',desc_fontsize, ...
             'Color',col_background, 'HorizontalAli','center');
     drawnow;
     rect= get(ht, 'Extent');
-    too_small= rect(3)<opt.desc_maxsize(1) & rect(4)<opt.desc_maxsize(2);
+    too_small= rect(3)<opt.DescMaxsize(1) & rect(4)<opt.DescMaxsize(2);
     if too_small,
       factor= factor*1.1;
     end
@@ -98,18 +103,18 @@ if iscell(desc),
   end
   factor= factor/1.1;
   %% render description text
-  desc_fontsize= factor * min( opt.desc_maxsize./[nChars nLines] );
-  h.text= text(opt.desc_pos(1), opt.desc_pos(2), desc);
-  set(h.text, opt.desc_textspec{:}, 'HorizontalAli','center', ...
+  desc_fontsize= factor * min( opt.DescMaxsize./[nChars nLines] );
+  h.text= text(opt.DescPos(1), opt.DescPos(2), desc);
+  set(h.text, opt.DescTextspec{:}, 'HorizontalAli','center', ...
               'FontUnits','normalized', 'FontSize',desc_fontsize);
 else
   %% Description is given as plain string:
   %% Determine number of characters per row
-  textfield_width= opt.desc_maxsize(1);
-  textfield_height= opt.desc_maxsize(2);
+  textfield_width= opt.DescMaxsize(1);
+  textfield_height= opt.DescMaxsize(2);
   ht= text(0, 0, {'MMMMMMM','MMMMMMM','MMMMMMM','MMMMMMM','MMMMMMM'});
   set(ht, 'FontName','Courier New', 'FontUnits','normalized', ...
-          opt.desc_textspec{:});
+          opt.DescTextspec{:});
   rect= get(ht, 'Extent');
   char_width= rect(3)/7;
   linespacing= rect(4)/5;
@@ -117,9 +122,9 @@ else
   textfield_nLines= floor((textfield_height-2*char_height)/linespacing)+2;
   textfield_nChars= floor(textfield_width/char_width);
   delete(ht);
-  h.text= text(opt.desc_pos(1), opt.desc_pos(2), {' '});
+  h.text= text(opt.DescPos(1), opt.DescPos(2), {' '});
   set(h.text, 'HorizontalAli','center', 'FontUnits','normalized', ...
-              opt.desc_textspec{:});
+              opt.DescTextspec{:});
 
   %% Determine linebreaking.
   writ= [desc ' '];
@@ -145,33 +150,35 @@ end
 
 drawnow;
 rect= get(h.text, 'Extent');
-set(h.text, 'Position',[rect(1) opt.desc_pos(2), 0]);
+set(h.text, 'Position',[rect(1) opt.DescPos(2), 0]);
 set(h.text, 'HorizontalAli','left');
 
 %% render description frame
-h.frame= line([rect(1)+rect(3) rect(1)+rect(3) rect(1) rect(1); ...
-               rect(1)+rect(3) rect(1) rect(1) rect(1)+rect(3)] + ...
-              opt.desc_boxgap*[1 1 -1 -1; 1 -1 -1 1], [rect(2)+rect(4) ...
-                    rect(2) rect(2) rect(2)+rect(4); rect(2) rect(2) ...
-                    rect(2)+rect(4) rect(2)+rect(4)] + opt.desc_boxgap*[1 ...
-                    -1 -1 1; -1 -1 1 1]);
-set(h.frame, 'LineWidth',2, 'Color',[0 0 0]);
+if opt.Frame
+  h.frame= line([rect(1)+rect(3) rect(1)+rect(3) rect(1) rect(1); ...
+                 rect(1)+rect(3) rect(1) rect(1) rect(1)+rect(3)] + ...
+                opt.DescBoxgap*[1 1 -1 -1; 1 -1 -1 1], [rect(2)+rect(4) ...
+                      rect(2) rect(2) rect(2)+rect(4); rect(2) rect(2) ...
+                      rect(2)+rect(4) rect(2)+rect(4)] + opt.DescBoxgap*[1 ...
+                      -1 -1 1; -1 -1 1 1]);
+  set(h.frame, 'LineWidth',2, 'Color',[0 0 0]);
+end
 
-if ~isempty(opt.waitfor),
-  if isnumeric(opt.waitfor),
-    pause(opt.waitfor),
-  elseif isequal(opt.waitfor, 'key'),
-    fprintf(opt.waitfor_msg);
+if ~isempty(opt.Waitfor),
+  if isnumeric(opt.Waitfor),
+    pause(opt.Waitfor),
+  elseif isequal(opt.Waitfor, 'key'),
+    fprintf(opt.WaitforMsg);
     pause;
     fprintf('\n');
   else
-    stimutil_waitForMarker(opt, 'stopmarkers',opt.waitfor);
+    stimutil_waitForMarker(opt_marker, 'stopmarkers',opt.Waitfor);
   end
 end
 
-if isequal(opt.delete, 'fig'),
+if isequal(opt.Delete, 'fig'),
   close;
-elseif opt.delete,
+elseif opt.Delete,
   delete(h.axis);
   drawnow;
 else

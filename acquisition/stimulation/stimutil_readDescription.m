@@ -12,11 +12,11 @@ function desc= stimutil_readDescription(file,varargin)
 %   'suffix': suffix of the text file (default .txt)
 %
 
-global BCI_DIR
+global BBCI
 
 
-props= {'Dir'       'BCI_DIR/acquisition/data/task_descriptions/'   'CHAR|CELL{CHAR}'
-        'Suffix'	'.txt'                                          'CHAR|DOUBLE'}
+props= {'Dir'       [BBCI.Acq.Dir 'BBCI/acquisition/data/task_descriptions/']   'CHAR|CELL{CHAR}'
+        'Suffix'	'.txt'                                          'CHAR|DOUBLE'};
         
 if nargin==0,
   desc = props; 
