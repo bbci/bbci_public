@@ -19,8 +19,7 @@ function bvr_sendcommand(fcn, varargin)
 %     'viewsignalsandwait' - Switch to monitoring mode and wait (unless monitoring
 %        mode is already active). Example: bvr_sendcommand('viewsignalsandwait','3000');
 
-% blanker@cs.tu-berlin.de, Jul-2007
 
-global BCI_DIR
+global BBCI
 
-system(['"' BCI_DIR 'acquisition/tools/bvr_' fcn '.vbs"' sprintf(' %s',varargin{:})]);
+system(['"' BBCI.Acq.Dir '/tools/bvr_' fcn '.vbs"' sprintf(' %s',varargin{:})]);

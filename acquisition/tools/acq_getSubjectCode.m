@@ -17,10 +17,10 @@ function subject_code = acq_getSubjectCode(varargin)
 
 global BBCI
 
-props = {   'code_prefix'       'VP'    'CHAR'
-            'prefix_letter'     'a'     'CHAR'
-            'letter_start'      'a'     'CHAR'
-            'log_dir'           0       'BOOL'};
+props = {   'CodePrefix'       'VP'    'CHAR'
+            'PrefixLetter'     'a'     'CHAR'
+            'LetterStart'      'a'     'CHAR'
+            'LogDir'           0       'BOOL'};
 
 if nargin==0,
     subject_code = props; 
@@ -40,18 +40,18 @@ subject_code = [];
 
 %% Generate a Subject Code and folder name to save the EEG data in
 while isempty(subject_code),
-  dd= dir([BBCI.RawDir opt.code_prefix opt.prefix_letter opt.letter_start '*']);
+  dd= dir([BBCI.RawDir opt.CodePrefix opt.PrefixLetter opt.LetterStart '*']);
   if isempty(dd),
-    subject_code = [opt.code_prefix opt.prefix_letter opt.letter_start 'a'];
+    subject_code = [opt.CodePrefix opt.PrefixLetter opt.LetterStart 'a'];
     continue;
   end
 
   is= find(dd(end).name=='_', 1, 'first');
   last_letter= dd(end).name(is-1);
   if last_letter=='z',
-    opt.letter_start= char(opt.letter_start+1);
+    opt.LetterStart= char(opt.LetterStart+1);
     last_letter= 'a'-1;
   end;
-  subject_code = [opt.code_prefix opt.prefix_letter opt.letter_start ...
+  subject_code = [opt.CodePrefix opt.PrefixLetter opt.LetterStart ...
                   char(last_letter+1)];
 end;

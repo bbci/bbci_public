@@ -6,21 +6,21 @@ function str= stimutil_waitForInput(varargin)
 %
 %Arguments:
 %  OPT: struct or property/value list of optional properties
-%   'phrase': phrase that needs to be input before this function returns
+%   'Phrase': phrase that needs to be input before this function returns
 %       (excluding <RETURN>, which is always required at the end), default: '';
-%   'msg': Message template that prompts the user, 
+%   'Msg': Message template that prompts the user, 
 %       default 'Press "%s<RETURN>" %s > '. The first %s is filled with
-%       OPT.phrase, the second %s is filled with OPT.msg_next.
-%   'msg_next': see above, default: 'to continue'
+%       OPT.Phrase, the second %s is filled with OPT.MsgNext.
+%   'MsgNext': see above, default: 'to continue'
 %
 %Example:
-%  stimutil_waitForInput('phrase','go', 'msg_next','to go to the next run');
+%  stimutil_waitForInput('phrase','go', 'MsgNext','to go to the next run');
 
 
-props= {'phrase'    ''                          'CHAR'
-        'msg'       'Press "%s<RETURN>" %s > '	'CHAR'
-        'msg_next'  'to continue'               'CHAR'
-        }
+props= {'Phrase'    ''                          'CHAR';
+        'Msg'       'Press "%s<RETURN>" %s > '	'CHAR';
+        'MsgNext'  'to continue'               'CHAR';
+        };
         
 if nargin==0,
   str = props; 
@@ -31,14 +31,14 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault] = opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-if isdefault.msg,
-  msg= sprintf(opt.msg, opt.phrase, opt.msg_next);
+if isdefault.Msg,
+  msg= sprintf(opt.Msg, opt.Phrase, opt.MsgNext);
 else
-  msg= opt.msg;
+  msg= opt.Msg;
 end
 
 str= 'xXqQimpossibleQqXx';
 
-while ~strcmp(str, opt.phrase),
+while ~strcmp(str, opt.Phrase),
   str= input(msg, 's');
 end

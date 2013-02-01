@@ -54,6 +54,7 @@ BBCI.Tp= opt_setDefaults(BBCI.Tp, props);
 
 props= {'Prefix'          'a'    'CHAR'
         'StartLetter'     'a'    'CHAR'
+        'Dir'             ''     'CHAR'
         };
 BBCI.Acq= opt_setDefaults(BBCI.Acq, props);
 
