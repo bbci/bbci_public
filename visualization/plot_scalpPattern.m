@@ -22,8 +22,9 @@ function [H, Ctour]= plot_scalpPattern(erp, mnt, ival, varargin)
 %See also plot_scalpPatterns, plot_scalpEvolution, plot_scalp.
 
 props= {'Class',     [],   '';
-        'YUnit',     '',   'CHAR';
-        'Contour',   0,    'DOUBLE'};
+        'Contour',   0,    'DOUBLE';
+        'YUnit',     '',   'CHAR'
+        };
     
 props_scalp= plot_scalp;
 
