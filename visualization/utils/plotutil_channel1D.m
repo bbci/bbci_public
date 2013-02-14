@@ -66,12 +66,42 @@ function H= plotutil_channel1D(epo, clab, varargin)
 
 
 props = {'AxisType',                        'box',                '!CHAR';
+         'AxisTitle',                       '',                     'CHAR';
+         'AxisTitleHorizontalAlignment',    'center',               'CHAR';
+         'AxisTitleVerticalAlignment',      'top',                  'CHAR';
+         'AxisTitleColor',                  'k',                    'CHAR';
+         'AxisTitleFontSize',               get(gca,'FontSize'),    'DOUBLE';
+         'AxisTitleFontWeight',             'normal',               'CHAR';
+         'Box',                             'on',                   'CHAR';
+         'ChannelLineStyleOrder',           {'-','--','-.',':'},    'CELL{CHAR}';
+         'ColorOrder',                      get(gca,'ColorOrder'),  'DOUBLE[- 3]';
+         'GridOverPatches',                 1,                      'BOOL';
          'Legend',                          1,                      'BOOL';
          'LegendPos',                       0,                      'CHAR|DOUBLE[1]|DOUBLE[4]';
+         'LineWidth',                       2,                      'DOUBLE';
+         'LineStyle',                       '-',                    'CHAR';
+         'LineStyleOrder',                  {},                     'CELL{CHAR}'
+         'LineWidthOrder',                  [],                     'DOUBLE';
+         'LineSpecOrder',                   {},                     'CELL';
+         'MultichannelTitleOpts',           {},                     'STRUCT';
+         'OversizePlot',                    1,                      'DOUBLE'
+         'PlotStd',                         0,                      'BOOL';
+         'RefCol',                          0.75,                   'DOUBLE';
+         'RefVSize',                        0.05,                   'DOUBLE';
+         'Reset',                           1,                      'BOOL';
+         'SmallSetup',                      0,                      'BOOL';
+         'StdLineSpec',                     '--',                   'CHAR';
+         'ShadeDifference',                 0                       'BOOL';
+         'ShadeDifferenceColor',            [1 0.8 1]               'DOUBLE[3]|CHAR';
+         'Title',                           1,                      'BOOL';
+         'TitleColor',                      'k',                    'CHAR';
+         'TitleFontSize',                   get(gca,'FontSize'),    'DOUBLE';
+         'TitleFontWeight',                 'normal',               'CHAR';
+         'XZeroLine',                       1,                      'DOUBLE';
+         'YZeroLine',                       1,                      'DOUBLE';
          'YDir',                            'normal',               'CHAR';
          'XGrid',                           'on',                   'CHAR';
          'YGrid',                           'on',                   'CHAR';
-         'Box',                             'on',                   'CHAR';
          'XUnit',                           '[ms]',                 'CHAR';
          'YUnit',                           '[\muV]',               'CHAR';
          'UnitDispPolicy',                  'label',                'CHAR';
@@ -79,39 +109,10 @@ props = {'AxisType',                        'box',                '!CHAR';
          'YUnitDispPolicy',                 'label',                'CHAR';
          'YLim',                            [],                     'DOUBLE[2]';
          'YLimPolicy',                      'tight',                'CHAR';
-         'RefCol',                          0.75,                   'DOUBLE';
-         'RefVSize',                        0.05,                   'DOUBLE';
-         'XZeroLine',                       1,                      'DOUBLE';
-         'YZeroLine',                       1,                      'DOUBLE';
          'ZeroLineColor',                   0.5*[1 1 1],            'DOUBLE[3]';
          'ZeroLineStyle',                   '-',                    'CHAR';
          'ZeroLineTickLength',              3,                      'DOUBLE';
-         'Reset',                           1,                      'BOOL';
-         'LineWidth',                       2,                      'DOUBLE';
-         'LineStyle',                       '-',                    'CHAR';
-         'LineStyleOrder',                  {},                     'CELL{CHAR}'
-         'LineWidthOrder',                  [],                     'DOUBLE';
-         'LineSpecOrder',                   {},                     'CELL';
-         'ChannelLineStyleOrder',           {'-','--','-.',':'},    'CELL{CHAR}';
-         'ShadeDifference',                 0                       'BOOL';
-         'ShadeDifferenceColor',            [1 0.8 1]               'DOUBLE[3]|CHAR';
-         'Title',                           1,                      'BOOL';
-         'TitleColor',                      'k',                    'CHAR';
-         'TitleFontSize',                   get(gca,'FontSize'),    'DOUBLE';
-         'TitleFontWeight',                 'normal',               'CHAR';
-         'SmallSetup',                      0,                      'BOOL';
-         'AxisTitle',                       '',                     'CHAR';
-         'AxisTitleHorizontalAlignment',    'center',               'CHAR';
-         'AxisTitleVerticalAlignment',      'top',                  'CHAR';
-         'AxisTitleColor',                  'k',                    'CHAR';
-         'AxisTitleFontSize',               get(gca,'FontSize'),    'DOUBLE';
-         'AxisTitleFontWeight',             'normal',               'CHAR';
-         'MultichannelTitleOpts',           {},                     'STRUCT';
-         'ColorOrder',                      get(gca,'ColorOrder'),  'DOUBLE[- 3]';
-         'GridOverPatches',                 1,                      'BOOL';
-         'PlotStd',                         0,                      'BOOL';
-         'StdLineSpec',                     '--',                   'CHAR';
-         'OversizePlot',                    1,                      'DOUBLE'};
+         };
 
 props_gridOverPatches = plotutil_gridOverPatches;
 

@@ -67,31 +67,32 @@ function [H, Ctour]= plot_scalp(mnt, w, varargin)
 % Added "ExtrapolateToZero" option: Simon Scholler, 2011
 % "Offset" option added: Simon Scholler, 2011
 
-props= {'WClab',                 {},               'CELL{CHAR}';
-        'Linespec',              {'k'},            'CELL';
+props= {
+        'CLim',                 'sym',             'CHAR|DOUBLE[2]';
+        'Colormap',              get(gcf,'Colormap'), 'DOUBLE[- 3]';
+        'ContourfLevels',        50,               'DOUBLE[1]';
+        'ContourMargin',         0,                'DOUBLE[1]';
         'Contour',               5,                'DOUBLE';
         'ContourPolicy',         'levels',         'CHAR';
         'ContourLineprop',       {'linewidth',1},  'PROPLIST';
         'ContourLabels',         0,                'BOOL';
-        'TicksAtContourLevels',  1,                'BOOL';
-        'MarkContour',           [],               'DOUBLE[0-2]';
-        'MarkContourLineprop',   {'linewidth',2},  'PROPLIST';
-        'Shading',               'flat',           'CHAR';
-        'Resolution',            51,               'DOUBLE[1]';
-        'Extrapolate',           0,                'BOOL';
-        'CLim',                 'sym',             'CHAR|DOUBLE[2]';
-        'ShrinkColorbar',        0,                'DOUBLE';
-        'Colormap',              get(gcf,'Colormap'), 'DOUBLE[- 3]';
-        'NewColormap',           0,                'BOOL';
-        'Interpolation',         'linear',         'CHAR';
-        'ScalePos',              'vert',           'CHAR';
         'Extrapolation',         1,                'BOOL';
         'ExtrapolateToMean',     1,                'BOOL';
         'ExtrapolateToZero',     0,                'BOOL';
+        'Interpolation',         'linear',         'CHAR';
+        'Linespec',              {'k'},            'CELL';
+        'MarkContour',           [],               'DOUBLE[0-2]';
+        'MarkContourLineprop',   {'linewidth',2},  'PROPLIST';
+        'NewColormap',           0,                'BOOL';
+        'Offset',                [0 0],            'DOUBLE[2]';
+        'Resolution',            51,               'DOUBLE[1]';
         'Renderer',              'contourf',       'CHAR';
-        'ContourfLevels',        50,               'DOUBLE[1]';
-        'ContourMargin',         0,                'DOUBLE[1]';
-        'Offset',                [0 0],            'DOUBLE[2]'};
+        'Shading',               'flat',           'CHAR';
+        'ShrinkColorbar',        0,                'DOUBLE';
+        'ScalePos',              'vert',           'CHAR';
+        'TicksAtContourLevels',  1,                'BOOL';
+        'WClab',                 {},               'CELL{CHAR}';
+        };
 props_scalpOutline = plot_scalpOutline;
 
 if nargin==0,

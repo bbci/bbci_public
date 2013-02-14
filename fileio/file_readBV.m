@@ -33,6 +33,8 @@ function [varargout] = file_readBV(file, varargin)
 %           specified as as string or a vector.
 %           Default 'subsampleByMean'. Other 'subsampleByLag'
 %           If you specify a vector it has to be the same size as lag.
+%   'LinearDerivation' : for creating bipolar channels (see
+%   procutil_biplist2projection for details)
 %
 % Remark: 
 %   Properties 'Ival' and 'Start'+'MaxLen' are exclusive, i.e., you may only
@@ -52,7 +54,7 @@ function [varargout] = file_readBV(file, varargin)
 %       multiplexed, INT_16, ... The function does not even check, whether
 %       the file is in this format!
 %
-% See also: file_*
+% See also: file_* procutil_biplist2projection
 %
 %Hints:
 % A low pass filter to get rid of the line noise can be designed as follows:
