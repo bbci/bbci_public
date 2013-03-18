@@ -8,21 +8,23 @@ function out= pyff_loadSettings(file)
 %    suffix is given.
 %
 %Output:
-% OUT: Struct containing all variables of the JSON file as fields.
+% OUT: Propertylist containing all variables of the JSON file. Use
+% pyff('set',OUT) to send them to Pyff.
 
 misc_checkType(file,'!CHAR');
 
-global BCI_DIR
+global BBCI
 
 if ~exist('p_json', 'file'),
-  addpath([BCI_DIR 'import/json']);
+  %addpath([BCI_DIR 'import/json']);
+  addpath([BBCI.Dir 'PRELIMINARY' filesep 'json']);
 end
 
 if ~ismember('.', file),
   file= strcat(file, '.json');
 end
 if ~fileutil_isAbsolutePath(file),
-  file= strcat([BCI_DIR 'acquisition/setups/'], file);
+  file= strcat([BBCI.Acq.Dir 'setups\' file]);
 end
 
 fid= fopen(file, 'rt'); 

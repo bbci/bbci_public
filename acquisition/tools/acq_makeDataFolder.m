@@ -41,10 +41,10 @@ end
 
 props = {'MultipleFolders'	0	'BOOL'};
 
-if nargin==0,
-  varargout{1} = opt_catProps(props, acq_getSubjectCode); 
-  return;
-end;
+% if nargin==0,
+%   varargout{1} = opt_catProps(props, acq_getSubjectCode); 
+%   return;
+% end;
 
 opt= opt_proplistToStruct(varargin{:});
 [opt,isdefault] = opt_setDefaults(opt, props);

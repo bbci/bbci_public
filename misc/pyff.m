@@ -9,7 +9,7 @@ function res = pyff(command, varargin)
 %IN:
 % 'command' -  command to be issued: 'startup', 'init', 
 %              'setdir','set', 'get', 'refresh','play', 'stop','quit',
-%              'saveSettings', 'loadSettings'
+%              'saveSettings'
 %
 % res = pyff('startup',<OPT>): startup pyff in a separate console window.
 % res contains the command string that is executed. For
@@ -18,12 +18,10 @@ function res = pyff(command, varargin)
 %  .Dir      - pyff source directory (default for win: D:\svn\pyff\src;
 %              default for unix: ~/svn/pyff/src)
 %  .Parport     - port number for parallel port. Default is dec2hex(IO_ADDR),
-%              if IO_ADDR exists, otherwise [].
+%              if BBCI.IOAddr exists, otherwise [].
 %  .A        - additional feedback directory (default [])
 %  .Gui      - if 1, pyff gui is started along with the feedback controller (default 0)
 %  .L        - loglevel (default 'debug')
-%  .Bvplugin - if 1, the BrainVision Recorder plugin is started (win: default 1;
-%              unix: default 0)
 %
 % pyff('init',feedback): load and initialize pyff feedback 
 %  feedback  - strint containing the name of the feedback
@@ -62,7 +60,6 @@ function res = pyff(command, varargin)
 % pyff('quit'):  quit current feedback (and stop acquisition in BV
 %    Recorder).
 %
-% pyff('loadSettings', FILENAME),
 % pyff('saveSettings', FILENAME): load or save the parameters of the feedback
 %   to FILENAME. The appendix '.json' is automatically appended.
 %   If FILENAME does not contain file separators '\' or '/',
@@ -92,11 +89,10 @@ persistent ACQ_STARTED
 props = {'Os',                    'win',            '!CHAR(win unix)';
          'PyffDir'                BBCI.PyffDir      'CHAR';
          'ReplaceHtmlEntities',   1,                '!BOOL';
-         'Parport',               BBCI.IOAaddr,     'DOUBLE[1]';
+         'Parport',               BBCI.IOAddr,     'DOUBLE[1]';
          'A',                     [],               'CHAR';
          'Gui',                   0,                'BOOL';
          'L',                     'debug',          'CHAR';
-         'Bvplugin',              1,                '!BOOL';
          'TodayDir',              BBCI.Tp.Dir,      'CHAR';
          'VpCode',                BBCI.Tp.Code,     'CHAR';
          'Basename',              '',               'CHAR';
@@ -110,14 +106,17 @@ if nargin==0,
   dat= props; return
 end
 
-misc_checkType(command,'CHAR(startup init set setint setdir play refresh stop quit loadSettings saveSettings)');
+misc_checkType(command,'CHAR(startup init set setint setdir play refresh stop quit saveSettings)');
 
 %% Case-dependent check of parameters
 switch(command)
 
-  case {'startup','stop','quit'}
+  case {'stop','quit'}
     narginchk(1,1);
     opt=[];
+  case 'startup'
+    opt = opt_proplistToStruct(varargin{:});
+
   case 'init'
     narginchk(2,2);
     feedback = varargin{1};
@@ -136,7 +135,11 @@ switch(command)
     end
 
   case {'set','setint'}
-    vars = opt_proplistToStruct(varargin{:});
+    if nargin==2 && isstruct(varargin{1})
+      vars= varargin{1};
+    else
+      vars = opt_proplistToStruct(varargin{:});
+    end
     opt = [];
     if isfield(vars,'ReplaceHtmlEntities')
       warning 'Found variable ''ReplaceHtmlEntities'', assuming its a Pyff parameter, not a variable'
@@ -148,7 +151,7 @@ switch(command)
     narginchk(1,5);
     opt = opt_proplistToStruct(varargin{:});
     
-  case {'saveSettings','loadSettings'}
+  case {'saveSettings'}
     narginchk(2,2);
     opt=[];
     filename = varargin{1};
@@ -190,7 +193,9 @@ switch(command)
       % reference to itself to the beginning of the system path which
       % breaks PyQT.QtCore (possibly also other imports that require dll)
       comstr = ['set PATH=' curr_path '& cmd /C "cd ' opt.PyffDir ' & python FeedbackController.py'];
-      opt.A= strrep(opt.A, '/', filesep);
+      if ~isempty(opt.A)
+        opt.A= strrep(opt.A, '/', filesep);
+      end
     elseif strcmp(opt.Os,'unix')
       comstr = ['xterm -e python ' opt.PyffDir  '/FeedbackController.py'];
 %       opt.A= strrep(opt.A, '\', filesep); % probably unneccesary
@@ -208,9 +213,6 @@ switch(command)
     if ~isempty(opt.L)
       comstr = [comstr ' -l ' opt.L];
     end
-    if opt.Bvplugin
-      comstr = [comstr ' -p brainvisionrecorderplugin'];
-    end
     if ~isempty(opt.OutputProtocol)
       comstr = [comstr ' --protocol ' opt.OutputProtocol];
     end
@@ -222,14 +224,14 @@ switch(command)
     end
     system(comstr);
     res = comstr;
-    send_udp_xml('init', opt.Host, opt.Port);
+    pyff_sendUdp('init', opt.Host, opt.Port);
     general_port_fields.feedback_receiver= 'pyff';
     
   case 'init'
-    send_udp_xml('interaction-signal', 's:_feedback', feedback,'command','sendinit');
+    pyff_sendUdp('interaction-signal', 's:_feedback', feedback,'command','sendinit');
     
   case 'setdir'
-    send_udp_xml('interaction-signal', 's:BBCI.Tp.Dir',opt.TodayDir, ...
+    pyff_sendUdp('interaction-signal', 's:BBCI.Tp.Dir',opt.TodayDir, ...
       's:BBCI.Tp.Code',opt.VpCode, 's:BASENAME',opt.Basename);
     
   case 'set'
@@ -238,7 +240,10 @@ switch(command)
     for ii= 1:numel(fn)
       val = vars.(fn{ii});
       % Take value or (if it is a cell) the value of its first element
-      if ischar(val) || (iscell(val) && ischar(val{1}))
+      if isempty(val) && ~ischar(val)
+        typ= '';  
+      elseif ischar(val) || (iscell(val) && ischar(val{1})) || (iscell(val) && iscell(val{1}) && numel(val{1}) && ischar(val{1}{1})) 
+        % string or nested string
         typ= 's:';
         if opt.ReplaceHtmlEntities
           val = ReplaceHtmlEntities(val);
@@ -257,7 +262,7 @@ switch(command)
       end
       settings= cat(2, settings, {[typ fn{ii}], val});
     end
-    send_udp_xml('interaction-signal', settings{:});
+    pyff_sendUdp('interaction-signal', settings{:});
   
   case 'setint'
     settings= {};
@@ -266,7 +271,7 @@ switch(command)
     for ii= 1:numel(fn)
       settings= cat(2, settings, {[typ fn{ii}], vars.(fn{ii})});
     end
-    send_udp_xml('interaction-signal', settings{:});
+    pyff_sendUdp('interaction-signal', settings{:});
 
   case 'play'
     if isempty(varargin),
@@ -276,22 +281,79 @@ switch(command)
       bvr_startrecording(varargin{2}, 'append_BBCI.Tp.Code',1, varargin{3:end});
       pause(0.01);
     end
-    send_udp_xml('interaction-signal', 'command', 'play'); 
+    pyff_sendUdp('interaction-signal', 'command', 'play'); 
     
   case 'stop'
-    send_udp_xml('interaction-signal', 'command', 'stop'); 
+    pyff_sendUdp('interaction-signal', 'command', 'stop'); 
     
   case 'quit'
-    send_udp_xml('interaction-signal', 'command', 'quit'); 
+    pyff_sendUdp('interaction-signal', 'command', 'quit'); 
     if strcmp(func2str(acquire_func), 'acquire_bv') && ACQ_STARTED,
         bvr_sendcommand('stoprecording');
         ACQ_STARTED= 0;
     end
      
   case 'saveSettings'
-    send_udp_xml('interaction-signal', 'savevariables', settings_file);
+    pyff_sendUdp('interaction-signal', 'savevariables', settings_file);
     
-  case 'loadSettings'
-    send_udp_xml('interaction-signal', 'loadvariables', settings_file);
-    
+   
+end
+
+
+%% HELP FUNCTIONS 
+function str = ReplaceHtmlEntities(str,direction)
+
+  % REPLACE_HTML_ENTITIES -  replaces special symbols such as '<' by their
+  %             according HTML entities for correct display in HTML or XML.
+  %             Can also perform the backward substitution (replacing HTML
+  %             entities by symbols).
+  %
+  %Usage:
+  % str = pyff(str,<direction>)
+  %
+  %IN:
+  % str - input string or cell array of strings
+  % direction - direction of substitution, 'forward' (default) replaces
+  %             symbols by HTML entities, 'backward' does the opposite 
+  %
+  %OUT:
+  % str - string with special symbols replaced by HTML entities
+  %
+  %EXAMPLE:
+  % replace_html_entities('If A < B then C')
+
+  % Matthias Treder 2010
+
+  if nargin<2, direction = 'forward'; end
+
+
+  % TO DO ---- REPLACE literal special letters by their ASCII code !!!
+
+  % Specify symbols (ie their ASCII code) and their corresponding entities in matched order
+  source = {'´'            'ä'      'Ä'      '<'    '>' ...
+    'ö'      'Ö'     };
+  target = {'&acute;' '&auml;' '&Auml;' '&lt;' '&gt;' ...
+    '&ouml;' '&Ouml;'};
+%     '^'   '&circ;'   % <- this is not necessary?
+
+  % For backward substitution switch source and target
+  if strcmp(direction,'backward')
+    dummy = source;
+    source = target;
+    target = dummy;
+  end
+
+  % Replace
+  if ischar(str)
+    for kk=1:numel(source)
+        str = strrep(str,source{kk},target{kk});
+    end
+  elseif iscell(str)
+    for jj=1:numel(str)
+      str{jj} = ReplaceHtmlEntities(str{jj});
+    end
+  end
+end
+
+
 end

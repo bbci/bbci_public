@@ -52,36 +52,37 @@ function H= plotutil_channel2D(epo, clab, varargin)
 % Author(s): Matthias Treder Aug 2010
 
 props = {'AxisType',                  'box',                  'CHAR';
-         'YDir',                      'normal',               'CHAR';
-         'XGrid',                     'on',                   'CHAR';
-         'YGrid',                     'on',                   'CHAR';
          'Box',                       'on',                   'CHAR';
-         'XUnit',                     '[ms]',                 'CHAR';
-         'YUnit',                     '[\muV]',               'CHAR';
+         'ChannelLineStyleOrder',     {'-','--','-.',':'},    'CELL{CHAR}'
+         'Colormap',                  'jet',                  'CHAR|DOUBLE[- 3]'
+         'CLim',                      [],                     'DOUBLE[2]';
+         'CLimPolicy',                'normal',               'CHAR';
          'FreqLim',                   [],                     'DOUBLE[2]';
+         'GridOverPatches',           1,                      'BOOL';
+         'LineWidth',                 2,                      'DOUBLE';
+         'MultichannelTitleOpts',     {},                     'STRUCT';
+         'OversizePlot',              1,                      'DOUBLE'
          'PlotRef',                   0,                      'BOOL';
          'RefCol',                    0.75,                   'DOUBLE';
          'RefLineStyle',              '-',                    'CHAR';
          'RefLineWidth',              2,                      'DOUBLE';
          'RefYPos',                   [],                     'DOUBLE';
          'RefWhisker',                [],                     'DOUBLE';
-         'ZeroLine',                  1,                      'DOUBLE';
-         'ZeroLineColor',             0.5*[1 1 1],            'DOUBLE[3]';
-         'ZeroLineStyle',             '-',                    'CHAR';
-         'LineWidth',                 2,                      'DOUBLE';
-         'ChannelLineStyleOrder',     {'-','--','-.',':'},    'CELL{CHAR}'
+         'SmallSetup',                0,                      'BOOL';
          'Title',                     1,                      'BOOL';
          'TitleColor',                'k',                    'CHAR';
          'TitleFontSize',             get(gca,'FontSize'),    'DOUBLE';
          'TitleFontWeight',           'normal',               'CHAR';
+         'XGrid',                     'on',                   'CHAR';
+         'XUnit',                     '[ms]',                 'CHAR';
+         'YUnit',                     '[\muV]',               'CHAR';
          'YTitle',                    [],                     'DOUBLE';
-         'SmallSetup',                0,                      'BOOL';
-         'MultichannelTitleOpts',     {},                     'STRUCT';
-         'Colormap',                  'jet',                  'CHAR|DOUBLE[- 3]'
-         'CLim',                      [],                     'DOUBLE[2]';
-         'CLimPolicy',                'normal',               'CHAR';
-         'GridOverPatches',           1,                      'BOOL';
-         'OversizePlot',              1,                      'DOUBLE'};
+         'YDir',                      'normal',               'CHAR';
+         'YGrid',                     'on',                   'CHAR';
+         'ZeroLine',                  1,                      'DOUBLE';
+         'ZeroLineColor',             0.5*[1 1 1],            'DOUBLE[3]';
+         'ZeroLineStyle',             '-',                    'CHAR';
+          };
 
 if nargin==0,
   H= props; return

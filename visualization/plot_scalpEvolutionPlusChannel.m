@@ -37,21 +37,22 @@ function H= plot_scalpEvolutionPlusChannel(erp, mnt, clab, ival, varargin)
 
 % Author(s): Benjamin Blankertz, Jan 2005
 
-props= {'LineWidth',       3,                 'DOUBLE[1]';
+props= {'ChannelAtBottom', 0,                 'BOOL';
+        'FigureColor',     [1 1 1],           'DOUBLE[3]';
+        'GlobalCLim',      0,                 'BOOL';
         'IvalColor',       [.4 1 1; 1 .6 1],  'DOUBLE[- 3]';
-        'XUnit',           '[ms]',            'CHAR';
-        'YUnit',           '[\muV]',          'CHAR';
+        'LegendPos',       'Best',            'CHAR'
+        'LineWidth',       3,                 'DOUBLE[1]';
+        'PlotChannel',     1,                 'BOOL';
         'PrintIval',       0,                 'BOOL';
         'PrintIvalUnits',  1,                 'BOOL';
-        'GlobalCLim',      0,                 'BOOL';
         'ScalePos',        'vert',            'CHAR';
         'ShrinkColorbar',  0,                 'DOUBLE';
-        'PlotChannel',     1,                 'BOOL';
-        'ChannelAtBottom', 0,                 'BOOL';
         'Subplot',         [],                'DOUBLE';
         'SubplotChannel',  [],                'DOUBLE';
-        'FigureColor',     [1 1 1],           'DOUBLE[3]';
-        'LegendPos',       'Best',            'CHAR'};
+        'XUnit',           '[ms]',            'CHAR';
+        'YUnit',           '[\muV]',          'CHAR';
+};
 
 props_scalpPattern= plot_scalpPattern;
 props_channel= plot_channel;
