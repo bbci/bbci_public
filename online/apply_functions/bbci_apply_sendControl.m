@@ -19,6 +19,10 @@ if isequal(control_signal, 'init'),
   switch(bbci_feedback.receiver),
    case '',
     % do nothing
+   case 'udp',
+    send_data_udp(bbci_feedback.host, bbci_feedback.port);
+%      data_feedback.state.socket = pnet('udpsocket', 99999);
+%      pnet(data_feedback.state.socket, 'udpconnect', bbci_feedback.host, bbci_feedback.port);
    case 'pyff',
 %    send_udp_xml('init', bbci_feedback.host, bbci_feedback.port);
    case 'tobi_c',
@@ -39,6 +43,10 @@ end
 if isequal(control_signal, 'close'),
   switch(bbci_feedback.receiver),
    case 'pyff',
+   case 'udp',
+    send_data_udp;
+% %     pnet(data_feedback.state.socket, 'close');
+% %     data_feedback.state = rmfield(data_feedback.state, 'socket');
 %    We do not close this channel, as it is probably still required to
 %    send signals to Pyff.
 %    send_udp_xml('close');
@@ -55,6 +63,12 @@ switch(bbci_feedback.receiver),
  case 'pyff',
    if ~isempty(control_signal),
      send_udp_xml(control_signal{:});
+   end
+ case 'udp',
+   if ~isempty(control_signal),
+     send_data_udp(control_signal{2});
+%      pnet(data_feedback.state.socket, 'write',double(control_signal{2}),'intel');
+%      pnet(data_feedback.state.socket, 'writepacket');
    end
  case 'tobi_c',
   if ~isempty(control_signal),
