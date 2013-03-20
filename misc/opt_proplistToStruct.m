@@ -27,11 +27,15 @@ if nargin==0,
   return;
 end
 
-if isstruct(varargin{1}) | isempty(varargin{1}),
+if isstruct(varargin{1}),
   % First input argument is already a structure: Start with that, write
   % the additional fields
   opt= varargin{1};
   iListOffset= 1;
+elseif isempty(varargin{1}),
+  % First input argument is empty, which can happen under some
+  % circumstances. This is not an opt, but also not part of the list
+  iListOffset = 1;
 else
   % First argument is not a structure: Assume this is the start of the
   % parameter/value list
