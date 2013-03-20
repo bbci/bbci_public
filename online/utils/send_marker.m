@@ -1,4 +1,4 @@
-function return_var = bbci_apply_sendMarker(value,bbci_markers, data_markers)
+function return_var = send_marker(value,bbci_markers, data_markers)
 
 if nargin == 0,
     return_var = {parallelport, enobio, nouzz, pyffudp};

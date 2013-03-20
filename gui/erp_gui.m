@@ -131,6 +131,10 @@ function load_data_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 if check_state(handles,1),
+    if strcmp(get_selected_item(handles.file_list_box),'No files found'),
+        add_to_message_box(handles, 'No files selected.');
+        return;
+    end
     try,
         GB = manage_parameters('get', 'global_bbci');
         set_button_state(handles, 'off', {''});
@@ -164,9 +168,6 @@ function init_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 if strcmp(get(handles.vp_code_box, 'string'), 'Enter usercode'),
     add_to_message_box(handles, 'Error: No valid usercode set.');
-%elseif isempty(strmatch('VP', get(handles.vp_code_box, 'string'))) && ~isempty(get(handles.vp_code_box, 'string')),
-%    add_to_message_box(handles, ...
-%        'Error: Invalid BBCI.Tp.Code set. BBCI.Tp.Code should start with VP');
 else
     global BBCI;
     if isempty(get(handles.vp_code_box, 'string')),
@@ -175,7 +176,7 @@ else
     else
         BBCI.Tp.Code = get(handles.vp_code_box, 'string');
     end
-    acq_makeDataFolder('multiple_folders', 0);
+    acq_makeDataFolder('MultipleFolders', 0);
     
     % get all the parameters in buffer
     try
@@ -377,7 +378,7 @@ if check_state(handles,2),
                 end
             end
             if iscell(bbci.calibrate.settings.model), %% HACK. Check this.
-                bbci.calibrate.settings.model{1} = str2func(['@train_' sel_class{1}]);
+                bbci.calibrate.settings.model{1} = ['train_' sel_class{1}];
             end
             bbci.calibrate.settings.reject_channels = get(handles.reject_channels_tick, 'value');
             bbci.calibrate.settings.reject_artifacts = get(handles.reject_artifacts_tick, 'value');
@@ -1022,7 +1023,9 @@ function unlock_menu_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set_button_state(handles, 'on', {});
-evalin('base', 'dbquit(''all'');');
+if feature('IsDebugMode'),
+    evalin('base', 'dbquit(''all'');');
+end
 
 
 % --- Executes during object creation, after setting all properties.

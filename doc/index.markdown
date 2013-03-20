@@ -1,12 +1,6 @@
 Documentation of the BBCI Matlab Toolbox
 ========================================
 
-* * * * *
-
-**UNDER CONSTRUCTION**
-
-* * * * *
-
 # BBCI Toolbox
 
 Copyright  (c) 2001- 2012  BBCI (Berlin Brain Computer Interface)
