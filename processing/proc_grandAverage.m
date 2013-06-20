@@ -253,7 +253,7 @@ if opt.Stats
   if opt.Bonferroni
     ga.corrfac = F*T*C*E;
     ga.p = min(ga.p*ga.corrfac, 1);
-    ga.sgnlogp = -reshape(((log(2)+normcdfln(-abs(ga.x(:)./ga.se(:))))./log(10)+abs(log10(ga.corrfac))), size(ga.x)).*sign(ga.x);
+    ga.sgnlogp = -reshape(min(((log(2)+normcdfln(-abs(ga.x(:)./ga.se(:))))./log(10)+abs(log10(ga.corrfac))), 0), size(ga.x)).*sign(ga.x);
   else
     ga.sgnlogp = -reshape(((log(2)+normcdfln(-abs(ga.x(:)./ga.se(:))))./log(10)), size(ga.x)).*sign(ga.x);
   end  
