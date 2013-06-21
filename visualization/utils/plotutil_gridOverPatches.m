@@ -4,8 +4,8 @@ function h=plotutil_gridOverPatches(varargin)
 % replots x- and y-grid such that it is shown on top of patches
 
 props = {'Axes',          	gca         '!GRAPHICS';
-         'xGrid'            []          'DOUBLE';
-         'yGrid'            []          'DOUBLE';
+         'XGrid'            []          'CHAR(on off)';
+         'YGrid'            []          'CHAR(on off)';
          };
 
 if nargin==0,
@@ -20,16 +20,16 @@ opt_checkProplist(opt, props);
 
 for ax= opt.Axes(:)',
   gridLineStyle= get(ax, 'GridLineStyle');
-  if strcmp(opt.xGrid,'on') || ...
-        (isempty(opt.xGrid) && strcmp(get(ax,'XGrid'), 'on')),
+  if strcmp(opt.XGrid,'on') || ...
+        (isempty(opt.XGrid) && strcmp(get(ax,'XGrid'), 'on')),
     xTick= get(ax, 'xTick');
     visutil_backaxes(ax);
     h= line(repmat(xTick,[2 1]), ylim');
     set(h, 'color','k', 'lineStyle',gridLineStyle, 'handleVisibility','off');
     set(ax, 'XGrid','off', 'XLimMode','Manual', 'XTickMode','Manual');
   end
-  if strcmp(opt.yGrid,'on') || ...
-        (isempty(opt.yGrid) && strcmp(get(ax,'YGrid'), 'on')),
+  if strcmp(opt.YGrid,'on') || ...
+        (isempty(opt.YGrid) && strcmp(get(ax,'YGrid'), 'on')),
     yTick= get(ax, 'yTick');
     visutil_backaxes(ax);
     h= line(xlim', repmat(yTick,[2 1]));

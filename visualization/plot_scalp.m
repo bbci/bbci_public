@@ -111,7 +111,7 @@ fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible 
 % end
 
 if opt.NewColormap,
-  acm= fig_addcolormap(opt.Colormap);
+  acm= visutil_addColormap(opt.Colormap);
 elseif isfield(opt, 'colormap'),
   colormap(opt.Colormap);
 end
@@ -366,7 +366,7 @@ else
   end
 end
 if opt.NewColormap,
-  fig_acmAdaptCLim(acm);
+  visutil_acmAdaptCLim(acm);
   set(H.cb, 'yLim',H.CLim); %% otherwise ticks at the border of the
                             %% Colorbar might get lost
 end
