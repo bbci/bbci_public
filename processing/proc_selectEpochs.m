@@ -29,7 +29,7 @@ if nargin==0,
   epo= props; return
 end
 
-misc_checkType(epo, 'STRUCT(x clab fs)');
+misc_checkType(epo, 'STRUCT(x clab)');
 epo= misc_history(epo);
 
 if isequal(idx, 'not'),

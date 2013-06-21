@@ -90,7 +90,7 @@ if iscell(varargin{1}),
   erps= varargin{1};
   opt= opt_proplistToStruct(varargin{2:end});
 else
-  iserp= ~cellfun(@ischar,varargin);
+  iserp= cellfun(@isstruct,varargin);
   nerps= find(iserp,1,'last');
   erps= varargin(1:nerps);
   opt= opt_proplistToStruct(varargin{nerps+1:end});

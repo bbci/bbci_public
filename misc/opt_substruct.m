@@ -18,7 +18,7 @@ if ischar(fld_list),
   fld_list= {fld_list};
 end
 
-fld_list= intersect(fld_list, fieldnames(S));
+fld_list= intersect(lower(fld_list), lower(fieldnames(S)));
 T= [];
 for ii= 1:length(fld_list),
   fld= fld_list{ii};
