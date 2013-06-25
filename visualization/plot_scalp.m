@@ -74,15 +74,15 @@ props= {
         'ContourMargin',         0,                'DOUBLE[1]';
         'Contour',               5,                'DOUBLE';
         'ContourPolicy',         'levels',         'CHAR';
-        'ContourLineprop',       {'linewidth',1},  'PROPLIST';
+        'ContourLineprop',       {'LineWidth',1},  'PROPLIST';
         'ContourLabels',         0,                'BOOL';
         'Extrapolation',         1,                'BOOL';
-        'ExtrapolateToMean',     1,                'BOOL';
+        'ExtrapolateToMean',     0,                'BOOL';
         'ExtrapolateToZero',     0,                'BOOL';
         'Interpolation',         'linear',         'CHAR';
         'Linespec',              {'k'},            'CELL';
         'MarkContour',           [],               'DOUBLE[0-2]';
-        'MarkContourLineprop',   {'linewidth',2},  'PROPLIST';
+        'MarkContourLineprop',   {'LineWidth',2},  'PROPLIST';
         'NewColormap',           0,                'BOOL';
         'Offset',                [0 0],            'DOUBLE[2]';
         'Resolution',            51,               'DOUBLE[1]';
