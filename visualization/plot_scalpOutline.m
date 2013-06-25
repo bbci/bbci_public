@@ -47,19 +47,19 @@ function H= plot_scalpOutline(mnt, varargin)
 %
 
 props = {
-         'DisplayChannels',         [],                                     'DOUBLE|CELL{CHAR}'
-         'DrawEars',                0,                                      'BOOL';
-         'H',                       struct('ax',NaN),                       'STRUCT'
-         'LabelProperties',         {'FontSize',8},                         'STRUCT|CELL';
-         'LineProperties',          {'Color','k'},                          'STRUCT|CELL';
-         'MinorLabelProperties',    {'FontSize',6},                         'STRUCT|CELL';
-         'MarkChannels',            [],                                     'DOUBLE|CELL{CHAR}';
+         'DisplayChannels',         [],              'DOUBLE|CELL{CHAR}'
+         'DrawEars',                0,               'BOOL';
+         'H',                       struct('ax',NaN),'STRUCT'
+         'LineProperties',          {'Color','k'},   'STRUCT|CELL';
+         'ShowLabels',              0,               'BOOL';
+         'LabelProperties',         {'FontSize',8},  'STRUCT|CELL';
+         'MinorLabelProperties',    {'FontSize',6},  'STRUCT|CELL';
+         'MarkChannels',            [],              'DOUBLE|CELL{CHAR}';
          'MarkLabelProperties',     {'FontSize',12,'FontWeight','bold'},    'STRUCT|CELL';
          'MarkMarkerProperties',    {'LineWidth',3, 'MarkerSize',22},       'STRUCT|CELL';
-         'Offset',                  [0 0],                                  'DOUBLE[2]';
-         'Reference',               0,                                      'BOOL';
+         'Offset',                  [0 0],           'DOUBLE[2]';
+         'Reference',               0,               'BOOL';
          'ReferenceProps',          {'FontSize',8,'FontWeight','bold','BackgroundColor',[.8 .8 .8],'HorizontalAlignment','center','Margin',2},  'STRUCT|CELL';
-         'ShowLabels',              0,                                      'BOOL';
 };
 
 if nargin==0,
