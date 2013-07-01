@@ -1,35 +1,36 @@
 function [ival, nfo, X_rem,H]= procutil_selectTimeIntervals(epo_r, varargin)
-% SELECT_TIME_INTERVALS - Select Discriminative Intervals from r-Matrix.
+% PROCUTIL_SELECTTIMEINTERVALS - Select Intervals from Separability Score.
 % Specially suited for ERP data. Caution: for oscillatory (ERD) data preferably
 % select_timeival is used.
 %
 %Synopsis:
-% [IVAL,NFO,X_REM,H] = select_time_intervals(EPO_R, <OPT>)
+% [IVAL,NFO,X_REM,H] = procutil_selectTimeIntervals(EPO_R, <OPT>)
 %
 %Arguments:
 %  ERP_R: structure of indices of discriminability, e.g., r-values,
 %       Fisher-Scores, ROC-values
 %  OPT: struct or property/value list of optional properties
-%   'nIvals': number of intervals to be determined
-%   'sign':   constraint to look only for positive (sign=1) or 
+%   'NIvals': number of intervals to be determined
+%   'Sign':   constraint to look only for positive (sign=1) or 
 %       negative (sign=-1) values. Default sign=0 finds all.
-%   'clab': Criterion on consistent patterns operates on those channels,
+%   'Clab': Criterion on consistent patterns operates on those channels,
 %       default '*'.
-%   'clabPickPeak': The greedy algorithm to select intervals looks for
+%   'ClabPickPeak': The greedy algorithm to select intervals looks for
 %       peak values in those channels
-%   'ivalPickPeak': The greedy algorithm to select intervals looks for
+%   'IvalPickPeak': The greedy algorithm to select intervals looks for
 %       peak values in this time interval
-%   'ivalMax': All time intervals are chosen 'inside' this interval,
+%   'IvalMax': All time intervals are chosen 'inside' this interval,
 %       default [] meaning no limitation.
-%   'visualize': Value Matrix (EPO_R.x) and selected intervals are
-%   visualized.
-%   'visuScalps': Scalp maps in selected intervals are visualize.
-%   'intersampleTiming': [BOOLEAN] If true, the start and end points of
+%   'Visualize': Value Matrix (EPO_R.x) and selected intervals are
+%       visualized.
+%   'VisuScalps': Scalp maps in selected intervals are visualize.
+%   'Mnt': Struct of electrode montage for plotting scalp maps
+%   'IntersampleTiming': [BOOLEAN] If true, the start and end points of
 %       intervals are set to the time between two samples, i.e., instead
 %       of [350 400] the function would return [345 405] (assuming fs=100).
 %       This is in particular useful to avoid singleton intervals like
 %       [100 100] which are forbidden in online processing with bbci_apply.
-%   'constraint': Constraints can be defined for the selection of intervals.
+%   'Constraint': Constraints can be defined for the selection of intervals.
 %       Each constraint is a cell array of 2 to 4 cells.
 %         Cell 1: 'sign'
 %         Cell 2: 'ivalPickPeak'
@@ -52,9 +53,9 @@ function [ival, nfo, X_rem,H]= procutil_selectTimeIntervals(epo_r, varargin)
 %       {-1, [120 180], {'O#','PO7,8'}}, ...
 %       {1, [180 280], {'PO3-4','P3-4','CP3-4'}}};
 %  [ival_scalps, nfo]= ...
-%      select_time_intervals(epo_r, 'visualize', 1, 'visuScalps', 1, ...
-%                            'clab',{'not','E*','Fp*','AF*'}, ...
-%                            'constraint', constraint);
+%      procutil_selectTimeIntervals(epo_r, 'Visualize', 1, 'VisuScalps', 1, ...
+%                            'Clab',{'not','E*','Fp*','AF*'}, ...
+%                            'Constraint', constraint);
 %This should return 4 intervals, the first three with focus in the visual area
 % (1: negative; 2: positive; 3: negative component) and the last with
 % a positive focus in the centro-parietal area (P2).
@@ -153,13 +154,13 @@ if ~isempty(opt.Constraint),
       tmp_r.x(idx_rm,:)= 0;
     end
     [tmp_ival, tmp_nfo, X_rem]= ...
-        select_time_intervals(tmp_r, opt, ...
+        procutil_selectTimeIntervals(tmp_r, opt, ...
                               'Sign', this_constraint{1}, ...
                               'IvalPickPeak', this_constraint{2}, ...
                               'Visualize', 0, ...
                               'NIvals', 1);
     if isnan(tmp_ival(1)),
-      continue;   %% thiese is nothing more to select
+      continue;   %% there is nothing more to select
     else
       ival(ii,[1 2])= tmp_ival;
       nfo(ii)= tmp_nfo;
