@@ -23,7 +23,7 @@ opt= opt_proplistToStruct(varargin{:});
                           'Mnt', mnt_setElectrodePositions(epo_r.clab));
 
 if isstruct(ival),
-  ival= ival.ival;
+  ival= cat(1, ival.ival);
 end
 % Sort intervals
 [dmy, si]= sort(ival(:,1));
