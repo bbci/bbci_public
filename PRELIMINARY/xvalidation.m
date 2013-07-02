@@ -543,7 +543,6 @@ if ~isempty(opt.DivTr),
   sample_params= {};
 else
   [sample_fcn, sample_params]= misc_getFuncParam(opt.SampleFcn);
-  sample_fcn = str2func(['sample_' func2str(sample_fcn)]);
   [divTr, divTe]= sample_fcn(epo.y(:,repIdx), sample_params{:});
 end
 check_sampling(divTr, divTe);
