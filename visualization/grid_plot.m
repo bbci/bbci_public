@@ -57,39 +57,40 @@ function H= grid_plot(epo, mnt, varargin)
 
 % Author(s): Benjamin Blankertz, Feb 2003 & Mar 2005
 
-props= {'YDir',                           'normal',               'CHAR';
-        'XUnit',                          'ms',                   'CHAR';
-        'YUnit',                          '\muV',                 'CHAR';
-        'TightenBorder',                  0.03,                   'DOUBLE';
-        'Axes',                           [],                     'DOUBLE';
-        'AxisType',                       'box',                  'CHAR';
-        'Box',                            'on',                   'CHAR';
-        'ShiftAxesUp',                    [],                     'DOUBLE';
-        'ShrinkAxes',                     [1 1],                  'DOUBLE[1-2]';
-        'OversizePlot',                   1,                      'BOOL';
-        'ScalePolicy',                    'auto',                 'CHAR';
-        'ScaleUpperLimit',                inf,                    'DOUBLE';
-        'ScaleLowerLimit',                0,                      'DOUBLE';
-        'LegendVerticalAlignment',        'middle',               'CHAR';
-        'XTickAxes',                      '*',                    'CHAR';
-        'FigureColor',                    [0.8 0.8 0.8],          'DOUBLE[3]';
-        'TitleDir',                       'horizontal',           'CHAR';
-        'TitleAppendix',                  '',                     'CHAR';
+props= {'Axes',                           [],                     'DOUBLE';
         'AxisTitleHorizontalAlignment',   'center',               'CHAR';
         'AxisTitleVerticalAlignment',     'top',                  'CHAR';
         'AxisTitleColor',                 'k',                    'CHAR[1]|DOUBLE[3]';
         'AxisTitleFontSize',              get(gca,'FontSize'),    'DOUBLE'
         'AxisTitleFontWeight',            'normal',               'CHAR';
         'AxisTitleLayout',                'oneline',              'CHAR';
-        'ScaleShowOrientation',           1,                      'BOOL';
+        'AxisType',                       'box',                  'CHAR';
+        'Box',                            'on',                   'CHAR';
+        'FigureColor',                    [0.8 0.8 0.8],          'DOUBLE[3]';
         'GridOverPatches',                1,                      'BOOL';
         'HeadMode',                       0,                      'BOOL';
         'HeadModeSpec',                   {'LineProperties',{'LineWidth',5, 'Color',0.7*[1 1 1]}},     'STRUCT|CELL';
-        'Nirs',                           0,                      'BOOL';
+        'LegendVerticalAlignment',        'middle',               'CHAR';
+        'OversizePlot',                   1,                      'BOOL';
+        'PlotStd',                        0,                      'BOOL'
+        'ScaleGroup'                      {util_scalpChannels, {'EMG*'},{'EOGh'},{'EOGv'}}    'CHAR|CELL';
+        'ScalePolicy',                    'auto',                 'CHAR|DOUBLE[2]';
+        'ScaleUpperLimit',                inf,                    'DOUBLE';
+        'ScaleLowerLimit',                0,                      'DOUBLE';
+        'ScaleShowOrientation',           1,                      'BOOL';
+        'ShiftAxesUp',                    [],                     'DOUBLE';
+        'ShrinkAxes',                     [1 1],                  'DOUBLE[1-2]';
+        'TightenBorder',                  0.03,                   'DOUBLE';
+        'TitleDir',                       'horizontal',           'CHAR';
+        'TitleAppendix',                  '',                     'CHAR';
+        'XTickAxes',                      '*',                    'CHAR';
+        'XUnit',                          'ms',                   'CHAR';
+        'YUnit',                          '\muV',                 'CHAR';
+        'YDir',                           'normal',               'CHAR';
         'YLim',                           [],                     'DOUBLE[2]';
-        'PlotStd',                        0,                      'BOOL'};
+        };
 
-props_channel = plotutil_channel1D;
+props_channel = plot_channel;
 props_addScale = grid_addScale;
 
 if nargin==0,
@@ -128,19 +129,19 @@ if opt.OversizePlot>1,
       opt_overrideIfDefault(opt, isdefault, ...
                             'Visible', 'off');
 end
-if isfield(opt, 'xTick'),
+if isfield(opt, 'XTick'),
   [opt, isdefault]= ...
       opt_overrideIfDefault(opt, isdefault, ...
                             'ShrinkAxes', 0.8);
 end
 if isdefault.ShiftAxesUp && ...
-      (isfield(opt, 'xTick') && ~isempty(opt.xTick)), ...
+      (isfield(opt, 'XTick') && ~isempty(opt.xTick)), ...
       opt.ShiftAxesUp= 0.05;
 end
-if isdefault.XUnit && isfield(epo, 'xUnit'),
+if isdefault.XUnit && isfield(epo, 'XUnit'),
   opt.XUnit= epo.xUnit;
 end
-if isdefault.YUnit && isfield(epo, 'yUnit'),
+if isdefault.YUnit && isfield(epo, 'YUnit'),
   opt.YUnit= epo.yUnit;
 end
 if ~isempty(opt.YLim),
@@ -234,15 +235,7 @@ nDisps= length(DisplayChannels);
 % mnt.clab{DisplayChannels(ii)} may differ from epo.clab{ii}, e.g. the former
 % may be 'C3' while the latter is 'C3 lap'
 idx= util_chanind(epo, mnt.clab(DisplayChannels));
-if opt.Nirs==1
-    for i=1:length(epo.clab)
-        pos1=strfind(epo.clab{i},'_');
-        epo1.clab{i}=['S' epo.clab{i}(1:pos1-1) '|D' epo.clab{i}(pos1+1:end)];
-    end
-    axestitle= epo1.clab(idx);
-else
-    axestitle= epo.clab(idx);
-end
+axestitle= epo.clab(idx);
 
 %w_cm= warning('query', 'bci:missing_channels');
 %warning('off', 'bci:missing_channels');
@@ -386,7 +379,7 @@ end
 
 if ~strcmp(opt.TitleDir, 'none'),
   tit= '';
-  if isfield(opt, 'title'),
+  if isfield(opt, 'Title'),
     tit= [opt.Title ':  '];
   elseif isfield(epo, 'title'),
     tit= [util_untex(epo.title) ':  '];

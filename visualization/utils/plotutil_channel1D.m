@@ -195,17 +195,17 @@ if isequal(opt.Title, 1),
   opt.Title= epo.clab(chan);
 end
 if opt.SmallSetup,
-  if ~isfield(opt, 'xTickLabel') && ~isfield(opt, 'xTickLabelMode'),
-    if isfield(opt, 'xTick') || ...
-          (isfield(opt, 'xTickMode') && strcmp(opt.xTickMode,'auto')),
+  if ~isfield(opt, 'XTickLabel') && ~isfield(opt, 'XTickLabelMode'),
+    if isfield(opt, 'XTick') || ...
+          (isfield(opt, 'XTickMode') && strcmp(opt.xTickMode,'auto')),
       opt.xTickLabelMode= 'auto';
     else
       opt.xTickLabel= [];
     end
   end
-  if ~isfield(opt, 'yTickLabel') && ~isfield(opt, 'yTickLabelMode'),
-    if isfield(opt, 'yTick') || ...
-          (isfield(opt, 'yTickMode') && strcmp(opt.yTickMode,'auto')),
+  if ~isfield(opt, 'YTickLabel') && ~isfield(opt, 'YTickLabelMode'),
+    if isfield(opt, 'YTick') || ...
+          (isfield(opt, 'YTickMode') && strcmp(opt.yTickMode,'auto')),
       opt.yTickLabelMode= 'auto';
     else
       opt.yTickLabel= [];

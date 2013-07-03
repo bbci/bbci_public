@@ -1,4 +1,4 @@
-function visutil_acmAdaptCLim(acm, h_ax, varargin)
+function fig_acmAdaptCLim(acm, h_ax, varargin)
 %FIG_ACMADAPTCLIM - Helper function to be used with fig_adaptColormap
 %
 %See help of fig_adaptColormap
@@ -6,9 +6,9 @@ function visutil_acmAdaptCLim(acm, h_ax, varargin)
 if nargin<2 || isempty(h_ax),
   h_ax= gca;
 elseif length(h_ax)>1,
-  visutil_acmAdaptCLim(acm, h_ax(1), varargin{:});
+  fig_acmAdaptCLim(acm, h_ax(1), varargin{:});
   for ii= 2:length(h_ax),
-    visutil_acmAdaptCLim(acm, h_ax(ii));
+    fig_acmAdaptCLim(acm, h_ax(ii));
   end
   return;
 end

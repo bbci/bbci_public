@@ -23,7 +23,7 @@ hcb= findobj(fig, 'Tag','Colorbar');
 if ~isempty(ax),
   for ii= 1:length(hcb),
     hax= handle(hcb(ii));
-    if isempty(double(hax.axes)) || ~ismember(double(hax.axes), ax),
+    if ~isprop(hcb(ii),'axes') || isempty(double(hax.axes)) || ~ismember(double(hax.axes), ax),
       ud= get(hcb(ii), 'UserData');
       if ~isfield(ud, 'ParentAxis') || ~ismember(ud.ParentAxis, ax),
         hcb(ii)= NaN;

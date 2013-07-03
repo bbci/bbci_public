@@ -29,7 +29,19 @@ if nargin<2,
 end
 
 if util_getDataDimension(epo)==1
-  H= plotutil_channel1D(epo, clab, varargin{:});
+  if ~isempty(varargin)
+    opt1D= plotutil_channel1D;
+    opt= opt_structToProplist(opt_substruct(opt_proplistToStruct(varargin{:}),opt1D(:,1)));
+  else
+    opt=varargin;
+  end
+  H= plotutil_channel1D(epo, clab, opt{:});
 else
-  H= plotutil_channel2D(epo, clab, varargin{:});
+  if ~isempty(varargin)
+    opt2D= plotutil_channel2D;
+    opt=opt_structToProplist( opt_substruct(opt_proplistToStruct(varargin{:}),opt2D(:,1)));
+  else
+    opt=varargin;
+  end
+  H= plotutil_channel2D(epo, clab, opt{:});
 end
