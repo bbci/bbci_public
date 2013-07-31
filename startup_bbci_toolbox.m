@@ -52,7 +52,7 @@ BBCI= opt_setDefaults(BBCI, props);
 
 % Information about the test person (Tp)
 props= {'Dir'       ''         'CHAR'
-        'Code'      'VPtemp'   'CHAR'
+        'Code'      ''         'CHAR'
        };
 BBCI.Tp= opt_setDefaults(BBCI.Tp, props);
 
