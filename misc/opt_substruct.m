@@ -19,7 +19,7 @@ if ischar(fld_list),
 end
 
 fldS= fieldnames(S);
-[~,~,fld_idx] = intersect(lower(fld_list), lower(fldS));
+[dmy, dmy, fld_idx]= intersect(lower(fld_list), lower(fldS));
 fld_list= fldS(fld_idx);
 
 T= [];
