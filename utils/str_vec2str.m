@@ -4,7 +4,8 @@ function str= str_vec2str(v, fmt, inbetween)
 % v can be a vector of real numbers or a cell array of strings.
 % the default for format is '%d' in the former and '%s' in the latter case.
 
-narginchk(1,3)
+%narginchk(1,3)
+nargchk(1, 3, nargin);
 misc_checkType(v,'DOUBLE[-]|CELL{CHAR}');
 misc_checkTypeIfExists('fmt','CHAR');
 misc_checkTypeIfExists('inbetween','CHAR');
