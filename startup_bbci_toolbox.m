@@ -46,10 +46,18 @@ props= {'Dir'            BBCI_DIR          'CHAR';
        };
 [BBCI, isdefault]= opt_setDefaults(BBCI, props);
 
+private_folders_to_add= {'utils', 'startup'};
+for kk= 1:length(private_folders_to_add),
+  folder= fullfile(BBCI.PrivateDir, private_folders_to_add{kk});
+  if exist(folder, 'dir'),
+    addpath(genpath(folder));
+  end
+end
+
 if isdefault.TmpDir
   BBCI.TmpDir= fullfile(BBCI.DataDir, 'tmp');
   if ~exist(BBCI.TmpDir, 'dir'),
-    fprintf('!! Default TEMP dir not existing at\n  %s\n', TMP_DIR);
+    fprintf('!! Default TEMP dir not existing at\n  %s\n', BBCI.TmpDir);
     fprintf('!! Setting TEMP dir to ''''\n');
     BBCI.TmpDir= '';
   end
