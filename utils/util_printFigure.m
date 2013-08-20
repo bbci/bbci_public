@@ -1,5 +1,5 @@
 function util_printFigure(file, varargin)
-% PRINTFIGURE - Save the current Matlab figure
+%UTIL_PRINTFIGURE - Save the current Matlab figure
 %
 %Synopsis:
 % util_printFigure(FILE, <OPT>)
@@ -21,18 +21,20 @@ function util_printFigure(file, varargin)
 %  .Renderer: how the figure is rendered to a file, 'painters' (default)
 %     produces vector images, 'zbuffer' and 'opengl' produce bitmaps
 
+global BBCI
+BBCI= opt_setDefaults(BBCI, {'FigDir',  ''  'CHAR'});
 
 props = {   
-        'PaperSize'         'auto'          '!CHAR(auto maxAspect)|!DOUBLE[- -]';
-        'Format'            'eps'           '!CHAR(eps pdf svg epspdf png)';
-        'Device'            'epsc2'         '!CHAR';
-        'Folder'            ''              'CHAR';
-        'Prefix'            ''              'CHAR';
-        'Resolution'        []              'DOUBLE[1]';
-        'Renderer'          'painters'      '!CHAR(painters zbuffer opengl)';
-        'Embed'             1               '!BOOL';
-        'Append'            []              'CHAR';
-        'FigNos'            []              'INT';
+        'PaperSize'       'auto'        '!CHAR(auto maxAspect)|!DOUBLE[- -]';
+        'Format'          'eps'         '!CHAR(eps pdf svg epspdf png)';
+        'Device'          'epsc2'       '!CHAR';
+        'Folder'          ''            'CHAR';
+        'Prefix'          ''            'CHAR';
+        'Resolution'      []            'DOUBLE[1]';
+        'Renderer'        'painters'    '!CHAR(painters zbuffer opengl)';
+        'Embed'           1             '!BOOL';
+        'Append'          []            'CHAR';
+        'FigNos'          []            'INT';
          };
 
 if isnumeric(varargin{1}) || isequal(varargin{1}, 'maxAspect'),
@@ -46,7 +48,6 @@ end
 opt_checkProplist(opt, props);
 misc_checkType(file,'!CHAR');
 
-%%
 set(gcf,'Renderer',opt.Renderer);
                    
 if ~isempty(opt.FigNos)
@@ -78,7 +79,10 @@ end
 if fileutil_isAbsolutePath(file),
   fullName= file;
 else
-  fullName= [fullfile(opt.Folder, opt.Prefix) file];
+  fullName= fullfile(opt.Folder, [opt.Prefix file]);
+  if ~fileutil_isAbsolutePath(fullName) && exist(BBCI.FigDir, 'dir'),
+    fullName= fullfile(BBCI.FigDir, fullName);
+  end
 end
 
 [filepath, filename]= fileparts(fullName); 

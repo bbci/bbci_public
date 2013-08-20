@@ -3,9 +3,10 @@ function startup_bbci_toolbox(varargin)
 global BBCI
 
 % Find directory of the BBCI Toolbox and path it to the path
-BBCI_DIR= [fileparts(which(mfilename)) filesep];
+BBCI_DIR= fileparts(which(mfilename));
 addpath(genpath(BBCI_DIR));
 rmpath(genpath(fullfile(BBCI_DIR, '.git')));
+BBCI_PRIVATE_DIR= fullfile(fileparts(BBCI_DIR), 'bbci_private');
 
 BBCI= opt_proplistToStruct(varargin{:});
 if ~isfield(BBCI, 'TypeChecking'),
@@ -36,23 +37,24 @@ if ~exist(PYFF_DIR, 'dir'),
   PYFF_DIR= '';
 end
 
-props= {'Dir'            BBCI_DIR        'CHAR';
-        'DataDir'        ''              'CHAR';
-        'RawDir'         BBCI_RAW_DIR    'CHAR';
-        'MatDir'         BBCI_MAT_DIR    'CHAR';
-        'TmpDir'         TMP_DIR         'CHAR';
-        'PyffDir'        PYFF_DIR        'CHAR';
-        'FigDir'         ''              'CHAR';
-        'Tp'             struct          'STRUCT';
-        'Acq'            struct          'STRUCT';
-        'History'        1               '!BOOL';
-        'TypeChecking'   1               '!BOOL'
+props= {'Dir'            BBCI_DIR          'CHAR';
+        'DataDir'        ''                'CHAR';
+        'RawDir'         BBCI_RAW_DIR      'CHAR';
+        'MatDir'         BBCI_MAT_DIR      'CHAR';
+        'PrivateDir'     BBCI_PRIVATE_DIR  'CHAR';
+        'TmpDir'         TMP_DIR           'CHAR';
+        'PyffDir'        PYFF_DIR          'CHAR';
+        'FigDir'         ''                'CHAR';
+        'Tp'             struct            'STRUCT';
+        'Acq'            struct            'STRUCT';
+        'History'        1                 '!BOOL';
+        'TypeChecking'   1                 '!BOOL'
        };
 BBCI= opt_setDefaults(BBCI, props);
 
 % Information about the test person (Tp)
-props= {'Dir'       ''         'CHAR'
-        'Code'      'VPtemp'   'CHAR'
+props= {'Dir'       ''    'CHAR'
+        'Code'      ''    'CHAR'
        };
 BBCI.Tp= opt_setDefaults(BBCI.Tp, props);
 
