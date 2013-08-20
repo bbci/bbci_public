@@ -1,16 +1,23 @@
 function range= visutil_commonRangeForGA(erp, varargin)
 
-props= {'CLabERP'         ''     'CELL{CHAR}|CHAR';
+props= {'CLabERP'         '*'    'CELL{CHAR}|CHAR';
         'IvalERP'         []     'DOUBLE[2]';
         'SymERP'          0      'BOOL';
         'NiceRangeERP'    0      'DOUBLE';
         'EnlageRangeERP'  0.02   'DOUBLE';
-        'CLabScalp'       ''     'CELL{CHAR}|CHAR';
-        'IvalScalp'       []     'DOUBLE[2]';
+        'CLabScalp'       '*'    'CELL{CHAR}|CHAR';
+        'IvalScalp'       []     'DOUBLE';
         'SymScalp'        1      'BOOL'
        };
+
+if nargin==0,
+  range= props; return
+end
+
+misc_checkType(erp, 'CELL{STRUCT(x fs clab)}');
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
+opt_checkProplist(opt, props);
 
 if opt.NiceRangeERP && isdefault.EnlageRangeERP,
   opt.EnlageRangeERP= 0;
@@ -41,7 +48,7 @@ for ff= 1:size(erp,2),
 end
 
 if opt.SymERP,
-  range.clab= [-1 1]*max(abs(range.clab));
+  range.erp= [-1 1]*max(abs(range.erp));
 end
 if opt.EnlageRangeERP>0,
   range.erp= range.erp + [-1 1]*opt.EnlageRangeERP*diff(range.erp);
