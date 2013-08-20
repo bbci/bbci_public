@@ -24,7 +24,7 @@ end
 for ff= 1:size(erp,2),
   erp_ga= proc_grandAverage(erp{:,ff});
   
-  tmp= proc_selectChannels(erp_ga, opt.CLab_ERP);
+  tmp= proc_selectChannels(erp_ga, opt.CLabERP);
   if ~isempty(opt.IvalERP),
     tmp= proc_selectIval(tmp, opt.IvalERP);
   end
