@@ -88,7 +88,7 @@ end;
 if isfield(opt,'markChannels')
     opt.markChans = opt.markChannels;
     opt = rmfield(opt,'markChannels');
-    bbci_warning('Please use ''markChans'' instead of ''markChannels''', ...
+    util_warning('Please use ''markChans'' instead of ''markChannels''', ...
                  'drawscalp', mfilename);
 end
 %% When showLabels == 0: set default marker 
@@ -101,7 +101,7 @@ oldfields = {'crossSize' 'crossWidth' 'markerSize' ...
 obsolete = find(ismember(fn,oldfields));
 if obsolete
     oldn = fn(obsolete);
-%    bbci_warning(sprintf('The use of %s is deprecate',vec2str(oldn)), ...
+%    util_warning(sprintf('The use of %s is deprecate',vec2str(oldn)), ...
 %                 'drawscalp', mfilename)
     if ~opt.showLabels && (isfield(opt,'crossSize') ||isfield(opt,'crossWidth'))
         if isfield(opt,'crossSize')
@@ -131,7 +131,7 @@ if obsolete
             opt.lineProps = opt.linespec;
         else
             opt.lineProps = {opt.lineProps{:}, opt.linespec{:}};
-%           bbci_warning('Both opt.lineProps and opt.linespec are set. Now using merged version', 'propMerge', mfilename);
+%           util_warning('Both opt.lineProps and opt.linespec are set. Now using merged version', 'propMerge', mfilename);
         end
     end
     if isfield(opt,'mark_channels')

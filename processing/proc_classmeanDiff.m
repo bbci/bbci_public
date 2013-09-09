@@ -73,7 +73,7 @@ if nClasses==1,
   fv= proc_appendEpochs(fv, fv2);
 elseif nClasses>2,
   warning('calculating pairwise differences');
-%   state= bbci_warning('off', 'selection');
+%   state= util_warning('off', 'selection');
   combs= fliplr(nchoosek(1:size(fv.y,1), 2));
   for ic= 1:length(combs),
     ep= proc_selectClasses(fv, combs(ic,:));
@@ -87,7 +87,7 @@ elseif nClasses>2,
       fv_diff= proc_appendEpochs(fv_diff, proc_classmeanDiff(ep,alpha));
     end
   end
-%   bbci_warning(state);
+%   util_warning(state);
   return; 
 end
 

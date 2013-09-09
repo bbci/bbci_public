@@ -27,7 +27,7 @@ end
 
 if nDivisions==1,                          %% leave-one-out
 %  msg= 'for nDivisions==1 we do leave-one-out';
-%  bbci_warning(msg, 'validation', mfilename);
+%  util_warning(msg, 'validation', mfilename);
   idx= [];
   for cl= 1:nClasses,
     ci= find(g(cl,:));

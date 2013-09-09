@@ -82,7 +82,7 @@ if size(fv.y,1)>2,
   return;
 elseif size(fv.y,1)==1,
   warning('1 class only: calculating r-values against flat-line of same var', 'r_policy');
-%   bbci_warning('1 class only: calculating r-values against flat-line of same var', 'r_policy');
+%   util_warning('1 class only: calculating r-values against flat-line of same var', 'r_policy');
   fv2= fv;
   szx= size(fv.x);
   fv2.x= fv2.x - repmat(mean(fv2.x,3), [1 1 size(fv2.x,3)]);
