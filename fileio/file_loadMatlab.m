@@ -72,7 +72,7 @@ if nargout > length(vars),
 end
 
 props = {'Path',            BBCI.MatDir     'CHAR';
-         'Vars',            vars(1:nargout) 'CELL{CHAR}';
+         'Vars',            vars(1:nargout) 'CELL{CHAR}|CHAR';
          'CLab'             '*'             'CHAR|CELL{CHAR}';
          'Ival'             []              'DOUBLE[2]';
          'Fs'               []          	  'DOUBLE[1]';
@@ -83,7 +83,9 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-
+if ~iscell(opt.Vars)
+  opt.Vars= {opt.Vars};
+end
 
 if iscell(file),
   varargout= cell(1, length(opt.Vars));
