@@ -44,8 +44,7 @@ else
   opt= opt_proplistToStruct(varargin{:});
 end
 
-[opt,isdefault] = opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
+[opt,isdefault] = opt_setDefaults(opt, props, 1);
 misc_checkType(file,'!CHAR');
 
 set(gcf,'Renderer',opt.Renderer);

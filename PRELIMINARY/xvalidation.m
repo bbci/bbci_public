@@ -288,7 +288,7 @@ if isequal(opt.MsSampleFcn, @sample_divisions),
 else
   if ~isdefault.MsTrials,
     msg= 'property .msTrials is ignored when you specify .ms_sample_fcn';
-    bbci_warning(msg, 'validation', mfilename);
+    util_warning(msg, 'validation', mfilename);
   end
 end
 if isequal(opt.SampleFcn, @sample_divisions),
@@ -297,7 +297,7 @@ if isequal(opt.SampleFcn, @sample_divisions),
 else
   if ~isdefault.XTrials,
     msg= 'property .XTrials is ignored when you specify .SampleFcn';
-    bbci_warning(msg, 'validation', mfilename);
+    util_warning(msg, 'validation', mfilename);
   end
 end
 opt= rmfield(opt, 'MsTrials');
@@ -358,7 +358,7 @@ end
 
 if opt.SaveProc && ~prochasfreevar(opt.Proc),
   msg= 'save_proc makes only sense for .proc with free variables';
-  bbci_warning(msg, 'validation', mfilename);
+  util_warning(msg, 'validation', mfilename);
   opt.SaveProc= 0;
 end
 
@@ -445,7 +445,7 @@ if prochasfreevar(opt.Proc) || isstruct(model),
     if loaded==0
       if opt.Verbosity>0,
         msg= 'outer model selection can bias the results';
-        bbci_warning(msg, 'validation', mfilename);
+        util_warning(msg, 'validation', mfilename);
       end
       if opt.Verbosity<2,
         opt_ms.progress_bar= 0;
@@ -579,7 +579,7 @@ end
 if ~loss_samplewise,
   if opt.OutTrainloss,
     msg= sprintf('trainloss cannot be returned for loss <%s>', func2str(loss_fcn));
-    bbci_warning(msg, 'validation', mfilename);
+    util_warning(msg, 'validation', mfilename);
     opt.OutTrainloss= 0;
   end
 end

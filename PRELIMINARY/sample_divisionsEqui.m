@@ -42,7 +42,7 @@ nEventsInClass= sum(g,2);
 if min(nEventsInClass)<nDivisions,
   msg= ['number of fold greater than samples in smallest class\n' ...
         'switching to leave-one-out'];
-  bbci_warning(msg, 'sample', mfilename);
+  util_warning(msg, 'sample', mfilename);
   [divTr, divTe]= sample_leaveOneOut(g, [1 1 xTrials(3:end)]);
   return;  
 end
