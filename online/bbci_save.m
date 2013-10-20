@@ -19,7 +19,7 @@ BS= bbci.calibrate.save;
 
 file= fullfile(BS.folder, BS.file);
 num= 1;
-while ~BS.overwrite && exist(file, 'file'),
+while ~BS.overwrite && exist([file '.mat'], 'file'),
   num= num + 1;
   file= fullfile(BS.folder, [BS.file, sprintf('%02d',num)]);
 end
