@@ -39,7 +39,7 @@ function [outarg1, loss_std, out_test, memo]= xvalidation(epo, model, varargin)
 %                     <'sample_fcn', {'divisions', xt}>. The value xt is a
 %                     vector [#shuffles, #folds], see sample_divisions,
 %                     default [10 10].
-%     .loss_fcn       - FUNC (handle to loss function), or cell array {@loss_fcn, loss_param},
+%     .LossFcn       - FUNC (handle to loss function), or cell array {@loss_fcn, loss_param},
 %                     e.g., @loss_0_1 (default), @loss_classwiseNormalized, @loss_identity,
 %                     {'byMatrix', loss_matrix}
 %                     if first choice would call the function loss_0_1 to
@@ -242,7 +242,7 @@ end
 opt_checkProplist(opt, props);
 misc_checkType(epo,'STRUCT(x y)');
 misc_checkType(epo.x,'DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]','epo.x');
-misc_checkType(model,'STRUCT|CHAR');
+misc_checkType(model,'STRUCT|CHAR|FUNC');
 
 t0= cputime;
 
@@ -495,10 +495,17 @@ else              %% classification model without free hyper parameters
   model= [];
 end
 
-[dummy, train_par]= misc_getFuncParam(classy);
-train_fcn = str2func(['train_' classy]);
-applyFcn= misc_getApplyFunc(classy);
-
+% this is a quick fix : classy should be actually a handle throughout...
+if isa(classy,'function_handle')
+    [dummy, train_par]= misc_getFuncParam(classy);
+    train_fcn= classy;
+    dummy= func2str(classy);
+    applyFcn= misc_getApplyFunc(str_tail(dummy,'_'));
+else 
+    [dummy, train_par]= misc_getFuncParam(classy);
+    train_fcn = str2func(['train_' classy]);
+    applyFcn= misc_getApplyFunc(classy);
+end
 [loss_fcn, loss_par]= misc_getFuncParam(opt.LossFcn);
 
 % Issue a warning if 'loss_identity' is used with labels given, as the
