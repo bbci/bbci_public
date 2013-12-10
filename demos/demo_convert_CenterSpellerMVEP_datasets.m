@@ -28,27 +28,37 @@ stimDef= {[31:46], [11:26];
 
 %% load raw files and save in matlab format
 
-for k=1:length(files);
+for k= 1:length(files);
     
-    fprintf('converting %s\n', files{k}{2})
-    % header of the raw EEG files
-    raw_file = fullfile(files{k}{1},files{k}{2});
-    hdr= file_readBVheader(raw_file);
-    
-    % low-pass filter
-    Wps = [42 49]/hdr.fs*2;
-    [n, Ws] = cheb2ord(Wps(1), Wps(2), 3, 40);
-    [filt.b, filt.a]= cheby2(n, 50, Ws);
-    % load raw data, downsampling is done while loading
-    [cnt, mrk_orig] = file_readBV(raw_file, 'Fs',Fs, 'Filt',filt);
-    
-    % create mrk and mnt, and the new filename
-    mrk = mrk_defineClasses(mrk_orig, stimDef);
-    mnt = mnt_setElectrodePositions(cnt.clab);
-    mat_file_name = fullfile(sprintf('demo_%s', files{k}{1}), files{k}{2});
-    
-    % save in matlab format
-    fprintf('saving %s\n', mat_file_name)
-    file_saveMatlab(mat_file_name, cnt, mrk, mnt);
-    
+  fprintf('converting %s\n', files{k}{2})
+  % header of the raw EEG files
+  raw_file = fullfile(files{k}{1},files{k}{2});
+  hdr = file_readBVheader(raw_file);
+  
+  % low-pass filter
+  Wps = [42 49]/hdr.fs*2;
+  [n, Ws] = cheb2ord(Wps(1), Wps(2), 3, 40);
+  [filt.b, filt.a]= cheby2(n, 50, Ws);
+  % load raw data, downsampling is done while loading
+  [cnt, mrk_orig] = file_readBV(raw_file, 'Fs',Fs, 'Filt',filt);
+
+  % Re-referencing to linked-mastoids
+  A = eye(length(cnt.clab));
+  iA1 = util_chanind(cnt.clab,'A1');
+  if isempty(iA1)
+    iA1 = util_chanind(cnt.clab,'A2');
+  end
+  A(iA1,:) = -0.5;
+  A(:,iA1) = [];
+  cnt = proc_linearDerivation(cnt, A);
+  
+  % create mrk and mnt, and the new filename
+  mrk = mrk_defineClasses(mrk_orig, stimDef);
+  mnt = mnt_setElectrodePositions(cnt.clab);
+  mat_file_name = fullfile(sprintf('demo_%s', files{k}{1}), files{k}{2});
+  
+  % save in matlab format
+  fprintf('saving %s\n', mat_file_name)
+  file_saveMatlab(mat_file_name, cnt, mrk, mnt);
+  
 end
