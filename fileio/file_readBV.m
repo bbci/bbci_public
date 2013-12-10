@@ -155,7 +155,7 @@ fileNames = fileNamesTemp;
 if length(fileNames)>1,
   if opt.Verbose,
     fprintf('concatenating files in the following order:\n');
-    fprintf('%s\n', str_vec2str(fileNames));
+    fprintf('  %s\n', fileNames{:});
   end
 end
 
