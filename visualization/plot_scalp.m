@@ -112,7 +112,7 @@ fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible 
 
 if opt.NewColormap,
   acm= visutil_addColormap(opt.Colormap);
-elseif isfield(opt, 'colormap'),
+elseif isfield(opt, 'Colormap'),
   colormap(opt.Colormap);
 end
 
