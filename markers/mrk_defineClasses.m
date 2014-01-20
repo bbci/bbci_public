@@ -57,14 +57,14 @@ mrk.y= zeros(nClasses, numel(mrk.time));
 for cc= 1:nClasses,
   if isnumeric(classDef{1,cc}),
     % vector as in {[10 11], [20:26];  'target', 'nontarget'}
-    mrk.y(cc,:)= ismember(mk.desc, classDef{1,cc});
+    mrk.y(cc,:)= ismember(mk.desc, classDef{1,cc},'legacy');
   elseif iscell(classDef{1,cc}),
     % cell of strings as in {{'S 10','S 11'}, {'S 20','S 21'};
     %                        'target',        'nontarget'}
-    mrk.y(cc,:)= ismember(mk.desc, classDef{1,cc});
+    mrk.y(cc,:)= ismember(mk.desc, classDef{1,cc},'legacy');
   else
     % single string as in {'S10', 'S20';  'target', 'nontarget'}
-    mrk.y(cc,:)= ismember(mk.desc, classDef(1,cc));
+    mrk.y(cc,:)= ismember(mk.desc, classDef(1,cc),'legacy');
   end
 end
 

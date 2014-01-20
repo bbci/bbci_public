@@ -28,7 +28,7 @@ function props= opt_catProps(props, varargin)
 
 props_append= varargin;
 for k= 1:length(varargin),
-  idx_existing= ismember(props_append{k}(:,1), props(:,1));
+  idx_existing= ismember(props_append{k}(:,1), props(:,1),'legacy');
   props_append{k}(idx_existing,:)= [];
 end
 props= cat(1, props, props_append{:});

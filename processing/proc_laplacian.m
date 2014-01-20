@@ -71,7 +71,7 @@ pos= zeros(2, nOrigChans);
 for ic= 1:nOrigChans,
   pos(:,ic)= procutil_lapGetCoordinates(dat.clab{ic}, laplace.grid);
 end
-pos(:,setdiff(1:nOrigChans,rc))= inf;
+pos(:,setdiff(1:nOrigChans,rc,'legacy'))= inf;
 
 idx_tbf= util_chanind(dat, opt.clab);
 W= zeros(length(dat.clab), length(idx_tbf));

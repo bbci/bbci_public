@@ -33,7 +33,7 @@ misc_checkType(epo, 'STRUCT(x clab)');
 epo= misc_history(epo);
 
 if isequal(idx, 'not'),
-  idx= setdiff(1:size(epo.y,2), varargin{1});
+  idx= setdiff(1:size(epo.y,2), varargin{1},'legacy');
   varargin= varargin(2:end);
 end
 

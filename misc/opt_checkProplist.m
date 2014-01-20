@@ -52,7 +52,7 @@ end
 
 props_all= cat(1, props, varargin{:});
 fn= fieldnames(opt);
-isknown= ismember(upper(fn), upper(props_all(:,1)));
+isknown= ismember(upper(fn), upper(props_all(:,1)),'legacy');
 unknown_fields= fn(~isknown);
 if ~isempty(unknown_fields),
   if length(unknown_fields)==1,

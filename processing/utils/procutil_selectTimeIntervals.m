@@ -99,14 +99,14 @@ opt= opt_proplistToStruct(varargin{:});
 opt_checkProplist(opt, props, props_plot);
 
 if opt.ScalpChannelsOnly,
-  scalpchans= intersect(strtok(epo_r.clab), util_scalpChannels);
+  scalpchans= intersect(strtok(epo_r.clab), util_scalpChannels,'legacy');
   if length(scalpchans) < length(epo_r.clab),
     if isequal(opt.Clab, '*'),
-      opt.Clab= intersect(epo_r.clab, util_scalpchans, 'stable');
+      opt.Clab= intersect(epo_r.clab, util_scalpchans, 'stable','legacy');
     else
       selchans= epo_r.clab(util_chanind(epo_r, opt.Clab));
       opt.Clab= intersect(epo_r, ...
-                          intersect(selchans, util_scalpChannels), 'stable');
+                          intersect(selchans, util_scalpChannels,'legacy'), 'stable','legacy');
     end
   end
   % in recursive calls we do not need to do this again
@@ -125,7 +125,7 @@ X_memo= epo_r.x;
 % delete scores where nothing should be selected
 if ~isempty(opt.IvalMax),
   idx_keep= procutil_getIvalIndices(opt.IvalMax, epo_r);
-  idx_rm= setdiff(1:size(epo_r.x,1), idx_keep);
+  idx_rm= setdiff(1:size(epo_r.x,1), idx_keep,'legacy');
   epo_r.x(idx_rm,:)= 0;
 end
 
@@ -150,7 +150,7 @@ if ~isempty(opt.Constraint),
     if length(this_constraint)>=4,
       % TODO: use new option ivalMax!
       idx_keep= procutil_getIvalIndices(this_constraint{4}, epo_r);
-      idx_rm= setdiff(1:size(tmp_r.x,1), idx_keep);
+      idx_rm= setdiff(1:size(tmp_r.x,1), idx_keep,'legacy');
       tmp_r.x(idx_rm,:)= 0;
     end
     [tmp_ival, tmp_nfo, X_rem]= ...
@@ -182,7 +182,7 @@ if ~isempty(opt.Constraint),
 end
 
 if opt.Verbose,
-  nonscalp= setdiff(strtok(epo_r.clab), util_scalpChannels);
+  nonscalp= setdiff(strtok(epo_r.clab), util_scalpChannels,'legacy');
   if ~isempty(nonscalp),
     warning(['Presumably non-scalp channel(s) found: ' str_vec2str(nonscalp)]);
   end

@@ -22,7 +22,7 @@ if isdefault.Ext,
   is= find(spec=='.', 1, 'last');
   if ~isempty(is) && is<length(spec) && is>=length(spec)-4,
     ext= spec(is+1:end);
-    if ~ismember('*',ext) && ~ismember('/',ext),
+    if ~ismember('*',ext,'legacy') && ~ismember('/',ext,'legacy'),
       opt.Ext= ext;
     end
   else

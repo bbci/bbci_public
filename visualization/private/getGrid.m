@@ -11,7 +11,7 @@ function grid= getGrid(displayMontage)
 
 global EEG_CFG_DIR;
 
-if ismember(',', displayMontage) || ismember(sprintf('\n'), displayMontage),
+if ismember(',', displayMontage,'legacy') || ismember(sprintf('\n'), displayMontage,'legacy'),
   readFcn= 'strread';
   montage= displayMontage;
 else

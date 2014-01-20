@@ -168,11 +168,11 @@ if ~isfield(opt, 'ScaleGroup'),
   else
     scalp_idx= util_scalpChannels(epo);
     if isempty(scalp_idx),
-      opt.ScaleGroup= {intersect(grd_clab, epo.clab)};
+      opt.ScaleGroup= {intersect(grd_clab, epo.clab,'legacy')};
     else
-      scalp_idx= intersect(scalp_idx, util_chanind(epo, grd_clab));
+      scalp_idx= intersect(scalp_idx, util_chanind(epo, grd_clab),'legacy');
       emgeog_idx= util_chanind(epo, 'EOGh','EOGv','EMG*');
-      others_idx= setdiff(1:length(epo.clab), [scalp_idx emgeog_idx]);
+      others_idx= setdiff(1:length(epo.clab), [scalp_idx emgeog_idx],'legacy');
       opt.ScaleGroup= {epo.clab(scalp_idx), {'EMG*'}, {'EOGh'}, {'EOGv'}, ...
                        epo.clab(others_idx)};
       def_ScalePolicy= {'auto', [-5 50], 'sym', 'auto', 'auto'};
@@ -227,9 +227,9 @@ if isempty(opt.Axes),
 end
 set(gcf, 'Color',opt.FigureColor);
 
-DisplayChannels= find(ismember(strtok(mnt.clab), strtok(epo.clab)));
+DisplayChannels= find(ismember(strtok(mnt.clab), strtok(epo.clab),'legacy'));
 if isfield(mnt, 'box'),
-  DisplayChannels= intersect(DisplayChannels, find(~isnan(mnt.box(1,1:end-1))));
+  DisplayChannels= intersect(DisplayChannels, find(~isnan(mnt.box(1,1:end-1))),'legacy');
 end
 nDisps= length(DisplayChannels);
 % mnt.clab{DisplayChannels(ii)} may differ from epo.clab{ii}, e.g. the former
@@ -374,7 +374,7 @@ end
 
 if ~isdefault.XTickAxes,
   h_xta= H.ax(util_chanind(mnt.clab(DisplayChannels), opt.XTickAxes));
-  set(setdiff(H.ax, h_xta), 'XTickLabel','');
+  set(setdiff(H.ax, h_xta,'legacy'), 'XTickLabel','');
 end
 
 if ~strcmp(opt.TitleDir, 'none'),

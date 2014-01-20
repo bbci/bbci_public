@@ -9,7 +9,7 @@ if isfield(fv, 'bidx'),
   %% check equivalence classes as defined by field bidx for consistency
   %% and choose a representative for each.
   valid= find(any(fv.y~=0 & ~isnan(fv.y),1));
-  eqcl= unique(fv.bidx(valid));
+  eqcl= unique(fv.bidx(valid),'legacy');
   repIdx= zeros(1, length(eqcl));
   for kk= 1:length(eqcl),
     %% all members that belong to the kk-th equivalence class

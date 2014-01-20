@@ -63,7 +63,7 @@ props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
        };
 [opt, isdefault]= opt_setDefaults('bbci.calibrate.settings', props);
 
-nClassesGuess= length(unique(opt.mrk2feedback_fcn(opt.cue_markers)));
+nClassesGuess= length(unique(opt.mrk2feedback_fcn(opt.cue_markers),'legacy'));
 [opt, isdefault]= ...
   opt_overrideIfDefault(opt, isdefault, 'nClasses', nClassesGuess);
 [opt, isdefault]= ...
@@ -161,9 +161,9 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
     fig_closeIfExists(5);
   end
   if iscell(BC_result.rejected_clab),   %% that means rejected_clab is not NaN
-    cidx= find(ismember(BC_result.clab, BC_result.rejected_clab));
+    cidx= find(ismember(BC_result.clab, BC_result.rejected_clab,'legacy'));
     BC_result.clab(cidx)= [];
-    cidx= find(ismember(BC_result.cfy_clab, BC_result.rejected_clab));
+    cidx= find(ismember(BC_result.cfy_clab, BC_result.rejected_clab,'legacy'));
     BC_result.cfy_clab(cidx)= [];
   end
 else

@@ -44,7 +44,7 @@ end
 
 fnames= fieldnames(src);
 if strict_checking,
-  fd= setdiff(flds, fnames);
+  fd= setdiff(flds, fnames,'legacy');
  if ~isempty(fd),
    error(sprintf('field(s) %s not in struct', vec2str(fd)));
  end

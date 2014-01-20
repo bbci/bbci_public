@@ -156,28 +156,28 @@ else
     [dd,di]= sort(-score);
     iMax= 1:opt.patterns;
     iCut= find(-dd>=0.5);
-    idx= intersect(iMax, iCut);
+    idx= intersect(iMax, iCut,'legacy');
     fi= di(idx);
    case 'directorscut',
-    if ismember(opt.score, {'eigenvalues','medianvar'}),
+    if ismember(opt.score, {'eigenvalues','medianvar'},'legacy'),
       absscore= 2*(max(score, 1-score)-0.5);
       [dd,di]= sort(score);
       Nh= floor(nChans/2);
-      iC1= find(ismember(di, 1:Nh));
-      iC2= flipud(find(ismember(di, [nChans-Nh+1:nChans])));
+      iC1= find(ismember(di, 1:Nh,'legacy'));
+      iC2= flipud(find(ismember(di, [nChans-Nh+1:nChans],'legacy')));
       iCut= find(absscore(di)>=0.66*max(absscore));
-      idx1= [iC1(1); intersect(iC1(2:opt.patterns), iCut)];
-      idx2= [iC2(1); intersect(iC2(2:opt.patterns), iCut)];
+      idx1= [iC1(1); intersect(iC1(2:opt.patterns), iCut,'legacy')];
+      idx2= [iC2(1); intersect(iC2(2:opt.patterns), iCut,'legacy')];
       fi= di([idx1; flipud(idx2)]);
     else
       score= score/max(score);
       [dd,di]= sort(-score);
       Nh= floor(nChans/2);
-      iC1= find(ismember(di, 1:Nh));
-      iC2= find(ismember(di, [nChans-Nh+1:nChans]));
+      iC1= find(ismember(di, 1:Nh,'legacy'));
+      iC2= find(ismember(di, [nChans-Nh+1:nChans],'legacy'));
       iCut= find(-dd>=0.5);
-      idx1= [iC1(1); intersect(iC1(2:opt.patterns), iCut)];      
-      idx2= [iC2(1); intersect(iC2(2:opt.patterns), iCut)];
+      idx1= [iC1(1); intersect(iC1(2:opt.patterns), iCut,'legacy')];      
+      idx2= [iC2(1); intersect(iC2(2:opt.patterns), iCut,'legacy')];
       fi= di([idx1; idx2]);
     end
    case 'matchpatterns',  %% to be implemented
@@ -189,7 +189,7 @@ else
       v1= v1/sqrt(v1'*v1);
       sp= -inf*ones(1,nChans);
       for jj= 1:nChans,
-        if ismember(jj, fi), continue; end
+        if ismember(jj, fi,'legacy'), continue; end
         v2= W(:,jj);
         sp(jj)= abs(v1'*v2/sqrt(v2'*v2));
       end

@@ -124,7 +124,7 @@ opt_grid= defopt_erps('scale_leftshift',0.075);
 opt_grid_spec= defopt_spec('scale_leftshift',0.075, ...
                            'xTickAxes','Pz');
 
-if sum(ismember(opt.colDef(1,:), data.mrk.className)) < ...
+if sum(ismember(opt.colDef(1,:), data.mrk.className,'legacy')) < ...
       length(data.mrk.className),
   if ~isdefault.colDef,
     warning('opt.colDef does not match with data.mrk.className');
@@ -182,7 +182,7 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
     close_if_exists(3);
   end
   if iscell(BC_result.rejected_clab),   %% that means rejected_clab is not NaN
-    cidx= find(ismember(BC_result.clab, BC_result.rejected_clab));
+    cidx= find(ismember(BC_result.clab, BC_result.rejected_clab,'legacy'));
     BC_result.clab(cidx)= [];
   end
 else
@@ -193,7 +193,7 @@ end
 if isequal(opt.classes, 'auto'),
   class_combination= nchoosek(1:size(mrk_all.y,1), 2);
 else
-  class_combination= find(ismember(mrk_all.className, opt.classes));
+  class_combination= find(ismember(mrk_all.className, opt.classes,'legacy'));
   if length(class_combination) < length(opt.classes),
     error('Not all specified classes were found.');
   end
@@ -226,7 +226,7 @@ BC_result.classes= classes;
 
 opt_grid.colorOrder= choose_colors(mrk_all.className, opt.colDef);
 opt_grid.lineStyleOrder= {'--','--','--'};
-clidx= find(ismember(mrk_all.className, classes));
+clidx= find(ismember(mrk_all.className, classes,'legacy'));
 opt_grid.lineStyleOrder(clidx)= {'-'};
 opt_grid_spec.lineStyleOrder= opt_grid.lineStyleOrder;
 opt_grid_spec.colorOrder= opt_grid.colorOrder;
@@ -512,12 +512,12 @@ if nComb > 1,
   bbci_log_write(data, sprintf('\nCombination <%s> vs <%s> chosen.\n', ...
                                data.result.classes{:}));
   % if there exist an artifact rejection figure include it in the list 
-  if ismember(3, get(0, 'Children')),
+  if ismember(3, get(0, 'Children'),'legacy'),
     data.result.figure_handles= [data.result.figure_handles 3];
   end
     
   % minimize figures of not-chosen class combinations
-  others= setdiff(1:nComb, bi);
+  others= setdiff(1:nComb, bi,'legacy');
   h_other_figs= cat(2, data.all_results(others).figure_handles);
   set(h_other_figs, 'Visible','off');
 end

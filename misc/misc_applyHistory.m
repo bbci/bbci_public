@@ -29,7 +29,7 @@ for ii=1:numel(ht)
   call = ht{ii};
   % Find the parameter that corresponds to the object
   % the object is the only entry not listed as a separate field
-  obj_idx = find(ismember(call.fcn_params,'obj')); 
+  obj_idx = find(ismember(call.fcn_params,'obj','legacy')); 
   nnamed= numel(call.fcn_params);
   nvarargin = sum(cell2mat(regexp(fieldnames(call),'^varargin\d*$')));
   params = cell(nnamed+nvarargin,1);

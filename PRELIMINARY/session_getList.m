@@ -59,7 +59,7 @@ misc_checkType(sessionName,'CHAR');
 if opt.CheckTpDir,
   if ~isempty(BBCI.Tp.Dir),
     subdir= BBCI.Tp.Dir;
-    while ismember(subdir(end), '/\'),
+    while ismember(subdir(end), '/\','legacy'),
       subdir(end)= [];
     end
     [dmy, subdir]= fileparts(subdir);

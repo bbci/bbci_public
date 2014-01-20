@@ -36,7 +36,7 @@ if ~isstruct(mnt),
 end
 
 grid= getGrid(displayMontage);
-if ~any(ismember(strtok(mnt.clab), grid)),
+if ~any(ismember(strtok(mnt.clab), grid,'legacy')),
   return;
 end
 

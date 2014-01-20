@@ -294,7 +294,7 @@ end
 if ~isempty(opt.YLim),
   yLim= opt.YLim;
 else
-  if ismember('|',opt.YLimPolicy),
+  if ismember('|',opt.YLimPolicy,'legacy'),
     ii= find(opt.YLimPolicy=='|');
     if strcmp(opt.YLimPolicy(ii+1:end),'sym'),
       opt_selYLim= {'symmetrize',1};
@@ -451,7 +451,7 @@ if ~isempty(opt.AxisTitle),
     xt= 1 - shiftAwayFromBorder;
   end
   yl_axis= [0.01 0.99] + [1 -1]*(1-1/opt.OversizePlot)/2;
-  if ismember(opt.AxisTitleVerticalAlignment, {'bottom','baseline'}),
+  if ismember(opt.AxisTitleVerticalAlignment, {'bottom','baseline'},'legacy'),
     yl_axis= yl_axis([2 1]);
   end
   yt= yl_axis(2-strcmpi(opt.YDir, 'reverse'));

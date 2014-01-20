@@ -75,18 +75,18 @@ for nn= 1:xTrials(1),
   for kk= 1:xTrials(2),
     sec= div(kk)+1:div(kk+1);
     divTe{nn}{kk}= idx(sec);
-    divTr{nn}{kk}= idx(setdiff(1:div(end), sec));
+    divTr{nn}{kk}= idx(setdiff(1:div(end), sec,'legacy'));
   end
 end
 
 if ~isempty(opt.fixed_trainsamples),
   % Now we can add the fixed set of training data:
   % Indices of those data where we do kfold on
-  sampleFrom = setdiff(1:size(label,2), opt.fixed_trainsamples);
+  sampleFrom = setdiff(1:size(label,2), opt.fixed_trainsamples,'legacy');
   for nn= 1:xTrials(1),
     for kk= 1:xTrials(2),
       divTe{nn}{kk} = sampleFrom(divTe{nn}{kk});
-      divTr{nn}{kk} = union(opt.fixed_trainsamples, sampleFrom(divTr{nn}{kk}));
+      divTr{nn}{kk} = union(opt.fixed_trainsamples, sampleFrom(divTr{nn}{kk}),'legacy');
     end
   end
 end

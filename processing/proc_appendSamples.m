@@ -32,7 +32,7 @@ if size(fv1.y,1)~=size(fv2.y,1),
 end
 
 
-fv= rmfield(fv1,intersect(fieldnames(fv1),{ 'x','jit','bidx'}) );
+fv= rmfield(fv1,intersect(fieldnames(fv1),{ 'x','jit','bidx'},'legacy') );
 fv.x= cat(nd, fv1.x, fv2.x);
 fv.y= cat(2, fv1.y, fv2.y);
 

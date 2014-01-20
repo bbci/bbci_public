@@ -38,7 +38,7 @@ end
 idx= find(marker.time > ival(1)+TIME_EPS & marker.time<= ival(2)+TIME_EPS);
 
 if nargin > 2,
-  idx2= find(ismember(marker.desc(idx), mrkDesc));
+  idx2= find(ismember(marker.desc(idx), mrkDesc,'legacy'));
   idx= idx(idx2);
 end
 

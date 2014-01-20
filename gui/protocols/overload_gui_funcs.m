@@ -7,10 +7,10 @@ opt = opt_proplistToStruct(varargin{:});
 
 paradigm = str2func(strcat('funcs_', paradigm));
 default_func = @funcs_default;
-if ismember(fnc, paradigm()),
+if ismember(fnc, paradigm(),'legacy'),
     nec_param = paradigm(fnc, handles, 'variables');
-    if ~isempty(nec_param{2}) & any(~ismember(nec_param{2}, fieldnames(opt))),
-        id = find(~ismember(nec_param{2}, fieldnames(opt)));
+    if ~isempty(nec_param{2}) & any(~ismember(nec_param{2}, fieldnames(opt),'legacy')),
+        id = find(~ismember(nec_param{2}, fieldnames(opt),'legacy'));
         warning(sprintf('Missing parameter: %s\n', nec_param{2}{id}));
     end
     outs = paradigm(fnc, handles, opt);
@@ -18,7 +18,7 @@ if ismember(fnc, paradigm()),
         outs = default_func(fnc, handles, outs{2:end}, opt);
     end
     varargout = outs(2:nargout+1);
-elseif ismember(fnc, default_func()), 
+elseif ismember(fnc, default_func(),'legacy'), 
     outs = default_func(fnc, handles, opt);
     varargout = outs(2:nargout+1);
 else

@@ -51,7 +51,7 @@ if nTit>1 && size(opt.Color,1)==1,
 end
 
 opt_fn= fieldnames(opt);
-ifp= find(ismember(opt_fn, {'HorizontalAlignment','VerticalAlignment'}));
+ifp= find(ismember(opt_fn, {'HorizontalAlignment','VerticalAlignment'},'legacy'));
 ifp= cat(1, ifp, strmatch('font', opt_fn));
 font_opt= struct_copyFields(opt, opt_fn(ifp));
 font_pl= opt_structToProplist(font_opt);

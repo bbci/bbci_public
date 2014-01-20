@@ -109,7 +109,7 @@ end
 
 % keyboard
 
-if ismember('*', file),
+if ismember('*', file,'legacy'),
   [filepath, filename]= fileparts(fullname);
   dd= dir(filepath);
   resr= regexp({dd.name}, filename);
@@ -125,7 +125,7 @@ if ismember('*', file),
   return;  
 end
 
-iData= find(ismember(opt.Vars, {'dat','cnt','epo'}));
+iData= find(ismember(opt.Vars, {'dat','cnt','epo'},'legacy'));
 
 %% Load variables directly, except for data structure
 load_vars= opt.Vars;
@@ -135,7 +135,7 @@ load_vars(iData)= [];
 S= load(fullname, load_vars{:});
 
 %% Check whether all requested variables have been loaded.
-missing= setdiff(load_vars, fieldnames(S));
+missing= setdiff(load_vars, fieldnames(S),'legacy');
 if ~isempty(missing),
   error(['Variables not found: ' sprintf('%s ',missing{:})]);
 end
@@ -259,7 +259,7 @@ if ~isempty(opt.Fs), % do resampling in nfo
   S.nfo.T = nfo.T./lag;
 end
 for vv= 1:nargout,
-  if ismember(vv, iData),
+  if ismember(vv, iData,'legacy'),
     varargout(vv)= {dat};
   else
     varargout(vv)= {getfield(S, opt.Vars{vv})};

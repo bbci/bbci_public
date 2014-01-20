@@ -6,7 +6,7 @@ function [cnt,mrk] = file_NIRSreadMatlab(filename)
 mnt=make_NIRSmnt;
 
 
-if ~ismember('*', filename)
+if ~ismember('*', filename,'legacy')
     
     load(filename)
     cnt.x=ni.dat;

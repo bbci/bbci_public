@@ -134,7 +134,7 @@ if isfield(criteria,'amplitude')
       end
     end
    end
-  mrkamp = union(mrkma,mrkmi);
+  mrkamp = union(mrkma,mrkmi,'legacy');
 end
 
 mrkmaxmin = [];
@@ -184,7 +184,7 @@ if isfield(criteria,'low')
                                               [],1);
     lowa{i} = lowac < criteria.low.activity;
     lowac = sum(lowa{i});
-    mrklow = union(mrklow,find(lowac>0));
+    mrklow = union(mrklow,find(lowac>0),'legacy');
   end
   if n>1
     whylow = cell(size(dat,3),1);
@@ -193,7 +193,7 @@ if isfield(criteria,'low')
       whylow{i,1} = 'Too low activity in channels';
       ch = [];
       for k =1:steps
-        ch = union(ch,find(lowa{k}(1,:,i)>0));
+        ch = union(ch,find(lowa{k}(1,:,i)>0),'legacy');
       end
       for j=ch
         whylow{i,1} = [whylow{i,1}, ' ', chan{j}];
@@ -205,7 +205,7 @@ if isfield(criteria,'low')
 end
  
  
-mrk = union(union(mrkgr,mrklow),union(mrkamp,mrkmaxmin));
+mrk = union(union(mrkgr,mrklow,'legacy'),union(mrkamp,mrkmaxmin,'legacy'),'legacy');
 if n>1
   why  = cell(size(dat,3),1); 
   for i=1:size(dat,3)

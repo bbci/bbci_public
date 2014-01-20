@@ -71,7 +71,7 @@ end
 fscore= ((me(:,1)-me(:,2)).^2)./(va(:,1)+va(:,2)+eps);
 fscore= reshape(fscore, [sz(1:end-1) 1]);
 
-fv_fscore= rmfield(fv, intersect(fieldnames(fv),{'x','y','className'}) );
+fv_fscore= rmfield(fv, intersect(fieldnames(fv),{'x','y','className'},'legacy') );
 fv_fscore.x= fscore;
 if isfield(fv, 'className'),
   fv_fscore.className= {sprintf('Fs( %s , %s )', fv.className{1:2})};

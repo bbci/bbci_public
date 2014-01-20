@@ -45,7 +45,7 @@ end
 
 if ~opt.memo & isstruct(proc) & isfield(proc, 'memo'),
   for pp= 1:length(pidx),
-    if ismember(proc.param(pidx(pp)).var, proc.memo),
+    if ismember(proc.param(pidx(pp)).var, proc.memo,'legacy'),
       pidx(pp)= 0;
     end
   end

@@ -38,7 +38,7 @@ pos= get(ax, 'position');
 epos= axis_getEffectivePosition(ax);
 %% this would require Matlab 7:
 %% h_cb= colorbar(opt.Orientation);
-if ismember(lower(opt.Orientation), {'horiz','northoutside','southoutside'}),
+if ismember(lower(opt.Orientation), {'horiz','northoutside','southoutside'},'legacy'),
   h_cb= colorbar('horiz');
 %  h_cb= colorbar('SouthOutside');
 else

@@ -116,9 +116,9 @@ else
 end
 
 if ~restrict
-  testrest = setdiff(1:size(g,2),test);
+  testrest = setdiff(1:size(g,2),test,'legacy');
 else
-  testrest = setdiff(1:size(g,2),train);
+  testrest = setdiff(1:size(g,2),train,'legacy');
 end
 
 if ~isempty(testrest)

@@ -85,7 +85,7 @@ epo.y= cat(2, epo.y, zeros(size(epo.y,1),size(epo_append.y,2)));
 fie = {};
 
 if isfield(epo, 'indexedByEpochs') & isfield(epo_append, 'indexedByEpochs'),
-  idxFields= intersect(epo.indexedByEpochs, epo_append.indexedByEpochs);
+  idxFields= intersect(epo.indexedByEpochs, epo_append.indexedByEpochs,'legacy');
   for Fld= idxFields,
     fld= Fld{1};
     tmp= getfield(epo, fld);

@@ -115,7 +115,7 @@ for ic= 1:length(bbci.control),
   cfy_list= bbci.control(ic).classifier;
   feat_list= [bbci.classifier(cfy_list).feature];
   cp_list= [bbci.feature(feat_list).signal];
-  bbci.control(ic).source_list= unique([bbci.signal(cp_list).source]);
+  bbci.control(ic).source_list= unique([bbci.signal(cp_list).source],'legacy');
   if isempty(bbci.control(ic).condition),
     if any(max(cat(1, bbci.feature(feat_list).ival)) > 0),
       error('bbci.feature.ival extends to future data');

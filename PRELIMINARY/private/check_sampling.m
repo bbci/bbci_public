@@ -22,7 +22,7 @@ end
 
 for ii= 1:length(divTe),
   test_samples= [divTe{ii}{:}];
-  if length(test_samples)~=length(unique(test_samples)),
+  if length(test_samples)~=length(unique(test_samples,'legacy')),
     msg= sprintf('index sets of divTe{%d} are not disjoint', ii);
     error(msg);
   end

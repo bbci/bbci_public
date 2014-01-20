@@ -393,7 +393,7 @@ else
   % "Normal" data without bidx: Need to distinguish between regression
   % and classification here. For regression, epo.y might take on the
   % value zero, kicking that effectively sample out 
-  if size(epo.y,1)==1 && length(unique(epo.y))>2,
+  if size(epo.y,1)==1 && length(unique(epo.y,'legacy'))>2,
     isRegression = 1;
     repIdx = 1:length(epo.y);
   else
@@ -411,8 +411,8 @@ if ~isfield(epo, 'jit'),
 end
 
 opt= set_defaults(opt, ...
-                  'TrainJits', unique(epo.jit), ...
-                  'TestJits', unique(epo.jit));
+                  'TrainJits', unique(epo.jit,'legacy'), ...
+                  'TestJits', unique(epo.jit,'legacy'));
 
 
 save_interm_vars = {};
@@ -527,7 +527,7 @@ if ~isempty(opt.DivTr),
     for nn= 1:length(divTr),
       opt.DivTe{nn}= cell(1,length(divTr{nn}));
       for kk= 1:length(divTr{nn}),
-        opt.DivTe{nn}{kk}= setdiff(1:max(eqcl), opt.DivTr{nn}{kk});
+        opt.DivTe{nn}{kk}= setdiff(1:max(eqcl), opt.DivTr{nn}{kk},'legacy');
       end
     end
   end
@@ -647,10 +647,10 @@ for n= n0:nTrials,
         k= d+(n-1)*nDiv;
         bidxTr= divTr{n}{d};
         bidxTe= divTe{n}{d};
-        idxTr= find(ismember(epo.bidx, epo.bidx(repIdx(bidxTr))) & ...
-            ismember(epo.jit, opt.TrainJits));
-        idxTe= find(ismember(epo.bidx, epo.bidx(repIdx(bidxTe))) & ...
-            ismember(epo.jit, opt.TestJits));
+        idxTr= find(ismember(epo.bidx, epo.bidx(repIdx(bidxTr)),'legacy') & ...
+            ismember(epo.jit, opt.TrainJits,'legacy'));
+        idxTe= find(ismember(epo.bidx, epo.bidx(repIdx(bidxTe)),'legacy') & ...
+            ismember(epo.jit, opt.TestJits,'legacy'));
         epo.y(:,idxTe)= NaN;              %% hide labels of the test set
 
         if ~isempty(model),               %% do model selection on training set

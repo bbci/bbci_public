@@ -39,7 +39,7 @@ if ~isempty(opt.fixed_trainsamples),
     end
     opt.fixed_trainsamples = find(opt.fixed_trainsamples);
   end
-  sampleFrom = setdiff(1:size(label,2), opt.fixed_trainsamples);
+  sampleFrom = setdiff(1:size(label,2), opt.fixed_trainsamples,'legacy');
   label = label(:,sampleFrom);
 end
 
@@ -76,6 +76,6 @@ if ~isempty(opt.fixed_trainsamples),
   % Now we can add the fixed set of training data:
   for nn= 1:xTrials(1),
     divTe{nn}{1} = sampleFrom(divTe{nn}{1});
-    divTr{nn}{1} = union(opt.fixed_trainsamples, sampleFrom(divTr{nn}{1}));
+    divTr{nn}{1} = union(opt.fixed_trainsamples, sampleFrom(divTr{nn}{1}),'legacy');
   end
 end

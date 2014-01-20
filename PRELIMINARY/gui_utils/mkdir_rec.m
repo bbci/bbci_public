@@ -21,7 +21,7 @@ if isunix
     status = unix(sprintf('bash -c "mkdir -p %s"', path));
 else
     % the DOS version results in an error if any slashes occur.
-    path(find(ismember(path,'/')))='\';
+    path(find(ismember(path,'/','legacy')))='\';
     % The following works recursively if Command Extensions are enabled:
     status = system(['mkdir ' path]);
 end

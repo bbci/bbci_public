@@ -28,7 +28,7 @@ if nargin==2 && isstruct(varargin{1}),
 else
   chans= util_chanind(mnt.clab, varargin{:});
 end
-off= setdiff(1:length(mnt.clab), chans);
+off= setdiff(1:length(mnt.clab), chans,'legacy');
 
 mnt.x(off)= [];
 mnt.y(off)= [];

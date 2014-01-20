@@ -105,14 +105,14 @@ misc_checkType(erps,'CELL{STRUCT}');
 %% Get common electrode set
 clab= erps{1}.clab;
 for vp= 2:length(erps),
-  clab= intersect(clab, erps{vp}.clab);
+  clab= intersect(clab, erps{vp}.clab,'legacy');
 end
 if isempty(clab),
   error('intersection of channels is empty');
 end
 
 %% Define ga data field
-datadim = unique(cellfun(@util_getDataDimension,erps));
+datadim = unique(cellfun(@util_getDataDimension,erps),'legacy');
 if numel(datadim) > 1
   error('Datasets have different dimensionalities');
 end
@@ -132,9 +132,9 @@ if opt.Stats && ~isfield(erps{1}, 'se')
    opt.Stats = 0;
 end
 
-ga= rmfield(erps{1},intersect(fieldnames(erps{1}),{'x', 'std'}));
-must_be_equal= intersect(opt.MustBeEqual, fieldnames(ga));
-should_be_equal= intersect(opt.ShouldBeEqual, fieldnames(ga));
+ga= rmfield(erps{1},intersect(fieldnames(erps{1}),{'x', 'std'},'legacy'));
+must_be_equal= intersect(opt.MustBeEqual, fieldnames(ga),'legacy');
+should_be_equal= intersect(opt.ShouldBeEqual, fieldnames(ga),'legacy');
 
 K = length(erps);
 ci= util_chanind(erps{1}, clab);

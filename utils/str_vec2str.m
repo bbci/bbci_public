@@ -29,7 +29,7 @@ elseif iscell(v),
     elseif ~iscell(v{vi}) && ~isstruct(v{vi}),
       fstr{vi}= repmat([fmt inbetween], 1, length(v{vi}));
     else
-      isprint= setdiff(isprint, vi);
+      isprint= setdiff(isprint, vi,'legacy');
     end
   end
   if isempty(isprint), str=''; return; end

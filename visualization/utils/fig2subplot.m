@@ -288,7 +288,7 @@ for ii=1:numel(hfigs)
   % Adjust colormap if necessary
   if  ii>1 && ~isequal(get(hfigs(ii),'colormap'),get(h.main,'colormap')),
     newcb= findobj(newax, 'Tag', 'Colorbar');
-    newaxes= setdiff(newax, newcb);
+    newaxes= setdiff(newax, newcb,'legacy');
     fig_acmAdaptCLim(acm, newaxes);
     % Adjust the displaying of the new colorbar [wieder einkommentiert]
     scnew = size(get(hfigs(ii),'colormap'),1);
@@ -296,7 +296,7 @@ for ii=1:numel(hfigs)
     for kk=1:numel(newcb)
 %      set(get(newcb(kk),'Children'),'CData',(sc-scnew+1:sc)');
       newcb_ch= get(newcb(kk),'Children');
-      newcb_ch= newcb_ch(~ismember(get(newcb_ch,'Type'),{'text'}));
+      newcb_ch= newcb_ch(~ismember(get(newcb_ch,'Type'),{'text'},'legacy'));
       set(newcb_ch,'CData',(sc-acm.nColors+1:sc)');
     end
 %     % Adjust graphic objects whereby color mapping is direct
@@ -352,7 +352,7 @@ end
 % delete(h.axes)  % these axes were only placeholders for the new data
 set(h.axes,'visible','off')
 % h.axes = get(gcf,'Children');
-h.children = setdiff(get(gcf,'Children'),h.axes); % Get all children except for the new axes
+h.children = setdiff(get(gcf,'Children'),h.axes,'legacy'); % Get all children except for the new axes
 
 if opt.deleteFigs
     delete(hfigs);
