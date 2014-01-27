@@ -80,7 +80,7 @@ data_adapt.lastcheck= time;
 if ~isempty(events) && isnan(data_adapt.trial_start),
   data_adapt.clidx= 0;
   for k= 1:length(data_adapt.opt.mrk_start),
-    marker_idx= find(ismember([events.desc], data_adapt.opt.mrk_start{k}));
+    marker_idx= find(ismember([events.desc], data_adapt.opt.mrk_start{k},'legacy'));
     if ~isempty(marker_idx),
       data_adapt.clidx= k;
       break;
@@ -109,7 +109,7 @@ if time >= adapt_ival(1) && time <= adapt_ival(2),
   data_adapt.counter= data_adapt.counter + 1;
 end
 
-if ~isempty(events) && any(ismember([events.desc], data_adapt.opt.mrk_end));
+if ~isempty(events) && any(ismember([events.desc], data_adapt.opt.mrk_end,'legacy'));
   data_adapt.end_marker_received= 1;
 end
 if data_adapt.end_marker_received && time >= adapt_ival(2),

@@ -20,7 +20,7 @@ if ~exist('p_json', 'file'),
   addpath([BBCI.Dir 'PRELIMINARY' filesep 'json']);
 end
 
-if ~ismember('.', file),
+if ~ismember('.', file,'legacy'),
   file= strcat(file, '.json');
 end
 if ~fileutil_isAbsolutePath(file),

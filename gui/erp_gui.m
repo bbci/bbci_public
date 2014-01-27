@@ -1233,7 +1233,7 @@ function set_button_state(handles, state, exclude),
 flds = fieldnames(handles);
 exclude = {exclude{:}, 'unlock_menu_button'};
 for i = 1:length(flds),
-    if strcmp(get(handles.(flds{i}), 'type'), 'uicontrol') && isempty(intersect(flds{i}, exclude)),
+    if strcmp(get(handles.(flds{i}), 'type'), 'uicontrol') && isempty(intersect(flds{i}, exclude,'legacy')),
         set(handles.(flds{i}), 'enable', state);
     end
 end

@@ -66,5 +66,5 @@ else
 end
 
 if invert,
-  clInd= setdiff(1:length(className), clInd);
+  clInd= setdiff(1:length(className), clInd,'legacy');
 end

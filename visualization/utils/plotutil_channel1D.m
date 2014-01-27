@@ -195,17 +195,17 @@ if isequal(opt.Title, 1),
   opt.Title= epo.clab(chan);
 end
 if opt.SmallSetup,
-  if ~isfield(opt, 'xTickLabel') && ~isfield(opt, 'xTickLabelMode'),
-    if isfield(opt, 'xTick') || ...
-          (isfield(opt, 'xTickMode') && strcmp(opt.xTickMode,'auto')),
+  if ~isfield(opt, 'XTickLabel') && ~isfield(opt, 'XTickLabelMode'),
+    if isfield(opt, 'XTick') || ...
+          (isfield(opt, 'XTickMode') && strcmp(opt.xTickMode,'auto')),
       opt.xTickLabelMode= 'auto';
     else
       opt.xTickLabel= [];
     end
   end
-  if ~isfield(opt, 'yTickLabel') && ~isfield(opt, 'yTickLabelMode'),
-    if isfield(opt, 'yTick') || ...
-          (isfield(opt, 'yTickMode') && strcmp(opt.yTickMode,'auto')),
+  if ~isfield(opt, 'YTickLabel') && ~isfield(opt, 'YTickLabelMode'),
+    if isfield(opt, 'YTick') || ...
+          (isfield(opt, 'YTickMode') && strcmp(opt.yTickMode,'auto')),
       opt.yTickLabelMode= 'auto';
     else
       opt.yTickLabel= [];
@@ -294,7 +294,7 @@ end
 if ~isempty(opt.YLim),
   yLim= opt.YLim;
 else
-  if ismember('|',opt.YLimPolicy),
+  if ismember('|',opt.YLimPolicy,'legacy'),
     ii= find(opt.YLimPolicy=='|');
     if strcmp(opt.YLimPolicy(ii+1:end),'sym'),
       opt_selYLim= {'symmetrize',1};
@@ -451,7 +451,7 @@ if ~isempty(opt.AxisTitle),
     xt= 1 - shiftAwayFromBorder;
   end
   yl_axis= [0.01 0.99] + [1 -1]*(1-1/opt.OversizePlot)/2;
-  if ismember(opt.AxisTitleVerticalAlignment, {'bottom','baseline'}),
+  if ismember(opt.AxisTitleVerticalAlignment, {'bottom','baseline'},'legacy'),
     yl_axis= yl_axis([2 1]);
   end
   yt= yl_axis(2-strcmpi(opt.YDir, 'reverse'));

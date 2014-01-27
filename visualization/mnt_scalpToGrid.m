@@ -53,7 +53,7 @@ end
 
 chind= find(~isnan(mnt.x));
 if ~isempty(opt.clab),
-  chind= setdiff(chind, util_chanind(mnt, opt.clab));
+  chind= setdiff(chind, util_chanind(mnt, opt.clab),'legacy');
 end
 
 mnt.box= NaN*zeros(2,length(mnt.clab)+1);

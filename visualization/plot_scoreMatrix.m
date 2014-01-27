@@ -51,10 +51,10 @@ end
 %  scalp channels first, ordered from frontal to occipital (as returned
 %  by function scalpChannels),
 %  then non-scalp channels
-clab= intersect(util_scalpChannels, strtok(epo_r.clab), 'stable');
+clab= intersect(util_scalpChannels, strtok(epo_r.clab), 'stable','legacy');
 clab_nonscalp= intersect(epo_r.clab, ...
-                         setdiff(strtok(epo_r.clab), util_scalpChannels), ...
-                         'stable');
+                         setdiff(strtok(epo_r.clab), util_scalpChannels,'legacy'), ...
+                         'stable','legacy');
 epo_r= proc_selectChannels(epo_r, cat(2, clab, clab_nonscalp)); 
 
 clf;
@@ -75,7 +75,7 @@ H.cb= colorbar;
 if isfield(epo_r, 'yUnit'),
   ylabel(H.cb, sprintf('[%s]', epo_r.yUnit));
 end
-cidx= find(ismember(epo_r.clab,opt.MarkClab));
+cidx= find(ismember(epo_r.clab,opt.MarkClab,'legacy'));
 set(H.ax, 'YTick',cidx, 'YTickLabel',opt.MarkClab, ...
           'TickLength',[0.005 0]);
 if isdefault.XUnit && isfield(epo_r, 'XUnit'),

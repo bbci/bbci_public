@@ -1,21 +1,12 @@
-file= 'demo_VPibv_10_11_02/calibration_CenterSpellerMVEP_VPibv';
+%file= 'demo_VPibv_10_11_02/calibration_CenterSpellerMVEP_VPibv';
+file= 'demo_VPibq_10_09_24/calibration_CenterSpellerMVEP_VPibq';
 
 
-%% Load data
+% Load data
 [cnt, mrk, mnt] = file_loadMatlab(file);
 
 
-%% Re-referencing to linked-mastoids
-A= eye(length(cnt.clab));
-iA1= util_chanind(cnt.clab,'A1');
-if isempty(iA1)
-    iA1= util_chanind(cnt.clab,'A2');
-end
-A(iA1,:)= -0.5;
-A(:,iA1)= [];
-cnt= proc_linearDerivation(cnt, A);
-
-%% Electrode Montage
+% Electrode Montage
 grd= sprintf(['scale,_,F5,F3,Fz,F4,F6,_,legend\n' ...
               'FT7,FC5,FC3,FC1,FCz,FC2,FC4,FC6,FT8\n' ...
               'T7,C5,C3,C1,Cz,C2,C4,C6,T8\n' ...
@@ -57,10 +48,10 @@ constraint= ...
        {1, [200 350], {'P3-4','CP3-4','C3-4'}, [200 400]}, ...
        {1, [400 500], {'P3-4','CP3-4','C3-4'}, [350 600]}};
 [ival_scalps, nfo]= ...
-    select_time_intervals(epo_r, 'Visualize', 1, 'VisuScalps', 1, ...
-                          'Title', util_untex(file), ...
-                          'Clab',{'not','E*'}, ...
-                          'Constraint', constraint);
+    procutil_selectTimeIntervals(epo_r, 'Visualize', 1, 'VisuScalps', 1, ...
+                                 'Title', util_untex(file), ...
+                                 'Clab',{'not','E*'}, ...
+                                 'Constraint', constraint);
 %printFigure('r_matrix', [18 13]);
 ival_scalps= visutil_correctIvalsForDisplay(ival_scalps, 'Fs',epo.fs);
 
@@ -70,8 +61,9 @@ grid_addBars(epo_r, 'HScale',H.scale);
 %printFigure(['erp'], [19 12]);
 
 fig_set(2);
-H= plot_scalpEvolutionPlusChannel(epo, mnt, clab, ival_scalps, defopt_scalp_erp, ...
-                             'ColorOrder',colOrder);
+H= plot_scalpEvolutionPlusChannel(epo, mnt, clab, ival_scalps, ...
+                                  defopt_scalp_erp, ...
+                                  'ColorOrder',colOrder);
 grid_addBars(epo_r);
 %printFigure(['erp_topo'], [20  4+5*size(epo.y,1)]);
 

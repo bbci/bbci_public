@@ -103,7 +103,7 @@ CALIBCURVECHANGED = 1;
 texts = [biasT sigmoidT binsT];
 handles = [bias sigmoid bins];
 
-while ismember(f, get(0, 'Children')),
+while ismember(f, get(0, 'Children'),'legacy'),
   if CALIBCURVECHANGED,
     opt.bias = get(bias, 'Value');
     opt.sigmoid = exp(get(sigmoid, 'Value'));

@@ -82,7 +82,7 @@ pos= zeros(2, nOrigChans);
 for ic= 1:nOrigChans,
   pos(:,ic)= procutil_lapGetCoordinates(clab{ic}, laplace.grid);
 end
-pos(:,setdiff(1:nOrigChans,rc))= inf;
+pos(:,setdiff(1:nOrigChans,rc,'legacy'))= inf;
 
 idx_tbf= util_chanind(clab, opt.CLab);
 W= zeros(length(clab), length(idx_tbf));
@@ -104,7 +104,7 @@ for ci= 1:length(idx_tbf),
     if ~isempty(refChans),
       W(refChans,lc)= -1/length(refChans);
     end
-    requ_clab= unique(cat(2, requ_clab, clab([cc refChans])));
+    requ_clab= unique(cat(2, requ_clab, clab([cc refChans])),'legacy');
     neighbor_clab{ci}= clab(refChans);
   end
 end

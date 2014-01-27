@@ -42,31 +42,31 @@ flds2= fieldnames(s2);
 
 switch(opt.Keepfields),
  case {0,'none'},
-  flds= intersect(flds1, flds2);
-  s1= rmfield(s1, setdiff(flds1, flds));
-  s2= rmfield(s2, setdiff(flds2, flds));
+  flds= intersect(flds1, flds2,'legacy');
+  s1= rmfield(s1, setdiff(flds1, flds,'legacy'));
+  s2= rmfield(s2, setdiff(flds2, flds,'legacy'));
  case {1,'first'},
   flds= flds1;
   if opt.Matchsize,
-    s2= struct_createfields(s2, setdiff(flds, flds2), 'matchsize',s1(1));
+    s2= struct_createfields(s2, setdiff(flds, flds2,'legacy'), 'matchsize',s1(1));
   else
-    s2= struct_createfields(s2, setdiff(flds, flds2));
+    s2= struct_createfields(s2, setdiff(flds, flds2,'legacy'));
   end
  case {2,'last'},
   flds= flds2;
   if opt.Matchsize,
-    s1= struct_createfields(s1, setdiff(flds, flds1), 'matchsize',s2(1));
+    s1= struct_createfields(s1, setdiff(flds, flds1,'legacy'), 'matchsize',s2(1));
   else
-    s1= struct_createfields(s1, setdiff(flds, flds1));
+    s1= struct_createfields(s1, setdiff(flds, flds1,'legacy'));
   end
  case {3,'all'},
-  flds= union(flds1, flds2);
+  flds= union(flds1, flds2,'legacy');
   if opt.Matchsize,
-    s1= struct_createfields(s1, setdiff(flds, flds1), 'matchsize',s2(1));
-    s2= struct_createfields(s2, setdiff(flds, flds2), 'matchsize',s1(1));
+    s1= struct_createfields(s1, setdiff(flds, flds1,'legacy'), 'matchsize',s2(1));
+    s2= struct_createfields(s2, setdiff(flds, flds2,'legacy'), 'matchsize',s1(1));
   else
-    s1= struct_createfields(s1, setdiff(flds, flds1));
-    s2= struct_createfields(s2, setdiff(flds, flds2));
+    s1= struct_createfields(s1, setdiff(flds, flds1,'legacy'));
+    s2= struct_createfields(s2, setdiff(flds, flds2,'legacy'));
   end
  otherwise
   error('unknown value for OPT.Keepfields');

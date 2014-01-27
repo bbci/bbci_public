@@ -65,7 +65,7 @@ if nActualArguments < numel(token)
   token(nActualArguments+1:end) = [];
 end
 
-ht{N}.fcn_params = token(~ismember(token,'varargin'));
+ht{N}.fcn_params = token(~ismember(token,'varargin','legacy'));
 
 % Get argument values for named arguments
 for ii=1:numel(ht{N}.fcn_params)
@@ -82,7 +82,7 @@ for ii=1:numel(ht{N}.fcn_params)
 end
 
 % Get optional arguments (varargin)
-if any(ismember(token,'varargin'))
+if any(ismember(token,'varargin','legacy'))
   va = evalin('caller','varargin');
   % Check size of variable
   s=evalin('caller','whos(''varargin'')');

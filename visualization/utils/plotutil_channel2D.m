@@ -13,9 +13,8 @@ function H= plotutil_channel2D(epo, clab, varargin)
 %  .YUnit  - unit of y axis, default epo.unit if this field
 %                     exists, 'Hz' otherwise
 %  .YDir     - 'normal' (low FreqLimuencies at bottom) or 'reverse'
-%  .FreqLim     - A vector giving lowest and highest FreqLimuency. If not specified, 
-%              and epo.wave_FreqLim exists the corresponding values are taken;
-%              otherwise [1 size(epo.x,1)] is taken.
+%  .FreqLim     - A vector giving lowest and highest Frequency. If not specified, 
+%              [1 size(epo.x,2)] is taken.
 %  .PlotRef  - if 1 plot Reference interval (default 0)
 %  .RefYPos     - y position of Reference line 
 %  .RefWhisker - length of whiskers (vertical lines)
@@ -52,11 +51,17 @@ function H= plotutil_channel2D(epo, clab, varargin)
 % Author(s): Matthias Treder Aug 2010
 
 props = {'AxisType',                  'box',                  'CHAR';
+         'AxisTitle',                 '',                     'CHAR';
+         'AxisTitleHorizontalAlignment',    'center',               'CHAR';
+         'AxisTitleVerticalAlignment',      'top',                  'CHAR';
+         'AxisTitleColor',                  'k',                    'CHAR';
+         'AxisTitleFontSize',               get(gca,'FontSize'),    'DOUBLE';
+         'AxisTitleFontWeight',             'normal',               'CHAR';
          'Box',                       'on',                   'CHAR';
          'ChannelLineStyleOrder',     {'-','--','-.',':'},    'CELL{CHAR}'
          'Colormap',                  'jet',                  'CHAR|DOUBLE[- 3]'
          'CLim',                      [],                     'DOUBLE[2]';
-         'CLimPolicy',                'normal',               'CHAR';
+         'CLimPolicy',                'normal',               'CHAR(sym normal)';
          'FreqLim',                   [],                     'DOUBLE[2]';
          'GridOverPatches',           1,                      'BOOL';
          'LineWidth',                 2,                      'DOUBLE';
@@ -75,7 +80,7 @@ props = {'AxisType',                  'box',                  'CHAR';
          'TitleFontWeight',           'normal',               'CHAR';
          'XGrid',                     'on',                   'CHAR';
          'XUnit',                     '[ms]',                 'CHAR';
-         'YUnit',                     '[\muV]',               'CHAR';
+         'YUnit',                     '[Frequency]',          'CHAR';
          'YTitle',                    [],                     'DOUBLE';
          'YDir',                      'normal',               'CHAR';
          'YGrid',                     'on',                   'CHAR';
@@ -93,11 +98,7 @@ opt= opt_proplistToStruct(varargin{:});
 opt_checkProplist(opt, props);
 
 if isdefault.FreqLim,
-  if isfield(epo,'wave_freq')
-    opt.FreqLim= [epo.wave_freq(1) epo.wave_freq(end)];
-  else
-    opt.FreqLim= [1 size(epo.x,1)];
-  end
+  opt.FreqLim= [1 size(epo.x,2)];
 end
 
 if max(sum(epo.y,2))>1,
@@ -167,7 +168,7 @@ end
 
 %% Set missing optional fields of epo to default values
 if ~isfield(epo, 't'),
-  epo.t= 1:size(epo.x,2);
+  epo.t= 1:size(epo.x,1);
 end
 
 %% Plot data, zero line, ref ival, grid
@@ -178,10 +179,10 @@ if ~isempty(opt.CLim)
     cm = abs(max(opt.CLim));
     opt.CLim = [-cm cm];
   end
-  H.plot= imagesc([epo.t(1) epo.t(end)],opt.FreqLim, squeeze(epo.x(:,:,chan,:)), ...
+  H.plot= imagesc([epo.t(1) epo.t(end)],opt.FreqLim, squeeze(epo.x(:,:,chan,:))', ...
     opt.CLim);
 else
-  H.plot= imagesc([epo.t(1) epo.t(end)],opt.FreqLim, squeeze(epo.x(:,:,chan,:)));
+  H.plot= imagesc([epo.t(1) epo.t(end)],opt.FreqLim, squeeze(epo.x(:,:,chan,:))');
 
 end
 hold on;      
@@ -205,7 +206,9 @@ if opt.PlotRef && isfield(epo, 'refIval'),
 end
 
 if opt.GridOverPatches,
-  plotutil_gridOverPatches(rmfield(opt, intersect(fieldnames(opt),{'XGrid','YGrid'})));
+  opt_grid= plotutil_gridOverPatches;
+  opt_grid= opt_structToProplist(opt_substruct(opt,opt_grid(:,1)));
+  plotutil_gridOverPatches(opt_grid{:});
 end
 
 %% More layout settings
@@ -215,7 +218,7 @@ H.leg = NaN;
 
 %% title and labels
 if ~isequal(opt.Title, 0),
-  if isempty(opt.Ytitle)
+  if isempty(opt.YTitle)
     H.title= title(opt.Title);
     set(H.title, 'Color',opt.TitleColor, ...
                  'fontWeight',opt.TitleFontWeight, ...
@@ -231,8 +234,40 @@ if ~isequal(opt.Title, 0),
   end
 end
 
+if ~isempty(opt.AxisTitle),
+  shiftAwayFromBorder= 0.05;
+  switch(opt.AxisTitleHorizontalAlignment),
+   case 'left',
+    xt= shiftAwayFromBorder;
+   case 'center',
+    xt= 0.5;
+   case 'right',
+    xt= 1 - shiftAwayFromBorder;
+  end
+  yl_axis= [0.01 0.99] + [1 -1]*(1-1/opt.OversizePlot)/2;
+  if ismember(opt.AxisTitleVerticalAlignment, {'bottom','baseline'},'legacy'),
+    yl_axis= yl_axis([2 1]);
+  end
+  yt= yl_axis(2-strcmpi(opt.YDir, 'reverse'));
+  H.ax_title= title(opt.AxisTitle);
+  set(H.ax_title, 'Units','normalized', ...
+                  'Position', [xt yt 0]);
+  set(H.ax_title, 'verticalAlignment',opt.AxisTitleVerticalAlignment, ...
+                  'horizontalAlignment',opt.AxisTitleHorizontalAlignment, ...
+                  'Color',opt.AxisTitleColor, ...
+                  'fontWeight',opt.AxisTitleFontWeight, ...
+                  'FontSize',opt.AxisTitleFontSize);
+end
+
+
 H.xlabel = xlabel(opt.XUnit);
 H.ylabel = ylabel(opt.YUnit);
+
+% Plot frequencies if specified
+if isfield(epo,'f')
+  lab= epo.f(get(H.ax,'Ytick'));
+  set(H.ax,'YTickLabel',lab); 
+end
 
 % if ~isempty(H.hidden_objects),
 %   obj_moveBack(H.hidden_objects);

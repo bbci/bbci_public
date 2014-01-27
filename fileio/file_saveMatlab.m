@@ -155,7 +155,7 @@ if any(strcmpi(opt.Format, {'INT16','AUTO'}))
 end
 
 %% Check format of property format.
-if ~ismember(upper(opt.Format), {'INT16','FLOAT','DOUBLE'}),
+if ~ismember(upper(opt.Format), {'INT16','FLOAT','DOUBLE'},'legacy'),
   error('unknown format');
 end
 
@@ -245,7 +245,7 @@ if opt.Channelwise,
   dat= rmfield(dat, 'x');
   %% the following field updates are needed for add_channels=1
   dat.clab= nfo.clab;
-  if ~ismember(upper(opt.Format), {'FLOAT','DOUBLE'}),
+  if ~ismember(upper(opt.Format), {'FLOAT','DOUBLE'},'legacy'),
     dat.resolution= nfo.resolution;
   end
   save(fullname, '-APPEND', 'dat', opt_save{:});

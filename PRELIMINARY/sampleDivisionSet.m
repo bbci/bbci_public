@@ -16,7 +16,7 @@ if(nDivisions==1 || nDivisions>nEpochs/setSize),       %% leave-one-out
   nDivisions = nEpochs/setSize;
   msg= ['#folds greater than #samples / setSize\n' ...
         'switching to leave-one-out'];
-  bbci_warning(msg, 'sample', mfilename);
+  util_warning(msg, 'sample', mfilename);
 end
 
 

@@ -16,7 +16,7 @@ if nargin==0
     dat2=[]; return
 end
 
-misc_checkType(dat, '!STRUCT(x fs)'); 
+misc_checkType(dat, '!STRUCT(x clab)'); 
 dat = misc_history(dat);
 
 if isnumeric(varargin{1})

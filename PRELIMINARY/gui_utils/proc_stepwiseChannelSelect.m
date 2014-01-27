@@ -140,7 +140,7 @@ while((length(find(sum(chn))) < opt.maxChan) & dorun)
     else
         to_add = add_id;
     end
-    subset = union(subset,add_id); 
+    subset = union(subset,add_id,'legacy'); 
     
     for i = 1:length(to_add),
         B = A -  A(:,to_add(i))*A(to_add(i),:)./A(to_add(i),to_add(i)); 
@@ -155,7 +155,7 @@ while((length(find(sum(chn))) < opt.maxChan) & dorun)
 
   % test for elimination of variables already in regression
   if(size(subset,2)>1),
-    old = setdiff(subset,add_id);
+    old = setdiff(subset,add_id,'legacy');
     for i=old
       if opt.channelwise,
           to_rem = conv_mat(:,i)';
@@ -169,7 +169,7 @@ while((length(find(sum(chn))) < opt.maxChan) & dorun)
       end
 
       if(min(pp) > opt.pRemoval)   % eliminate
-        subset = setdiff(subset,i);
+        subset = setdiff(subset,i,'legacy');
         
         for j = 1:length(to_rem),
             % adapt matrices after elimination

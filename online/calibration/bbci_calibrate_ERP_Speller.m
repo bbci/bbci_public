@@ -32,6 +32,10 @@ default_grd= sprintf(['scale,FC3,FC1,FCz,FC2,FC4,legend\n' ...
                      'P7,P5,P3,Pz,P4,P6,P8\n' ...
                      'PO7,PO3,O1,Oz,O2,PO4,PO8']);
 
+% MODEL muss nach xvalidation entweder struct oder char sein, nicht
+% function handle ... da ist entweder in xvalidation was falsch oder
+% woanders...
+                 
 props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
         'disp_ival'     [-200 800]                     '!DOUBLE[1 2]'
         'clab'          '*'                            'CHAR|CELL[CHAR}'
@@ -59,7 +63,7 @@ props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
        };
 [opt, isdefault]= opt_setDefaults('bbci.calibrate.settings', props);
 
-nClassesGuess= length(unique(opt.mrk2feedback_fcn(opt.cue_markers)));
+nClassesGuess= length(unique(opt.mrk2feedback_fcn(opt.cue_markers),'legacy'));
 [opt, isdefault]= ...
   opt_overrideIfDefault(opt, isdefault, 'nClasses', nClassesGuess);
 [opt, isdefault]= ...
@@ -157,9 +161,9 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
     fig_closeIfExists(5);
   end
   if iscell(BC_result.rejected_clab),   %% that means rejected_clab is not NaN
-    cidx= find(ismember(BC_result.clab, BC_result.rejected_clab));
+    cidx= find(ismember(BC_result.clab, BC_result.rejected_clab,'legacy'));
     BC_result.clab(cidx)= [];
-    cidx= find(ismember(BC_result.cfy_clab, BC_result.rejected_clab));
+    cidx= find(ismember(BC_result.cfy_clab, BC_result.rejected_clab,'legacy'));
     BC_result.cfy_clab(cidx)= [];
   end
 else
@@ -224,7 +228,7 @@ end
 %
 if opt.create_figs,
   fig_set(1, 'name','ERP - grid plot', 'set',{'Visible','off'});
-  H= grid_plot(epo, mnt, defopt_erps, 'ColorOrder',opt_scalp_erp.colorOrder);
+  H= grid_plot(epo, mnt, defopt_erps);%, 'ColorOrder',opt_scalp_erp.colorOrder);
   %grid_markInterval(BC_result.cfy_ival);
   if isfield(H, 'scale'),
     grid_addBars(epo_r, 'HScale',H.scale);
@@ -272,7 +276,7 @@ else
                       {@proc_jumpingMeans, BC_result.cfy_ival}};
   min_t =  min(BC_result.ref_ival(1), min(BC_result.cfy_ival(:)));
 end
-bbci.feature.ival= [min_t BC_result.cfy_ival(end)];
+bbci.feature.ival= [min_t max(BC_result.cfy_ival(:))];
 
 if opt.control_per_stimulus,
   bbci.control.fcn= @bbci_control_ERP_Speller_binary;
@@ -294,7 +298,7 @@ fv= bbci_calibrate_evalFeature(fv, bbci.feature);
 bbci.classifier.C= trainClassifier(fv, opt.model);
 
 opt_xv= struct('xTrials',       [1 10], ...
-               'loss_fcn',      @loss_rocArea, ...
+               'LossFcn',      @loss_rocArea, ...
                'verbosity',     0);
 
 [loss, dum, outTe]= xvalidation(fv, opt.model, opt_xv);

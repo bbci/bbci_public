@@ -139,7 +139,7 @@ end
 fileNamesTemp = {};
 for filePos = 1:length(file)
 
-  if ischar(fileNames{filePos}) && ismember('*', fileNames{filePos}),
+  if ischar(fileNames{filePos}) && ismember('*', fileNames{filePos},'legacy'),
     dd= dir([fileNames{filePos} '.eeg']);
     if isempty(dd),
       error('\nFile not found: %s\n', fileNames{filePos});
@@ -155,7 +155,7 @@ fileNames = fileNamesTemp;
 if length(fileNames)>1,
   if opt.Verbose,
     fprintf('concatenating files in the following order:\n');
-    fprintf('%s\n', str_vec2str(fileNames));
+    fprintf('  %s\n', fileNames{:});
   end
 end
 
@@ -174,7 +174,7 @@ for filePos = 1:length(fileNames)
   if ~isequal(cnt.clab, hdr{filePos}.clab),
     warning(['inconsistent clab structure will be repaired ' ...
              'by using the intersection']); 
-    cnt.clab = intersect(cnt.clab, hdr{filePos}.clab);
+    cnt.clab = intersect(cnt.clab, hdr{filePos}.clab,'legacy');
   end
   if isequal(opt.Fs, 'raw')
     % if we want to read the raw data check if for each file the raw data

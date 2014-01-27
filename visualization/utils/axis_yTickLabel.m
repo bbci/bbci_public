@@ -38,7 +38,7 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 
 if ~iscell(label_list),
-  if ismember('|',label_list),
+  if ismember('|',label_list,'legacy'),
     label_str= label_list;
     idx= find(label_str=='|');
     idx= [0, idx, length(label_str)+1];
@@ -63,7 +63,7 @@ if nLab>1 && size(opt.Color,1)==1,
 end
 
 opt_fn= fieldnames(opt);
-ifp= find(ismember(opt_fn, {'HorizontalAlignment','VerticalAlignment'}));
+ifp= find(ismember(opt_fn, {'HorizontalAlignment','VerticalAlignment'},'legacy'));
 ifp= cat(1, ifp, strmatch('Font', opt_fn));
 font_opt= struct_copyFields(opt, opt_fn(ifp));
 font_pl= opt_structToProplist(font_opt);

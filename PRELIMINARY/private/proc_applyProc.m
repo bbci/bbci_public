@@ -65,7 +65,7 @@ if ~isfield(proc, 'param'),
 else
   nParams= length(proc.param);
   if isfield(proc, 'memo'),
-    nFreeParams= length(setdiff({proc.param.var}, proc.memo));
+    nFreeParams= length(setdiff({proc.param.var}, proc.memo,'legacy'));
   else
     nFreeParams= nParams;
   end
@@ -136,7 +136,7 @@ if nargout>1 & isfield(SAVEVARproc, 'memo'),
   % Variables contained both in free variable list and memo list will not
   % be saved
   if isfield(SAVEVARproc, 'param'),
-    SAVEVARmem= setdiff(SAVEVARmem, {SAVEVARproc.param.var});
+    SAVEVARmem= setdiff(SAVEVARmem, {SAVEVARproc.param.var},'legacy');
   end
   % Append the variables to be saved at the end of the param list
   SAVEVARpp = SAVEVARnParams+1;

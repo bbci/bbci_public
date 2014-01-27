@@ -94,7 +94,7 @@ if size(out,1)==1,
   signif = -1+(mis<=range(:,2))+(mis<=range(:,1));
 else
   msg= 'See ''Note'' in the help of this function.';
-  bbci_warning(msg, 'bbci:validation', mfilename);
+  util_warning(msg, 'bbci:validation', mfilename);
   mis = mean(out~=repmat(label,[size(out,1) 1]), 2);
   range= range';
   Mis = repmat(mis, [1 size(range,2)]);

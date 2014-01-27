@@ -108,7 +108,7 @@ for rr= 1:nClasses,
     if ~isempty(opt.colorOrder),
       set(hh, 'Color',opt.colorOrder(rr,:));
     end
-    if ismember(k, opt.mark_patterns),
+    if ismember(k, opt.mark_patterns,'legacy'),
       set(hh, opt.mark_style{:});
     end
     if isempty(la),

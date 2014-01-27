@@ -38,7 +38,7 @@ function xa= procutil_movingAverage(x, n, varargin)
 
 %% determine input format
 method_list= {'causal', 'centered'};
-if isempty(varargin) | ~ismember(varargin{1}, method_list),
+if isempty(varargin) | ~ismember(varargin{1}, method_list,'legacy'),
   opt= opt_proplistToStruct(varargin{:});
 else
   opt= struct('method', varargin{1});

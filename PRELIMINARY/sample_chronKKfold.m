@@ -13,7 +13,7 @@ for nn= 1:folds(1)
     div = round(linspace(0+(nn-1), nSamples-(folds(1)-nn), folds(2)+1));
     for kk= 1:folds(2)
         test_set= div(kk)+1:div(kk+1);
-        train_set= setdiff(nn:nSamples-(folds(1)-nn), test_set);
+        train_set= setdiff(nn:nSamples-(folds(1)-nn), test_set,'legacy');
         %% check that all classes are inhabited
         if ~all(sum(label(:,train_set),2)),
             warning('empty classes in training set');

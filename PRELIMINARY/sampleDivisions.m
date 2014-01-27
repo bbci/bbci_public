@@ -82,7 +82,7 @@ else
   end
 end
 
-testrest = setdiff(1:size(g,2),test);
+testrest = setdiff(1:size(g,2),test,'legacy');
 
 if ~isempty(testrest)
   divTe = changedivTe(divTe,test);

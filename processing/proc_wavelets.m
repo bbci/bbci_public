@@ -1,4 +1,4 @@
-function dat  = proc_wavelets(dat,freq,varargin)
+function [dat,info]  = proc_wavelets(dat,freq,varargin)
 % PROC_WAVELETS -  calculates the continuous wavelet transform for a
 % specified range of scales. (Wavelet coefficients are obtained in Fourier
 % space.
@@ -61,10 +61,10 @@ clear pi
 
 dt = 1/dat.fs;  % time resolution (determined by sampling frequency)
 
-% Prepare output stuff
+% % Prepare output stuff
 info = struct();
 info.fun = cell(1,numel(freq));
-info.frequency = freq;
+% info.frequency = freq;
 
 % Needed for Fourier version
 N = size(dat.x,1);      % Length of signal = length of FFT
@@ -97,8 +97,10 @@ for ii=1:numel(scales)
     % Traverse scales and create wavelet functions
     s = scales(ii);
     norm = sqrt( (2*pi*s)/dt );  % Normalization of wavelet in Fourier space
-    fun = norm * eval(psi0)';
-    if nargout==2, info.fun{ii} = fun; end
+    info.fun{ii} = norm * eval(psi0)';
+%     if nargout==2, info.fun{ii} = fun; end
     
-    dat.x(:,ii,:,:) = ifft(F .* repmat(fun,[1 siz]));
+    dat.x(:,ii,:,:) = ifft(F .* repmat(info.fun{ii},[1 siz]));
 end
+
+dat.f= freq;

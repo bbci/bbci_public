@@ -72,7 +72,7 @@ if nargin<2 || isempty(y_sem),
   opt.AntennaType= 'none';
 end
 
-if ismember(opt.AntennaType, {'oo','TT','I'}),
+if ismember(opt.AntennaType, {'oo','TT','I'},'legacy'),
   [opt, isdefault]= opt_overrideIfDefault(opt, isdefault, ...
                                           'AntennaColor',0.5*[1 1 1]);
 end

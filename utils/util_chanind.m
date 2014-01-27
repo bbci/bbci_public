@@ -66,7 +66,7 @@ for ii=1:numel(chans)
   if iscell(chans{ii}) && ~isempty(chans{ii}) && strcmpi(chans{ii}{1},'ignore')
     ignore = chans{ii}{2};
     chans(ii)=[];
-    if ismember('\',ignore)
+    if ismember('\',ignore,'legacy')
       % '\' needs to be escaped
       ignore = strrep(ignore,'\','\\');
     end
@@ -108,7 +108,7 @@ end
 
 
 %% Choose unique channels only
-[u, iUnique]=unique(chans);
+[u, iUnique]=unique(chans,'legacy');
 chans=chans(sort(iUnique));
 
 unknownChans= {};
@@ -119,7 +119,7 @@ for ch= 1:nChans,
   if ischar(chanLab),
     chanLab= strtok(chanLab);  %% arguable
     iDash= find(chanLab=='-');
-    if ismember('*',chanLab) || ismember('#',chanLab)
+    if ismember('*',chanLab,'legacy') || ismember('#',chanLab,'legacy')
       % Prepare regular expression pattern
       % Channel should match the beginning, '*' corresponds to \w*, '#' to
       % .
@@ -135,14 +135,14 @@ for ch= 1:nChans,
       mat = cellfun(@isempty, mat, 'UniformOutput',0);
       ind= [ind  find(~[mat{:}])];
     elseif length(iDash)==1 && iDash<length(chanLab) && ...
-          ismember(chanLab(iDash+1),'z123456789'),
+          ismember(chanLab(iDash+1),'z123456789','legacy'),
       base= chanLab(1:iDash-2);
       from= strmatch(chanLab(iDash-1), tags, 'exact');
       to= strmatch(chanLab(iDash+1:end), tags, 'exact');
       expanded=  cellstr([repmat(base,to-from+1,1) char(tags{from:to})]);
       ind= [ind util_chanind(lab, expanded)];
-    elseif ismember(',', chanLab),
-      id= min(find(ismember(chanLab,'z123456789')));
+    elseif ismember(',', chanLab,'legacy'),
+      id= min(find(ismember(chanLab,'z123456789','legacy')));
       base= chanLab(1:id-1);
       list= strread(chanLab(id:end),'%s','delimiter',',');
       ll=length(list);
@@ -167,7 +167,7 @@ for ch= 1:nChans,
 end
 
 if INVERT,
-  ind= setdiff(1:length(lab), ind);
+  ind= setdiff(1:length(lab), ind,'legacy');
 end
 
 %if ~isempty(unknownChans),

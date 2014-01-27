@@ -13,7 +13,7 @@ function [divTr, divTe]= sample_leaveOneOut(label, xTrials)
 %     divTe   - analogue to divTr, for the test sets
 
 nSamples= size(label,2);
-if exist('xTrials','var') && ismember(length(xTrials), [1 3]),
+if exist('xTrials','var') && ismember(length(xTrials), [1 3],'legacy'),
   nPick= xTrials(end);
   if nPick<0,  %% set nPick to the size of a loo training set
     nPick= nSamples-1;

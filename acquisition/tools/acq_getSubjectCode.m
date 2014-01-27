@@ -51,7 +51,8 @@ while isempty(subject_code),
   if last_letter=='z',
     opt.LetterStart= char(opt.LetterStart+1);
     last_letter= 'a'-1;
-  end;
-  subject_code = [opt.CodePrefix opt.PrefixLetter opt.LetterStart ...
-                  char(last_letter+1)];
-end;
+	else
+    subject_code= [opt.CodePrefix opt.PrefixLetter opt.LetterStart ...
+                   char(last_letter+1)];
+	end
+end

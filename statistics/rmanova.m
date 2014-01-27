@@ -159,8 +159,8 @@ arg = opt_structToProplist(rmfield(opt,{'Design','Table','Verbose','Alpha'}));
 if opt.Verbose
   fprintf('-------\nResults\n-------\n')
   % Find col indices
-  F = find(ismember(t(1,:),'F'));
-  p = find(ismember(t(1,:),'Prob>F'));
+  F = find(ismember(t(1,:),'F','legacy'));
+  p = find(ismember(t(1,:),'Prob>F','legacy'));
   for ii=2:size(terms,1)+1
     if t{ii,p}<opt.Alpha
       fprintf('''%s'' significant, F = %1.2f, p = %0.4f\n',...

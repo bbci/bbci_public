@@ -1,4 +1,23 @@
 function file= fileutil_getFilelist(spec, varargin)
+% FILEUTIL_GETFILELIST - Retrieves a list of header/marker/EEG files.
+%
+% Synopsis:
+%   File= fileutil_getFilelist(SPEC, 'Property, 'Value', ...)
+%
+% Arguments:
+%   SPEC:  CELL|CHAR   list of file names (no extension)
+%
+% Properties:
+%   'Ext': file extension. default: 'eeg' 
+%   'Folder': base directory to search for files. default: BBCI.RawDir
+%   'RequireMatch': boolean. This function will throw an error it this
+%   property is set to true and no files were found
+%
+% Returns:
+%   FILE: filename corresponding to spec (if found). FILE may also be a cell array of file names.
+%
+%
+
 
 %% TODO: should also handle: spec is cell array
 
@@ -22,7 +41,7 @@ if isdefault.Ext,
   is= find(spec=='.', 1, 'last');
   if ~isempty(is) && is<length(spec) && is>=length(spec)-4,
     ext= spec(is+1:end);
-    if ~ismember('*',ext) && ~ismember('/',ext),
+    if ~ismember('*',ext,'legacy') && ~ismember('/',ext,'legacy'),
       opt.Ext= ext;
     end
   else

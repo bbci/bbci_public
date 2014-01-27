@@ -26,7 +26,7 @@ global BBCI
 today_vec= clock;
 today_str= sprintf('%02d_%02d_%02d', today_vec(1)-2000, today_vec(2:3));
 
-if length(varargin)==1 & isequal(varargin{1},'tmp'),
+if length(varargin)==1 && isequal(varargin{1},'tmp'),
   BBCI.Tp.Dir= [BBCI.RawDir 'Temp_' today_str '\'];
   if ~exist(BBCI.Tp.Dir, 'dir'),
     mkdir_rec(BBCI.Tp.Dir);
@@ -53,19 +53,19 @@ opt_checkProplist(opt, props);
 %% Check whether a directory exists that is to be used
 dd= dir([BBCI.RawDir 'VP???_' today_str '*']);
 
-if ~opt.MultipleFolders && length(dd)>1,
-  error('multiple folder of today exist, but opt.MultipleFolder is set to 0.');
-end
-
-k= 0;
-
-while isempty(BBCI.Tp.Code) && k<length(dd),
-  k= k+1;
-  de= dir([BBCI.RawDir dd(k).name '\*.eeg']);
-  if ~opt.MultipleFolders || isempty(de),
-    is= find(dd(k).name=='_', 1, 'first');
-    BBCI.Tp.Code= dd(k).name(1:is-1);
-    fprintf('!!Using existing directory <%s>!!\n', dd(k).name);
+if ~opt.MultipleFolders && length(dd)>0,
+  warning('multiple folder of today exist, but opt.MultipleFolder is set to false -> generating a new participant code.');
+  BBCI.Tp.Code= '';
+else
+  k= 0;
+  while isempty(BBCI.Tp.Code) && k<length(dd),
+    k= k+1;
+    de= dir([BBCI.RawDir dd(k).name '\*.eeg']);
+    if ~opt.MultipleFolders || isempty(de),
+      is= find(dd(k).name=='_', 1, 'first');
+      BBCI.Tp.Code= dd(k).name(1:is-1);
+      fprintf('!!Using existing directory <%s>!!\n', dd(k).name);
+		end
   end
 end
 

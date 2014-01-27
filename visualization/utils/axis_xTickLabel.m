@@ -51,7 +51,7 @@ end
 if ~iscell(label_list),
   if isnumeric(label_list),
     label_list= cprintf('%g', label_list);
-  elseif ismember('|',label_list),
+  elseif ismember('|',label_list,'legacy'),
     label_str= label_list;
     idx= find(label_str=='|');
     idx= [0, idx, length(label_str)+1];
@@ -81,7 +81,7 @@ opt_fn= fieldnames(opt);
 ifp= find(ismember(lower(opt_fn), ...
                    {'horizontalalignment', ...
                     'verticalalignment', ...
-                    'rotation'}));
+                    'rotation'},'legacy'));
 ifp= cat(1, ifp, strmatch('font', opt_fn));
 font_opt= copy_struct(opt, opt_fn(ifp));
 font_pl= struct2propertylist(font_opt);

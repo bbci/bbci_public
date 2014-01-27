@@ -7,7 +7,7 @@ function dat= proc_baseline(dat, ival, varargin)
 %dat= proc_baseline(dat, msec, <opts>)
 %   
 %Arguments:
-%      dat  - data structure of continuous or epoched data
+%      dat  - data structure of epoched data
 %      ival - baseline interval [start ms, end ms], default all
 %      msec - length of baseline interval in msec
 %      pos  - 'beginning' (default), or 'end'
@@ -32,13 +32,12 @@ function dat= proc_baseline(dat, ival, varargin)
 % SEE proc_medianBaseline
 
 % Benjamin Blankertz
-% Matthias Treder Aug 2010: Added time-frequency data support
 
 
-props= {'pos'      'beginning_exact'  'CHAR(beginning end beginning_exact)'
-        'classwise'     0       'BOOL'   
-        'trialwise'     1       'BOOL'
-        'channelwise'   0       'BOOL'};
+props= {'Pos'      'beginning_exact'  'CHAR(beginning end beginning_exact end_exact)'
+        'Classwise'     0       'BOOL'   
+        'Trialwise'     1       'BOOL'
+        'Channelwise'   0       'BOOL'};
 
 if nargin==0,
   dat = props; return
@@ -62,7 +61,7 @@ dim = ndims(dat.x); % 3D or 4D data
 if dim<=3
   [T, nC, nE]= size(dat.x);
 elseif dim==4
-  [freq, T, nC, nE]= size(dat.x);
+  [T,freq, nC, nE]= size(dat.x);
 else
   error('unexpected number of dimensions in dat.x');
 end
@@ -70,13 +69,13 @@ nCE= nC*nE;
   
 if ~exist('ival', 'var') || isempty(ival),
   Ti= 1:size(dat.x,1);
-  if isfield(dat, 't') && opt.trialwise,
+  if isfield(dat, 't') && opt.Trialwise,
     dat.refIval= dat.t([1 end]);
   end
 else
   if length(ival)==1,
     msec= ival;
-    switch(lower(opt.pos)),
+    switch(lower(opt.Pos)),
      case 'beginning',
       dat.refIval= dat.t(1) + [0 msec];
       Ti= procutil_getIvalIndices(dat.refIval, dat);
@@ -93,7 +92,7 @@ else
       error('unknown position indicator');
     end
   else
-    switch(lower(opt.pos)),
+    switch(lower(opt.Pos)),
      case 'beginning_exact', % [-150 0] = 15 samples not 16 (at fs= 100 Hz)
 %      len= round(diff(ival)/1000*dat.fs);
 %      Ti= procutil_getIvalIndices(ival, dat);
@@ -112,16 +111,16 @@ else
   end
 end
 
-%% for dim==5, opt.channelwise is not yet implemented
-if opt.classwise,
-  if opt.trialwise && ~isdefault.trialwise,
+%% for dim==5, opt.Channelwise is not yet implemented
+if opt.Classwise,
+  if opt.Trialwise && ~isdefault.Trialwise,
     error('you cannot use both, classwise and trialwise');
   end
   if dim<=3
-    for ci= 1:size(dat.y,1),
-      idx= find(dat.y(ci,:));
+    for classIdx= 1:size(dat.y,1),
+      idx= find(dat.y(classIdx,:));
       baseline= nanmean(nanmean(dat.x(Ti, :, idx), 1), 3);
-      if opt.channelwise,
+      if opt.Channelwise,
         for ic= 1:nC,
           dat.x(:,ic,idx)= dat.x(:,ic,idx) - ...
               repmat(baseline(:, ic), [T 1 length(idx)]);
@@ -131,29 +130,30 @@ if opt.classwise,
       end
     end
   elseif dim==4
-    for ci= 1:size(dat.y,1)
-      idx= find(dat.y(ci,:));
-      baseline= nanmean(nanmean(dat.x(:, Ti, :, idx), 2), 4);
-      dat.x(:,:,:,idx)= dat.x(:,:,:,idx) - repmat(baseline, [1 T 1 length(idx)]);
+    for classIdx= 1:size(dat.y,1)
+      idx= find(dat.y(classIdx,:));
+      baseline= nanmean(nanmean(dat.x(Ti,:, :, idx), 2), 4);
+      dat.x(:,:,:,idx)= dat.x(:,:,:,idx) - repmat(baseline, [T 1 1 length(idx)]);
     end
   end
-elseif opt.trialwise,
-  if dim<=3,
-    if opt.channelwise,
+elseif opt.Trialwise,
+  if opt.Channelwise,
+    if dim==3
       for ic= 1:nCE,
         dat.x(:,ic)= dat.x(:,ic) - nanmean(dat.x(Ti,ic));
       end
-    else
-      baseline= nanmean(dat.x(Ti, :, :), 1);
-      dat.x= dat.x - repmat(baseline, [T 1 1]);
+    elseif dim==4
+      for ic= 1:nCE,
+        dat.x(:,:,ic)= dat.x(:,:,ic) - repmat(nanmean(dat.x(Ti,:,ic)),[T 1]);
+      end
     end
-  elseif dim==4
-    baseline= nanmean(dat.x(:, Ti, :, :), 2);
-    dat.x= dat.x - repmat(baseline, [1 T 1 1]);
+  else
+    baseline= nanmean(dat.x(Ti,:, :, :), 1);
+    dat.x= dat.x - repmat(baseline, [T 1 1 1]);
   end
 else
   baseline= nanmean(nanmean(dat.x(Ti, :, :), 1), 3);
-  if opt.channelwise,
+  if opt.Channelwise,
     for ic= 1:nC,
       dat.x(:,ic,:)= dat.x(:,ic,:) - repmat(baseline(:, ic), [T 1 nE]);
     end

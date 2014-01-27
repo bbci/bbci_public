@@ -63,12 +63,12 @@ if max(sum(epo.y,2))==1,
   return;
 end
 
-out= rmfield(epo, intersect(fieldnames(epo),{'x','y','className'}));
+out= rmfield(epo, intersect(fieldnames(epo),{'x','y','className'},'legacy'));
 %  clInd= find(ismember(epo.className, classes));
 %% the command above would not keep the order of the classes in cell 'ev'
 evInd= cell(1,nClasses);
 for ic= 1:nClasses,
-  clInd= find(ismember(epo.className, classes{ic}));
+  clInd= find(ismember(epo.className, classes{ic},'legacy'));
   evInd{ic}= find(epo.y(clInd,:));
 end
 

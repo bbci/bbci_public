@@ -34,7 +34,7 @@ opt_checkProplist(opt, props);
 
 misc_checkType(hdrName, 'CHAR|CELL{CHAR}');
 
-if ischar(hdrName) && ismember('*', hdrName),
+if ischar(hdrName) && ismember('*', hdrName,'legacy'),
   tmpName= fileutil_getFilelist(hdrName, 'Ext','vhdr');
   if isempty(tmpName), error('%s.vhdr not found', hdrName); end
   hdrName= tmpName;

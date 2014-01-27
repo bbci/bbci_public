@@ -248,7 +248,7 @@ bbci.feature.fcn = {@proc_jumpingMeans};
 if isequal(opt.classes, 'auto'),
   class_combination= nchoosek(1:size(data.mrk.y,1), 2);
 else
-  class_combination= find(ismember(data.mrk_all.className, opt.classes));
+  class_combination= find(ismember(data.mrk_all.className, opt.classes,'legacy'));
   if length(class_combination) < length(opt.classes),
     error('Not all specified classes were found.');
   end

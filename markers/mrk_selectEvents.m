@@ -44,7 +44,7 @@ if nargin==1 || (ischar(ev) && strcmpi(ev,'VALID')),
 end
 
 if invert,
-  ev= setdiff(1:length(mrk.time), ev);
+  ev= setdiff(1:length(mrk.time), ev,'legacy');
 end
 
 mrk.time= mrk.time(ev);

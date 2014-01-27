@@ -3,19 +3,19 @@ function visutil_acmAdaptCLim(acm, h_ax, varargin)
 %
 %See help of fig_adaptColormap
 
-if nargin<2 | isempty(h_ax),
+if nargin<2 || isempty(h_ax),
   h_ax= gca;
 elseif length(h_ax)>1,
-  fig_acmAdaptCLim(acm, h_ax(1), varargin{:});
+  visutil_acmAdaptCLim(acm, h_ax(1), varargin{:});
   for ii= 2:length(h_ax),
-    fig_acmAdaptCLim(acm, h_ax(ii));
+    visutil_acmAdaptCLim(acm, h_ax(ii));
   end
   return;
 end
 
 cLim= get(h_ax, 'CLim');
 ud= get(h_ax, 'UserData');
-if isempty(ud) | ~isfield(ud, 'origCLim'),
+if isempty(ud) || ~isfield(ud, 'origCLim'),
   ud.origCLim= cLim;
   ud.cmap_ival= size(colormap,1) + [-acm.nColors+1 0];
   set(h_ax, 'UserData',ud);
@@ -29,7 +29,7 @@ if nargin<3,
 else
   h_cb= varargin{1};
 end
-if ~isnan(h_cb) & ~isempty(h_cb) & h_cb~=0,
+if ~isempty(h_cb) && ~isnan(h_cb) && h_cb~=0,
   cLimAdapt= cLim+[0.00001*diff(cLim) 0];
   h_im= get(h_cb, 'Children');
   if length(h_im)>1,

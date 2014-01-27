@@ -82,7 +82,8 @@ if min(fv.x(:))<0,
     opt.CLim= 'sym';
   end
 end
-if isdefault.Colormap && isequal(opt.CLim,'sym'),
+if isdefault.Colormap && ...
+        (isequal(opt.CLim,'sym') || (isnumeric(opt.CLim) && opt.CLim(1)<0)),
   opt.Colormap= cmap_posneg(21);
 end
 

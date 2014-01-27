@@ -72,7 +72,7 @@ Xn2    = Xn.^2;
 
 %%% Define target matrix for shrinkage
 idxdiag    = 1:p+1:p*p;
-idxnondiag = setdiff(1:p*p, idxdiag);
+idxnondiag = setdiff(1:p*p, idxdiag,'legacy');
 switch(upper(opt.Target))
     case 'A'
         T = eye(p,p);

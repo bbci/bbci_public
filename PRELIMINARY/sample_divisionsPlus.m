@@ -70,7 +70,7 @@ end
 if min(nEventsInClass)<nDivisions,
   msg= ['number of fold greater than samples in smallest class\n' ...
         'switching to leave-one-out'];
-  bbci_warning(msg, 'sample', mfilename);
+  util_warning(msg, 'sample', mfilename);
   [divTr, divTe]= sample_leaveOneOut(g, [1 1 xTrials(3:end)]);
   return;  
 end
@@ -116,9 +116,9 @@ else
 end
 
 if ~restrict
-  testrest = setdiff(1:size(g,2),test);
+  testrest = setdiff(1:size(g,2),test,'legacy');
 else
-  testrest = setdiff(1:size(g,2),train);
+  testrest = setdiff(1:size(g,2),train,'legacy');
 end
 
 if ~isempty(testrest)

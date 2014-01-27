@@ -27,14 +27,14 @@ for cmId = 1:size(cm,3),
     curCM = squeeze(cm(:,:,cmId));
     N = size(curCM,1);
     
-    if ismember(opt.mode, {'wolpaw', 'all'}),
+    if ismember(opt.mode, {'wolpaw', 'all'},'legacy'),
         resIdx = 1;
         P = sum(curCM(find(eye(N))))/sum(sum(curCM));
         itr(resIdx,cmId) = bitrate(P,N);
         if cmId ==1, keep = 1; end;
     end
        
-    if ismember(opt.mode, {'schloegl', 'all'}),
+    if ismember(opt.mode, {'schloegl', 'all'},'legacy'),
         resIdx = 2;
         curCM(~curCM) = .0000001; % prevent NaN
         px = sum(curCM,2)/sum(sum(curCM));   

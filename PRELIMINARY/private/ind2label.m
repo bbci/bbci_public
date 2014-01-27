@@ -21,7 +21,7 @@ function label = ind2label(ind)
 % Copyright (C) 2005 Fraunhofer FIRST
 % Author: Pavel Laskov (laskov@first.fhg.de)
 
-[classes,I,J] = unique(ind);
+[classes,I,J] = unique(ind,'legacy');
 k = length(ind);
 d = max(classes);
 idx = 1:length(ind);

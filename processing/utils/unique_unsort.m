@@ -20,7 +20,7 @@ y= x([]);  %% empty matrix or empty cell
 ii= 0;
 while ii<length(x) & length(y)<n,
   ii= ii + 1;
-  if ~ismember(x(ii), y),
+  if ~ismember(x(ii), y,'legacy'),
     y= [y, x(ii)];
   end
 end

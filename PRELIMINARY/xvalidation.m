@@ -39,7 +39,7 @@ function [outarg1, loss_std, out_test, memo]= xvalidation(epo, model, varargin)
 %                     <'sample_fcn', {'divisions', xt}>. The value xt is a
 %                     vector [#shuffles, #folds], see sample_divisions,
 %                     default [10 10].
-%     .loss_fcn       - FUNC (handle to loss function), or cell array {@loss_fcn, loss_param},
+%     .LossFcn       - FUNC (handle to loss function), or cell array {@loss_fcn, loss_param},
 %                     e.g., @loss_0_1 (default), @loss_classwiseNormalized, @loss_identity,
 %                     {'byMatrix', loss_matrix}
 %                     if first choice would call the function loss_0_1 to
@@ -242,7 +242,7 @@ end
 opt_checkProplist(opt, props);
 misc_checkType(epo,'STRUCT(x y)');
 misc_checkType(epo.x,'DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]','epo.x');
-misc_checkType(model,'STRUCT|CHAR');
+misc_checkType(model,'STRUCT|CHAR|FUNC');
 
 t0= cputime;
 
@@ -288,7 +288,7 @@ if isequal(opt.MsSampleFcn, @sample_divisions),
 else
   if ~isdefault.MsTrials,
     msg= 'property .msTrials is ignored when you specify .ms_sample_fcn';
-    bbci_warning(msg, 'validation', mfilename);
+    util_warning(msg, 'validation', mfilename);
   end
 end
 if isequal(opt.SampleFcn, @sample_divisions),
@@ -297,7 +297,7 @@ if isequal(opt.SampleFcn, @sample_divisions),
 else
   if ~isdefault.XTrials,
     msg= 'property .XTrials is ignored when you specify .SampleFcn';
-    bbci_warning(msg, 'validation', mfilename);
+    util_warning(msg, 'validation', mfilename);
   end
 end
 opt= rmfield(opt, 'MsTrials');
@@ -358,7 +358,7 @@ end
 
 if opt.SaveProc && ~prochasfreevar(opt.Proc),
   msg= 'save_proc makes only sense for .proc with free variables';
-  bbci_warning(msg, 'validation', mfilename);
+  util_warning(msg, 'validation', mfilename);
   opt.SaveProc= 0;
 end
 
@@ -393,7 +393,7 @@ else
   % "Normal" data without bidx: Need to distinguish between regression
   % and classification here. For regression, epo.y might take on the
   % value zero, kicking that effectively sample out 
-  if size(epo.y,1)==1 && length(unique(epo.y))>2,
+  if size(epo.y,1)==1 && length(unique(epo.y,'legacy'))>2,
     isRegression = 1;
     repIdx = 1:length(epo.y);
   else
@@ -411,8 +411,8 @@ if ~isfield(epo, 'jit'),
 end
 
 opt= set_defaults(opt, ...
-                  'TrainJits', unique(epo.jit), ...
-                  'TestJits', unique(epo.jit));
+                  'TrainJits', unique(epo.jit,'legacy'), ...
+                  'TestJits', unique(epo.jit,'legacy'));
 
 
 save_interm_vars = {};
@@ -445,7 +445,7 @@ if prochasfreevar(opt.Proc) || isstruct(model),
     if loaded==0
       if opt.Verbosity>0,
         msg= 'outer model selection can bias the results';
-        bbci_warning(msg, 'validation', mfilename);
+        util_warning(msg, 'validation', mfilename);
       end
       if opt.Verbosity<2,
         opt_ms.progress_bar= 0;
@@ -495,10 +495,17 @@ else              %% classification model without free hyper parameters
   model= [];
 end
 
-[dummy, train_par]= misc_getFuncParam(classy);
-train_fcn = str2func(['train_' classy]);
-applyFcn= misc_getApplyFunc(classy);
-
+% this is a quick fix : classy should be actually a handle throughout...
+if isa(classy,'function_handle')
+    [dummy, train_par]= misc_getFuncParam(classy);
+    train_fcn= classy;
+    dummy= func2str(classy);
+    applyFcn= misc_getApplyFunc(str_tail(dummy,'_'));
+else 
+    [dummy, train_par]= misc_getFuncParam(classy);
+    train_fcn = str2func(['train_' classy]);
+    applyFcn= misc_getApplyFunc(classy);
+end
 [loss_fcn, loss_par]= misc_getFuncParam(opt.LossFcn);
 
 % Issue a warning if 'loss_identity' is used with labels given, as the
@@ -520,7 +527,7 @@ if ~isempty(opt.DivTr),
     for nn= 1:length(divTr),
       opt.DivTe{nn}= cell(1,length(divTr{nn}));
       for kk= 1:length(divTr{nn}),
-        opt.DivTe{nn}{kk}= setdiff(1:max(eqcl), opt.DivTr{nn}{kk});
+        opt.DivTe{nn}{kk}= setdiff(1:max(eqcl), opt.DivTr{nn}{kk},'legacy');
       end
     end
   end
@@ -579,7 +586,7 @@ end
 if ~loss_samplewise,
   if opt.OutTrainloss,
     msg= sprintf('trainloss cannot be returned for loss <%s>', func2str(loss_fcn));
-    bbci_warning(msg, 'validation', mfilename);
+    util_warning(msg, 'validation', mfilename);
     opt.OutTrainloss= 0;
   end
 end
@@ -640,10 +647,10 @@ for n= n0:nTrials,
         k= d+(n-1)*nDiv;
         bidxTr= divTr{n}{d};
         bidxTe= divTe{n}{d};
-        idxTr= find(ismember(epo.bidx, epo.bidx(repIdx(bidxTr))) & ...
-            ismember(epo.jit, opt.TrainJits));
-        idxTe= find(ismember(epo.bidx, epo.bidx(repIdx(bidxTe))) & ...
-            ismember(epo.jit, opt.TestJits));
+        idxTr= find(ismember(epo.bidx, epo.bidx(repIdx(bidxTr)),'legacy') & ...
+            ismember(epo.jit, opt.TrainJits,'legacy'));
+        idxTe= find(ismember(epo.bidx, epo.bidx(repIdx(bidxTe)),'legacy') & ...
+            ismember(epo.jit, opt.TestJits,'legacy'));
         epo.y(:,idxTe)= NaN;              %% hide labels of the test set
 
         if ~isempty(model),               %% do model selection on training set

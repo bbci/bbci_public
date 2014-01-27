@@ -46,7 +46,7 @@ if ischar(varargin{1}),
     else
       list_external= {'bv'};
       DS_record.fcn= strrep(func2str(BS.acquire_fcn), 'bbci_acquire_', '');
-      if ~ismember(DS_record.fcn, list_external),
+      if ~ismember(DS_record.fcn, list_external,'legacy'),
         warning(['Recording not implemented for ''%s'', ' ...
                  'using internal function'], DS_record.fcn);
         DS_record.fcn= 'internal';

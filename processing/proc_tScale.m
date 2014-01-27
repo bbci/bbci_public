@@ -30,7 +30,7 @@ fv = misc_history(fv);
 
 nClasses= size(fv.y, 1);
 if nClasses==1,
-%   bbci_warning('1 class only: calculating r-values against flat-line of same var', 'r_policy');
+%   util_warning('1 class only: calculating r-values against flat-line of same var', 'r_policy');
   warning('1 class only: calculating r-values against flat-line of same var', 'r_policy')
   fv2= fv;
   szx= size(fv.x);
@@ -39,7 +39,7 @@ if nClasses==1,
   fv= proc_appendEpochs(fv, fv2);
 elseif nClasses>2,
   warning('calculating pairwise t-scaled values');
-%   state= bbci_warning('off', 'selection');
+%   state= util_warning('off', 'selection');
   combs= fliplr(nchoosek(1:size(fv.y,1), 2));
   for ic= 1:length(combs),
     ep= proc_selectClasses(fv, combs(ic,:));
@@ -55,7 +55,7 @@ elseif nClasses>2,
       fv_tsc= proc_appendEpochs(fv_tsc, proc_t_scale(ep,alpha));
     end
   end
-%   bbci_warning(state);
+%   util_warning(state);
   return; 
 end
 

@@ -545,7 +545,7 @@ for k= 1:length(c),
             % to the set minimum value
             lef = (model.params.value{i}(pl)-model.params.minim(i));
             if opt.depth==1,
-                lef=unique([2*lef,lef,2*max(lef,model.params.value{i}(min(2,length(model.params.value{i})))-model.params.value{i}(1))]);
+                lef=unique([2*lef,lef,2*max(lef,model.params.value{i}(min(2,length(model.params.value{i})))-model.params.value{i}(1))],'legacy');
             end % to see for the corners
         else
             lef= [];
@@ -558,7 +558,7 @@ for k= 1:length(c),
             % There is no right neighbor: Take the interval to the maximum value
             rig = -(model.params.value{i}(pl)-model.params.maxim(i));
             if opt.depth==1,
-                rig=unique([2*rig,rig,2*max(rig,model.params.value{i}(end)-model.params.value{i}(max(1,length(model.params.value{i})-1)))]);
+                rig=unique([2*rig,rig,2*max(rig,model.params.value{i}(end)-model.params.value{i}(max(1,length(model.params.value{i})-1)))],'legacy');
             end % to see for the corners
         else
             rig= [];

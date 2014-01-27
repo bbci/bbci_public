@@ -126,7 +126,7 @@ for cc= 1:nClasses,
   clscol= opt.ColorOrder(min(cc,size(opt.ColorOrder,1)),:);
   opt_scalpPattern= set_defaults(opt_scalpPattern, 'Linespec', {'linewidth',2, 'Color',clscol});
   h.H_topo(cc)= plot_scalpPattern(erp, mnt, ival(cc,:), opt_scalpPattern);
-  if ismember(cc, opt.MarkPatterns),
+  if ismember(cc, opt.MarkPatterns,'legacy'),
     set([h.H_topo(cc).head h.H_topo(cc).nose], opt.MarkStyle{:});
   end
   yLim= get(gca, 'yLim');
@@ -145,7 +145,7 @@ set(h.text, 'horizontalAli','center', ...
             'FontSize',12, 'fontWeight','bold');
 set(h.text_ival, 'verticalAli','top', 'horizontalAli','center', ...
                  'Visible','on');  
-if ismember(opt.ScalePos, {'horiz','vert'}),
+if ismember(opt.ScalePos, {'horiz','vert'},'legacy'),
   h.cb= plotutil_colorbarAside(opt.ScalePos);
   %% hack to fix a matlab bug
   ud= get(h.cb, 'UserData');

@@ -6,7 +6,7 @@ if iscell(strin),
   return
 end
 
-iSave= find(ismember(strin, '_^\%&#'));
+iSave= find(ismember(strin, '_^\%&#','legacy'));
 strout= strin;
 for is= iSave(end:-1:1),
   strout= [strout(1:is-1) '\' strout(is:end)];

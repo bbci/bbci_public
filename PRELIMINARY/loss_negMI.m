@@ -32,7 +32,7 @@ c=c(:).';
 ntr=length(c);
 [nr,nc]=size(d);
 
-CL=unique(c);
+CL=unique(c,'legacy');
 if length(CL)~=2,
         error('invalid class labels: just one class label given');
 end;

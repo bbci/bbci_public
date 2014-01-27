@@ -58,13 +58,13 @@ if xor(isfield(mrk1,'event'), isfield(mrk2,'event')),
 elseif isfield(mrk1,'event'),
   fields1= fieldnames(mrk1.event);
   fields2= fieldnames(mrk2.event);
-  lost_fields= setdiff(union(fields1, fields2), intersect(fields1, fields2));
+  lost_fields= setdiff(union(fields1, fields2,'legacy'), intersect(fields1, fields2,'legacy'),'legacy');
   if ~isempty(lost_fields),
     lost_list= str_vec2str(lost_fields);
     warning('events fields {%s} not found in all markers: lost', lost_list{:});
   end
   mrk.event= struct;
-  for Fld= intersect(fields1, fields2)',
+  for Fld= intersect(fields1, fields2,'legacy')',
     fld= Fld{1};
     tmp1= getfield(mrk1.event, fld);
     tmp2= getfield(mrk2.event, fld);

@@ -65,7 +65,7 @@ events= bbci_apply_queryMarker(marker, check_ival);
 data_adapt.lastcheck= time;
 
 if ~isempty(events) && isnan(data_adapt.trial_start),
-  midx= find(ismember([events.desc], data_adapt.opt.mrk_start));
+  midx= find(ismember([events.desc], data_adapt.opt.mrk_start,'legacy'));
   if ~isempty(midx),
     data_adapt.trial_start= events(midx(1)).time;
     data_adapt.end_marker_received= isempty(data_adapt.opt.mrk_end);
@@ -90,7 +90,7 @@ if time >= adapt_ival(1) && time <= adapt_ival(2),
 end
 
 if ~isempty(events) && ...
-      any(ismember([events.desc], data_adapt.opt.mrk_end));
+      any(ismember([events.desc], data_adapt.opt.mrk_end,'legacy'));
   data_adapt.end_marker_received= 1;
 end
 if data_adapt.end_marker_received && time >= adapt_ival(2),

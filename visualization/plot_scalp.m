@@ -366,7 +366,7 @@ else
   end
 end
 if opt.NewColormap,
-  fig_acmAdaptCLim(acm);
+  visutil_acmAdaptCLim(acm);
   set(H.cb, 'yLim',H.CLim); %% otherwise ticks at the border of the
                             %% Colorbar might get lost
 end

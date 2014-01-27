@@ -157,7 +157,7 @@ switch(command)
     filename = varargin{1};
     misc_checkType(filename,'!CHAR');
     settings_file= [filename '.json'];
-    if ~any(ismember('/\', settings_file)),
+    if ~any(ismember('/\', settings_file,'legacy')),
       settings_file= [BBCI.Tp.Dir settings_file];
   %   % Avoid overwriting? - Maybe it is intended, so we don't.
   %    if strcmp(command,'saveSettings') && exists(settings_file, 'file'),

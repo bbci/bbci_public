@@ -1,8 +1,8 @@
 function [varargout]= fileutil_concatMatlab(file_list, varargin)
-% EEGFILE_CONCATMATLAB - concatenate Matlab data structures
+% FILEUTIL_CONCATMATLAB - concatenate Matlab data structures
 %
 % Synopsis:
-%   [DAT, MRK, MNT]= file_concatBV(FILE_LIST, 'Property, 'Value', ...)
+%   [DAT, MRK, MNT]= fileutil_concatMatlab(FILE_LIST, 'Property, 'Value', ...)
 %
 % Arguments:
 %   FILE_LIST:  CELL|CHAR   list of file names (no extension)
@@ -31,7 +31,7 @@ if nargout~=length(opt.vars),
   warning('number of output arguments does not match with requested vars');
 end
 
-iDat= find(ismember(opt.vars, {'dat','cnt','epo'}));
+iDat= find(ismember(opt.vars, {'dat','cnt','epo'},'legacy'));
 iMrk= find(strcmp(opt.vars, 'mrk'));
 %iNoCat= setdiff(1:length(opt.vars), [iDat iMrk]);
 iMrkBV= find(strcmp(opt.vars, 'mrk_orig'));
@@ -67,7 +67,7 @@ for ii= 1:length(file_list),
       if ~isequal(varargout{iDat}.clab, varargcat{iDat}.clab),
         warning(['inconsistent clab structure will be repaired ' ...
                  'by using the intersection']); 
-        commonclab= intersect(varargout{iDat}.clab, varargcat{iDat}.clab);
+        commonclab= intersect(varargout{iDat}.clab, varargcat{iDat}.clab,'legacy');
         varargout{iDat}= proc_selectChannels(varargout{iDat}, commonclab{:});
         varargcat{iDat}= proc_selectChannels(varargcat{iDat}, commonclab{:});
       end

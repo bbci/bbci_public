@@ -97,7 +97,7 @@ if cnt.fs~=cnt2.fs,
 end
 
 if ~isequal(cnt.clab, cnt2.clab),
-  sub= intersect(cnt.clab, cnt2.clab);
+  sub= intersect(cnt.clab, cnt2.clab,'legacy');
   if isempty(sub),
     error('data sets have disjoint channels');
   else

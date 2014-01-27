@@ -241,7 +241,7 @@ if opt.Visualize,
   axes('Position',[0.06 0.05 0.93 0.94]);
   image([-1:size(Vfull,2)+2], [1:length(fv.clab)+4], Vdisp);
   colormap(cmap);
-  gClab= setdiff(1:length(fv.clab), iClab);
+  gClab= setdiff(1:length(fv.clab), iClab,'legacy');
   axis_yTickLabel(fv.clab(gClab), 'YTick',2+gClab, ...
                   'HPos', -0.01, 'Color',[1 1 1], 'FontSize',7);
   axis_yTickLabel(fv.clab(iClab), 'YTick',2+iClab, ...
@@ -249,7 +249,7 @@ if opt.Visualize,
                   'FontSize',10, 'FontWeight','bold');
   set(gca, 'TickLength',[0 0]);
   xTick= get(gca, 'XTick');
-  xTick= setdiff(xTick, 0);
+  xTick= setdiff(xTick, 0,'legacy');
   set(gca, 'XTick',xTick, 'YTick',[]);
   nfo.V= Vdisp;
   nfo.cmap= cmap;

@@ -191,7 +191,7 @@ end
 cb_per_ival= strcmp(opt.ScalePos, 'horiz');
 for cc= 1:nClasses,
   if ~any(any(erp.x(:,:,cc))),
-    bbci_warning('empty_Class', sprintf('Class %d is empty', cc));
+    util_warning('empty_Class', sprintf('Class %d is empty', cc));
     continue;
   end
   for ii= 1:nIvals,

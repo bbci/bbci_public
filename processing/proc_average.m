@@ -105,7 +105,7 @@ out= epo;
 %% the command above would not keep the order of the classes in cell 'ev'
 evInd= cell(1,nClasses);
 for ic= 1:nClasses,
-  clInd= find(ismember(epo.className, classes{ic}));
+  clInd= find(ismember(epo.className, classes{ic},'legacy'));
   evInd{ic}= find(epo.y(clInd,:));
 end
 
