@@ -105,11 +105,6 @@ opt_checkProplist(opt, props, props_scalpOutline);
 
 opt_scalpOutline= opt_substruct(opt, props_scalpOutline(:,1));
 
-fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-% if fig_Visible
-%   jvm= jvm_hideFig;
-% end
-
 if opt.NewColormap,
   acm= visutil_addColormap(opt.Colormap);
 elseif isfield(opt, 'Colormap'),
@@ -188,14 +183,14 @@ if opt.Extrapolation,
   warning(wstate);
   margin = maxrad +opt.ContourMargin;
   headmask= (sqrt(xg.^2+yg.^2)<=margin);
-  imaskout= find(~headmask);
+  imaskout= ~headmask;
   zg(imaskout)= NaN;
   
 else
   if strcmp(opt.Interpolation, 'v4'),
     %% get the convex hull from linear Interpolation
-    [dmy,dmy,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
-    imaskout= find(isnan(zconv(:)));
+    [~,~,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
+    imaskout= isnan(zconv(:));
     [xg,yg,zg]= griddata(xe, ye, w, xx, yy, opt.Interpolation);
     zg(imaskout)= NaN;
   else
@@ -227,7 +222,7 @@ yg= yg+opt.Offset(2);
 if strcmp(opt.Renderer,'pColor')
   H.patch= pColor(xg, yg, zg);
 else
-  [pts,H.patch]= contourf(xg, yg, zg, opt.ContourfLevels,'LineStyle','none');
+  [~,H.patch]= contourf(xg, yg, zg, opt.ContourfLevels,'LineStyle','none');
   % *** Hack to enforce cdatamappig = scaled in Colorbarv6.m by introducing
   % a useless patch object
   hold on
@@ -289,12 +284,12 @@ if ~isequal(opt.Contour,0),
       mm= max(abs([mi ma]));
       v= 0:opt.Contour:mm;
       v= [fliplr(-v(2:end)), v];
-      ctick= v(find(v>=mi & v<=ma));
-      v(find(v<=mi | v>=ma))= [];
+      ctick= v(v>=mi & v<=ma);
+      v(v<=mi | v>=ma)= [];
      case 'spacing_compatability',
       v= floor(mi):opt.Contour:ceil(ma);
-      ctick= v(find(v>=mi & v<=ma));
-      v(find(v<=mi | v>=ma))= [];
+      ctick= v(v>=mi & v<=ma);
+      v(v<=mi | v>=ma)= [];
      case 'choose',
       ctick= goodcontourValues(mi, ma, -abs(opt.Contour));
       v= ctick;

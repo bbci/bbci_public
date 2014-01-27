@@ -1,5 +1,5 @@
 function H= axis_redrawFrame(ax, varargin)
-%AXIS_REDRAWFRAME - ???
+%AXIS_REDRAWFRAME - Redraws the frames of axes
 
 props = {'VPos',                        0               '!DOUBLE';
          'LineWidth'                    1               '!DOUBLE'

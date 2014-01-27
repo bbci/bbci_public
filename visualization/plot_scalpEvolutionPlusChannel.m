@@ -76,11 +76,6 @@ opt_checkProplist(opt, props, props_scalpPattern, props_channel);
 opt_scalpPattern= opt_substruct(opt, props_scalpPattern(:,1));
 opt_channel= opt_substruct(opt, props_channel(:,1));
 
-% fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-% if fig_Visible
-%   jvm= jvm_hideFig;
-% end
-
 if isfield(erp, 'xUnit'),
   [opt,isdefault]= opt_overrideIfDefault(opt, isdefault, ...
                                          'XUnit', erp.xUnit);
@@ -270,6 +265,3 @@ if nargout<1,
   clear H
 end
 
-% if fig_Visible
-%   jvm_restoreFig(jvm);
-% end

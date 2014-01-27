@@ -61,12 +61,6 @@ opt_channel= opt_substruct(opt, props_channel(:,1));
 misc_checkType(erp,'!STRUCT(x y className)');
 misc_checkType(mnt,'!STRUCT(x)');
 
-%%
-% fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-% if fig_Visible
-%   jvm= jvm_hideFig;
-% end
-
 if nargin<4 || isempty(ival),
   ival= [NaN NaN]; %erp.t([1 end]);
 elseif size(ival,2)==1,
@@ -201,8 +195,3 @@ end
 if nargout<1,
   clear h
 end
-
-% if fig_Visible
-%   jvm_restoreFig(jvm);
-% end
-

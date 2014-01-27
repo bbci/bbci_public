@@ -34,7 +34,6 @@ props= {'YTick'                []       'DOUBLE[-]'
 %% but on print.
 
 opt= opt_proplistToStruct(varargin{:});
-%[opt, isdefault]= opt_setDefaults(opt, props, 1); problem with optional font*
 [opt, isdefault]= opt_setDefaults(opt, props);
 
 if ~iscell(label_list),
