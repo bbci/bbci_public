@@ -1,5 +1,5 @@
 function [H, Ctour]= plot_scalp(mnt, w, varargin)
-%PLOT_SCALP - Display a vector as scalp topography
+%PLOT_SCALP - Display a weight vector as scalp topography
 %
 %Description:
 % This is the low level function for displaying a scalp topography.
@@ -20,7 +20,7 @@ function [H, Ctour]= plot_scalp(mnt, w, varargin)
 % OPT: struct or property/value list of optional properties:
 %  .CLim :        'range', 'sym' (default), '0tomax', 'minto0',
 %                 or [minVal maxVal]
-%  .ScalePos:     Placement of the Colorbar 'horiz', 'vert' (deafult), 
+%  .ScalePos:     Placement of the Colorbar 'horiz', 'vert' (default), 
 %                 or 'none'
 %  .Contour:      Specifies at what Heights contour lines are drawn.
 %                 If 'contour' is a vector, its entries define the
@@ -38,7 +38,7 @@ function [H, Ctour]= plot_scalp(mnt, w, varargin)
 %  .Resolution:   default 40. Number of steps around circle used for
 %                 plotting the scalp.
 %  .ShowLabels:   Display channel names (1) or not (0), default 0.
-%  .shading:     shading method for the pColor plot, default 'flat'.
+%  .Shading:     shading method for the pColor plot, default 'flat'.
 %                Use 'interp' to get nice, smooth plots. But saving
 %                needs more space.
 %  .Extrapolation  Default value (1) extends the scalp plot to the peripheral
@@ -80,7 +80,7 @@ props= {
         'ExtrapolateToMean',     0,                'BOOL';
         'ExtrapolateToZero',     0,                'BOOL';
         'Interpolation',         'linear',         'CHAR';
-        'Linespec',              {'k'},            'CELL';
+        'LineProperties',              {'k'},            'CELL';
         'MarkContour',           [],               'DOUBLE[0-2]';
         'MarkContourLineprop',   {'LineWidth',2},  'PROPLIST';
         'NewColormap',           0,                'BOOL';
@@ -111,14 +111,14 @@ fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible 
 % end
 
 if opt.NewColormap,
-  acm= fig_addcolormap(opt.Colormap);
-elseif isfield(opt, 'colormap'),
+  acm= visutil_addColormap(opt.Colormap);
+elseif isfield(opt, 'Colormap'),
   colormap(opt.Colormap);
 end
 
 if opt.Extrapolation,
-  if isdefault.Linespec,
-    opt.Linespec= {'Color','k', 'LineWidth',3};
+  if isdefault.LineProperties,
+    opt.LineProperties= {'Color','k', 'LineWidth',3};
   end
   if isdefault.Resolution,
     opt.Resolution= 101;
@@ -243,12 +243,12 @@ if isequal(opt.CLim, 'sym'),
   H.CLim= [-zgMax zgMax];
 elseif isequal(opt.CLim, 'range'),
   H.CLim= tight_caxis;
-elseif isequal(opt.CLim, 'rangesymcol'),
-  H.CLim= tight_caxis;
-  nColors= size(get(gcf, 'colormap'), 1);
-  nColorsNeg= round(nColors*max(0, -H.CLim(1))/diff(H.CLim));
-  nColorsPos= round(nColors*max(0, H.CLim(2))/diff(H.CLim));
-  colormap(cmap_posneg_asym(nColorsNeg, nColorsPos));
+%%%elseif isequal(opt.CLim, 'rangesymcol'),
+%%%  H.CLim= tight_caxis;
+%%%  nColors= size(get(gcf, 'colormap'), 1);
+%%%  nColorsNeg= round(nColors*max(0, -H.CLim(1))/diff(H.CLim));
+%%%  nColorsPos= round(nColors*max(0, H.CLim(2))/diff(H.CLim));
+%%%  colormap(cmap_posneg_asym(nColorsNeg, nColorsPos));
 elseif isequal(opt.CLim, '0tomax'),
   H.CLim= [0.0001*diff(tight_caxis) max(tight_caxis)];
 elseif isequal(opt.CLim, 'minto0'),

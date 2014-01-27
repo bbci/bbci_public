@@ -20,10 +20,10 @@ function mnt= mnt_restrictMontage(mnt, varargin)
 %  plotScalpPattern(mnt, cnt_lap.x(10000,:));
 
 if nargin==2 && isstruct(varargin{1}),
-  if isfield(varargin{1}, 'Clab'),
-    chans= util_chanind(mnt.Clab, varargin{1}.Clab);
+  if isfield(varargin{1}, 'clab'),
+    chans= util_chanind(mnt.clab, varargin{1}.clab);
   else
-    error('field .Clab expected when 2nd argument is a struct');
+    error('field .clab expected when 2nd argument is a struct');
   end
 else
   chans= util_chanind(mnt.clab, varargin{:});

@@ -1,5 +1,5 @@
 function [H, Ctour]= plot_scalpPattern(erp, mnt, ival, varargin)
-%SCALPPATTERN - Display average trials as scalp topography
+%PLOT_SCALPPATTERN - Display average trials as scalp topography
 %
 %Usage:
 % H= plot_scalpPattern(ERP, MNT, IVAL, <OPTS>)

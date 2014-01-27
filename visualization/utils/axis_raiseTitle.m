@@ -1,5 +1,5 @@
 function axis_raiseTitle(ax, rel)
-% AXIS_RAISETITLE - Raise the title of a plot
+%AXIS_RAISETITLE - Raise the title of a plot
 %
 %Usage:
 %  axis_raiseTitle(REL_RAISE)

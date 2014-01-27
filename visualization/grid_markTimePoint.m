@@ -1,4 +1,7 @@
 function hl = grid_markTimePoint(tp, chans, varargin)
+%GRID_MARKTIMEPOINT - Draw a time point inside grid plots as a vertical
+%line
+%
 %grid_markTimePoint(tp, <chans, Linespec>)
 %
 % IN  tp     - time point [msec]

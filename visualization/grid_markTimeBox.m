@@ -1,4 +1,7 @@
-function H= grid_markTimebox(intervals, varargin)
+function H= grid_markTimeBox(intervals, varargin)
+%GRID_MARKTIMEBOX - Draw time intervals inside grid plots with vertical
+%lines
+%
 %H= grid_markTimebox(intervals, <opts>)
 %
 % IN  time intervals - vectors, e.g. [min max],

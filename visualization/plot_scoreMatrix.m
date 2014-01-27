@@ -1,7 +1,28 @@
 function H= plot_scoreMatrix(epo_r, ival, varargin)
+%PLOT_SCOREMATRIX - Visualizes score matrix of e.g. r-values
+%
+%Usage:
+% H= plot_scoreMatrix(epo_r, ival, <opts>)
+%
+% Visualizes the [Time x Channel] score matrix in epo_r and optionally
+% plots scalp maps for given time intervals.
+%
+% IN: epo_r - struct of score data as returned by e.g. proc_rSquareSigned
+%             or proc_aucValues
+%     ival  - [nIvals x 2]-sized array of intervals, which are marked in
+%             the score matrix and for which scalp topographies are drawn.
+%             If ival is empty no scalp topographies are drawn.
+%     opts  - struct or property/value list of optional fields/properties:
+%      .Mnt      - struct defining an electrode montage. Default is the
+%                  electrode montage returend by mnt_setElectrodePositions
+%      .MarkClab - list of channels to be marked with labels on the y axis
+%                  of the score matrix. Default: Fz, FCz, Cz, CPz, Pz, Oz.
+%
+% OUT H - struct of handles to the created graphic objects.
+%
+%See also plot_scalpEvolution, plot_scalpPatternsPlusChannel
 
 props= {'Mnt'              struct                                 'STRUCT'
-        'VisuScalps'       1                                      'BOOL'
         'Colormap'         cmap_posneg(51),                       'CHAR|DOUBLE[- 3]'
         'MarkClab'         {'Fz','FCz','Cz','CPz','Pz','Oz'}      'CELL{CHAR}'
         'XUnit'            'ms'                                   'CHAR'
@@ -22,12 +43,9 @@ opt= opt_proplistToStruct(varargin{:});
     opt_overrideIfDefault(opt, isdefault, ...
                           'Mnt', mnt_setElectrodePositions(epo_r.clab));
 
-if isstruct(ival),
-  ival= ival.ival;
+if isempty(ival), opt.VisuScalps = 0;
+else              opt.VisuScalps = 1;
 end
-% Sort intervals
-[dmy, si]= sort(ival(:,1));
-ival= ival(si,:);
 
 % order channels for visualization:
 %  scalp channels first, ordered from frontal to occipital (as returned
@@ -41,6 +59,7 @@ epo_r= proc_selectChannels(epo_r, cat(2, clab, clab_nonscalp));
 
 clf;
 colormap(opt.Colormap);
+
 if opt.VisuScalps,
   if isempty(opt.Title),
     subplotxl(2, 1, 1, [0.05 0 0.01], [0.06 0 0.1]);
@@ -48,6 +67,7 @@ if opt.VisuScalps,
     subplotxl(2, 1, 1, [0.05 0 0.05], [0.06 0 0.1]);
   end
 end
+
 H.image= imagesc(epo_r.t, 1:length(epo_r.clab), epo_r.x'); 
 H.ax= gca;
 set(H.ax, 'CLim',[-1 1]*max(abs(epo_r.x(:)))); 
@@ -66,30 +86,36 @@ ylabel('channels');
 ylimits= get(H.ax, 'YLim');
 set(H.ax, 'YLim',ylimits+[-2 2], 'NextPlot','add');
 ylimits= ylimits+[-1 1];
-for ii= 1:size(ival,1),
-  xx= ival(ii,:) + [-1 0]*1000/epo_r.fs/2;
-  H.box(:,ii)= line(xx([1 2; 2 2; 2 1; 1 1]), ...
-                    ylimits([1 1; 1 2; 2 2; 2 1]), ...
-                    'Color',[0 0.5 0], 'LineWidth',0.5);
-end
-if ~isempty(opt.Title),
-  H.title= axis_title(opt.Title, 'VPos',0, 'VerticalAlignment','bottom', ...
-                      'FontWeight','bold', 'FontSize',16, ...
-                      'Color',0.3*[1 1 1], ...
-                      opt.TitleSpec{:});
-end
 
-%set(H.ax_overlay, 'Visible','off');
 if opt.VisuScalps,
-  nIvals= size(ival,1);
-  for ii= 1:nIvals,
-    H.ax_scalp(ii)= subplotxl(2, nIvals, nIvals + ii);
-  end
-%  ival= visutil_correctIvalsForDisplay(ival, 'fs',epo_r.fs);
-  H.h_scalp= plot_scalpEvolution(epo_r, opt.Mnt, ival, defopt_scalp_r, ...
-                            'Subplot', H.ax_scalp, ...
-                            'IvalColor', [0 0 0], ...
-                            'GlobalCLim', 1, ...
-                            'ScalePos','none');
-  delete(H.h_scalp.text);
+    if isstruct(ival),
+        ival= ival.ival;
+    end
+    % Sort intervals
+    [~,si]= sort(ival(:,1));
+    ival= ival(si,:);
+    
+    for ii= 1:size(ival,1),
+        xx= ival(ii,:) + [-1 0]*1000/epo_r.fs/2;
+        H.box(:,ii)= line(xx([1 2; 2 2; 2 1; 1 1]), ...
+            ylimits([1 1; 1 2; 2 2; 2 1]), ...
+            'Color',[0 0.5 0], 'LineWidth',0.5);
+    end
+    if ~isempty(opt.Title),
+        H.title= axis_title(opt.Title, 'VPos',0, 'VerticalAlignment','bottom', ...
+            'FontWeight','bold', 'FontSize',16, ...
+            'Color',0.3*[1 1 1], ...
+            opt.TitleSpec{:});
+    end
+    
+    nIvals= size(ival,1);
+    for ii= 1:nIvals,
+        H.ax_scalp(ii)= subplotxl(2, nIvals, nIvals + ii);
+    end
+    H.h_scalp= plot_scalpEvolution(epo_r, opt.Mnt, ival, defopt_scalp_r, ...
+        'Subplot', H.ax_scalp, ...
+        'IvalColor', [0 0 0], ...
+        'GlobalCLim', 1, ...
+        'ScalePos','none');
+    delete(H.h_scalp.text);
 end

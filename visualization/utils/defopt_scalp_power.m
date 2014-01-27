@@ -1,4 +1,6 @@
 function opt= defopt_scalp_power(varargin)
+%DEFOPT_SCALP_POWER - Properties for plot_scalp* functions, optimized for
+%visualizing spectral power
 
 props= {'Shading'                 'flat'
         'Extrapolation'           1

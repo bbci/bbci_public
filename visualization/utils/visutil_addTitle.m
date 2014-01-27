@@ -1,4 +1,4 @@
-function [h, ax]= addTitle(tit, VERTICAL, shift);
+function [h, ax]= visutil_addTitle(tit, VERTICAL, shift)
 %[h, ax]= addTitle(tit, <vert=0, shift=1>);
 
 if ~exist('shift', 'var'), shift=1; end

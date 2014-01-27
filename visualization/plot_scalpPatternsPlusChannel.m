@@ -1,5 +1,5 @@
 function H= plot_scalpPatternsPlusChannel(erp, mnt, clab, ival, varargin)
-%SCALPPATTERNSPLUSCHANNEL - Display Classwise topographies and one channel
+%PLOT_SCALPPATTERNSPLUSCHANNEL - Display Classwise topographies and one channel
 %
 %Usage:
 % H= plot_scalpPatternsPlusChannel(ERP, MNT, CLAB, IVAL, <OPTS>)
@@ -105,7 +105,7 @@ if nIvals<nClasses,
 end
 
 if opt.NewColormap,
-  acm= fig_addcolormap(opt.Colormap);
+  acm= visutil_addColormap(opt.Colormap);
 end
 if isempty(opt.Subplot),
   clf;

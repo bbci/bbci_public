@@ -1,4 +1,4 @@
-function acm= fig_addColormap(cmap, varargin)
+function acm= visutil_addColormap(cmap, varargin)
 %FIG_ADDCOLORMAP - Add a colormap to the current figure
 %
 % !!! TESTING !!!

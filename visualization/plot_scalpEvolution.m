@@ -1,4 +1,6 @@
 function H= plot_scalpEvolution(erp, mnt, ival, varargin)
+%PLOT_SCALPEVOLUTION - Draws scalp topographies for specified intervals
+%
 %H= plot_scalpEvolution(erp, mnt, ival, <opts>)
 %
 % Draws scalp topographies for specified intervals,

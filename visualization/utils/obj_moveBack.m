@@ -1,4 +1,6 @@
 function obj_moveBack(ho)
+%OBJ_MOVEBACK - ???
+%
 %obj_moveBack(<ho>)
 %
 % IN  ho - handle of graphic object, default: last plotted object

@@ -1,4 +1,5 @@
-function h_bax= set_backgroundaxis(create)
+function h_bax= fig_getBackgroundAxis(create)
+%FIG_GETBACKGROUNDAXIS - ???
 
 if nargin<1,
   create= 1;

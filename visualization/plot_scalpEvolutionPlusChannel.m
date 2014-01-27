@@ -1,14 +1,14 @@
 function H= plot_scalpEvolutionPlusChannel(erp, mnt, clab, ival, varargin)
-%SCALPEVOLUTIONPLUSCHANNEL - Display evolution of scalp topographies 
+%PLOT_SCALPEVOLUTIONPLUSCHANNEL - Display evolution of scalp topographies 
 %
 %Usage:
 % H= plot_scalpEvolutionPlusChannel(ERP, MNT, CLAB, IVAL, <OPTS>)
 %
 % Makes an ERP plot in the upper panel with given interval marked,
 % and draws below scalp topographies for all marked intervals,
-% separately for each each Class. For each Classes topographies are
-% plotted in one row and shared the same Color map scaling. (In future
-% versions there might be different options for Color scaling.)
+% separately for each Class. For each Classes topographies are plotted
+% in one row and shared the same Color map scaling. (In future versions
+% there might be different options for Color scaling.)
 %
 % IN: erp  - struct of epoched EEG data. For convenience used Classwise
 %            averaged data, e.g., the result of proc_average.

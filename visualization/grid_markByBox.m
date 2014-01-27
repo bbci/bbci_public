@@ -1,5 +1,5 @@
-function H= grid_markBybox(fractiles, varargin)
-%H= grid_markBybox(fractiles, <opts>)
+function H= grid_markByBox(fractiles, varargin)
+%GRID_MARKBYBOX - Draw error or percentiles box inside grid plots
 %
 % IN  fractiles - vector, e.g. [min 25%ile median 75%tile max],
 %                 as obtained by 'stat_percentiles(blah, [])'.
@@ -10,7 +10,7 @@ function H= grid_markBybox(fractiles, varargin)
 %       .Height   - relative Height of the box plot, default 0.075
 %       .VPos     - vertical position of the box plot (0: bottom, 1: top)
 % OUT
-%   H - handle to graphic opbjects
+%   H - handle to graphic objects
 %
 % EXAMPLE
 %  grid_plot(erp, mnt, defopt_erps);

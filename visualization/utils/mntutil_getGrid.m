@@ -1,5 +1,5 @@
-function grid= getGrid(displayMontage)
-%grid= getGrid(displayMontage)
+function grid= mntutil_getGrid(displayMontage)
+%grid= mntutil_getGrid(displayMontage)
 %
 % IN   displayMontage - any *.mnt file in EEG_CFG_DIR, 
 %                       e.g., 'small', 'medium', 'large',

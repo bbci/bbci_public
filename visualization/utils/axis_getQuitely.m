@@ -1,4 +1,11 @@
 function h_out= axis_getQuitely(varargin)
+%AXIS_GETQUIETLY - ???
+%
+%Usage:
+%  axis_getQuietly(???
+%
+%Input:
+%  ???:      ????
 
 vis= get(gcf, 'Visible');
 if nargin==1,

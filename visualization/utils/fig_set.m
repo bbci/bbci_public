@@ -1,10 +1,11 @@
 function fig_set(varargin)
+%FIG_SET
 
 props= {'fn'              1            '!INT'
         'toolsoff'        1            '!BOOL'
         'gridsize'        [2 2]        '!DOUBLE[2]'
         'shrink'          [1 1]        '!DOUBLE[2]'
-        'shiftUpwards'   1            '!BOOL'
+        'shiftUpwards'    1            '!BOOL'
         'name'            ''           'CHAR'
         'clf'             0            '!BOOL'
         'set'             {}           'PROPLIST'

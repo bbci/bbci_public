@@ -1,4 +1,6 @@
-function mnt= mnt_shrinkNonEegChans(mnt, nonEEGchans)
+function mnt= mnt_shrinkChannels(mnt, nonEEGchans)
+%MNT_SHRINKCHANNELS - ???
+%
 %mnt= mnt_shrinkNonEegChans(mnt, <nonEEGchans>)
 
 if ~exist('nonEEGchans', 'var'),

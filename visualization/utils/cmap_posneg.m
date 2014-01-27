@@ -1,5 +1,5 @@
 function cmap= cmap_posneg(m)
-%CMAP_RAINBOW - Colormap going from red/yellow over white to cyan/blue
+%CMAP_POSNEG - Colormap going from red/yellow over white to cyan/blue
 %
 %Description:
 %  This function returns a colormap. The colors goes from red to
@@ -20,7 +20,7 @@ function cmap= cmap_posneg(m)
 %  colormap(cmap_posneg(65));
 %  imagesc(toeplitz(1:65)); colorbar;
 %
-%See also COLORMAP, HSV2RGB, CMAP_HSV_FADE
+%See also COLORMAP, HSV2RGB, CMAP_HSVFADE
 
 % 01-2005 Benjamin Blankertz
 

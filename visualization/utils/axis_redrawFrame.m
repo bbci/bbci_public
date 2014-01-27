@@ -1,4 +1,5 @@
 function H= axis_redrawFrame(ax, varargin)
+%AXIS_REDRAWFRAME - ???
 
 props = {'VPos',                        0               '!DOUBLE';
          'LineWidth'                    1               '!DOUBLE'

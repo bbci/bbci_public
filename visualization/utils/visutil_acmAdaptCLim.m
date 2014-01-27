@@ -1,4 +1,4 @@
-function fig_acmAdaptCLim(acm, h_ax, varargin)
+function visutil_acmAdaptCLim(acm, h_ax, varargin)
 %FIG_ACMADAPTCLIM - Helper function to be used with fig_adaptColormap
 %
 %See help of fig_adaptColormap

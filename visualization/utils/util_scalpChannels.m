@@ -1,4 +1,6 @@
 function chans= util_scalpChannels(clab)
+%UTIL_SCALPCHANNELS - Indices of scalp channels
+%
 %LABEL_LIST= util_scalpChannels
 % or
 %CHAN_IDX= util_scalpChannels(CLAB)

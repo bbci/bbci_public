@@ -22,7 +22,7 @@ function map= cmap_rainbow(m, varargin)
 %  clf; imagesc(toeplitz(1:50)); colorbar;
 %  colormap(cmap_rainbow);
 % 
-%See also COLORMAP, HSV2RGB, CMAP_HSV_FADE
+%See also COLORMAP, HSV2RGB, CMAP_HSVFADE
 
 % 01-2005 Benjamin Blankertz
 

@@ -1,4 +1,4 @@
-function h= textFit(x, y, str, fit, varargin)
+function h= visutil_textFit(x, y, str, fit, varargin)
 %h= textFit(x, y, str, fit, <textProp>)
 
 h= text(x, y, str);

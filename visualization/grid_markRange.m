@@ -1,4 +1,7 @@
 function hl= grid_markRange(yRange, chans, varargin)
+%GRID_MARKRANGE - Mark range on y axis  inside grid plots as horizontal
+%lines
+%
 %hl= grid_markRange(yRange, <chans, Linespec>)
 %
 % IN  yRange - range ([lower upper]) on y axis [uV]

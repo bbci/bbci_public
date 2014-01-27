@@ -1,4 +1,6 @@
 function [x,y,z,clab]= mntutil_posExt1010
+%MNTUTIL_POSEXT1010 - Extended international 10-10 system
+%
 %[x,y,z,clab]= mntutil_posExt1010;
 % or
 %posSystem= mntutil_posExt1010;

@@ -1,13 +1,33 @@
 function H= plot_scalpLoading(mnt, w, varargin)
-%plot_scalpLoading(mnt, w, <opt>);
+%PLOT_SCALPLOADING - Visualize single channel loadings of a weight vector
+%
+%Description:
+% This function visualizes the weight vector w as color coded circles at
+% the corresponding electrode positions on a scalp outline.
+%
+%Usage:
+% H= plot_scalpLoading(MNT, W, <OPT>)
+%
+%Input:
+% MNT: An electrode montage, see mnt_setElectrodePositions
+% W:   Vector to be displayed as scalp topography. The length of W must
+%      concide with the length of MNT.clab or the number of non-NaN
+%      entries of MNT.x, or OPT must include a field 'WClab'.
+% OPT: struct or property/value list of optional properties:
+%  .CLim :        'range', 'sym' (default), '0tomax', 'minto0',
+%                 or [minVal maxVal]
+%  .ShowLabels:   Display channel names (1) or not (0), default 1.
+%
+%Output:
+% H:     handle to several graphical objects
 
-props = {'ShowLabels',         1,          'BOOL';
+props = {'ShowLabels',          1,          'BOOL';
          'ScalePos',            'vert',     'CHAR';
          'FontSize',            8,          'DOUBLE';
          'MinorFontSize',       6,          'DOUBLE';
          'TextColor',           'k',        'CHAR|DOUBLE[3]';
          'CLim',                'sym',      'CHAR(sym range 0tomax)|DOUBLE[2]';
-         'DrawNose',           1,          'BOOL';
+         'DrawNose',            1,          'BOOL';
          'LineWidth',           2,          'DOUBLE';
          'LineColor',           'k',        'CHAR';
          'Radius',              0.074,      'DOUBLE'};

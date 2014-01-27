@@ -1,7 +1,6 @@
 function H= plot_channel(epo, clab, varargin)
-%PLOTCHANNEL - wrapper function calling specialized functions to plot the 
-%Classwise averages of one channel. Function plotutil_channel1D plots 
-% 1D data (time OR frequency); plotutil_channel2D plots 2D data (time x frequency). 
+%PLOT_CHANNEL - Plot the classwise averages of one channel of 1D (time OR
+% frequency) or 2D data (time x frequency)
 %
 %Usage:
 % H= plot_channel(EPO, CLAB, <OPT>)

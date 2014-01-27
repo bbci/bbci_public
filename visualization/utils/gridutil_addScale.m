@@ -1,4 +1,4 @@
-function H= grid_addScale(mnt, varargin)
+function H= gridutil_addScale(mnt, varargin)
 % experimental, called by grid_plot
 
 props = {'XUnit',                   'ms',                   'CHAR';

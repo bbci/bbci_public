@@ -1,4 +1,6 @@
 function opt= defopt_scalp_r(varargin)
+%DEFOPT_SCALP_R - Properties for plot_scalp* functions, optimized for
+%visualizing (signed, squared) r values
 
 props= {'Extrapolation'          1
         'ExtrapolateToMean'      0

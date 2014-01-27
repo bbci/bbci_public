@@ -1,4 +1,7 @@
 function H= grid_markInterval(ival, chans, markCol)
+%GRID_MARKINTERVAL - Draw time interval inside grid plots as colored
+%patches
+%
 %grid_markInterval(ival, <chans, markCol>)
 %grid_markInterval(ival, <axis_handles, markCol>)
 %
@@ -8,10 +11,6 @@ function H= grid_markInterval(ival, chans, markCol)
 %     markCol - Color of the patch, if it is scalar take it as gray value,
 %                default 0.8
 
-fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-% if fig_Visible
-%   jvm= jvm_hideFig;
-% end
 
 if ~exist('chans','var'), chans=[]; end
 if ~exist('markCol','var'), markCol= 0.85; end
@@ -56,7 +55,3 @@ if isfield(get(old_ax,'UserData'),'hleg') & ...
       ~isnan(getfield(get(old_ax,'UserData'), 'hleg')),
   legend;
 end
-
-% if fig_Visible
-%   jvm_restoreFig(jvm);
-% end

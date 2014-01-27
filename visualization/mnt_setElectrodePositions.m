@@ -1,5 +1,5 @@
 function mnt= mnt_setElectrodePositions(clab, varargin)
-%GETELECTRODEPOSITIONS - Electrode positions of standard named channels
+%MNT_SETELECTRODEPOSITIONS - Electrode positions of standard named channels
 %
 %Usage:
 % MNT= mnt_setElectrodePositions(CLAB);
@@ -22,7 +22,7 @@ function mnt= mnt_setElectrodePositions(clab, varargin)
 % kraulem 08.09.2003
 
 if ~exist('clab','var'),
-  [d,d,d,clab]= mntutil_posExt1010;
+  [~,~,~,clab]= mntutil_posExt1010;
 end
 if nargin<=1 | isempty(varargin{1}),
   varargin{1}= mntutil_posExt1010;

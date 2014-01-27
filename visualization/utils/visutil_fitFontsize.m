@@ -1,4 +1,4 @@
-function fitFontsize(h, fit)
+function visutil_fitFontsize(h, fit)
 %fitFontsize(h, fit)
 
 fontSize= get(h, 'fontSize');

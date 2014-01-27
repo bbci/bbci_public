@@ -1,4 +1,4 @@
-function ht= axis_xticklabel(label_list, varargin)
+function ht= axis_xTickLabel(label_list, varargin)
 %AXIS_XTICKLABEL - Add x-ticklabels to the current axis
 %
 %Synopsis:
