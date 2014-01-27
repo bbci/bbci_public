@@ -1,8 +1,8 @@
 function [varargout]= fileutil_concatMatlab(file_list, varargin)
-% EEGFILE_CONCATMATLAB - concatenate Matlab data structures
+% FILEUTIL_CONCATMATLAB - concatenate Matlab data structures
 %
 % Synopsis:
-%   [DAT, MRK, MNT]= file_concatBV(FILE_LIST, 'Property, 'Value', ...)
+%   [DAT, MRK, MNT]= fileutil_concatMatlab(FILE_LIST, 'Property, 'Value', ...)
 %
 % Arguments:
 %   FILE_LIST:  CELL|CHAR   list of file names (no extension)
