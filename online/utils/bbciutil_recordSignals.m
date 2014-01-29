@@ -17,13 +17,13 @@ if ischar(varargin{1}),
     
     % Write Header file
     opt= varargin{3};
-    opt_hdr= set_defaults(opt, ...
-                          'scale', 0.1, ...
-                          'precision', 'int16');
+    props= {'Scale'       0.1       'DOUBLE'
+            'Precision'   'int16'   'CHAR'};
+    opt_hdr= opt_setDefaults(opt, props);
     opt_hdr.DataPoints= 0;
     file_writeBVheader(filename, opt_hdr);
-    state= struct('precision', opt_hdr.precision, ...
-                  'factor', diag(1./opt_hdr.scale));
+    state= struct('precision', opt_hdr.Precision, ...
+                  'factor', diag(1./opt_hdr.Scale));
     
     % Open EEG file for writing
     state.fid_eeg= fopen([filename '.eeg'], 'w');

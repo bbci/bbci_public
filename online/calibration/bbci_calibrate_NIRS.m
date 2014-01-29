@@ -296,7 +296,7 @@ nComb= size(class_combination,1);
 if nComb > 1,
 %   [dummy, bi]= min(mean_loss + 0.1*std_loss);
 bi=2;
-  bbci= copy_fields(bbci, bbci_all(bi), cfy_fields);
+  bbci= struct_copyFields(bbci, bbci_all(bi), cfy_fields);
 %     bbci.feature.param = { {ival_cfy{ci}} };
 end
 

@@ -187,7 +187,7 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
   end
 else
   result_flds= {'rejected_trials', 'rejected_clab', 'clab'};
-  BC_result= copy_fields(BC_result, previous, result_flds);
+  BC_result= struct_copyFields(BC_result, previous, result_flds);
 end
 
 if isequal(opt.classes, 'auto'),
@@ -506,7 +506,7 @@ nComb= size(class_combination,1);
 if nComb > 1,
   data.all_results= data.result;
   [dmy, bi]= min(mean_loss + 0.1*std_loss);
-  bbci= copy_fields(bbci, bbci_all(bi), cfy_fields);
+  bbci= struct_copyFields(bbci, bbci_all(bi), cfy_fields);
   data.result= data.all_results(bi);
   data.result.class_selection_loss= [mean_loss; std_loss];
   bbci_log_write(data, sprintf('\nCombination <%s> vs <%s> chosen.\n', ...

@@ -43,8 +43,8 @@ else
   switch(num),
    case 'init',
     DF= DFE;
-    DFE= copy_fields(DF.opt, {'trigger_fcn', 'trigger_param'});
-    DFE= copy_fields(DFE, DF, {'log'});
+    DFE= struct_copyFields(DF.opt, {'trigger_fcn', 'trigger_param'});
+    DFE= struct_copyFields(DFE, DF, {'log'});
     DFE.handles= varargin{1};
     DFE.log_str= '';
     bbci_log_write(DFE, '# Settings:');
