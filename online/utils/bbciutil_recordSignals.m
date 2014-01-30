@@ -70,8 +70,8 @@ fwrite(state.fid_eeg, state.factor*source.x', state.precision);
 for i= 1:nMarkers,
   state.mrkCount= state.mrkCount + 1;
   idx= length(marker.desc)-nMarkers+i;
-  if ischar(marker.desc),
-    descstr= marker.desc(idx);
+  if iscell(marker.desc),
+    descstr= marker.desc{idx};
   else
     if marker.desc(idx)>0,
       descstr= sprintf('S%3d', marker.desc(idx));
