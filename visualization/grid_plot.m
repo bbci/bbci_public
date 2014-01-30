@@ -91,7 +91,7 @@ props= {'Axes',                           [],                     'DOUBLE';
         };
 
 props_channel = plot_channel;
-props_addScale = grid_addScale;
+props_addScale = gridutil_addScale;
 
 if nargin==0,
   H= opt_catProps(props, props_channel, props_addScale);
@@ -366,7 +366,7 @@ end
 if isfield(mnt, 'scale_box') && all(~isnan(mnt.scale_box)),
   ax_idx= util_chanind(mnt.clab(DisplayChannels), opt.ScaleGroup{1});
   set(gcf,'CurrentAxes',H.ax(ax_idx(1)))
-  H.scale= grid_addScale(mnt, opt_addScale);
+  H.scale= gridutil_addScale(mnt, opt_addScale);
 end
 if opt.GridOverPatches,
   plotutil_gridOverPatches('Axes',H.ax);

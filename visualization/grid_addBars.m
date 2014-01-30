@@ -270,7 +270,7 @@ if ~isempty(opt.HScale),
     if opt.UseLocalColormap, yTick= yTick+1; end %% Just a hack...
     set(H.scale.ax, 'yTick',yTick, 'yTickLabel',100*[1 fv.alpha]);
   else
-    ticks= goodContourValues(CLim(1), CLim(2), -3);
+    ticks= visutil_goodContourValues(CLim(1), CLim(2), -3);
     tickLabels= util_trunc(ticks, opt.ScaleDigits);
     if opt.UseLocalColormap,
       YLim= get(gca,'YLim');
