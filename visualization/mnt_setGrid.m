@@ -35,7 +35,7 @@ if ~isstruct(mnt),
   mnt= struct('clab', {mnt});
 end
 
-grid= getGrid(displayMontage);
+grid= mntutil_getGrid(displayMontage);
 if ~any(ismember(strtok(mnt.clab), grid,'legacy')),
   return;
 end

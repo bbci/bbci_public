@@ -54,7 +54,7 @@ end
 clab= intersect(util_scalpChannels, strtok(epo_r.clab), 'stable','legacy');
 clab_nonscalp= intersect(epo_r.clab, ...
                          setdiff(strtok(epo_r.clab), util_scalpChannels,'legacy'), ...
-                         'stable','legacy');
+                         'stable', 'legacy');
 epo_r= proc_selectChannels(epo_r, cat(2, clab, clab_nonscalp)); 
 
 clf;
@@ -92,7 +92,7 @@ if opt.VisuScalps,
         ival= ival.ival;
     end
     % Sort intervals
-    [~,si]= sort(ival(:,1));
+    [dmy,si]= sort(ival(:,1));
     ival= ival(si,:);
     
     for ii= 1:size(ival,1),
