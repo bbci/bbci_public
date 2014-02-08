@@ -1,14 +1,15 @@
-Documentation of the BBCI Online System
-=======================================
+---
 
-* * * * *
+# Documentation of the BBCI Online System
 
-**UNDER CONSTRUCTION**
+---
 
-* * * * *
+***under construction***
 
-Contents
---------
+---
+
+### Contents
+
 -   **Introduction to the BBCI Online System**
     -   [ToolboxOnlineForEndUsers  - *Introduction to the BBCI Online System - for Users*](ToolboxOnlineForEndUsers.html)
     -   [ToolboxOnlineTutorial  (redundant with document above and below)](ToolboxOnlineTutorial.html)

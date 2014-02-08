@@ -1,7 +1,40 @@
-Documentation of the BBCI Matlab Toolbox
-========================================
+---
 
-# BBCI Toolbox
+# Documentation of the BBCI Matlab Toolbox
+
+---
+
+* [Table of contents](#TableOFContents)
+* [**License**](#License)
+* [Misc](#Misc)
+
+---
+
+## Table Of Contents   <a id="TableOfContents"></a>
+
+* [ToolboxRequirements](ToolboxRequirements.html)
+* [ToolboxSetup](ToolboxSetup.html) - *Installation, configuration and starting the toolbox* 
+* [ToolboxData](ToolboxData.html) - *Data formats, data structures, functions for fileio* **TODO: update (Benjamin)**
+* [ToolboxIntro](ToolboxIntro.html) - *A gentle introduction to the toolbox* **TODO: Johannes**
+* [ToolboxContents](ToolboxContents.html) - *Overview of the contents of the toolbox* **TODO: all update**
+* [ToolboxPracticalExamples](ToolboxPracticalExamples.html) - *Of investigating ERPs, and Spectral Analysis*  **TODO: Sven**
+<!-- * [ToolboxFileio](ToolboxFileio.html) - *Functions for reading and writing EEG data* -->
+* [ToolboxOnline](ToolboxOnline.html) - *All about the online system* **TODO: Benjamin update**
+* Function reference: **TODO: Basti please add the link here!**
+
+
+### Advanced or Specific Topics _(probably not up-to-date yet)_
+
+* [ToolboxAutomation](ToolboxAutomation.html) - *Automatic analysis of a set of experiments, and generation of PDFs (includes calculation of Grand Average ERPs)*  **TODO: Update!**
+<!-- * [ToolboxTimeFrequency](ToolboxTimeFrequency.html) - *Time-frequency analysis using wavelets and short-time Fourier transform* -->
+
+### Statistics & Math
+
+* [ToolboxStatisticsTtest](ToolboxStatisticsTtest.html)  - *T-test*  **TODO: Update!**
+* [ToolboxStatisticalAnova](ToolboxStatisticalAnova.html)  - *Analysis of variance* (ANOVA)  **TODO: Update!**
+
+
+## License   <a id="License"></a>
 
 Copyright  (c) 2001- 2012  BBCI (Berlin Brain Computer Interface)
 
@@ -30,64 +63,10 @@ following article:
 >  Neuroscience, 4:198, 2010
 >  http://www.frontiersin.org/neuroprosthetics/10.3389/fnins.2010.00198/abstract
 
-Comments and bug reports are welcome.  Please email to:
-bbci_tu@ml.cs.tu-berlin.de.  We would also appreciate hearing about how you
-used this code
+Comments and bug reports are welcome. Please email to: `bbcitoolbox@neuro.tu-berlin.de`. We would also appreciate notifications about publications in which the toolbox has been used.
 
-Contents
---------
 
-* [ToolboxRequirements](ToolboxRequirements.html)
-* [ToolboxSetup   - *Installation, configuration and starting the toolbox* ](ToolboxSetup.html)
-* [ToolboxData -  *Data formats, data structures, functions for fileio*](ToolboxData.html)
-* [ToolboxIntro - *A gentle introduction to the toolbox*](ToolboxIntro.html)
-* [ToolboxContents - *Overview of the contents of the toolbox*](ToolboxContents.html)
-* [ToolboxPracticalExamples  - *Of investigating ERPs, and Spectral Analysis* ](ToolboxPracticalExamples.html)
-* [ToolboxFileio  - *Functions for reading and writing EEG data*](ToolboxFileio.html)
-* ToolboxVisualization - *How to visualize EEG data [TODO]*
-* ToolboxClassification  - *How to use classifiers and tools for validation [TODO]*
-* [ToolboxAutomation  - *Automatic analysis of a set of experiments, and generation of  PDFs (includes calculation of Grand Average ERPs)* ](ToolboxAutomation.html)
-* ToolboxExperimentalStudy - *Preparing scripts for an experimental study (acquisition and data
-    conversion)  [TODO]*
-* [ToolboxOnline   - All about the online system ](ToolboxOnline.html)
-* Function reference: Basti please add the link here!
-
-Advanced topics
----------------
-
-### Preprocessing
-
-* ToolboxFilter - *Filter design [TODO]*
-
-### Neurophysiology
-
-* [ToolboxTimeFrequency - *Time-frequency analysis using wavelets and
-  short-time Fourier transform [in
-  progress(Matthias)]*](ToolboxTimeFrequency.html)
-* ToolboxSource
-* *EEG source localization [TODO]*
-* ToolboxCoherence  - *Coherence and phase locking\* [TODO]*
-
-### Machine Learning
-
-* ToolboxClassifier  - *Classifier selection (linear vs non-linear etc) [TODO]*
-* ToolboxPca  - *Principal components analysis (PCA) [TODO]*
-* ToolboxIca  - *Independent components analysis (ICA) [TODO]*
-* ToolboxCsp  - *Common Spatial Patterns (CSP), CSP patches, stationary CSP [TODO]*
-* ToolboxSsa  - *Stationary Subspace Analysis (SSA) [TODO]*
-* ToolboxCca  - *Canonical Correlation Analysis (CCA) [TODO]*
-
-### Statistics & Math
-
-* [ToolboxStatisticsTtest](ToolboxStatisticsTtest.html)  - *T-test*
-* [ToolboxStatisticalAnova](ToolboxStatisticalAnova.html)  - *Analysis of variance* (ANOVA)
-* ToolboxStatisticsNonparametric  - *Nonparametric statistics [TODO]*
-
-\*Depending on permission to include Guido's code into the BBCI toolbox.
-
-Miscellaneous
--------------
+## Miscellaneous   <a id="Misc"></a>
 
 * [Git Info](git.html)
 * [Markdown help](markdown.html)
-

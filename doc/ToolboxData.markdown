@@ -1,9 +1,23 @@
+---
 
-EEG Data
-========
+# Basic Data Structures on the BBCI Toolbox
 
-Data Types for EEG in Matlab
-----------------------------
+---
+
+***under construction:***  **TODO: update to new toolbox; reformatting (delete the ugly tables)**
+
+---
+
+## Table of Contents
+
+- [`cnt`](#Cnt) - _Data structure holding the continuous signals_
+- [`mrk`](#Mrk) - _Marker structure defining certain events_
+- [`epo`](#Epo) - _Segmented signals (epochs)_
+- [`mnt`](#Mnt) - _Montage structure defining the electrode layout for scalp and grid plots
+
+---
+
+### `cnt` - Continuous signals  <a id="Cnt"></a>
 
 The structure holding continuous (i.e., not epoched) EEG signals is
 denoted by cnt. The following list shows its typical fields.
@@ -22,6 +36,32 @@ this field, without prior checking its existance. If so the function
 should be corrected.)</td>
     </tr>
 </table>
+
+
+### `mrk` - Event markers   <a id="Mrk"></a>
+
+The structure holding marker (or event) information is denoted by mrk.
+Using this structure you can segment continuous EEG signals into epochs
+by the function makeEpochs.
+
+<table border="1" >
+<tr> <td> mrk </td><td> Structure of marker (or event) information:</td></tr>
+<tr> <td> .pos </td><td> Positions of markers in the continuous signals as array of size [1
+nEvents]. The unit is sample, i.e., it is relative to the sampling rate
+mrk.fs.</td></tr>
+<tr> <td> .y </td><td> Class labels of the evnts as 2-D array of size [nClasses nEvents]. The
+i-th row indicates class membership with class i (0 means no membership,
+1 means membership), see Sec. A.1.</td></tr>
+<tr> <td> .className </td><td> Cell array of strings defining names of the classes.</td></tr>
+<tr> <td> .fs   </td><td> The sampling rate, unit [samples per second].  </td> </tr>
+</table>
+
+This structure can optionally have more fields, with are transfer to the
+epo structure, when creating epochs. See also the note in the
+description of the epo structure.
+
+
+### `epo` - Segmented signals  <a id="Epo"></a>
 
 The structure holding epoched EEG signals (i.e., a series of short-time
 windows of equal length) is denoted by epo. (This structure is not
@@ -51,9 +91,8 @@ data set is a concatenation of several files, this field is a cell array
 of strings. (This eld is only use by some special functions.)</td>   </tr>
 </table>
 
-The epo structure can have more optional fi elds. They should be copied
-by processing functions, see [Sec.
-4.](https://wiki.ml.tu-berlin.de/wiki/Sec.%204.) When you include fi
+The epo structure can have more optional fields. They should be copied
+by processing functions, see [Sec.4.](https://wiki.ml.tu-berlin.de/wiki/Sec.%204.) When you include fi
 elds that specify data ranging over all epochs, be sure that epochs are
 indexed by the last dimension and define a (or extend the) field
 .indexedByEpochs as cell array holding the names of all such fields.
@@ -61,28 +100,8 @@ indexed by the last dimension and define a (or extend the) field
 then processing functions like proc_selectEpochs or proc_selectClasses
 can work correctly.
 
-The structure holding marker (or event) information is denoted by mrk.
-Using this structure you can segment continuous EEG signals into epochs
-by the function makeEpochs.
 
-<table border="1" >
-<tr> <td> mrk </td><td> Structure of marker (or event) information:</td></tr>
-<tr> <td> .pos </td><td> Positions of markers in the continuous signals as array of size [1
-nEvents]. The unit is sample, i.e., it is relative to the sampling rate
-mrk.fs.</td></tr>
-<tr> <td> .y </td><td> Class labels of the evnts as 2-D array of size [nClasses nEvents]. The
-i-th row indicates class membership with class i (0 means no membership,
-1 means membership), see Sec. A.1.</td></tr>
-<tr> <td> .className </td><td> Cell array of strings defining names of the classes.</td></tr>
-<tr> <td> .fs   </td><td> The sampling rate, unit [samples per second].  </td> </tr>
-</table>
-
-
-
-This structure can optionally have more fields, with are transfer to the
-epo structure, when creating epochs. See also the note in the
-description of the epo structure.
-
+### `mnt` - The electrode montage   <a id="Mnt"></a>
 The electrode montage structure, denoted by mnt, holds the information
 of (1) the spatial arrangement of the electrodes on the scalp and (2)
 the arrangement of subplot axes for multi-channel plots.
