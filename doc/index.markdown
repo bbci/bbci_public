@@ -41,6 +41,7 @@ Contents
 * [ToolboxSetup   - *Installation, configuration and starting the toolbox* ](ToolboxSetup.html)
 * [ToolboxData -  *Data formats, data structures, functions for fileio*](ToolboxData.html)
 * [ToolboxIntro - *A gentle introduction to the toolbox*](ToolboxIntro.html)
+* [ToolboxContents - *Overview of the contents of the toolbox*](ToolboxContents.html)
 * [ToolboxPracticalExamples  - *Of investigating ERPs, and Spectral Analysis* ](ToolboxPracticalExamples.html)
 * [ToolboxFileio  - *Functions for reading and writing EEG data*](ToolboxFileio.html)
 * ToolboxVisualization - *How to visualize EEG data [TODO]*

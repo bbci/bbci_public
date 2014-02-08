@@ -1,8 +1,6 @@
-
 * * * * *
 
-Documentation: Setting up and Starting the Toolbox
-==================================================
+# Documentation: Setting up and Starting the Toolbox
 
 * * * * *
 
@@ -10,8 +8,7 @@ Documentation: Setting up and Starting the Toolbox
 
 * * * * *
 
-Checking out the BBCI GIT
--------------------------
+## Checking out the BBCI GIT
 
 The GIT repository is available under the following link:
     http://repo.ml.tu-berlin.de/git/bbci/public
@@ -22,17 +19,30 @@ The GIT repository is available under the following link:
     cd ~/git
     git clone http://repo.ml.tu-berlin.de/git/bbci/public bbci_public
 
-If you plan to work with Stimulus Presentation or Feedbacks, you need
-also to install Pyff.
+If you plan to work with our Open Source Framework Pyff for Stimulus Presentation or Feedbacks, you need to get the Pyff repository separately:
 
-    git pull git://github.com/venthur/pyff
+    git clone git://github.com/venthur/pyff
+
+
+### Mac OS
+
+missing
+
 
 ### Windows
 
 missing
 
-Starting the Toolbox
---------------------
 
+### Android
+
+yes to come
+
+
+
+## Starting the Toolbox
+
+```Matlab
 >> cd('~/git/bbci_public');
 >> startup_public_bbci
+```
