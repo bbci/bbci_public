@@ -27,7 +27,7 @@ mrk_stim= mrk_defineClasses(mrko, opt.StimDef);
 
 if ~isempty(opt.OffsetCountingResponse),
   % TODO
-  cmatch= cprintf('S%3d', opt.OffsetCountingResponse:opt.MaxCountingResponse);
+  cmatch= str_cprintf('S%3d', opt.OffsetCountingResponse:opt.MaxCountingResponse);
   idx= strpatternmatch(cmatch, mrko.desc);
   mrk_stim.counting_response= apply_cellwise2(mrko.desc(idx), ...
           inline('str2num(x(2:end))','x')) - opt.OffsetCountingResponse;

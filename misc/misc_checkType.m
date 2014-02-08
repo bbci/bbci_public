@@ -81,7 +81,7 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %  cnt= struct('x',randn(1000,2), 'clab',{'C3','C4'});
 %  misc_checkType(cnt, 'STRUCT(x fs clab)')
 %
-%  clab= cprintf('C%d', 1:6)
+%  clab= str_cprintf('C%d', 1:6)
 %  misc_checkType(clab, 'CELL{CHAR}')
 %  clab{end}= 3.14;
 %  misc_checkType(clab, 'CELL{CHAR}')

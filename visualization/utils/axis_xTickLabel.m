@@ -1,4 +1,4 @@
-function ht= axis_xTickLabel(label_list, varargin)
+iunction ht= axis_xTickLabel(label_list, varargin)
 %AXIS_XTICKLABEL - Add x-ticklabels to the current axis
 %
 %Synopsis:
@@ -49,7 +49,7 @@ end
 
 if ~iscell(label_list),
   if isnumeric(label_list),
-    label_list= cprintf('%g', label_list);
+    label_list= str_cprintf('%g', label_list);
   elseif ismember('|',label_list,'legacy'),
     label_str= label_list;
     idx= find(label_str=='|');
