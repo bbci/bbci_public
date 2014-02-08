@@ -1,11 +1,10 @@
 #!/bin/sh
 # converts all toolbox.markdown files into corresponding .html files
-# 9/12 hendrik purwins
 
-FNAMES="index ToolboxIntro ToolboxAutomation ToolboxOnline ToolboxPracticalExamples ToolboxSetup ToolboxData ToolboxStatisticalAnova ToolboxExperimentalStudy ToolboxStatisticsNonparametric ToolboxFileio ToolboxStatisticsTtest ToolboxOnlineForEndUsers ToolboxOnlineTutorial ToolboxOnlineBbciApplyIntroduction ToolboxOnlineBbciApplyStructure ToolboxOnlineBbciImplementingAcquisition ToolboxOnlineBbciImplementingCalibration ToolboxOnlineBbciExampleSuperSpeller ToolboxRequirements"
-
-for FNAME in $FNAMES; do
- cmd="pandoc    -f markdown -t html    "$FNAME.markdown"   -o   "$FNAME.html"" 
- echo $cmd
- eval $cmd
+mkdir -p /tmp/doc
+for i in *.markdown; do
+ j=`basename $i .markdown`
+ pandoc -f markdown -t html "$i" -o "/tmp/doc/${j}.html"
 done
+
+#konqueror file:///`pwd`/index.html &
