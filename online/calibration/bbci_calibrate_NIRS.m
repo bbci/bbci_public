@@ -284,7 +284,7 @@ for ci= 1:size(class_combination,1)
 %     std_loss(ci)= loss_std;
     
     cfy_fields= {'signal', 'feature', 'classifier', 'quit_condition'};
-    bbci_all(ci)= copy_struct(bbci, cfy_fields);
+    bbci_all(ci)= copy_fields(bbci, cfy_fields);
 
     clear fv*
 end
