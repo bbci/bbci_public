@@ -82,7 +82,7 @@ ifp= find(ismember(lower(opt_fn), ...
                     'verticalalignment', ...
                     'rotation'},'legacy'));
 ifp= cat(1, ifp, strmatch('font', opt_fn));
-font_opt= copy_fields(opt, opt_fn(ifp));
+font_opt= struct_copyFields(opt, opt_fn(ifp));
 font_pl= struct2propertylist(font_opt);
 
 xx= opt.xtick;
