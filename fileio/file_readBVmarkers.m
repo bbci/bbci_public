@@ -70,11 +70,11 @@ Mrk.time= pos'/fs*1000;
 % Round time to micro seconds
 % Mrk.time= round(Mrk.time*1000)/1000;
 
-Mrk.desc= M_desc';
-Mrk.event.type= M_type';
-Mrk.event.length= M_length';
-Mrk.event.chan= M_chan';
-Mrk.event.clock= M_clock';
+Mrk.desc= M_desc;
+Mrk.event.type= M_type;
+Mrk.event.length= M_length;
+Mrk.event.chan= M_chan;
+Mrk.event.clock= M_clock;
 
 if strcmp(opt.MarkerFormat, 'numeric'),
   [toe,idx]= bbciutil_markerMappingSposRneg(Mrk.desc);
