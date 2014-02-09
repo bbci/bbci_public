@@ -86,10 +86,7 @@ if mod(length(opt.Vars),2)~=0 || any(~isch(1:2:end)),
   error('wrong format for opt.Vars');
 end
 
-%% Check for absolute paths:
-%%  For Unix systems, absolute paths start with '\'.
-%%  For Windoze, identify absolute paths by the ':' (e.g., H:\some\path).
-if (isunix && (file(1)==filesep)) || (ispc && (file(2)==':')) && isdefault.Path
+if if fileutil_isAbsolutePath(file),
   opt.Path = '';
 end
 
