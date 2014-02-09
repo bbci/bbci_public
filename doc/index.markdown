@@ -14,7 +14,7 @@
 
 * [ToolboxRequirements](ToolboxRequirements.html)
 * [ToolboxSetup](ToolboxSetup.html) - *Installation, configuration and starting the toolbox* 
-* [ToolboxData](ToolboxData.html) - *Data formats, data structures, functions for fileio* **TODO: update (Benjamin)**
+* [ToolboxData](ToolboxData.html) - *Basic data structures in the toolbox*
 * [ToolboxIntro](ToolboxIntro.html) - *A gentle introduction to the toolbox* **TODO: Johannes**
 * [ToolboxContents](ToolboxContents.html) - *Overview of the contents of the toolbox* **TODO: all update**
 * [ToolboxPracticalExamples](ToolboxPracticalExamples.html) - *Of investigating ERPs, and Spectral Analysis*  **TODO: Sven**
@@ -25,7 +25,7 @@
 
 ### Advanced or Specific Topics _(probably not up-to-date yet)_
 
-* [ToolboxAutomation](ToolboxAutomation.html) - *Automatic analysis of a set of experiments, and generation of PDFs (includes calculation of Grand Average ERPs)*  **TODO: Update!**
+<!-- * [ToolboxAutomation](ToolboxAutomation.html) - *Automatic analysis of a set of experiments, and generation of PDFs (includes calculation of Grand Average ERPs)* -->
 <!-- * [ToolboxTimeFrequency](ToolboxTimeFrequency.html) - *Time-frequency analysis using wavelets and short-time Fourier transform* -->
 
 ### Statistics & Math
