@@ -1,9 +1,9 @@
 function bbci_fbutil_replay(logfile, varargin)
 
-opt= propertylist2struct(varargin{:});
-opt= set_defaults(opt, ...
-                  'realtime',1, ...
-                  'fbopt', struct);
+opt= opt_proplistToStruct(varargin{:});
+opt= opt_setDefaults(opt, ...
+                     'realtime',1, ...
+                     'fbopt', struct);
 
 logline= textread(logfile, '%s', 'delimiter','');
 
@@ -15,7 +15,7 @@ fbopt= struct;
 for ii= idx',
   eval(['fb' logline{ii}(2:end) ';']);
 end
-fbopt= copy_fields(fbopt, opt.fbopt);
+fbopt= struct_copyFields(fbopt, opt.fbopt);
 
 HH= feval([fcn '_init'], fbopt);
 [handles, H]= bbciutil_handleStruct2Vector(HH);

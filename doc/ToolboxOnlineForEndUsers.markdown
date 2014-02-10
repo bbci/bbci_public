@@ -1,46 +1,53 @@
-BBCI Toolbox for Users
-----------------------
+---
 
-For the 'end user' of the BBCI online system, essentially two operations
+## Online Use of the BBCI Toolbox from a User's Perspective
+
+---
+
+For the 'user' of the BBCI online system, essentially two operations
 are required: *calibration* of the system and online *application* of
 the system. These operations are performed by the functions `bbci_calibration` and `bbci_apply` respectively.
 After calibration, the calibrated system can be saved via `bbci_save` (advisable, but not required).
 Here is a simple (but complete) example, how the system can be calibrated and started in online operation:
 
-	% Define in 'bbci' the type of calibration and calibration specific parameters:
-	bbci= struct('calibrate');
-	bbci.calibrate.fcn= @bbci_calibrate_csp;
-	bbci.calibrate.settings.classes= {'left', 'right'};
+```
+% Define in 'bbci' the type of calibration and calibration specific parameters:
+bbci= struct('calibrate');
+bbci.calibrate.fcn= @bbci_calibrate_csp;
+bbci.calibrate.settings.classes= {'left', 'right'};
 
-	% Run calibration:
-	[bbci, data]= bbci_calibrate(bbci);
-	
-	% Optionally specify in 'bbci' application specific parameters:
-	bbci.feedback.receiver= 'matlab';
-	bbci.feedback.fcn= @bbci_feedback_cursor;
-	bbci.feedback.opt= strukt('trials_per_run', 80);
+% Run calibration:
+[bbci, data]= bbci_calibrate(bbci);
 
-	% Saving the classifier is not necessary for operation, but advisable.
-	% Optinally feature vectors and figures of the calibration can be saved.
-	bbci_save(bbci, data);
+% Optionally specify in 'bbci' application specific parameters:
+bbci.feedback.receiver= 'matlab';
+bbci.feedback.fcn= @bbci_feedback_cursor;
+bbci.feedback.opt= struct('trials_per_run', 80);
 
-	% Start online operation of the BBCI system:
-	[bbci, data]= bbci_apply(bbci);
+% Saving the classifier is not necessary for operation, but advisable.
+% Optinally feature vectors and figures of the calibration can be saved.
+bbci_save(bbci, data);
 
-* * * * *
+% Start online operation of the BBCI system:
+[bbci, data]= bbci_apply(bbci);
+```
+
+This simple scripts makes some assumptions on the data, e.g., that the markers for the two conditions _left_ and _right_ are `1` and `2`.
+
+---
 
 The user can control the calibration via the fields of
 `bbci.calibrate`:
 
 I. Defining the calibration file:
 
-<table border="1" > <tr> <td> .folder </td><td> CHAR, default TODAY_DIR (global variable)</td></tr>
+<table border="1" > <tr> <td> .folder </td><td> CHAR, default `BBCI.Tp.Dir` (refering to the global variable `BBCI`)</td></tr>
 <tr> <td> .file </td><td> CHAR, no default: must be specified </td></tr>
-<tr> <td> .read_fcn </td><td> FUNC HANDLE, default @eegfile_readBV </td></tr>
+<tr> <td> .read_fcn </td><td> FUNC HANDLE, default @file_readBV </td></tr>
 <tr> <td> .read_param </td><td> CELL, default {} </td></tr>
 <tr> <td> .marker_fcn </td><td> FUNC HANDLE, default [] </td></tr>
 <tr> <td> .marker_param </td><td> CELL, default {} </td></tr>
-<tr> <td> .montage_fcn </td><td> FUNC HANDLE, default @getElectrodePositions </td></tr>
+<tr> <td> .montage_fcn </td><td> FUNC HANDLE, default @mnt_setElectrodePositions </td></tr>
 <tr> <td> .montage_param </td><td> CELL, default {} </td> </tr>
 </table>
 
@@ -73,7 +80,7 @@ IV. Defining what and how calibration data should be saved
 <tr> <td> .file </td><td> CHAR, default 'bbci_classifier' </td></tr>
 <tr> <td> .folder </td><td> CHAR, default TODAY_DIR </td></tr>
 <tr> <td> .overwrite </td><td> BOOL, default 1. If 0, numbers are appended </td></tr>
-<tr> <td> `.raw_data </td><td> BOOL, default 0. If 1, also calibration source
+<tr> <td> .raw_data </td><td> BOOL, default 0. If 1, also calibration source
 data (fields cnt, mrk, and mnt) are stored. Otherwise only the other fields of data are
 stored </td></tr>
 <tr> <td> .data </td><td> CHAR, default separately </td></tr>
@@ -84,10 +91,9 @@ saving the figures: this is passed to the function printFigure </td> </tr>
 </table> </td></tr>
 </table>
 
-* * * * *
+---
 
-Interactively Optimize Calibration Parameters
----------------------------------------------
+## Interactively Optimize Calibration Parameters
 
 For rigorous experimental studies it is advisable to have the
 calibration completely deterministic, i.e., without having the
@@ -106,18 +112,17 @@ To avoid re-loading the calibration data each time, you can provide the
 of `bbci_calibrate`, as further input argument to
 `bbci_calibrate`:
 
+```
+% Run calibration for the first time
+[bbci, data]= bbci_calibrate(bbci);
 
+% Change some calibration specific settings, e.g.,
+bbci.calibrate.settings.band= [10 13];
 
-	% Run calibration for the first time
-	[bbci, data]= bbci_calibrate(bbci);
-
-	% Change some calibration specific settings, e.g.,
-	bbci.calibrate.settings.band= [10 13];
-
-	% Run calibration again. Calibration data is stored in the variable data,
-	% so it needs not to be reloaded.
-	[bbci, data]= bbci_calibrate(bbci, data);
-
+% Run calibration again. Calibration data is stored in the variable data,
+% so it needs not to be reloaded.
+[bbci, data]= bbci_calibrate(bbci, data);
+```
 
 More over, the calibration-specific function
 `bbci_calibrate_*` might be implemented such that some
@@ -135,39 +140,40 @@ parameters that have been declared as 'auto' in
 `bbci.calibrate.settings` are stored in
 `data.result` in the same field. For example,
 
-    % This example assumes bbci.calibrate.fcn= @bbci_calibrate_csp
-    % The following is default anyway, but made explicit here for demonstration
-    >> bbci.calibrate.settings.band= 'auto';
-    >> [bbci, data]= bbci_calibrate(bbci);
-    % The result of the selection of the frequency band is stored here
-    >> data.result.band
-    ans =
-        9    13
-    % Still, the settings in bbci are unchanged (in contrast to the old system)
-    >> bbci.calibrate.settings.band
-    ans =
-    auto
-    % For inspecting and changing bbci.calibrate.setting, the function
-    % bbci_calibrate_set can be used, or the short hand bc_set.
-    % Checking values (same as above)
-    >> bc_set(bbci, 'band')
-    The value of 'band' is:
-    'auto'
-    % Setting values explicitly:
-    >> bc_set(bbci, 'band', [10 13])
-    >> bc_set(bbci, 'band')
-    The value of 'band' is:
-    [10,13]
-    % Providing data as further input, selections of the calibration can be copied:
-    >> bbci= bc_set(bbci, data, 'band');
-    >> bc_set(bbci, 'band')
-    The value of 'band' is:
-    [9,13]
-    % The function allows copying several parameters at the same time
-    >> bbci= bc_set(bbci, data, 'band', 'ival', 'classes');
-    % You can revert to the original value of a parameter by bbci_calibrate_reset
-    >> bbci= bbci_calibrate_reset(bbci, 'band');
-    >> bc_set(bbci, 'band')
-    The value of 'band' is:
-    'auto'
-
+```
+% This example assumes bbci.calibrate.fcn= @bbci_calibrate_csp
+% The following is default anyway, but made explicit here for demonstration
+>> bbci.calibrate.settings.band= 'auto';
+>> [bbci, data]= bbci_calibrate(bbci);
+% The result of the selection of the frequency band is stored here
+>> data.result.band
+ans =
+    9	 13
+% Still, the settings in bbci are unchanged (in contrast to the old system)
+>> bbci.calibrate.settings.band
+ans =
+auto
+% For inspecting and changing bbci.calibrate.setting, the function
+% bbci_calibrate_set can be used, or the short hand bc_set.
+% Checking values (same as above)
+>> bc_set(bbci, 'band')
+The value of 'band' is:
+'auto'
+% Setting values explicitly:
+>> bc_set(bbci, 'band', [10 13])
+>> bc_set(bbci, 'band')
+The value of 'band' is:
+[10,13]
+% Providing data as further input, selections of the calibration can be copied:
+>> bbci= bc_set(bbci, data, 'band');
+>> bc_set(bbci, 'band')
+The value of 'band' is:
+[9,13]
+% The function allows copying several parameters at the same time
+>> bbci= bc_set(bbci, data, 'band', 'ival', 'classes');
+% You can revert to the original value of a parameter by bbci_calibrate_reset
+>> bbci= bbci_calibrate_reset(bbci, 'band');
+>> bc_set(bbci, 'band')
+The value of 'band' is:
+'auto'
+```

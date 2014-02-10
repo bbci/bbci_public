@@ -67,7 +67,8 @@ if isfield(epo, 'event'),
   for Fld= fieldnames(epo.event)',
     fld= Fld{1};
     tmp= getfield(epo.event, fld);
-    subidx= cat(2, repmat({':'}, 1, ndims(tmp)-1), {idx});
+    subidx= repmat({':'}, 1, ndims(tmp));
+    subidx{1}= ev;
     epo.event= setfield(epo.event, fld, tmp(subidx{:}));
   end
 end

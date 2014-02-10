@@ -284,7 +284,7 @@ for ci= 1:size(class_combination,1)
 %     std_loss(ci)= loss_std;
     
     cfy_fields= {'signal', 'feature', 'classifier', 'quit_condition'};
-    bbci_all(ci)= copy_struct(bbci, cfy_fields);
+    bbci_all(ci)= struct_copyFields(bbci, cfy_fields);
 
     clear fv*
 end
@@ -296,7 +296,7 @@ nComb= size(class_combination,1);
 if nComb > 1,
 %   [dummy, bi]= min(mean_loss + 0.1*std_loss);
 bi=2;
-  bbci= copy_fields(bbci, bbci_all(bi), cfy_fields);
+  bbci= struct_copyFields(bbci, bbci_all(bi), cfy_fields);
 %     bbci.feature.param = { {ival_cfy{ci}} };
 end
 

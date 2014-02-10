@@ -202,7 +202,7 @@ for cc= 1:nClasses,
     end
     opt_scalpPattern= setfield(opt_scalpPattern, 'ScalePos','none');
     opt_scalpPattern= setfield(opt_scalpPattern, 'Class',cc);
-    opt_scalpPattern.Linespec= {'linewidth',2, 'Color',opt.IvalColor(mod(ii-1,nColors)+1,:)};
+%     opt_scalpPattern.Linespec= {'linewidth',2, 'Color',opt.IvalColor(mod(ii-1,nColors)+1,:)};
     H.scalp(cc,ii)= plot_scalpPattern(erp, mnt, ival(ii,:), opt_scalpPattern);
     if cc==nClasses 
       if opt.PrintIval,

@@ -57,16 +57,16 @@ if isempty(id_idx),
   id_list= cat(2, id_list, {msg});
   last_warning= [last_warning; this_warning];
 else 
-  if etime(this_warning, last_warning(id_idx,:)) < opt.interval,
+  if etime(this_warning, last_warning(id_idx,:)) < opt.Interval,
     return;
   end
   last_warning(id_idx,:)= this_warning;
 end
 
-if ~exist(opt.file), 
+if ~exist(opt.File), 
   ff= ''; 
 else
-  ff= [opt.file ': '];
+  ff= [opt.File ': '];
 end
 
 a= sscanf(getfield(ver('MATLAB'), 'Release'), '(R%d)');

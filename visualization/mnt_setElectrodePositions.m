@@ -22,7 +22,7 @@ function mnt= mnt_setElectrodePositions(clab, varargin)
 % kraulem 08.09.2003
 
 if ~exist('clab','var'),
-  [~,~,~,clab]= mntutil_posExt1010;
+  [dmy,dmy,dmy,clab]= mntutil_posExt1010;
 end
 if nargin<=1 | isempty(varargin{1}),
   varargin{1}= mntutil_posExt1010;

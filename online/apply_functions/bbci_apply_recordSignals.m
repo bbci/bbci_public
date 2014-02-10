@@ -23,14 +23,14 @@ if ischar(varargin{1}),
 %      return;
 %    end
     DS_record= struct('recording', 1);
-    DS_record.opt= propertylist2struct(BS.record_param{:});
-    DS_record.opt= set_defaults(DS_record.opt, ...
-                                'internal', 0, ...
-                                'checkimpedances', 0, ...
-                                'folder', BBCI.Tp.Dir);
+    DS_record.opt= opt_proplistToStruct(BS.record_param{:});
+    props= {'Internal'           0             'BOOL'
+            'CheckImpedances'    0             'BOOL'
+            'Folder',            BBCI.Tp.Dir   'CHAR'};
+    DS_record.opt= opt_setDefaults(DS_record.opt, props);
     filebase= BS.record_basename;
     if ~fileutil_isAbsolutePath(filebase),
-      filebase= fullfile(DS_record.opt.folder, filebase);
+      filebase= fullfile(DS_record.opt.Folder, filebase);
     end
     % Append counter if necessary to avoid overwriting
     num= 1;
@@ -41,7 +41,7 @@ if ischar(varargin{1}),
     end
     DS_record.filename= filename;
     
-    if DS_record.opt.internal,
+    if DS_record.opt.Internal,
       DS_record.fcn= 'internal';
     else
       list_external= {'bv'};
@@ -60,9 +60,16 @@ if ischar(varargin{1}),
         bvr_sendcommand('startrecording', [filename '.eeg']);
       end
      case 'internal',
-      opt= copy_fields(DS_record.opt, DS, {'clab','fs'});
+      opt= DS_record.opt;
+      opt.CLab= DS.clab;
+      opt.Fs= DS.fs;
+			
+% 			opt.Scale = 0.00001;
+			opt.Precision = 'int32';
+			
+      %opt= struct_copyFields(DS_record.opt, DS, {'clab','fs'});
       state= bbciutil_recordSignals('init', filename, opt);
-      DS_record= copy_fields(DS_record, state);
+      DS_record= struct_copyFields(DS_record, state);
      otherwise,
       % This should not happen (see 'list_external' above)
       error('Implementation for opening ''%s'' is missing', DS_record.fcn);
@@ -87,7 +94,6 @@ if ischar(varargin{1}),
   end
   return;
 end
-
 %if DS_record.recording,
   DS_record= bbciutil_recordSignals(varargin{:});
 %end

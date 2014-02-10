@@ -28,6 +28,7 @@ function [source, marker]= bbci_apply_acquireData(source, bbci_source, marker)
 
 source.x= [];
 run= 1;
+nMarkersPerBlock= 0;
 while run,
   look_for_data= true;
   while look_for_data,
@@ -42,41 +43,40 @@ while run,
     return;
   end
   
-  nMarkers= length(mrkTime);
-  if nMarkers>0,
+  nNewMarkers= length(mrkTime);
+  if nNewMarkers>0,
     % transfer relative marker positions (within new block)
     % to absolute marker positions relative to start
     mrkTime= mrkTime + source.time;
     if ~isempty(bbci_source.marker_mapping_fcn),
       [mrkDesc, idx]= bbci_source.marker_mapping_fcn(mrkDesc);
       mrkTime= mrkTime(idx);
-      nMarkers= length(idx);
+      nNewMarkers= length(idx);
     end
   end
   % Since markers could get 'lost' in the marker_mapping_fcn, we need to
   % make the case distinction again here.
-  if nMarkers>0,
-    marker.time= cat(2, marker.time(nMarkers+1:end), mrkTime);
+  if nNewMarkers>0,
+    marker.time= cat(2, marker.time(nNewMarkers+1:end), mrkTime);
     if isempty(marker.desc), 
       % INIT case: We do the init here (and not in bbci_apply_initData),
       % since we can determine here the marker format (numeric or string).
-      if ischar(mrkDesc(1)),
+      if iscell(mrkDesc),
         marker.desc= cell(1, length(marker.time));
       else
         marker.desc= NaN*ones(1, length(marker.time));
       end
     end
-    marker.desc= cat(2, marker.desc(nMarkers+1:end), mrkDesc);
+    marker.desc= cat(2, marker.desc(nNewMarkers+1:end), mrkDesc);
     
     % This is only for logging:
     if ~isempty(source.log.fid) && bbci_source.log.markers,
       for k= 1:length(mrkTime),
         timestr= sprintf(bbci_source.log.time_fmt, mrkTime(k)/1000);
-        desc= mrkDesc(k);
-        if ischar(desc),
-          descstr= sprintf('M(%s)', desc);
+        if iscell(mrkDesc),
+          descstr= sprintf('M(''%s'')', mrkDesc{k});
         else
-          descstr= sprintf('M(%d)', desc);
+          descstr= sprintf('M(%d)', mrkDesc(k));
         end
         bbci_log_write(source.log.fid, '# Source: %s | %s', ...
                        timestr, descstr);
@@ -84,6 +84,7 @@ while run,
     end
   end
   
+  nMarkersPerBlock= nMarkersPerBlock + nNewMarkers;
   source.x= cat(1, source.x, new_data);
   source.sample_no= source.sample_no + size(new_data,1);
   source.time= source.sample_no*1000/source.fs;
@@ -97,5 +98,5 @@ if ~isempty(source.log.fid) && bbci_source.log.data_packets && ...
 end
 
 if strcmp(source.record.fcn, 'internal'),
-  source.record= bbci_apply_recordSignals(source, marker, nMarkers);
+  source.record= bbci_apply_recordSignals(source, marker, nMarkersPerBlock);
 end

@@ -34,7 +34,7 @@ function [H, Ctour]= plot_scalp(mnt, w, varargin)
 %                 adjacent Height levels, or
 %                 'choose': '.contour' specifies approximately the
 %                 number of Height levels to be drawn, but the function
-%                 'goodcontourValues' is called to find nice values.
+%                 'goodContourValues' is called to find nice values.
 %  .Resolution:   default 40. Number of steps around circle used for
 %                 plotting the scalp.
 %  .ShowLabels:   Display channel names (1) or not (0), default 0.
@@ -189,7 +189,7 @@ if opt.Extrapolation,
 else
   if strcmp(opt.Interpolation, 'v4'),
     %% get the convex hull from linear Interpolation
-    [~,~,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
+    [dmy,dmy,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
     imaskout= isnan(zconv(:));
     [xg,yg,zg]= griddata(xe, ye, w, xx, yy, opt.Interpolation);
     zg(imaskout)= NaN;
@@ -222,7 +222,7 @@ yg= yg+opt.Offset(2);
 if strcmp(opt.Renderer,'pColor')
   H.patch= pColor(xg, yg, zg);
 else
-  [~,H.patch]= contourf(xg, yg, zg, opt.ContourfLevels,'LineStyle','none');
+  [dmy,H.patch]= contourf(xg, yg, zg, opt.ContourfLevels,'LineStyle','none');
   % *** Hack to enforce cdatamappig = scaled in Colorbarv6.m by introducing
   % a useless patch object
   hold on
@@ -291,7 +291,7 @@ if ~isequal(opt.Contour,0),
       ctick= v(v>=mi & v<=ma);
       v(v<=mi | v>=ma)= [];
      case 'choose',
-      ctick= goodcontourValues(mi, ma, -abs(opt.Contour));
+      ctick= goodContourValues(mi, ma, -abs(opt.Contour));
       v= ctick;
      otherwise
       error('ContourPolicy not known');

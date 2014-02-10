@@ -17,13 +17,13 @@ if ischar(varargin{1}),
     
     % Write Header file
     opt= varargin{3};
-    opt_hdr= set_defaults(opt, ...
-                          'scale', 0.1, ...
-                          'precision', 'int16');
+    props= {'Scale'       0.1       'DOUBLE'
+            'Precision'   'int16'   'CHAR'};
+    opt_hdr= opt_setDefaults(opt, props);
     opt_hdr.DataPoints= 0;
     file_writeBVheader(filename, opt_hdr);
-    state= struct('precision', opt_hdr.precision, ...
-                  'factor', diag(1./opt_hdr.scale));
+    state= struct('precision', opt_hdr.Precision, ...
+                  'factor', diag(1./opt_hdr.Scale));
     
     % Open EEG file for writing
     state.fid_eeg= fopen([filename '.eeg'], 'w');
@@ -62,7 +62,7 @@ else
 end
 
 state= source.record;
-
+ 
 % Write data to *.eeg file
 fwrite(state.fid_eeg, state.factor*source.x', state.precision);
 
@@ -70,8 +70,8 @@ fwrite(state.fid_eeg, state.factor*source.x', state.precision);
 for i= 1:nMarkers,
   state.mrkCount= state.mrkCount + 1;
   idx= length(marker.desc)-nMarkers+i;
-  if ischar(marker.desc),
-    descstr= marker.desc(idx);
+  if iscell(marker.desc),
+    descstr= marker.desc{idx};
   else
     if marker.desc(idx)>0,
       descstr= sprintf('S%3d', marker.desc(idx));
