@@ -21,6 +21,7 @@ if isequal(control_signal, 'init'),
     % do nothing
    case 'pyff',
 %    send_udp_xml('init', bbci_feedback.host, bbci_feedback.port);
+	pyff_sendUdp('init',  bbci_feedback.host, bbci_feedback.port);
    case 'tobi_c',
     send_tobi_c_udp('init', bbci_feedback.host, bbci_feedback.port);
     case 'matlab',
@@ -54,7 +55,7 @@ switch(bbci_feedback.receiver),
   % do nothing
  case 'pyff',
    if ~isempty(control_signal),
-     send_udp_xml(control_signal{:});
+     pyff_sendUdp(control_signal{:});
    end
  case 'tobi_c',
   if ~isempty(control_signal),

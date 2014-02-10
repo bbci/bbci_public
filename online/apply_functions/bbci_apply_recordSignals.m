@@ -30,7 +30,7 @@ if ischar(varargin{1}),
     DS_record.opt= opt_setDefaults(DS_record.opt, props);
     filebase= BS.record_basename;
     if ~fileutil_isAbsolutePath(filebase),
-      filebase= fullfile(DS_record.opt.folder, filebase);
+      filebase= fullfile(DS_record.opt.Folder, filebase);
     end
     % Append counter if necessary to avoid overwriting
     num= 1;
@@ -63,6 +63,10 @@ if ischar(varargin{1}),
       opt= DS_record.opt;
       opt.CLab= DS.clab;
       opt.Fs= DS.fs;
+			
+% 			opt.Scale = 0.00001;
+			opt.Precision = 'int32';
+			
       %opt= struct_copyFields(DS_record.opt, DS, {'clab','fs'});
       state= bbciutil_recordSignals('init', filename, opt);
       DS_record= struct_copyFields(DS_record, state);
@@ -90,7 +94,6 @@ if ischar(varargin{1}),
   end
   return;
 end
-
 %if DS_record.recording,
   DS_record= bbciutil_recordSignals(varargin{:});
 %end

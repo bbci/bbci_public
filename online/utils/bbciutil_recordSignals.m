@@ -62,7 +62,7 @@ else
 end
 
 state= source.record;
-
+ 
 % Write data to *.eeg file
 fwrite(state.fid_eeg, state.factor*source.x', state.precision);
 
