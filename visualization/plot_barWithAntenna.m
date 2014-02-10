@@ -32,7 +32,7 @@ function [H, xx, xw]= plot_barWithAntenna(y, y_sem, varargin)
 %   Y_SEM= rand(3,6)+0.2;
 %   H= bar_with_antenna(Y, Y_SEM);
 %   set(gca, 'XTickLabel','Group 1|Group 2|Group 3');
-%   legend(H.bar, cprintf('bar %d',1:6));
+%   legend(H.bar, str_cprintf('bar %d',1:6));
 %
 %   [H, xx]= bar_with_antenna(Y(1,:), Y_SEM(1,:), 'ColOrder',cmap_rainbow(6), 'AntennaColor',[0 0 0]);
 %   set(gca, 'XTick',xx, 'XTickLabel',1:6);

@@ -235,7 +235,7 @@ elseif(1 == length(varargin) && isstruct(varargin{1}) == 1)
        case 'numeric',
         mrkType = mrkNumber;
        case 'string',
-        mrkType = cprintf('S%3d', mrkNumber);
+        mrkType = str_cprintf('S%3d', mrkNumber);
        otherwise
         error('bbci_acquire_sigserv: Invalid marker format. Choose "numeric" or "string".');
       end

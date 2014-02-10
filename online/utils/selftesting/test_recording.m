@@ -2,13 +2,13 @@ C= 2;
 T= 10000;
 cnt= struct('fs', 100);
 cnt.x= 50*randn(T, C);
-cnt.clab= cprintf('Ch%d', 1:C);
+cnt.clab= str_cprintf('Ch%d', 1:C);
 
 M= 100;
 mrk= struct; %('fs', cnt.fs);
 mrk.time= round(linspace(0, T/cnt.fs*1000, M+2));
 mrk.time([1 end])= [];
-%mrk.desc= cprintf('S%3d', ceil(rand(1,M)*10))';
+%mrk.desc= str_cprintf('S%3d', ceil(rand(1,M)*10))';
 mrk.desc= ceil(rand(1,M)*10);
 
 

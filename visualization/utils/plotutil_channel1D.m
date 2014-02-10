@@ -9,6 +9,9 @@ function H= plotutil_channel1D(epo, clab, varargin)
 % EPO  - Struct of epoched signals, see makeEpochs
 % CLAB - Name (or index) of the channel to be plotted.
 % OPT  - struct or property/value list of optional properties:
+%  .Butterfly  - Butterfly plot. Recommended when CLAB =  '*'. Only
+%                first class is considered for plotting. If ColorOrder is
+%                default, the current colormap is used.
 %  .PlotStd - if true, the standard deviation 
 %  .Legend - show Class legend (1, default), or not (0).
 %  .LegendPos - position of the legend, see help of function 'legend'.
@@ -73,6 +76,7 @@ props = {'AxisType',                        'box',                '!CHAR';
          'AxisTitleFontSize',               get(gca,'FontSize'),    'DOUBLE';
          'AxisTitleFontWeight',             'normal',               'CHAR';
          'Box',                             'on',                   'CHAR';
+         'Butterfly'                        0,                      'BOOL';
          'ChannelLineStyleOrder',           {'-','--','-.',':'},    'CELL{CHAR}';
          'ColorOrder',                      get(gca,'ColorOrder'),  'DOUBLE[- 3]';
          'GridOverPatches',                 1,                      'BOOL';
@@ -147,7 +151,7 @@ nChans= length(chan);
 nClasses= size(epo.y, 1);
 if nChans==0,
   error('channel ''%s'' not found', clab); 
-elseif nChans>1,
+elseif nChans>1 && opt.Butterfly==0
   if ~isempty(opt.LineStyleOrder),
     error('do not use opt.LineStyleOrder when plotting multi channel');
   end
@@ -185,6 +189,11 @@ elseif nChans>1,
   ud= struct('type','ERP', 'chan',{epo.clab(chan)}, 'hleg',H{1}.leg);
   set(gca, 'userData', ud);
   return;
+elseif nChans>1 && opt.Butterfly
+  if numel(epo.className)>1
+    epo = proc_selectClasses(epo,1); 
+    warning('Multiple classes found, plotting only first class..')
+  end
 end
 
 %% Post-process opt properties
@@ -192,7 +201,11 @@ if ~iscell(opt.StdLineSpec),
   opt.StdLineSpec= {opt.StdLineSpec};
 end
 if isequal(opt.Title, 1),
-  opt.Title= epo.clab(chan);
+  if opt.Butterfly
+     opt.Title= '';
+   else
+     opt.Title= epo.clab(chan);
+   end
 end
 if opt.SmallSetup,
   if ~isfield(opt, 'XTickLabel') && ~isfield(opt, 'XTickLabelMode'),
@@ -237,9 +250,14 @@ end
 if isequal(opt.ColorOrder,'rainbow'),
   ColorOrder_hsv= [(0.5:nClasses)'/nClasses ones(nClasses,1)*[1 0.85]];
   opt.ColorOrder= hsv2rgb(ColorOrder_hsv);
-else
+elseif opt.Butterfly && isdefault.ColorOrder
+  cm = get(gcf,'colormap');
+  cm = repmat(cm,[ceil(numel(epo.clab)/size(cm,1)) 1]); % in case we have more channels than colors
+  opt.ColorOrder= cm(1:numel(epo.clab),:);
+elseif isdefault.ColorOrder
   opt.ColorOrder= opt.ColorOrder(1:min([nClasses size(opt.ColorOrder,1)]),:);
 end
+
 [axesStyle, lineStyle]= opt_extractPlotStyles(rmfield(opt,{'YLim','LineStyleOrder'}));
 [opt, isdefault]= opt_setDefaults(opt, {'LineStyleOrder', {};
                   'LineWidthOrder', [];
@@ -269,8 +287,8 @@ end
 if ~isfield(epo, 't'),
   epo.t= 1:size(epo.x,1);
 end
-if ~isfield(epo, 'ClassName'),
-  epo.ClassName= cellstr([repmat('Class ',nClasses,1) num2str((1:nClasses)')]);
+if ~isfield(epo, 'className'),
+  epo.className= cellstr([repmat('Class ',nClasses,1) num2str((1:nClasses)')]);
 end
 
 H.ax= gca;
@@ -398,7 +416,7 @@ switch(lower(opt.YUnitDispPolicy)),
   error('YUnitDispPolicy unknown');
 end
 
-if opt.Legend,
+if opt.Legend && opt.Butterfly==0
   H.leg= legend(H.plot, epo.className, opt.LegendPos);
 else
   H.leg= NaN;
@@ -471,7 +489,7 @@ if ~isempty(H.hidden_objects),
 % e.g., when another object is moved to the background with moveObjetBack
 %  set(H.hidden_objects, 'handleVisibility','off');
 end
-ud= struct('type','ERP', 'chan',epo.clab{chan}, 'hleg',H.leg);
+ud= struct('type','ERP', 'chan',epo.clab{chan(1)}, 'hleg',H.leg);
 set(H.ax, 'userData', ud);
 
 if nargout==0,

@@ -59,9 +59,8 @@ if isfield(mrk, 'event'),
   for Fld= fieldnames(mrk.event)'
     fld= Fld{1};
     tmp= getfield(mrk.event, fld);
-    sz= size(tmp);
-    subidx= repmat({':'}, 1, length(sz));
-    subidx{end}= ev;
+    subidx= repmat({':'}, 1, ndims(tmp));
+    subidx{1}= ev;
     mrk.event= setfield(mrk.event, fld, tmp(subidx{:}));
   end
 end

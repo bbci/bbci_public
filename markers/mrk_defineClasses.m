@@ -71,7 +71,7 @@ end
 if size(classDef,1)>1,
   mrk.className= classDef(2,:);
 else
-  mrk.className= cprintf('class %d', 1:nClasses);
+  mrk.className= str_cprintf('class %d', 1:nClasses);
 end
 
 if ~opt.KeepAllMarkers,

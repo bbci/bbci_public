@@ -26,14 +26,14 @@ function [mrk, istim, iresp, iresp2]= ...
 % ISTIM: Indices of stimulus events from MRK_STIM which were selected.
 % IRESP: Indices of response events from MRK_RESP which were selected.
 
-% blanker@cs.tu-berlin.de
-props= {'MinLatency'        0           '!DOUBLE[1]';
-        'MaxLatency'        inf         '!DOUBLE[1]';
-        'AllowOvershoot'    0           '!DOUBLE[1]';
-        'MissingresponsePolicy' 'reject'	'!CHAR(reject accept)';
+
+props= {'MinLatency'            0           '!DOUBLE[1]';
+        'MaxLatency'            inf         '!DOUBLE[1]';
+        'AllowOvershoot'        0           '!DOUBLE[1]';
+        'MissingresponsePolicy' 'reject'    '!CHAR(reject accept)';
         'MultiresponsePolicy'   'reject'    '!CHAR(reject first last)';
         'RemoveVoidClasses'	0           '!BOOL';
-        'Sort'              1           '!BOOL'};
+        'Sort'                  1           '!BOOL'};
 props_selectEvents = mrk_selectEvents;
 props_sortChron= mrk_sortChronologically;
 
@@ -94,10 +94,10 @@ end
 
 mrk= mrk_selectEvents(mrk_stim, istim, opt_selectEvents);
 if ~strcmp(opt.MissingresponsePolicy,'reject'),
-  mrk.event.missingresponse= isnan(iresp);
+  mrk.event.missingresponse= isnan(iresp(:));
   iresp(mrk.event.missingresponse)= 1;
 end
-mrk.event.latency= mrk_resp.time(iresp) - mrk.time;
+mrk.event.latency= mrk_resp.time(iresp)' - mrk.time';
 iresp2= iresp;
 if isfield(mrk.event, 'missingresponse') && ~isempty(mrk.event.missingresponse),
   mrk.event.latency(mrk.event.missingresponse)= NaN;
@@ -106,7 +106,7 @@ if isfield(mrk.event, 'missingresponse') && ~isempty(mrk.event.missingresponse),
 end
 
 if ~strcmpi(opt.MultiresponsePolicy, 'reject'),
-  mrk.event.multiresponse= multiple;
+  mrk.event.multiresponse= multiple(:);
 end
 
 if opt.Sort,

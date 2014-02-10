@@ -1,14 +1,12 @@
+---
 
-Documentation: Automation of Analysis over an Experimental Study
-================================================================
+# Documentation: Automation of Analysis over an Experimental Study
 
-* * * * *
+---
 
-**IN CONSTRUCTION** **This page needs an update** by Windows users for
-the LaTeX part (and `printFigure` with format
-`'pdf'`).
+***IN CONSTRUCTION*** **This page needs a complete update**!
 
-* * * * *
+---
 
 ### Table of Contents
 
