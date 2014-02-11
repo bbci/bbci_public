@@ -8,12 +8,13 @@
 %PROC_VARIANCE - computes the variance in equally spaced intervals
 %
 %
-%PROC_SEGMENTATION - Segment continuous signals into epochs
 %PROC_APPENDCHANNELS - Append a channel to continuous or epoched data
 %PROC_APPENDCNT - Append Continuous EEG Data
 %PROC_APPENDEPOCHS - appends two or more epochs.
 %PROC_APPENDSAMPLES - append samples of data structs
 %PROC_BASELINE - substract a baseline from a epoched data structure
+%PROC_REJECTARTIFACTSMAXMIN - Reject epochs according to max-min criterion
+%PROC_SEGMENTATION - Segment continuous signals into epochs
 %PROC_SELECTCHANNELS - Select channels from continuous or epoched data
 %PROC_SELECTCLASSES - select only a subset of the avialble classes
 %PROC_SELECTEPOCHS - Select specified epochs within epoch structure
