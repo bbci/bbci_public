@@ -1,5 +1,5 @@
 function epo= proc_selectEpochs(epo, idx, varargin)
-%PROC_SELETEPOCHS - Select specified epochs within epoch structure
+%PROC_SELECTEPOCHS - Select specified epochs within epoch structure
 %
 %Synopsis:
 %  EPO= proc_selectEpochs(EPO, IDX, <OPT>)

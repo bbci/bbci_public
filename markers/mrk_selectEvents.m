@@ -49,7 +49,7 @@ end
 
 mrk.time= mrk.time(ev);
 if isfield(mrk, 'desc'),
-  mrk.desc= mrk.desc(:,ev);
+  mrk.desc= mrk.desc(ev,:);
 end
 if isfield(mrk, 'y'),
   mrk.y= mrk.y(:,ev);

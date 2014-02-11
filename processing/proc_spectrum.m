@@ -1,8 +1,9 @@
 function dat= proc_spectrum(dat, band, varargin)
+%PROC_SPECTRUM -  calculate the power spectrum
+%
 %dat= proc_spectrum(dat, band, <win/N, step>)
 %dat= proc_spectrum(dat, band, <opts>)
 %
-% calculate the power spectrum
 %
 % IN   dat  - data structure of continuous or epoched data
 %      band - frequency band
