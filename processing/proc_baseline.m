@@ -119,7 +119,7 @@ if opt.Classwise,
   if dim<=3
     for classIdx= 1:size(dat.y,1),
       idx= find(dat.y(classIdx,:));
-      baseline= nanmean(nanmean(dat.x(Ti, :, idx), 1), 3);
+      baseline= mean(mean(dat.x(Ti, :, idx), 1), 3);
       if opt.Channelwise,
         for ic= 1:nC,
           dat.x(:,ic,idx)= dat.x(:,ic,idx) - ...
@@ -132,7 +132,7 @@ if opt.Classwise,
   elseif dim==4
     for classIdx= 1:size(dat.y,1)
       idx= find(dat.y(classIdx,:));
-      baseline= nanmean(nanmean(dat.x(Ti,:, :, idx), 2), 4);
+      baseline= mean(mean(dat.x(Ti,:, :, idx), 2), 4);
       dat.x(:,:,:,idx)= dat.x(:,:,:,idx) - repmat(baseline, [T 1 1 length(idx)]);
     end
   end
@@ -140,19 +140,19 @@ elseif opt.Trialwise,
   if opt.Channelwise,
     if dim==3
       for ic= 1:nCE,
-        dat.x(:,ic)= dat.x(:,ic) - nanmean(dat.x(Ti,ic));
+        dat.x(:,ic)= dat.x(:,ic) - mean(dat.x(Ti,ic));
       end
     elseif dim==4
       for ic= 1:nCE,
-        dat.x(:,:,ic)= dat.x(:,:,ic) - repmat(nanmean(dat.x(Ti,:,ic)),[T 1]);
+        dat.x(:,:,ic)= dat.x(:,:,ic) - repmat(mean(dat.x(Ti,:,ic)),[T 1]);
       end
     end
   else
-    baseline= nanmean(dat.x(Ti,:, :, :), 1);
+    baseline= mean(dat.x(Ti,:, :, :), 1);
     dat.x= dat.x - repmat(baseline, [T 1 1 1]);
   end
 else
-  baseline= nanmean(nanmean(dat.x(Ti, :, :), 1), 3);
+  baseline= mean(mean(dat.x(Ti, :, :), 1), 3);
   if opt.Channelwise,
     for ic= 1:nC,
       dat.x(:,ic,:)= dat.x(:,ic,:) - repmat(baseline(:, ic), [T 1 nE]);

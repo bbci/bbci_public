@@ -24,7 +24,7 @@ function [packet, state]= bbci_control_ERP_Speller_binary(cfy_out, state, event,
 
 this_cue= opt.mrk2feedback_fcn(event.desc);
 packet= [cfy_out this_cue];
-
+  fprintf('[BBCI CONTROL]: send-clout: %d\n', cfy_out);
 
 %% The rest of this function is not required. It is only used to generate
 %  the output of the selected class, to verify that the Pyff feedback is
