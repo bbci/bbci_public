@@ -99,14 +99,14 @@ opt= opt_proplistToStruct(varargin{:});
 opt_checkProplist(opt, props, props_plot);
 
 if opt.ScalpChannelsOnly,
-  scalpchans= intersect(strtok(epo_r.clab), util_scalpChannels,'legacy');
+  scalpchans= intersect(strtok(epo_r.clab), util_scalpChannels);
   if length(scalpchans) < length(epo_r.clab),
     if isequal(opt.Clab, '*'),
-      opt.Clab= intersect(epo_r.clab, util_scalpchans, 'stable','legacy');
+      opt.Clab= intersect(epo_r.clab, util_scalpchans, 'stable');
     else
       selchans= epo_r.clab(util_chanind(epo_r, opt.Clab));
-      opt.Clab= intersect(epo_r, ...
-                          intersect(selchans, util_scalpChannels,'legacy'), 'stable','legacy');
+      opt.Clab= intersect(epo_r.clab, ...
+                          intersect(selchans, util_scalpChannels), 'stable');
     end
   end
   % in recursive calls we do not need to do this again

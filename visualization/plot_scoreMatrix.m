@@ -51,10 +51,10 @@ end
 %  scalp channels first, ordered from frontal to occipital (as returned
 %  by function scalpChannels),
 %  then non-scalp channels
-clab= intersect(util_scalpChannels, strtok(epo_r.clab), 'stable','legacy');
+clab= intersect(util_scalpChannels, strtok(epo_r.clab), 'stable');
 clab_nonscalp= intersect(epo_r.clab, ...
-                         setdiff(strtok(epo_r.clab), util_scalpChannels,'legacy'), ...
-                         'stable', 'legacy');
+                         setdiff(strtok(epo_r.clab), util_scalpChannels), ...
+                         'stable');
 epo_r= proc_selectChannels(epo_r, cat(2, clab, clab_nonscalp)); 
 
 clf;
