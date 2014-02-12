@@ -22,7 +22,7 @@ The GIT repository is available under the following link:
 
 ### Linux
 
-```Shell
+```Bash
   mkdir ~/git
   cd ~/git
   git clone http://repo.ml.tu-berlin.de/git/bbci/public bbci_public
@@ -30,7 +30,7 @@ The GIT repository is available under the following link:
 
 If you plan to work with our Open Source Framework Pyff for Stimulus Presentation or Feedbacks, you need to get the Pyff repository separately:
 
-```Shell
+```Bash
   git clone git://github.com/venthur/pyff
 ```
 
