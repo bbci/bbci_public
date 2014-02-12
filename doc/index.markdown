@@ -19,7 +19,7 @@
 * [ToolboxContents](ToolboxContents.html) - *Overview of the contents of the toolbox* **TODO: all update**
 * [ToolboxPracticalExamples](ToolboxPracticalExamples.html) - *Of investigating ERPs, and Spectral Analysis*  **TODO: Sven**
 <!-- * [ToolboxFileio](ToolboxFileio.html) - *Functions for reading and writing EEG data* -->
-* [ToolboxOnline](ToolboxOnline.html) - *All about the online system* **TODO: Benjamin update**
+* [ToolboxOnline](ToolboxOnline.html) - *All about the online system*
 * Function reference: **TODO: Basti please add the link here!**
 
 
