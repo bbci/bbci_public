@@ -44,13 +44,10 @@ if nargin==1 || (ischar(ev) && strcmpi(ev,'VALID')),
 end
 
 if invert,
-  ev= setdiff(1:length(mrk.time), ev,'legacy');
+  ev= setdiff(1:length(mrk.time), ev);
 end
 
 mrk.time= mrk.time(ev);
-if isfield(mrk, 'desc'),
-  mrk.desc= mrk.desc(ev,:);
-end
 if isfield(mrk, 'y'),
   mrk.y= mrk.y(:,ev);
 end
@@ -59,6 +56,7 @@ if isfield(mrk, 'event'),
   for Fld= fieldnames(mrk.event)'
     fld= Fld{1};
     tmp= getfield(mrk.event, fld);
+    % the first dimension must be indexed by events
     subidx= repmat({':'}, 1, ndims(tmp));
     subidx{1}= ev;
     mrk.event= setfield(mrk.event, fld, tmp(subidx{:}));

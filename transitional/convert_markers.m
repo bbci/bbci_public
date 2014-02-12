@@ -14,7 +14,7 @@ if isfield(mrk, 'indexedByEpochs'),
   for Fld= mrk.indexedByEpochs,
     fld= Fld{1};
     fieldvar= mrk_old.(fld);
-    sz= fieldvar;
+    sz= size(fieldvar);
     eventdim= find(sz==nEvents);
     if isempty(eventdim),
       error('no event information found in field %s', fld);
@@ -22,7 +22,8 @@ if isfield(mrk, 'indexedByEpochs'),
     if length(eventdim)>1,
       error('cannot decide event dimension in field %s', fld);
     end
-    if eventdim~=length(sz),
+    if eventdim~=1,
+      % permute dimensions to make the first one index events
       dimorder= [eventdim setdiff(1:length(sz), eventdim)];
       fieldvar= permute(fieldvar, dimorder);
     end

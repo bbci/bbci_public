@@ -70,14 +70,27 @@ Mrk.time= pos'/fs*1000;
 % Round time to micro seconds
 % Mrk.time= round(Mrk.time*1000)/1000;
 
-Mrk.desc= M_desc;
+Mrk.event.desc= M_desc;
 Mrk.event.type= M_type;
 Mrk.event.length= M_length;
 Mrk.event.chan= M_chan;
 Mrk.event.clock= M_clock;
 
+% extract class definitions from desc
+Mrk.className= unique(Mrk.event.desc)';
+Mrk.y= zeros(length(Mrk.className), length(Mrk.event.desc));
+for cc= 1:length(Mrk.className),
+  idx= strmatch(Mrk.className{cc}, Mrk.event.desc, 'exact');
+  Mrk.y(cc,idx)= 1;
+end
+% Let's avoid empty class names and replace them by 'n/d' (not defined).
+% Alternatively, we could take the corresponding Mrk.event.type.
+if isempty(Mrk.className{1}),
+  Mrk.className{1}= 'n/d';
+end
+
 if strcmp(opt.MarkerFormat, 'numeric'),
-  [toe,idx]= bbciutil_markerMappingSposRneg(Mrk.desc);
-  Mrk.desc= zeros(size(Mrk.desc));
-  Mrk.desc(idx)= toe;
+  [toe,idx]= bbciutil_markerMappingSposRneg(Mrk.event.desc);
+  Mrk.event.desc= zeros(size(Mrk.event.desc));
+  Mrk.event.desc(idx)= toe;
 end

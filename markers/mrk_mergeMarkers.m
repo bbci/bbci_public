@@ -45,12 +45,6 @@ if isfield(mrk1, 'y'),
     mrk.y= [[mrk1.y; zeros(s2(1), s1(2))], [zeros(s1(1), s2(2)); mrk2.y]];
   end
 end
-
-%if xor(isfield(mrk1,'desc'), isfield(mrk2,'desc')),
-%  warning('field ''desc'' not found in all markers: lost');
-%elseif isfield(mrk1,'desc'),
-%  mrk.desc= cat(2, mrk1.desc, mrk2.desc);
-%end
   
 %% Merge subfields of mrk.event
 if xor(isfield(mrk1,'event'), isfield(mrk2,'event')),
@@ -68,9 +62,10 @@ elseif isfield(mrk1,'event'),
     fld= Fld{1};
     tmp1= getfield(mrk1.event, fld);
     tmp2= getfield(mrk2.event, fld);
-    % di= min(find(size(tmp1)>1));  %% first nonvoid dimension
-    % if isempty(di), di=1; end
-    % mrk.event= setfield(mrk.event, fld, cat(di, tmp1, tmp2));
+    if xor(iscell(tmp1), iscell(tmp2)),
+      error('type mismatch in field %s', fld);
+    end
+    % in the variable of mrk.event, the first dimension must index events
     mrk.event= setfield(mrk.event, fld, cat(1, tmp1, tmp2));
   end
 end
