@@ -1,7 +1,7 @@
 BBCI.NirsMatDir = [BBCI.DataDir 'nirs/uni/'];
 
 BC= [];
-BC.fcn= @bbci_calibrate_NIRS_tiny;
+BC.fcn= @bbci_calibrate_tinyNIRS;
 BC.read_fcn=@file_NIRSreadMatlab;
 BC.folder= BBCI.NirsMatDir;
 BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';

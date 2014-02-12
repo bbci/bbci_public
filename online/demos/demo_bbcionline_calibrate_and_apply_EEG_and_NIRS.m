@@ -1,7 +1,7 @@
 %% first do the calibration for the NIRS:
 BBCI.NirsMatDir = [BBCI.DataDir 'nirs/uni/'];
 BC= [];
-BC.fcn= @bbci_calibrate_NIRS_tiny;
+BC.fcn= @bbci_calibrate_tinyNIRS;
 BC.read_fcn=@file_NIRSreadMatlab;
 BC.folder= BBCI.NirsMatDir;
 BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';
@@ -17,7 +17,7 @@ bbci_nirs.source.acquire_param= {calib_nirs.cnt, calib_nirs.mrk, struct('realtim
 
 %% now do the calibration for the EEG data:
 BC= [];
-BC.fcn= @bbci_calibrate_csp_tiny;
+BC.fcn= @bbci_calibrate_tinyCsp;
 BC.folder= BBCI.RawDir;
 BC.file= 'VPeag_10_06_17/imag_fbarrow_pcovmeanVPeag*';
 BC.read_fcn=@file_readBV;

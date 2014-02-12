@@ -1,5 +1,5 @@
 BC= [];
-BC.fcn= @bbci_calibrate_ERP_Speller;
+BC.fcn= @bbci_calibrate_ERPSpeller;
 BC.settings.nClasses= 6;
 BC.file= 'VPibq_11_05_18/calibration_CenterSpellerFixedSequenceVPibq';
 BC.read_param= {'fs',100};
