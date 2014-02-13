@@ -73,7 +73,7 @@ props= {'Axes',                           [],                     'DOUBLE';
         'LegendVerticalAlignment',        'middle',               'CHAR';
         'OversizePlot',                   1,                      'BOOL';
         'PlotStd',                        0,                      'BOOL'
-        'ScaleGroup'                      {util_scalpChannels, {'EMG*'},{'EOGh'},{'EOGv'}}    'CHAR|CELL';
+        'ScaleGroup'                      [],                     'CHAR|CELL';
         'ScalePolicy',                    'auto',                 'CHAR|DOUBLE[2]';
         'ScaleUpperLimit',                inf,                    'DOUBLE';
         'ScaleLowerLimit',                0,                      'DOUBLE';
@@ -154,7 +154,7 @@ end
 if ~iscell(opt.ScalePolicy),
   opt.ScalePolicy= {opt.ScalePolicy};
 end
-if ~isfield(opt, 'ScaleGroup'),
+if isempty(opt.ScaleGroup),
   grd_clab= gridutil_getClabOfGrid(mnt);
   if strncmp(opt.ScalePolicy, 'individual', length('individual')),
     opt.ScaleGroup= grd_clab;
