@@ -1,8 +1,8 @@
-function [packet, state]= bbci_control_RSVP_Speller(cfy_out, state, event, opt)
-%BBCI_CONTROL_ERP_SPELLER - Generate control signal for ERP-based Hex-o-Spell
+function [packet, state]= bbci_control_RSVPSpeller(cfy_out, state, event, opt)
+%BBCI_CONTROL_RSVPSPELLER - Generate control signal for the RSVP Speller
 %
 %Synopsis:
-%  [PACKET, STATE]= bbci_control_ERP_Speller(CFY_OUT, STATE, EVENT, SETTINGS)
+%  [PACKET, STATE]= bbci_control_RSVPSpeller(CFY_OUT, STATE, EVENT, SETTINGS)
 %
 %Arguments:
 %  CFY_OUT - Output of the classifier

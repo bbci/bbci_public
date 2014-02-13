@@ -1,8 +1,8 @@
-function [packet, state]= bbci_control_ERP_Speller_binary(cfy_out, state, event, opt)
+function [packet, state]= bbci_control_ERPSpellerBinary(cfy_out, state, event, opt)
 %BBCI_CONTROL_ERP_SPELLER_BINARY - Generate control signal for ERP-based Hex-o-Spell
 %
 %Synopsis:
-%  [PACKET, STATE]= bbci_control_ERP_Speller_binary(CFY_OUT, STATE, EVENT, <SETTINGS>)
+%  [PACKET, STATE]= bbci_control_ERPSpellerBinary(CFY_OUT, STATE, EVENT, <SETTINGS>)
 %
 %Arguments:
 %  CFY_OUT - Output of the classifier

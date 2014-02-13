@@ -49,11 +49,11 @@
 % --- --- --- ---
 %
 %List of CALIBRATE functions (prefix bbci_calibrate_ is left out)
-% - ERP_Speller: Setup for the online system to perform classification
+% - ERPSpeller: Setup for the online system to perform classification
 %      for an ERP Speller in the stardard format.
 % - csp: Setup for classifying SMR Modulations with CSP filters and
 %      log band-power features
-% - csp_plus_lap: Additionally to optimized CSP filters some Laplacian
+% - cspPlusLap: Additionally to optimized CSP filters some Laplacian
 %      channels are selected and used for classification. These are meant
 %      to be reselected during supervised adaptation with
-%      bbci_adaptation_csp_plus_lap.
+%      bbci_adaptation_cspPlusLap.

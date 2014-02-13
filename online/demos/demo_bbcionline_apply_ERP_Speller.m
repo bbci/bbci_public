@@ -23,7 +23,7 @@ bbci.feature.ival= [ref_ival(1) cfy_ival(end)];
 
 bbci.classifier.C= C;
 
-bbci.control.fcn= @bbci_control_ERP_Speller;
+bbci.control.fcn= @bbci_control_ERPSpeller;
 bbci.control.param= {struct('nClasses', 6, ...
                             'nSequences', 10, ...
                             'mrk2feedback_fcn', @(x)(1+mod(x-11,10)))};

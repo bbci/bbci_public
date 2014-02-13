@@ -1,13 +1,13 @@
 function [bbci, data]= bbci_calibrate_cspPlusLap(bbci, data)
-%BBCI_CALIBRATE_CSP_PLUS_LAP - Calibrate for SMR Modulations with CSP plus some selected Laplacians
+%BBCI_CALIBRATE_CSPPLUSLAP - Calibrate for SMR Modulations with CSP plus some selected Laplacians
 %
 %This function is called by bbci_calibrate 
-%(if BBCI.calibate.fcn is set to @bbci_calibrate_csp_plus_lap).
+%(if BBCI.calibate.fcn is set to @bbci_calibrate_cspPlusLap).
 %Via BBCI.calibrate.settings, the details can be specified, see below.
-%This calibration is meant to be used with bbci_adaptation_csp_plus_lap.
+%This calibration is meant to be used with bbci_adaptation_cspPlusLap.
 %
 %Synopsis:
-% [BBCI, DATA]= bbci_calibrate_csp_plus_lap(BBCI, DATA)
+% [BBCI, DATA]= bbci_calibrate_cspPlusLap(BBCI, DATA)
 % 
 %Arguments:
 %  BBCI -  the field 'calibrate.settings' holds parameters specific to
@@ -341,7 +341,7 @@ set(gcf, 'Visible','on');
 clear spec spec_rqs
 
 
-% Optionally show maps of spectra, see bbci_bet_analyze_csp_sellap.m
+% Optionally show maps of spectra
 
 
 % -- ERD/ERS --
@@ -361,7 +361,7 @@ set(gcf, 'Visible','on');
 clear erd erd_rsq;
 
 
-% Optionally show maps of ERD, see bbci_bet_analyze_csp_sellap.m
+% Optionally show maps of ERD
 
 
 
@@ -416,7 +416,7 @@ bbci.feature.fcn= {@proc_variance, @proc_logarithm};
 
 % The classifier is only trained on the 3 selected Laplacian channels.
 % In order to be able switch to other channels during the feedback
-% (bbci_adaptation_csp_plus_lap) features from all Laplacian channels are
+% (bbci_adaptation_cspPlusLap) features from all Laplacian channels are
 % calculated. Here we insert components with 0 weight into the classifier to
 % disregard the non-selected Laplacian channels.
 idx_activelap= sort(util_chanind(fv_lap, sel_clab));
@@ -429,7 +429,7 @@ w_tmp= bbci.classifier.C.w;
 bbci.classifier.C.w= zeros(size(spat_w,2), 1);
 bbci.classifier.C.w(idx_active)= w_tmp;
 % Store some more information in the classifier, which is required to
-% used 'bbci_adaptation_csp_plus_lap'.
+% used 'bbci_adaptation_cspPlusLap'.
 bbci.classifier.model= opt.model;
 bbci.classifier.fv_buffer= ...
     struct_copyFields(BC_result.feature, 'x','clab','y','className');
@@ -437,7 +437,7 @@ bbci.classifier.fv_buffer.idx_active= idx_active;
 bbci.classifier.fv_buffer.idx_csp= idx_csp;
 bbci.classifier.opt= struct_copyFields(opt, 'area', 'nlaps_per_area');
 
-bbci.adaptation.fcn= @bbci_adaptation_csp_plus_lap;
+bbci.adaptation.fcn= @bbci_adaptation_cspPlusLap;
 
 bbci.quit_condition.marker= 255;
 

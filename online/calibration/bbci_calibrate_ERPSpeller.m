@@ -1,12 +1,12 @@
-function [bbci, data]= bbci_calibrate_ERP_Speller(bbci, data)
+function [bbci, data]= bbci_calibrate_ERPSpeller(bbci, data)
 %BBCI_CALIBRATE_ERP_SPELLER - Calibrate online system for ERP Spellers
 %
 %This function is called by bbci_calibrate 
-%(if BBCI.calibate.fcn is set to @bbci_calibrate_ERP_Speller).
+%(if BBCI.calibate.fcn is set to @bbci_calibrate_ERPSpeller).
 %Via BBCI.calibrate.settings, the details can be specified, se below.
 %
 %Synopsis:
-% [BBCI, DATA]= bbci_calibrate_ERP_Speller(BBCI, DATA)
+% [BBCI, DATA]= bbci_calibrate_ERPSpeller(BBCI, DATA)
 % 
 %Arguments:
 %  BBCI -  the field 'calibrate' holds parameters specific to ERP Spellers.
@@ -279,9 +279,9 @@ end
 bbci.feature.ival= [min_t max(BC_result.cfy_ival(:))];
 
 if opt.control_per_stimulus,
-  bbci.control.fcn= @bbci_control_ERP_Speller_binary;
+  bbci.control.fcn= @bbci_control_ERPSpellerBinary;
 else
-  bbci.control.fcn= @bbci_control_ERP_Speller;
+  bbci.control.fcn= @bbci_control_ERPSpeller;
 end
 bbci.control.param= {struct('nClasses',         opt.nClasses, ...
                             'nSequences',       BC_result.nSequences, ...

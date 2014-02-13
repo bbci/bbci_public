@@ -1,5 +1,5 @@
 function [CLS, data_adapt]= bbci_adaptation_cspPlusLap(CLS, data_adapt, marker, varargin)
-%BBCI_ADAPTATIOIN_CSP_PLUS_LAP - Reselect Laplacian channels (additionally to CSP) and retrain classifier
+%BBCI_ADAPTATIOIN_CSPPLUSLAP - Reselect Laplacian channels (additionally to CSP) and retrain classifier
 %
 %Technique described in
 %  Vidaurre C, Sannelli C, Müller KR, Blankertz B.
@@ -9,9 +9,9 @@ function [CLS, data_adapt]= bbci_adaptation_cspPlusLap(CLS, data_adapt, marker, 
 %
 %Synopsis:
 %  [BBCI_CLS, DATA_ADAPT]= ...
-%      bbci_adaptation_csp_plus_lap(BBCI_CLS, DATA_ADAPT, 'init', PARAMs, ...)
+%      bbci_adaptation_cspPlusLap(BBCI_CLS, DATA_ADAPT, 'init', PARAMs, ...)
 %  [BBCI_CLS, DATA_ADAPT]= ...
-%      bbci_adaptation_csp_plus_lap(BBCI_CLS, DATA_ADAPT, MARKER, FEATURE)
+%      bbci_adaptation_cspPlusLap(BBCI_CLS, DATA_ADAPT, MARKER, FEATURE)
 %
 %This function is called internally by bbci_apply_adaptation.
 %

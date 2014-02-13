@@ -1,5 +1,5 @@
-function [packet, state]= bbci_control_BGUI_ERP(cfy_out, state, event, opt)
-%same as BBCI_CONTROL_ERP_SPELLER - just need another packet.
+function [packet, state]= bbci_control_BGUIERP(cfy_out, state, event, opt)
+%same as BBCI_CONTROL_ERPSPELLER - just need another packet.
 % 02-2012 Javier Pascual
 
     if(strcmp(opt.kind, 'MI')),

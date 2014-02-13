@@ -1,11 +1,11 @@
-function [bbci, data]= bbci_calibrate_ERP_Speller_tiny(bbci, data)
-%BBCI_CALIBRATE_ERP_SPELLER_TINY - Calibrate for ERP Spellers - Short version
+function [bbci, data]= bbci_calibrate_tinyERPSpeller(bbci, data)
+%BBCI_CALIBRATE_TINYERPSPELLER - Calibrate for ERP Spellers - Short version
 %
 %This version is for educational purpose. It shows what is absolutely
 %essential for setting up a BBCI classifier for ERP Speller classification.
 %
 %Synopsis:
-% [BBCI, DATA]= bbci_calibate_ERP_Speller_tiny(BBCI, DATA)
+% [BBCI, DATA]= bbci_calibate_tinyERPSpeller(BBCI, DATA)
 % 
 %Arguments:
 %  BBCI -  the field 'calibrate' holds parameters specific to ERP Spellers.
@@ -44,7 +44,7 @@ fv= proc_segmentation(data.cnt, data.mrk, bbci.feature.ival, ...
 fv= bbci_calibrate_evalFeature(fv, bbci.feature);
 bbci.classifier.C= trainClassifier(fv, opt.model);
 
-bbci.control.fcn= @bbci_control_ERP_Speller_binary;
+bbci.control.fcn= @bbci_control_ERPSpellerBinary;
 bbci.control.param= {struct('nSequences', [], ...
                             'mrk2feedback_fcn', opt.mrk2feedback_fcn)};
 bbci.control.condition.marker= opt.cue_markers;

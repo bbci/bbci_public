@@ -37,7 +37,7 @@ bbci.source.acquire_fcn = @bbci_acquire_sigserv;
 bbci.source.acquire_param = {struct('fs', 100)};
 bbci.log.output = 'file';
 bbci.log.classifier = 1;
-bbci.control.fcn = @bbci_control_ERP_Speller_binary;
+bbci.control.fcn = @bbci_control_ERPSpellerBinary;
 bbci.feedback.receiver = 'tobi_c';
 bbci.feedback.host = '127.0.0.1';
 bbci.feedback.port = 12345;
@@ -86,7 +86,7 @@ bbci.calibrate.marker_param = {'stimDef', {[120:132], [20:32]; 'Target', 'Non-ta
     'nClasses', 12, 'nRepetitions', 12};
 bbci.calibrate.save.file = 'bbci_classifier';
 bbci.calibrate.save.overwrite = 0;
-bbci.calibrate.fcn = @bbci_calibrate_ERP_Speller;
+bbci.calibrate.fcn = @bbci_calibrate_ERPSpeller;
 bbci.calibrate.settings = strukt(...
     'disp_ival', [-150 1000], ...
     'ref_ival', [-150 0], ... % be aware that if this is turned off, a bandpass filter should be set

@@ -29,5 +29,5 @@
 %
 %
 %List of CONTROL functions (prefix bbci_control_ is left out):
-% ERP_Speller: ERP-based Hex-o-Spell, one output for each complete sequence
-% ERP_Speller_binary: ERP-based Hex-o-Spell, one outputs for each stimulus
+% ERPSpeller: ERP-based Hex-o-Spell, one output for each complete sequence
+% ERPSpellerBinary: ERP-based Hex-o-Spell, one outputs for each stimulus
