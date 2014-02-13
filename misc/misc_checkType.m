@@ -3,14 +3,15 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %
 %Synopsis:
 %  misc_checkType(VARIABLE, TYPEDEF)
-%
-%As an alternative (intended for internal use only)
 %  misc_checkType(EXPRESSION, TYPEDEF, VARNAME)
 %
 %Arguments:
 %  VARIABLE:   Variable that is to be checked
 %  TYPEDEF:    CHAR - Specification of type, see below.
-%  EXPRESSION: Input that has no name (-> it's value is checked)   
+%  EXPRESSION: Input that has 'no name' (-> it's value is checked)
+%
+%Remark: The second variant has to be used, if the 'variable' that is to
+%  be checked is a field of a struct like cnt.clab.
 %
 %Returns:
 %  nothing (throws an error in case of violation)
@@ -85,6 +86,9 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %  misc_checkType(clab, 'CELL{CHAR}')
 %  clab{end}= 3.14;
 %  misc_checkType(clab, 'CELL{CHAR}')
+%
+%  cnt.clab= str_cprintf('C%d', 1:6);
+%  misc_checkType(cnt.clab, 'STRUCT(desc)', 'cnt.clab');
 
 % 06-2012 Benjamin Blankertz
 

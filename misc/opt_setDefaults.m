@@ -30,10 +30,14 @@ function [opt, isdefault]= opt_setDefaults(opt, props, check)
 %
 %See also opt_checkProplist, opt_proplistToStruct.
 %
-%Example:
+%Examples:
 %  opt= struct('linewidth',3, 'color','k')
 %  props= {'LineWidth', 2;  'Color',[0 0 1];  'LineStyle','--'}
 %  [opt, isdefault]= opt_setDefaults(opt, props)
+%
+%  % If the first input variable (OPT) is not a variable itself, but a field
+%  % of a struct, it has to passed as a string:
+%  S.opt= opt_setDefaults('S.opt', props);
 
 % 06-2012 Benjamin Blankertz
 
