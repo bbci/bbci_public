@@ -65,10 +65,4 @@ switch(bbci_feedback.receiver),
   idx= find(cellfun(@(x)isequal(x,'cl_output'), control_signal));
   cls_output= control_signal{idx(end)+1};
   data_feedback= bbci_feedback.fcn(cls_output, data_feedback);
- case 'matlab_gui',
-  error('in construction');
-  ii= max(find(cellfun(@(x)isequal(x,'cl_output'), control_signal)));
-  cls_output= control_signal{ii+1};
-  send_data_udp([logFileNumber(1); controlnumber; timestamp; 0;
-                 cls_output]);
 end
