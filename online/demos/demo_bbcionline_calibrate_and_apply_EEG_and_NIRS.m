@@ -2,7 +2,7 @@
 BC= [];
 BC.fcn= @bbci_calibrate_tinyNIRS;
 BC.read_fcn=@file_NIRSreadMatlab;
-BC.folder=  [BTB.DataDir 'bbciDemo/'];
+BC.folder=  [BTB.DataDir 'demoMat/'];
 BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';
 BC.save.folder= BTB.TmpDir;
 BC.log.folder= BTB.TmpDir;
@@ -17,9 +17,9 @@ bbci_nirs.source.acquire_param= {calib_nirs.cnt, calib_nirs.mrk, struct('realtim
 %% now do the calibration for the EEG data:
 BC= [];
 BC.fcn= @bbci_calibrate_tinyCsp;
-BC.folder= BTB.RawDir;
+BC.folder=  [BTB.DataDir 'demoRaw/'];
 BC.file= 'VPeag_10_06_17/imag_fbarrow_pcovmeanVPeag*';
-BC.read_fcn=@file_readBV;
+BC.read_fcn= @file_readBV;
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
 BC.marker_param= {{1, 2; 'left', 'right'}};

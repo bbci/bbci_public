@@ -4,7 +4,7 @@
 BC= [];
 BC.fcn= @bbci_calibrate_tinyNIRS;
 BC.read_fcn= @file_NIRSreadMatlab;
-BC.folder=  [BTB.DataDir 'bbciDemo/'];
+BC.folder=  [BTB.DataDir 'demoMat/'];
 BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';
 %BC.file= 'VPeae_10_03_05/ni_imag_fbarrow_pcovmeanVPeae*';
 %BC.file= 'VPeah_10_06_19/ni_imag_fbarrow_pcovmeanVPeah*';
