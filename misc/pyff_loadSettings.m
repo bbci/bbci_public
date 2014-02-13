@@ -13,18 +13,18 @@ function out= pyff_loadSettings(file)
 
 misc_checkType(file,'!CHAR');
 
-global BBCI
+global BTB
 
 if ~exist('p_json', 'file'),
   %addpath([BCI_DIR 'import/json']);
-  addpath([BBCI.Dir 'PRELIMINARY' filesep 'json']);
+  addpath([BTB.Dir 'PRELIMINARY' filesep 'json']);
 end
 
 if ~ismember('.', file,'legacy'),
   file= strcat(file, '.json');
 end
 if ~fileutil_isAbsolutePath(file),
-  file= strcat([BBCI.Acq.Dir 'setups\' file]);
+  file= strcat([BTB.Acq.Dir 'setups\' file]);
 end
 
 fid= fopen(file, 'rt'); 

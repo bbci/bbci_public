@@ -1,8 +1,8 @@
 function out= bvr_startrecording(filebase, varargin)
 %BVR_STARTRECORDING - Start Acquisition with BV RECORDER
 %
-% The actual filename for recording is composed of BBCI.Tp.Dir (global
-% variable BBCI), a given basename, and optionally the VP-CODE (BBCI.Tp.Code).
+% The actual filename for recording is composed of BTB.Tp.Dir (global
+% variable BTB), a given basename, and optionally the VP-CODE (BTB.Tp.Code).
 % The a file of that name exists a counter is increased and the
 % corresponding nummber is appended, until a new filename was created.
 %
@@ -13,22 +13,22 @@ function out= bvr_startrecording(filebase, varargin)
 % FILEBASE: basename for the EEG files.
 % OPT: Struct or property/value list of optional properties:
 %   'Impedances': BOOL: start impedance measurement at the beginning
-%   'AppendTpCode': BOOL: Append the BBCI.Tp.Code (global variable) to file name
+%   'AppendTpCode': BOOL: Append the BTB.Tp.Code (global variable) to file name
 %
 %Returns:
 % FILENAME: Actually chosen filename
 %
 %Uses global variable
-% BBCI - Substruct Tp
+% BTB - Substruct Tp
 
-global BBCI
+global BTB
 
 props= {'Impedances'    1   'BOOL'
         'AppendTpCode'  1   'BOOL'
        };
 
-if isempty(BBCI.Tp.Dir),
-  error('global BBCI.Tp.Dir needs to be set');
+if isempty(BTB.Tp.Dir),
+  error('global BTB.Tp.Dir needs to be set');
 end
 
 misc_checkType(filebase, 'CHAR');
@@ -42,15 +42,15 @@ opt_checkProplist(opt, props);
 bvr_sendcommand('stoprecording');
 
 if opt.AppendTpCode,
-  filebase= [filebase BBCI.Tp.Code];
+  filebase= [filebase BTB.Tp.Code];
 end
 
 num= 1;
-file= [BBCI.Tp.Dir '\' filebase];
+file= [BTB.Tp.Dir '\' filebase];
 [file '.eeg']
 while exist([file '.eeg'], 'file'),
   num= num + 1;
-  file= sprintf('%s%s%02d', BBCI.Tp.Dir, filebase, num);
+  file= sprintf('%s%s%02d', BTB.Tp.Dir, filebase, num);
 end
 
 if opt.Impedances,

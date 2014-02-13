@@ -14,10 +14,10 @@ function file_writeBVmarkers(file, mrk, varargin)
 % See also: eegfile_*
 %
 
-global BBCI
+global BTB
 
 opt= opt_proplistToStruct(varargin{:});
-props= {'Folder'    BBCI.TmpDir    'CHAR'};
+props= {'Folder'    BTB.TmpDir    'CHAR'};
 opt= opt_setDefaults(opt, props);
 
 if fileutil_isAbsolutePath(file),

@@ -7,17 +7,17 @@ function vp_number= acq_vpcounter(session_name, cmd)
 %  acq_vpcounter(SESSION_NAME, 'reset');
 %
 %Remark:
-%  If BBCI.Tp.Code (global variable) is 'temp' (ignoring case) or 'VPtemp',
+%  If BTB.Tp.Code (global variable) is 'temp' (ignoring case) or 'VPtemp',
 %  VP_NUMBER is returned as 1, and the VP_COUNTER file is not modified.
 
 
-global BBCI
+global BTB
 
 session_name= strrep(session_name, '/', '-');
 session_name= strrep(session_name, '\', '-');
 session_name= strrep(session_name, '--', '-');
 
-vp_counter_path= fullfile(BBCI.DataDir, 'vp_counter_files');
+vp_counter_path= fullfile(BTB.DataDir, 'vp_counter_files');
 if ~exist(vp_counter_path, 'dir'),
   mkdir(vp_counter_path);
 end
@@ -29,7 +29,7 @@ if strcmp(cmd, 'reset'),
   return;
 end
 
-if strcmpi(BBCI.Tp.Code, 'temp') || strcmpi(BBCI.Tp.Code, 'vptemp'),
+if strcmpi(BTB.Tp.Code, 'temp') || strcmpi(BTB.Tp.Code, 'vptemp'),
   if strcmp(cmd, 'close'),
     fprintf('VP-TEMP: counter file not modified.\n');
   else

@@ -213,7 +213,7 @@ xvalidation(fv, 'RLDAshrink', 'XTrials',[1 5], 'LossFcn',@loss_rocArea);
 % For faster performance, you can switch off type-checking and the 
 % history for validation.
 tcstate= bbci_typechecking('off');
-BBCI.History= 0;
+BTB.History= 0;
 % xvalidation(...)
 % Put typechecking back in the original state:
 bbci_typechecking(tcstat);

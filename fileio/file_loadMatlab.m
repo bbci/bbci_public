@@ -29,7 +29,7 @@ function [varargout]= file_loadMatlab(file, varargin)
 %   'Fs': Sampling rate (must be a positive integer divisor of the fs
 %         the data is saved in). Default [] meaning original fs.
 %   'Path': In case FILE does not include an absolute path, OPT.Path
-%           is prepended to FILE. Default BBCI.MatDir (global BBCI variable).
+%           is prepended to FILE. Default BTB.MatDir (global BTB variable).
 %
 % Remark:
 %   Properties 'ival' and 'fs' are particularly useful when data is saved
@@ -53,7 +53,7 @@ function [varargout]= file_loadMatlab(file, varargin)
 %% Warning: if the opt.Ival option is used for *epoched* data,
 %%   the field epo.t is not set correctly.
 
-global BBCI
+global BTB
 
 
 if length(varargin)==1 && (iscell(varargin{1}) || ischar(varargin{1}))
@@ -71,7 +71,7 @@ if nargout > length(vars),
   error('more output arguments than requested variables');
 end
 
-props = {'Path',            BBCI.MatDir     'CHAR';
+props = {'Path',            BTB.MatDir     'CHAR';
          'Vars',            vars(1:nargout) 'CELL{CHAR}|CHAR';
          'CLab'             '*'             'CHAR|CELL{CHAR}';
          'Ival'             []              'DOUBLE[2]';

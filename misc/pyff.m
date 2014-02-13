@@ -18,7 +18,7 @@ function res = pyff(command, varargin)
 %  .Dir      - pyff source directory (default for win: D:\svn\pyff\src;
 %              default for unix: ~/svn/pyff/src)
 %  .Parport     - port number for parallel port. Default is dec2hex(IO_ADDR),
-%              if BBCI.IOAddr exists, otherwise [].
+%              if BTB.IOAddr exists, otherwise [].
 %  .A        - additional feedback directory (default [])
 %  .Gui      - if 1, pyff gui is started along with the feedback controller (default 0)
 %  .L        - loglevel (default 'debug')
@@ -27,8 +27,8 @@ function res = pyff(command, varargin)
 %  feedback  - strint containing the name of the feedback
 %
 % pyff('setdir',<OPT>): set directory and filename for EEG recording. 
-%  .TodayDir - directory for saving EEG data (default BBCI.Tp.Dir)
-%  .VpCode   - the code of the VP (Versuchsperson) (default BBCI.Tp.Code)
+%  .TodayDir - directory for saving EEG data (default BTB.Tp.Dir)
+%  .VpCode   - the code of the VP (Versuchsperson) (default BTB.Tp.Code)
 %  .Basename  - the basename of the EEG file (default '')
 % Special cases: If OPT=='' all entries are set to '', ensuring that no EEG is 
 % recorded. If OPT is not given at all, all entries are set to default.
@@ -63,7 +63,7 @@ function res = pyff(command, varargin)
 % pyff('saveSettings', FILENAME): load or save the parameters of the feedback
 %   to FILENAME. The appendix '.json' is automatically appended.
 %   If FILENAME does not contain file separators '\' or '/',
-%   BBCI.Tp.Dir is prepended.
+%   BTB.Tp.Dir is prepended.
 %
 %
 % General OPT:
@@ -81,20 +81,20 @@ function res = pyff(command, varargin)
 % Matthias Treder 2010
 
 
-global BBCI
+global BTB
 %% TODO: get rid of these (change bvr_* functions to more general ones)
 global acquire_func general_port_fields
 persistent ACQ_STARTED
 
 props = {'Os',                    'win',            '!CHAR(win unix)';
-         'PyffDir'                BBCI.PyffDir      'CHAR';
+         'PyffDir'                BTB.PyffDir      'CHAR';
          'ReplaceHtmlEntities',   1,                '!BOOL';
-         'Parport',               BBCI.IOAddr,     'DOUBLE[1]';
+         'Parport',               BTB.IOAddr,     'DOUBLE[1]';
          'A',                     [],               'CHAR';
          'Gui',                   0,                'BOOL';
          'L',                     'debug',          'CHAR';
-         'TodayDir',              BBCI.Tp.Dir,      'CHAR';
-         'VpCode',                BBCI.Tp.Code,     'CHAR';
+         'TodayDir',              BTB.Tp.Dir,      'CHAR';
+         'VpCode',                BTB.Tp.Code,     'CHAR';
          'Basename',              '',               'CHAR';
          'OutputProtocol',        [],               'CHAR';
          'Host',                 'localhost',       'CHAR';
@@ -158,7 +158,7 @@ switch(command)
     misc_checkType(filename,'!CHAR');
     settings_file= [filename '.json'];
     if ~any(ismember('/\', settings_file,'legacy')),
-      settings_file= [BBCI.Tp.Dir settings_file];
+      settings_file= [BTB.Tp.Dir settings_file];
   %   % Avoid overwriting? - Maybe it is intended, so we don't.
   %    if strcmp(command,'saveSettings') && exists(settings_file, 'file'),
   %      new_str= datestr(now, 'yyyy-mm-dd_HH:MM:SS.FFF');
@@ -231,8 +231,8 @@ switch(command)
     pyff_sendUdp('interaction-signal', 's:_feedback', feedback,'command','sendinit');
     
   case 'setdir'
-    pyff_sendUdp('interaction-signal', 's:BBCI.Tp.Dir',opt.TodayDir, ...
-      's:BBCI.Tp.Code',opt.VpCode, 's:BASENAME',opt.Basename);
+    pyff_sendUdp('interaction-signal', 's:BTB.Tp.Dir',opt.TodayDir, ...
+      's:BTB.Tp.Code',opt.VpCode, 's:BASENAME',opt.Basename);
     
   case 'set'
     settings= {};
@@ -278,7 +278,7 @@ switch(command)
       ACQ_STARTED= 0;
     else
       ACQ_STARTED= 1;
-      bvr_startrecording(varargin{2}, 'append_BBCI.Tp.Code',1, varargin{3:end});
+      bvr_startrecording(varargin{2}, 'append_BTB.Tp.Code',1, varargin{3:end});
       pause(0.01);
     end
     pyff_sendUdp('interaction-signal', 'command', 'play'); 

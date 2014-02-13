@@ -16,7 +16,7 @@ function bbci= bbci_apply_setDefaults(bbci)
 % 02-2011 Benjamin Blankertz
 
 
-global BBCI
+global BTB
 
 if nargin==0,
   bbci= [];
@@ -162,12 +162,12 @@ bbci.feedback= opt_overwriteVoids(bbci.feedback, 'control', 1);
 for k= 1:length(bbci.feedback),
   switch(bbci.feedback(k).receiver),
    case 'pyff',
-    props= {'geometry'        BBCI.Tp.Geometry    'INT[4]'
+    props= {'geometry'        BTB.Tp.Geometry    'INT[4]'
            };
    case 'matlab',
-    props= {'geometry'        BBCI.Tp.Geometry    'INT[4]'
-            'trigger_fcn'     @ppTrigger   'FUNC'
-            'trigger_param'   {}           'CELL'
+    props= {'geometry'        BTB.Tp.Geometry    'INT[4]'
+            'trigger_fcn'     @ppTrigger         'FUNC'
+            'trigger_param'   {}                 'CELL'
            };
   end
   bbci.feedback(k).opt= opt_setDefaults('bbci.feedback(k).opt', props);
@@ -180,7 +180,7 @@ props= {'active'            1                   '!BOOL'
         'proc'              []                  'CELL'
         'fcn'               []                  'FUNC'
         'param'             {}                  'CELL'
-        'folder'            BBCI.Tp.Dir         'CHAR'
+        'folder'            BTB.Tp.Dir         'CHAR'
         'file'              'bbci_adaptation'   'CHAR'
         'save_everytime'    0                   '!BOOL'
         'load_classifier'   0                   '!BOOL'
@@ -219,7 +219,7 @@ else
 end
 header_line= '# Logfile of BBCI online - <TIME>';
 props= {'output'       default_output     '!BOOL|CHAR(screen file screen&file)'
-        'folder'       BBCI.Tp.Dir        'CHAR'
+        'folder'       BTB.Tp.Dir        'CHAR'
         'file'         'bbci_apply_log'   'CHAR'
         'header'       {header_line}      'CELL{CHAR}'
         'force_overwriting'   0           '!BOOL'

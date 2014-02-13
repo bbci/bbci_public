@@ -41,7 +41,7 @@ The user can control the calibration via the fields of
 
 I. Defining the calibration file:
 
-<table border="1" > <tr> <td> .folder </td><td> CHAR, default `BBCI.Tp.Dir` (refering to the global variable `BBCI`)</td></tr>
+<table border="1" > <tr> <td> .folder </td><td> CHAR, default `BTB.Tp.Dir` (refering to the global variable `BBCI`)</td></tr>
 <tr> <td> .file </td><td> CHAR, no default: must be specified </td></tr>
 <tr> <td> .read_fcn </td><td> FUNC HANDLE, default @file_readBV </td></tr>
 <tr> <td> .read_param </td><td> CELL, default {} </td></tr>

@@ -7,7 +7,7 @@ function util_printFigure(file, varargin)
 %
 %Arguments:
 % FILE:     CHAR        Name of the output file (without extension).
-%                       If the filename is relative, BBCI_FIG_DIR 
+%                       If the filename is relative, BTB_FIG_DIR 
 %                       (global var) is prepended.
 % PAPERSIZE: see OPT.PaperSize
 % OPT: struct or propertyvalue list of optional properties
@@ -21,8 +21,8 @@ function util_printFigure(file, varargin)
 %  .Renderer: how the figure is rendered to a file, 'painters' (default)
 %     produces vector images, 'zbuffer' and 'opengl' produce bitmaps
 
-global BBCI
-BBCI= opt_setDefaults(BBCI, {'FigDir',  ''  'CHAR'});
+global BTB
+BTB= opt_setDefaults(BTB, {'FigDir',  ''  'CHAR'});
 
 props = {   
         'PaperSize'       'auto'        '!CHAR(auto maxAspect)|!DOUBLE[- -]';
@@ -79,8 +79,8 @@ if fileutil_isAbsolutePath(file),
   fullName= file;
 else
   fullName= fullfile(opt.Folder, [opt.Prefix file]);
-  if ~fileutil_isAbsolutePath(fullName) && exist(BBCI.FigDir, 'dir'),
-    fullName= fullfile(BBCI.FigDir, fullName);
+  if ~fileutil_isAbsolutePath(fullName) && exist(BTB.FigDir, 'dir'),
+    fullName= fullfile(BTB.FigDir, fullName);
   end
 end
 
@@ -99,7 +99,7 @@ end
 
 if strcmpi(opt.Format, 'SVG'),
   if ~exist('', 'file'),
-    addpath([BBCI.Dir 'import/plot2svg']);
+    addpath([BTB.Dir 'import/plot2svg']);
   end
   plot2svg([fullName '.svg']);
   return;

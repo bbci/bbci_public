@@ -17,7 +17,7 @@ function bbci= bbci_calibrate_setDefaults(bbci)
 % 09-2011 Benjamin Blankertz
 
 
-global BBCI
+global BTB
 
 if nargin==0,
   bbci= [];
@@ -25,7 +25,7 @@ end
 
 bbci= opt_setDefaults(bbci, {'calibrate'   struct   'STRUCT'});
 
-props= {'folder'          BBCI.Tp.Dir                  'CHAR'
+props= {'folder'          BTB.Tp.Dir                   'CHAR'
         'file'            ''                           'CELL|CHAR'
         'read_fcn'        @file_readBV                 'FUNC'
         'read_param'      {}                           'CELL'

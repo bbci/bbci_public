@@ -6,7 +6,7 @@ function [Mrk, fs]= file_readBVmarkers(mrkName, varargin)
 %
 % Arguments:
 %   MRKNAME - CHAR: name of marker file (no extension),
-%            relative to BBCI.RawDir unless beginning with '/'
+%            relative to BTB.RawDir unless beginning with '/'
 %   OPT - Struct or property/value list of optional properties:
 %     'MarkerFormat': CHAR (default 'string'): specifies the format of the
 %                     field MRK.event.desc:
@@ -28,7 +28,7 @@ function [Mrk, fs]= file_readBVmarkers(mrkName, varargin)
 % Benjamin Blankertz
 
 
-global BBCI
+global BTB
 
 props= {'MarkerFormat'   'numeric'   'CHAR(string numeric)'};
 
@@ -45,7 +45,7 @@ misc_checkType(mrkName, 'CHAR');
 if fileutil_isAbsolutePath(mrkName),
   fullName= mrkName;
 else
-  fullName= fullfile(BBCI.RawDir, mrkName);
+  fullName= fullfile(BTB.RawDir, mrkName);
 end
 
 

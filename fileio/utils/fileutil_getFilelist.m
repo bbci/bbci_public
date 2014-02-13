@@ -9,7 +9,7 @@ function file= fileutil_getFilelist(spec, varargin)
 %
 % Properties:
 %   'Ext': file extension. default: 'eeg' 
-%   'Folder': base directory to search for files. default: BBCI.RawDir
+%   'Folder': base directory to search for files. default: BTB.RawDir
 %   'RequireMatch': boolean. This function will throw an error it this
 %   property is set to true and no files were found
 %
@@ -21,10 +21,10 @@ function file= fileutil_getFilelist(spec, varargin)
 
 %% TODO: should also handle: spec is cell array
 
-global BBCI
+global BTB
 
 props = {'Ext',             'eeg',                  'CHAR';
-         'Folder',           BBCI.RawDir,           '!CHAR';
+         'Folder',           BTB.RawDir,           '!CHAR';
          'RequireMatch',     0,                     '!BOOL';
          };
 
@@ -54,9 +54,9 @@ end
 if isdefault.Folder,
   switch(lower(opt.Ext)),
    case {'eeg','vhdr','vmrk'},
-    opt.Folder= BBCI.RawDir;
+    opt.Folder= BTB.RawDir;
    case 'mat',
-    opt.Folder= BBCI.MatDir;
+    opt.Folder= BTB.MatDir;
   end
 end
 

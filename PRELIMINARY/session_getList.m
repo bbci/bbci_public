@@ -18,7 +18,7 @@ function varargout = session_getList(sessionName, varargin)
 %   you need to comment out certain sessions.
 %       
 % OPT: struct or property/value list of optional arguments: 
-% 'checkTpDir': If the global variable BBCI.Tp.Dir ist not empty, .
+% 'checkTpDir': If the global variable BTB.Tp.Dir ist not empty, .
 % 'Filename'       : name of the session list file, default 'session_list'
 %
 %Returns:
@@ -38,7 +38,7 @@ function varargout = session_getList(sessionName, varargin)
 % TODAY_DIR= '/home/bbci/data/bbciRaw//VPgab_09_08_21/';
 % get_session_list
 
-global BBCI
+global BTB
 
 props = {'CheckTpDir'       1,                  '!BOOL';
          'DetailFile',    	'session_details',  '!CHAR';
@@ -57,8 +57,8 @@ misc_checkType(sessionName,'CHAR');
 
 
 if opt.CheckTpDir,
-  if ~isempty(BBCI.Tp.Dir),
-    subdir= BBCI.Tp.Dir;
+  if ~isempty(BTB.Tp.Dir),
+    subdir= BTB.Tp.Dir;
     while ismember(subdir(end), '/\','legacy'),
       subdir(end)= [];
     end
@@ -82,7 +82,7 @@ sessionName= get_sessionName(sessionName);
 if fileutil_isAbsolutePath(sessionName)
   full_path= [sessionName filesep];  
 else
-  full_path = [BBCI.InvestigationDir sessionName filesep];
+  full_path = [BTB.InvestigationDir sessionName filesep];
 end
 
 subdir_list= textread([full_path opt.Filename], '%s', 'commentstyle', 'shell');

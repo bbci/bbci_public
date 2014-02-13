@@ -142,5 +142,5 @@ end
 [bbci, data]= bbci_apply_adaptation(bbci, data, 'init');
 
 bbci.memo.tcstate= bbci_typechecking('off');
-global BBCI
-BBCI.History= 0;
+global BTB
+BTB.History= 0;

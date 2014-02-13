@@ -169,12 +169,12 @@ function init_button_Callback(hObject, eventdata, handles)
 if strcmp(get(handles.vp_code_box, 'string'), 'Enter usercode'),
     add_to_message_box(handles, 'Error: No valid usercode set.');
 else
-    global BBCI;
+    global BTB;
     if isempty(get(handles.vp_code_box, 'string')),
-        %clear BBCI.Tp.Code;
+        %clear BTB.Tp.Code;
         set(handles.vp_code_box, 'string', GB.Tp.Code);
     else
-        BBCI.Tp.Code = get(handles.vp_code_box, 'string');
+        BTB.Tp.Code = get(handles.vp_code_box, 'string');
     end
     acq_makeDataFolder('MultipleFolders', 0);
     
@@ -187,8 +187,8 @@ else
         state.sigserv_started = false;
     end
     manage_parameters('reset');
-    manage_parameters('set', 'global_bbci', BBCI); 
-    GB = BBCI;
+    manage_parameters('set', 'global_bbci', BTB); 
+    GB = BTB;
     [study, study_id] = get_selected_item(handles.study_box); 
     study = study{1};
     experiments = manage_parameters('set', 'experiment_settings', ...
@@ -270,9 +270,9 @@ function vp_code_box_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-global BBCI
-if ~isempty(BBCI.Tp.Code),
-    set(hObject, 'string', BBCI.Tp.Code);
+global BTB
+if ~isempty(BTB.Tp.Code),
+    set(hObject, 'string', BTB.Tp.Code);
 end
 
 % --- Executes on selection change in study_box.
@@ -1113,7 +1113,7 @@ if check_state(handles,1),
         end
         save([GB.TmpDir filesep 'tmp_classifier'], '-struct', 'cls');
         
-        cmd_init= sprintf('BBCI.Tp.Code= ''%s''; BBCI.Tp.Dir= ''%s'';set_general_port_fields(''localhost'');general_port_fields.feedback_receiver = ''pyff'';', GB.Tp.Code, GB.Tp.Dir);
+        cmd_init= sprintf('BTB.Tp.Code= ''%s''; BTB.Tp.Dir= ''%s'';set_general_port_fields(''localhost'');general_port_fields.feedback_receiver = ''pyff'';', GB.Tp.Code, GB.Tp.Dir);
         bbci_cfy= [GB.TmpDir filesep 'tmp_classifier.mat'];
         cmd_bbci= ['dbstop if error; bbci = load(''' bbci_cfy '''); bbci_apply(bbci);'];
         system(['matlab -nosplash -nojvm -r "' cmd_init cmd_bbci '; exit;" &']);
@@ -1198,12 +1198,12 @@ function [value index] = get_selected_item(hObject),
     value = content(index);
     
 function val_file = find_classifier_name(handles),
-    global BBCI
+    global BTB
     bbci = manage_parameters('get', 'bbci');
     base_file = bbci.calibrate.save.file;
     val_file = base_file;
     counter = 1;
-    while exist(strcat(BBCI.Tp.Dir, val_file, '.mat'), 'file'),
+    while exist(strcat(BTB.Tp.Dir, val_file, '.mat'), 'file'),
         val_file = sprintf('%s_%02d', base_file, counter);
         counter = counter+1;
     end

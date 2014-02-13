@@ -20,9 +20,9 @@ function file_writeBVheader(file, varargin)
 % See also: file_*
 
 
-global BBCI
+global BTB
 
-props= {'Folder'    BBCI.TmpDir    'CHAR'};
+props= {'Folder'    BTB.TmpDir    'CHAR'};
 opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 
@@ -46,7 +46,7 @@ end
 fid= fopen([fullName '.vhdr'], 'w','b');
 if fid==-1, error(sprintf('cannot write to %s.vhdr', fullName)); end
 fprintf(fid, ['Brain Vision Data Exchange Header File Version 1.0' 13 10]);
-fprintf(fid, ['; Data exported from BBCI Matlab Toolbox' 13 10]);
+fprintf(fid, ['; Data exported from BTB Matlab Toolbox' 13 10]);
 fprintf(fid, [13 10 '[Common Infos]' 13 10]);
 fprintf(fid, ['DataFile=%s.eeg' 13 10], opt.DataFile);
 fprintf(fid, ['MarkerFile=%s.vmrk' 13 10], opt.MarkerFile);

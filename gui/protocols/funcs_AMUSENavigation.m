@@ -69,7 +69,7 @@ elseif ~isempty(varargin{1}),
     bbci = varargin{1};
 end
 
-global BBCI;
+global BTB;
 
 % get preset intervals
 ivals = [80,350; 360, 800];
@@ -83,7 +83,7 @@ for k=1:size(ivals,1)
     opt.cfy_ival = [opt.cfy_ival; tmp_ivals];
 end
 
-bbci.calibrate.folder = BBCI.Tp.Dir;
+bbci.calibrate.folder = BTB.Tp.Dir;
 bbci.calibrate.file =  'SETBYGUI';
 bbci.calibrate.read_fcn = @file_readBV;
 bbci.calibrate.read_param = {'fs', 100};
@@ -121,9 +121,9 @@ if strcmp(varargin{1}, 'variables'),
     return
 end
 
-global BBCI DROPBOX GTEC_SERIAL
+global BTB DROPBOX GTEC_SERIAL
 
-BBCI.Tp.Geometry = [1280, 0, 1024, 768];
+BTB.Tp.Geometry = [1280, 0, 1024, 768];
 
 experiments.classifier_name = {'bbci_classifier'};
 experiments.allowed_files = {'navigation_train_'};
@@ -239,7 +239,7 @@ if strcmp(varargin{1}, 'variables'),
     return
 end
 
-global BBCI
+global BTB
 output = [];
 fill_defaults = false;
 experiment = varargin{1}.experiment;
@@ -276,9 +276,9 @@ switch experiment,
         stim_artifactMeasurement(seq, wav, opt);
     otherwise, %let's start with AMUSE
        opt = ES; % application expects this terminology
-       setfil = [BBCI.Tp.Dir 'amuse_settings.mat'];
+       setfil = [BTB.Tp.Dir 'amuse_settings.mat'];
        save(setfil, 'opt');
-       system(['matlab -nosplash -r "dbstop if error; BBCI.Tp.Dir=''' BBCI.Tp.Dir ''';' ...
+       system(['matlab -nosplash -r "dbstop if error; BTB.Tp.Dir=''' BTB.Tp.Dir ''';' ...
            'auditory_MainRoutine(''' setfil ''');" &']);
        
 end

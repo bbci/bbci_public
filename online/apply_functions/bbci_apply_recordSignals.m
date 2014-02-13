@@ -9,7 +9,7 @@ function DS_record= bbci_apply_recordSignals(varargin)
 % 02-2012 Benjamin Blankertz
 
 
-global BBCI
+global BTB
 
 if ischar(varargin{1}),
   cmd= varargin{1};
@@ -24,9 +24,9 @@ if ischar(varargin{1}),
 %    end
     DS_record= struct('recording', 1);
     DS_record.opt= opt_proplistToStruct(BS.record_param{:});
-    props= {'Internal'           0             'BOOL'
-            'CheckImpedances'    0             'BOOL'
-            'Folder',            BBCI.Tp.Dir   'CHAR'};
+    props= {'Internal'           0            'BOOL'
+            'CheckImpedances'    0            'BOOL'
+            'Folder',            BTB.Tp.Dir   'CHAR'};
     DS_record.opt= opt_setDefaults(DS_record.opt, props);
     filebase= BS.record_basename;
     if ~fileutil_isAbsolutePath(filebase),

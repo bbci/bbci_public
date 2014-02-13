@@ -23,7 +23,7 @@
 %                 subfolder 'calibration'.
 %  .settings      [STRUCT] parameters for the specific calibration function
 %                 bbci.calibrate.fcn.
-%  .folder        [STRING, default defined by global BBCI.Tp.Dir]
+%  .folder        [STRING, default defined by global BTB.Tp.Dir]
 %                 specifies the folder for calibration data files
 %  .file          [STRING] specifies the name of the calibation file
 %  .read_fcn      [FCN-HANDLE, default @file_readBV] function to read

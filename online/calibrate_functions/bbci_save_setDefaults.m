@@ -25,7 +25,7 @@ function bbci= bbci_save_setDefaults(varargin)
 % 01-2012 Benjamin Blankertz
 
 
-global BBCI
+global BTB
 
 bbci= [];
 if nargin>0 && (isstruct(varargin{1}) || isempty(varargin{1})),
@@ -42,10 +42,10 @@ bbci.calibrate.save= struct_copyFields(bbci.calibrate.save, ...
 if isfield(bbci.calibrate, 'folder'),
   default_save_folder= bbci.calibrate.folder;
 else
-  default_save_folder= BBCI.Tp.Dir;
+  default_save_folder= BTB.Tp.Dir;
 end
 
-props= {'file'   'bbci_classifier'    'CHAR'
+props= {'file'          'bbci_classifier'      'CHAR'
         'folder'        default_save_folder    'CHAR'
         'overwrite'     1                      '!BOOL'
         'raw_data'      0                      '!BOOL'

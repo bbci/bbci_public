@@ -8,7 +8,7 @@ function [varargout] = file_readBV(file, varargin)
 %
 % Arguments:
 %   FILE: file name (no extension),
-%         relative to BBCI.RawDir unless beginning with '/' (resp '\').
+%         relative to BTB.RawDir unless beginning with '/' (resp '\').
 %         FILE may also contain the wildcard symbol '*'. In this case
 %         make sure that the order of the files (printed to the terminal)
 %         is appropriate.
@@ -78,7 +78,7 @@ function [varargout] = file_readBV(file, varargin)
 %               - There was an bug in the check for the lag
 
 
-global BBCI
+global BTB
 
 props= {'CLab'              ''      'CHAR|CELL{CHAR}'
         'Fs'                'raw'   'CHAR|DOUBLE'
@@ -126,12 +126,12 @@ if ~iscell(file)
 end
 
 fileNames = cell(1,length(file));
-% use BBCI.RawDir as default dir
+% use BTB.RawDir as default dir
 for filePos = 1:length(file)
   if fileutil_isAbsolutePath(file{filePos}),
     fileNames{filePos}= file{filePos};
   else
-    fileNames{filePos} = fullfile(BBCI.RawDir, file{filePos});
+    fileNames{filePos} = fullfile(BTB.RawDir, file{filePos});
   end
 end
 

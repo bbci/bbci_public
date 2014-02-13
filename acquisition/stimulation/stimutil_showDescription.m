@@ -33,7 +33,7 @@ function HANDLE= stimutil_showDescription(desc, varargin)
 
 % blanker@cs.tu-berlin.de, Jul-2007
 
-global BBCI
+global BTB
 
 props= {'Clf'               0                               'BOOL'
         'HandleBackground' []                              'HANDLE'
@@ -43,7 +43,7 @@ props= {'Clf'               0                               'BOOL'
         'DescPos'          [0.5 0.5]                       'DOUBLE[2]'
         'DescBoxgap'        0.05                           'DOUBLE[1]'
         'Delete'            1                               'BOOL'       
-        'Position'          BBCI.Tp.Geometry                       'DOUBLE[4]'
+        'Position'          BTB.Tp.Geometry                       'DOUBLE[4]'
         'Waitfor'           'R*'                            'DOUBLE|CHAR'
         'WaitforMsg'       'Press <ENTER> to continue: '   'CHAR'
         'Frame'             1                               '!BOOL'};

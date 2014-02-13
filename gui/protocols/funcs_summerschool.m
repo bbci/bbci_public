@@ -64,7 +64,7 @@ elseif ~isempty(varargin{1}),
     bbci = varargin{1};
 end
 
-global BBCI;
+global BTB;
 
 % % % get preset intervals
 % % ivals = [80,350; 360, 800];
@@ -78,7 +78,7 @@ global BBCI;
 % %     opt.cfy_ival = [opt.cfy_ival; tmp_ivals];
 % % end
 
-bbci.calibrate.folder = BBCI.Tp.Dir;
+bbci.calibrate.folder = BTB.Tp.Dir;
 bbci.calibrate.file =  'SETBYGUI';
 bbci.calibrate.read_fcn = @file_readBV;
 bbci.calibrate.read_param = {'fs', 100};
@@ -116,8 +116,8 @@ if strcmp(varargin{1}, 'variables'),
     return
 end
 
-global BBCI
-BBCI.Tp.Geometry = [1280, 0, 1024, 768];
+global BTB
+BTB.Tp.Geometry = [1280, 0, 1024, 768];
 fill_defaults = false;
 
 % filenames to use
@@ -156,7 +156,7 @@ if strcmp(varargin{1}, 'variables'),
     return
 end
 
-global BBCI
+global BTB
 output = [];
 fill_defaults = false;
 
@@ -167,7 +167,7 @@ bbci = varargin{1}.bbci;
 ES.use_signal_server = strcmp(func2str(bbci.source.acquire_fcn), 'bbci_acquire_sigserv');
 
 % run the actual experiments
-[cnt mrko] = file_readBV([BBCI.Tp.Dir ES.filename], 'fs', bbci.source.acquire_param{1}.fs);
+[cnt mrko] = file_readBV([BTB.Tp.Dir ES.filename], 'fs', bbci.source.acquire_param{1}.fs);
 mrk = bbci.calibrate.marker_fcn(mrko, bbci.calibrate.marker_param{:});
 bbci.source.acquire_param = {cnt, mrk}; 
 dat = bbci_apply(bbci)

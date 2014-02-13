@@ -6,7 +6,7 @@ function hdr= file_readBVheader(hdrName, varargin)
 %
 % Arguments:
 %   HDRNAME: name of header file (no extension),
-%            relative to BBCI.RawDir unless beginning with '/'.
+%            relative to BTB.RawDir unless beginning with '/'.
 %            HDRNAME may also contain '*' as wildcard or be a cell
 %            array of strings
 %
@@ -76,8 +76,8 @@ end
 if fileutil_isAbsolutePath(hdrName),
   fullName= hdrName;
 else
-  global BBCI
-  fullName= fullfile(BBCI.RawDir, hdrName);
+  global BTB
+  fullName= fullfile(BTB.RawDir, hdrName);
 end
 
 fid= fopen([fullName '.vhdr'], 'r');

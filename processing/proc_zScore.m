@@ -77,7 +77,7 @@ out.x= zeros(prod(sz(1:end-1)), nClasses);
 if opt.Std,
   out.std= zeros(prod(sz(1:end-1)), nClasses);
   if exist('mrk_addIndexedField')==2,
-    %% The following line is only to be executed if the BBCI Toolbox
+    %% The following line is only to be executed if the BTB Toolbox
     %% is loaded.
     out= mrk_addIndexedField(out, 'std');
   end

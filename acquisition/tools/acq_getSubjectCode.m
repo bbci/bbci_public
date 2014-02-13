@@ -15,7 +15,7 @@ function subject_code = acq_getSubjectCode(varargin)
 % 06-12 Javier Pascual. From code from acq_makeDataFolder
 
 
-global BBCI
+global BTB
 
 props = {   'CodePrefix'       'VP'    'CHAR'
             'PrefixLetter'     'a'     'CHAR'
@@ -40,7 +40,7 @@ subject_code = [];
 
 %% Generate a Subject Code and folder name to save the EEG data in
 while isempty(subject_code),
-  dd= dir([BBCI.RawDir opt.CodePrefix opt.PrefixLetter opt.LetterStart '*']);
+  dd= dir([BTB.RawDir opt.CodePrefix opt.PrefixLetter opt.LetterStart '*']);
   if isempty(dd),
     subject_code = [opt.CodePrefix opt.PrefixLetter opt.LetterStart 'a'];
     continue;

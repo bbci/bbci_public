@@ -30,7 +30,7 @@ function pyff_sendUdp(varargin)
 % blanker, martijn
 
 
-global BBCI
+global BTB
 persistent socke
 
 if nargin==3 & isequal(varargin{1},'init'),
