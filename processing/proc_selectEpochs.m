@@ -69,7 +69,7 @@ if isfield(epo, 'event'),
     tmp= getfield(epo.event, fld);
     % the first dimension must be indexed by epochs
     subidx= repmat({':'}, 1, ndims(tmp));
-    subidx{1}= ev;
+    subidx{1}= idx;
     epo.event= setfield(epo.event, fld, tmp(subidx{:}));
   end
 end

@@ -33,7 +33,7 @@ bbci.quit_condition.marker= 255;
 bbci.quit_condition.running_time= 2*60;
 
 bbci.log.output= 'screen&file';
-bbci.log.file= fullfile(BBCI.TmpDir, 'log');
+bbci.log.file= fullfile(BTB.TmpDir, 'log');
 bbci.log.classifier= 1;
 
 data= bbci_apply_uni(bbci);
@@ -48,7 +48,7 @@ log_format= '%fs | M(%u) | %fs | [%f] | %s';
              'delimiter','','commentstyle','shell');
 
 % validate makers that evoked calculation of control signals
-isequal(marker_desc, mrk.desc(1:length(marker_desc))')
+isequal(marker_desc, mrk.event.desc(1:length(marker_desc)))
 
 % offline processing of the data
 epo= proc_segmentation(cnt, mrk, [ref_ival(1) cfy_ival(end)], 'clab', bbci.signal.clab);

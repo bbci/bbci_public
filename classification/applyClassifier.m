@@ -3,6 +3,9 @@ function out= applyClassifier(fv, model, C, idx)
 
 
 fv= proc_flaten(fv);
+if ~isfield(C, 'applyFcn'),
+  C.applyFcn= @apply_separatingHyperplane;
+end
 
 if ~exist('idx','var'), 
   out= C.applyFcn(C, fv.x);

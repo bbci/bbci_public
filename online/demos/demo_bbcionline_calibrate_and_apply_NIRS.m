@@ -1,17 +1,17 @@
-BBCI.NirsMatDir = [BBCI.DataDir 'nirs/uni/'];
+BTB.NirsMatDir = [BTB.DataDir 'nirs/uni/'];
 
 BC= [];
 BC.fcn= @bbci_calibrate_tinyNIRS;
 BC.read_fcn=@file_NIRSreadMatlab;
-BC.folder= BBCI.NirsMatDir;
+BC.folder= BTB.NirsMatDir;
 BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';
 %BC.file= 'VPeae_10_03_05/ni_imag_fbarrow_pcovmeanVPeae*';
 %BC.file= 'VPeah_10_06_19/ni_imag_fbarrow_pcovmeanVPeah*';
 %BC.file= 'VPeaj_10_06_22/ni_imag_fbarrow_pcovmeanVPeaj*';
 
 % define a tmp folder
-BC.save.folder= BBCI.TmpDir;
-BC.log.folder= BBCI.TmpDir;
+BC.save.folder= BTB.TmpDir;
+BC.log.folder= BTB.TmpDir;
 
 % rewrite to bbci variable
 bbci= struct('calibrate', BC);
@@ -24,10 +24,10 @@ bbci_save(bbci, calib);
 %%
 
 % load feedback file:
-file = [BBCI.NirsMatDir 'VPeag_10_06_17/ni_imag_fbarrow_pmeanVPeag'];
-%file = [BBCI.NirsMatDir 'VPeae_10_03_05/ni_imag_fbarrow_pmeanVPeae'];
-%file = [BBCI.NirsMatDir 'VPeah_10_06_19/ni_imag_fbarrow_pmeanVPeah'];
-%file = [BBCI.NirsMatDir 'VPeaj_10_06_22/ni_imag_fbarrow_pmeanVPeaj'];
+file = [BTB.NirsMatDir 'VPeag_10_06_17/ni_imag_fbarrow_pmeanVPeag'];
+%file = [BTB.NirsMatDir 'VPeae_10_03_05/ni_imag_fbarrow_pmeanVPeae'];
+%file = [BTB.NirsMatDir 'VPeah_10_06_19/ni_imag_fbarrow_pmeanVPeah'];
+%file = [BTB.NirsMatDir 'VPeaj_10_06_22/ni_imag_fbarrow_pmeanVPeaj'];
 
 [cnt, mrk]= file_NIRSreadMatlab(file);
 
@@ -37,7 +37,7 @@ bbci.source.acquire_param= {cnt, mrk, struct('blocksize',500)};
 
 % define some logging
 bbci.log.output= 'screen&file';
-bbci.log.folder= BBCI.TmpDir;
+bbci.log.folder= BTB.TmpDir;
 bbci.log.classifier= 1;
 
 % start the feedback

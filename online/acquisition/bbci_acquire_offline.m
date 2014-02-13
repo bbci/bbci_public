@@ -58,9 +58,11 @@ if isequal(varargin{1}, 'init'),
   state.cnt_idx= 1:state.cnt_step;
   state.clab= cnt.clab;
   state.cnt= cnt;
-  % -- transitional
-  if ~isfield(mrk, 'desc'),
-    mrk.desc= mrk.toe;
+
+  if isfield(mrk, 'event') && isfield(mrk.event, 'desc'),
+    mrk.desc= mrk.event.desc;
+  else
+    mrk.desc= repmat({'dmy'}, size(mrk.time));
   end
   % --
   state.mrk= mrk;

@@ -4,7 +4,7 @@ mrk= rmfield(mrk_old, {'pos','toe','fs'});
 
 mrk.time= mrk_old.pos/mrk_old.fs*1000;
 mrk.event= struct;
-if isfield(mrk, 'toe'),
+if isfield(mrk_old, 'toe'),
   mrk.event.desc= mrk_old.toe(:);
 end
 

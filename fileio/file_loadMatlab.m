@@ -71,11 +71,11 @@ if nargout > length(vars),
   error('more output arguments than requested variables');
 end
 
-props = {'Path',            BTB.MatDir     'CHAR';
-         'Vars',            vars(1:nargout) 'CELL{CHAR}|CHAR';
-         'CLab'             '*'             'CHAR|CELL{CHAR}';
-         'Ival'             []              'DOUBLE[2]';
-         'Fs'               []          	  'DOUBLE[1]';
+props = {'Path',            BTB.MatDir       'CHAR';
+         'Vars',            vars(1:nargout)  'CELL{CHAR}|CHAR';
+         'CLab'             '*'              'CHAR|CELL{CHAR}';
+         'Ival'             []               'DOUBLE[2]';
+         'Fs'               []               'DOUBLE[1]';
          };
 
 misc_checkType(file,'!CHAR');
@@ -93,7 +93,7 @@ if iscell(file),
   return;
 end
 
-fullname= [opt.Path filesep file];
+fullname= fullfile(opt.Path, file);
 if fileutil_isAbsolutePath(file),
   if ~isdefault.Path,
     warning('opt.Path is ignored, since file is given with absolute path');
@@ -105,7 +105,7 @@ end
 
 % keyboard
 
-if ismember('*', file,'legacy'),
+if ismember('*', file),
   [filepath, filename]= fileparts(fullname);
   dd= dir(filepath);
   resr= regexp({dd.name}, filename);

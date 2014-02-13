@@ -31,10 +31,6 @@ default_grd= sprintf(['scale,FC3,FC1,FCz,FC2,FC4,legend\n' ...
                      'CP5,CP3,CP1,CPz,CP2,CP4,CP6\n' ...
                      'P7,P5,P3,Pz,P4,P6,P8\n' ...
                      'PO7,PO3,O1,Oz,O2,PO4,PO8']);
-
-% MODEL muss nach xvalidation entweder struct oder char sein, nicht
-% function handle ... da ist entweder in xvalidation was falsch oder
-% woanders...
                  
 props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
         'disp_ival'     [-200 800]                     '!DOUBLE[1 2]'
@@ -63,7 +59,7 @@ props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
        };
 [opt, isdefault]= opt_setDefaults('bbci.calibrate.settings', props);
 
-nClassesGuess= length(unique(opt.mrk2feedback_fcn(opt.cue_markers),'legacy'));
+nClassesGuess= length(unique(opt.mrk2feedback_fcn(opt.cue_markers)));
 [opt, isdefault]= ...
   opt_overrideIfDefault(opt, isdefault, 'nClasses', nClassesGuess);
 [opt, isdefault]= ...
@@ -161,9 +157,9 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
     fig_closeIfExists(5);
   end
   if iscell(BC_result.rejected_clab),   %% that means rejected_clab is not NaN
-    cidx= find(ismember(BC_result.clab, BC_result.rejected_clab,'legacy'));
+    cidx= find(ismember(BC_result.clab, BC_result.rejected_clab));
     BC_result.clab(cidx)= [];
-    cidx= find(ismember(BC_result.cfy_clab, BC_result.rejected_clab,'legacy'));
+    cidx= find(ismember(BC_result.cfy_clab, BC_result.rejected_clab));
     BC_result.cfy_clab(cidx)= [];
   end
 else
@@ -228,7 +224,7 @@ end
 %
 if opt.create_figs,
   fig_set(1, 'name','ERP - grid plot', 'set',{'Visible','off'});
-  H= grid_plot(epo, mnt, defopt_erps);%, 'ColorOrder',opt_scalp_erp.colorOrder);
+  H= grid_plot(epo, mnt, defopt_erps, 'ColorOrder',opt_scalp_erp.ColorOrder);
   %grid_markInterval(BC_result.cfy_ival);
   if isfield(H, 'scale'),
     grid_addBars(epo_r, 'HScale',H.scale);
@@ -238,8 +234,9 @@ if opt.create_figs,
   set(gcf,  'Visible','on');
   
   fig_set(2, 'name','ERP - scalp maps', 'set',{'Visible','off'});
-  H= plot_scalpEvolutionPlusChannel(epo, mnt, opt.clab_erp, BC_result.cfy_ival, ...
-                               opt_scalp_erp);
+  H= plot_scalpEvolutionPlusChannel(epo, mnt, opt.clab_erp, ...
+                                    BC_result.cfy_ival, ...
+                                    opt_scalp_erp);
   grid_addBars(epo_r);
   set(gcf,  'Visible','on');
   

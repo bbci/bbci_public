@@ -1,6 +1,6 @@
 function startup_bbci_toolbox(varargin)
 
-global BBCI
+global BTB
 
 % Find directory of the BBCI Toolbox and path it to the path
 BBCI_DIR= fileparts(which(mfilename));
@@ -8,23 +8,23 @@ addpath(genpath(BBCI_DIR));
 rmpath(genpath(fullfile(BBCI_DIR, '.git')));
 BBCI_PRIVATE_DIR= fullfile(fileparts(BBCI_DIR), 'bbci_private');
 
-BBCI= opt_proplistToStruct(varargin{:});
-if ~isfield(BBCI, 'TypeChecking'),
-  BBCI.TypeChecking= 1;
+BTB= opt_proplistToStruct(varargin{:});
+if ~isfield(BTB, 'TypeChecking'),
+  BTB.TypeChecking= 1;
 end
-BBCI= opt_setDefaults(BBCI, {'DataDir'   '/home/bbci/data/'   'CHAR'});
-if ~exist(BBCI.DataDir, 'dir'),
+BTB= opt_setDefaults(BTB, {'DataDir'   '/home/bbci/data/'   'CHAR'});
+if ~exist(BTB.DataDir, 'dir'),
   warning('Optional argument ''DataDir'' should specify an existing folder.');
 end
 
 % Guess what the location of other directories could be
-BBCI_RAW_DIR= fullfile(BBCI.DataDir, 'bbciRaw/');
+BBCI_RAW_DIR= fullfile(BTB.DataDir, 'bbciRaw/');
 if ~exist(BBCI_RAW_DIR, 'dir'),
-  BBCI_RAW_DIR= BBCI.DataDir;
+  BBCI_RAW_DIR= BTB.DataDir;
 end
-BBCI_MAT_DIR= fullfile(BBCI.DataDir, 'bbciMat/');
+BBCI_MAT_DIR= fullfile(BTB.DataDir, 'bbciMat/');
 if ~exist(BBCI_MAT_DIR, 'dir'),
-  BBCI_MAT_DIR= BBCI.DataDir;
+  BBCI_MAT_DIR= BTB.DataDir;
 end
 PYFF_DIR= fullfile(fileparts(BBCI_DIR), 'pyff', 'src');
 if ~exist(PYFF_DIR, 'dir'),
@@ -44,22 +44,22 @@ props= {'Dir'            BBCI_DIR          'CHAR';
         'History'        1                 '!BOOL';
         'TypeChecking'   1                 '!BOOL'
        };
-[BBCI, isdefault]= opt_setDefaults(BBCI, props);
+[BTB, isdefault]= opt_setDefaults(BTB, props);
 
 private_folders_to_add= {'utils', 'startup'};
 for kk= 1:length(private_folders_to_add),
-  folder= fullfile(BBCI.PrivateDir, private_folders_to_add{kk});
+  folder= fullfile(BTB.PrivateDir, private_folders_to_add{kk});
   if exist(folder, 'dir'),
     addpath(genpath(folder));
   end
 end
 
 if isdefault.TmpDir
-  BBCI.TmpDir= fullfile(BBCI.DataDir, 'tmp');
-  if ~exist(BBCI.TmpDir, 'dir'),
-    fprintf('!! Default TEMP dir not existing at\n  %s\n', BBCI.TmpDir);
+  BTB.TmpDir= fullfile(BTB.DataDir, 'tmp');
+  if ~exist(BTB.TmpDir, 'dir'),
+    fprintf('!! Default TEMP dir not existing at\n  %s\n', BTB.TmpDir);
     fprintf('!! Setting TEMP dir to ''''\n');
-    BBCI.TmpDir= '';
+    BTB.TmpDir= '';
   end
 end
 
@@ -67,7 +67,7 @@ end
 props= {'Dir'       ''    'CHAR'
         'Code'      ''    'CHAR'
        };
-BBCI.Tp= opt_setDefaults(BBCI.Tp, props);
+BTB.Tp= opt_setDefaults(BTB.Tp, props);
 
 % Information about data acquistion
 props= {'Prefix'          'a'    'CHAR'
@@ -77,6 +77,6 @@ props= {'Prefix'          'a'    'CHAR'
         'IoAddr'          []     'INT'
         'IoLib'           ''     'CHAR'
        };
-BBCI.Acq= opt_setDefaults(BBCI.Acq, props);
+BTB.Acq= opt_setDefaults(BTB.Acq, props);
 
-evalin('base', 'global BBCI');
+evalin('base', 'global BTB');

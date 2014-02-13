@@ -1,12 +1,12 @@
 %% first do the calibration for the NIRS:
-BBCI.NirsMatDir = [BBCI.DataDir 'nirs/uni/'];
+BTB.NirsMatDir = [BTB.DataDir 'nirs/uni/'];
 BC= [];
 BC.fcn= @bbci_calibrate_tinyNIRS;
 BC.read_fcn=@file_NIRSreadMatlab;
-BC.folder= BBCI.NirsMatDir;
+BC.folder= BTB.NirsMatDir;
 BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';
-BC.save.folder= BBCI.TmpDir;
-BC.log.folder= BBCI.TmpDir;
+BC.save.folder= BTB.TmpDir;
+BC.log.folder= BTB.TmpDir;
 
 bbci_nirs= struct('calibrate', BC);
 [bbci_nirs, calib_nirs]= bbci_calibrate(bbci_nirs);
@@ -18,14 +18,14 @@ bbci_nirs.source.acquire_param= {calib_nirs.cnt, calib_nirs.mrk, struct('realtim
 %% now do the calibration for the EEG data:
 BC= [];
 BC.fcn= @bbci_calibrate_tinyCsp;
-BC.folder= BBCI.RawDir;
+BC.folder= BTB.RawDir;
 BC.file= 'VPeag_10_06_17/imag_fbarrow_pcovmeanVPeag*';
 BC.read_fcn=@file_readBV;
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
 BC.marker_param= {{1, 2; 'left', 'right'}};
-BC.save.folder= BBCI.TmpDir;
-BC.log.folder= BBCI.TmpDir;
+BC.save.folder= BTB.TmpDir;
+BC.log.folder= BTB.TmpDir;
 
 bbci= struct('calibrate', BC);
 
@@ -73,7 +73,7 @@ bbci.control(2).source_list=2;
 
 % for log:
 bbci.log.output= 'screen&file';
-bbci.log.folder= BBCI.TmpDir;
+bbci.log.folder= BTB.TmpDir;
 bbci.log.classifier= 1;
 
 % % or just load the predefined classifier

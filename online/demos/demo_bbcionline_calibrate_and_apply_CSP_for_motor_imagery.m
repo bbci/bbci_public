@@ -9,8 +9,8 @@ BC.marker_param= {{1, 2, 3; 'left', 'right', 'foot'}};
 
 % In demos, we just write to the temp folder. Otherwise, the default
 % choice would be fine.
-BC.save.folder= BBCI.TmpDir;
-BC.log.folder= BBCI.TmpDir;
+BC.save.folder= BTB.TmpDir;
+BC.log.folder= BTB.TmpDir;
 
 bbci= struct('calibrate', BC);
 
@@ -23,7 +23,7 @@ bbci.source.acquire_fcn= @bbci_acquire_offline;
 bbci.source.acquire_param= {calib.cnt, calib.mrk};
 
 bbci.log.output= 'screen&file';
-bbci.log.folder= BBCI.TmpDir;
+bbci.log.folder= BTB.TmpDir;
 bbci.log.classifier= 1;
 
 data= bbci_apply(bbci);

@@ -6,7 +6,7 @@ function [cnt,mrk] = file_NIRSreadMatlab(filename)
 mnt=make_NIRSmnt;
 
 
-if ~ismember('*', filename,'legacy')
+if ~ismember('*', filename)
     
     load(filename)
     cnt.x=ni.dat;
@@ -14,11 +14,11 @@ if ~ismember('*', filename,'legacy')
     cnt.clab=mnt.clab;
     cnt.title=filename;
     mrk.time=ni.mrk(:,1)'/cnt.fs*1000;
-    mrk.desc=ni.mrk(:,2)';
+    mrk.event.desc=ni.mrk(:,2)';
     mrk.className={'left','right'};
-    mrk.y=zeros(2,size(mrk.desc,2));
-    mrk.y(1,:)=mrk.desc==1;
-    mrk.y(2,:)=mrk.desc==2;
+    mrk.y=zeros(2,size(mrk.event.desc,2));
+    mrk.y(1,:)=mrk.event.desc==1;
+    mrk.y(2,:)=mrk.event.desc==2;
     disp(sprintf('%s loaded',filename))
 else
     load(filename(1:end-1))
@@ -27,11 +27,11 @@ else
     cnt1.clab=mnt.clab;
     cnt1.title=[filename(1:end-1) '02.mat']
     mrk1.time=ni.mrk(:,1)'/cnt1.fs*1000;
-    mrk1.desc=ni.mrk(:,2)';
+    mrk1.event.desc=ni.mrk(:,2)';
     mrk1.className={'left','right'};
-    mrk1.y=zeros(2,size(mrk1.desc,2));
-    mrk1.y(1,:)=mrk1.desc==1;
-    mrk1.y(2,:)=mrk1.desc==2;
+    mrk1.y=zeros(2,size(mrk1.event.desc,2));
+    mrk1.y(1,:)=mrk1.event.desc==1;
+    mrk1.y(2,:)=mrk1.event.desc==2;
     
     load([filename(1:end-1) '02.mat'])
     cnt2.x=ni.dat;

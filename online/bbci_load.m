@@ -3,7 +3,6 @@ function data= bbci_load(bbci)
 %
 %Synopsis:
 %  DATA= bbci_load(BBCI);
-%
 
 
 bbci= bbci_calibrate_setDefaults(bbci);
