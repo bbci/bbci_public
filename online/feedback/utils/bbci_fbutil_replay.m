@@ -1,9 +1,9 @@
 function bbci_fbutil_replay(logfile, varargin)
 
 opt= opt_proplistToStruct(varargin{:});
-opt= opt_setDefaults(opt, ...
-                     'realtime',1, ...
-                     'fbopt', struct);
+props= {'Realtime'   1       '!DOUBLE[1]'
+        'FbOpt'      struct  'STRUCT'};
+opt= opt_setDefaults(opt, props);
 
 logline= textread(logfile, '%s', 'delimiter','');
 
@@ -15,7 +15,7 @@ fbopt= struct;
 for ii= idx',
   eval(['fb' logline{ii}(2:end) ';']);
 end
-fbopt= struct_copyFields(fbopt, opt.fbopt);
+fbopt= struct_copyFields(fbopt, opt.FbOpt);
 
 HH= feval([fcn '_init'], fbopt);
 [handles, H]= bbciutil_handleStruct2Vector(HH);
@@ -28,7 +28,7 @@ for k= k0+1:length(logline),
     ticktime= strread(logline{k}, '# TICK at %fs', 'delimiter','');
     wait_for_tick= 1;
     while wait_for_tick,
-      wait_for_tick= toc(starting_time) < ticktime*opt.realtime;
+      wait_for_tick= toc(starting_time) < ticktime/opt.Realtime;
     end
     drawnow;
   elseif strncmp('# TRIGGER', logline{k}, 9),

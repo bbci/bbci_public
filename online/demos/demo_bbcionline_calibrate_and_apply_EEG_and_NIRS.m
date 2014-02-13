@@ -1,9 +1,8 @@
 %% first do the calibration for the NIRS:
-BTB.NirsMatDir = [BTB.DataDir 'nirs/uni/'];
 BC= [];
 BC.fcn= @bbci_calibrate_tinyNIRS;
 BC.read_fcn=@file_NIRSreadMatlab;
-BC.folder= BTB.NirsMatDir;
+BC.folder=  [BTB.DataDir 'bbciDemo/'];
 BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';
 BC.save.folder= BTB.TmpDir;
 BC.log.folder= BTB.TmpDir;
@@ -32,11 +31,12 @@ bbci= struct('calibrate', BC);
 [bbci, calib_eeg]= bbci_calibrate(bbci);
 
 bbci.source(1).acquire_fcn= @bbci_acquire_offline;
-bbci.source(1).acquire_param= {calib_eeg.cnt, calib_eeg.mrk, struct('realtime',0.1)};
+bbci.source(1).acquire_param= {calib_eeg.cnt, calib_eeg.mrk, ...
+                    struct('realtime',0.1)};
 
 
 %%
-% add the NIRS stuct to bbci:
+% add the NIRS struct to bbci:
 
 % for source:
 bbci.source(2).acquire_fcn= bbci_nirs.source.acquire_fcn;
@@ -81,7 +81,7 @@ bbci.log.classifier= 1;
 bbci.source(2).min_blocklength=0;
 
 %% perform the multimodal feedback
-data= bbci_apply_multimodal(bbci);
+data= bbci_apply(bbci);
 
 %% analyse the outputs
 log_format= '%fs | %5s | [%f] | {cl_output=%f}';

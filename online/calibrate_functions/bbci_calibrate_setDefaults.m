@@ -48,9 +48,9 @@ if ~isempty(bbci.calibrate.fcn),
   default_save_file= [default_save_file appendix];
   default_log_file= [default_log_file appendix];
 end
-bbci= bbci_save_setDefaults(bbci, ...
-                            'folder', bbci.calibrate.folder, ...
-                            'file',   default_save_file);
+prop_defaults= {'folder'  bbci.calibrate.folder   'CHAR'
+                'file'    default_save_file       'CHAR'};
+bbci= bbci_save_setDefaults(bbci, prop_defaults);
 
 props= {'output'  'screen&file'           'BOOL|CHAR(screen file screen&file)'
         'folder'   bbci.calibrate.folder  'CHAR'

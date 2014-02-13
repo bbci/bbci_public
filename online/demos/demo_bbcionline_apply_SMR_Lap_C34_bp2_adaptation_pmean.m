@@ -1,6 +1,10 @@
 % EEG file used for offline simulation of online processing
 eeg_file= 'VPkg_08_08_07/imag_arrowVPkg';
 [cnt, mrk]= file_loadMatlab(eeg_file, 'vars',{'cnt','mrk'});
+%% --- transitional
+mrk= convert_markers(mrk);
+% -----
+
 S.bbci= file_loadMatlab(eeg_file, 'vars','bbci');
 mrk = mrk_selectClasses(mrk, S.bbci.classes);
 
@@ -13,11 +17,15 @@ fv= proc_segmentation(fv, mrk, S.bbci.setup_opts.ival);
 fv= proc_variance(fv);
 fv= proc_logarithm(fv);
 fv= proc_flaten(fv);
-classy= {'RLDAshrink', 'store_means', 1};
+classy= {@train_RLDAshrink, 'StoreMeans', 1};
 C= trainClassifier(fv, classy);
 
 eeg_file= 'VPkg_08_08_07/imag_fbarrowVPkg';
 [cnt, mrk_orig]= file_loadMatlab(eeg_file, 'vars',{'cnt','mrk_orig'});
+%% --- transitional
+mrk_orig.time= mrk_orig.pos*1000/mrk_orig.fs;
+mrk_orig= rmfield(mrk_orig, 'fs');
+% -----
 
 bbci= struct;
 bbci.source.acquire_fcn= @bbci_acquire_offline;

@@ -1,19 +1,18 @@
-function bbci= bbci_save_setDefaults(varargin)
+function bbci= bbci_save_setDefaults(bbci, prop_defaults)
 %BBCI_SAVE_SETDEFAULTS - Set default values in bbci for bbci_calibrate
 %
 %Synopsis:
 %  BBCI= bbci_save_setDefaults
-%  BBCI= bbci_save_setDefaults(BBCI)
-%  BBCI= bbci_save_setDefaults('Param1',VALUE1, ...)
-%  BBCI= bbci_save_setDefaults(BBCI, 'Param1',VALUE1, ...)
+%  BBCI= bbci_save_setDefaults(BBCI, <PROPDEFAULTS>)
 %
 %Arguments:
 %  BBCI - Structure of bbci_calibrate which specifies in its subfield
 %      'save' how the BBCI classifier is saved.
 %      This function is mainly used internally, but might also in some
 %      case be useful in scripts.
-%  'Param1', VALUE1, ... - Parameter/value list of properties to be set
-%      in bbci.calibrate.save
+%  'PROPDEFAULTS' - Property list of additional default properties/values
+%      which override the default properties of this function, but not
+%      existing fields in BBCI.
 %
 %Output:
 %  BBCI - Updated bbci structure
@@ -27,17 +26,21 @@ function bbci= bbci_save_setDefaults(varargin)
 
 global BTB
 
-bbci= [];
-if nargin>0 && (isstruct(varargin{1}) || isempty(varargin{1})),
-  bbci= varargin{1};
-  varargin(1)= [];
+if nargin==0,
+  bbci= [];
+  prop_defaults= {};
+elseif nargin==1,
+  if iscell(bbci),
+    prop_defaults= bbci;
+    bbci= [];
+  else
+    prop_defaults= {};
+  end
 end
 
 bbci= opt_setDefaults(bbci, {'calibrate'   struct   'STRUCT'});
 
 bbci.calibrate= opt_setDefaults(bbci.calibrate, {'save'  struct  'STRUCT'});
-bbci.calibrate.save= struct_copyFields(bbci.calibrate.save, ...
-                                       struct(varargin{:}));
 
 if isfield(bbci.calibrate, 'folder'),
   default_save_folder= bbci.calibrate.folder;
@@ -53,6 +56,11 @@ props= {'file'          'bbci_classifier'      'CHAR'
         'figures'       0                      '!BOOL'
         'figures_spec'  {'paperSize','auto'}   'PROPLIST'
        };
+for k= 1:size(prop_defaults,1),
+  idx= strmatch(prop_defaults{k,1}, props(:,1), 'exact');
+  props(idx,1:2)= prop_defaults(k,1:2);
+end
+
 bbci.calibrate.save= opt_setDefaults('bbci.calibrate.save', props);
 if fileutil_isAbsolutePath(bbci.calibrate.save.file),
   bbci.calibrate.save.folder= '';

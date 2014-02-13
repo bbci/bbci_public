@@ -1,17 +1,17 @@
 function [outarg1, loss_std, out_test, memo]= xvalidation(epo, model, varargin)
-%[loss, loss_std, out_test, memo]= xvalidation(fv, model, <opt>)
+%[LOSS, LOSS_STD, OUT_TEST, MEMO]= xvalidation(FV, MODEL, <OPT>)
 %
-% IN  fv      - features vectors, struct with fields
+% IN  FV      - features vectors, struct with fields
 %               .x (data, nd array where last dim is nSamples) and
 %               .y (labels [nClasses x nSamples], 1 means membership)
-%     model   - name or structure specifying a classification model,
+%     MODEL   - name or structure specifying a classification model,
 %               cd to /classifiers and type 'help Contents' to see a list.
 %               if the model has free parameters, they are chosen by
 %               select_model on each training set (default, time consuming),
 %               or by calling select_model beforehand, see opt.Outer_ms
 %               (quicker, but can bias the estimation of xvalidation loss).
-%     opt:
-%     .sample_fcn   - FUNC: handle to the function that is called to randomly
+%     OPT:
+%     .SampleFcn    - FUNC: handle to the function that is called to randomly
 %                     draw training / test set splits (prefix 'sample_' is
 %                     automatically prepended). The dataset is usually
 %                     partitioned into #folds equisized folds, with 1 fold being 
@@ -35,7 +35,7 @@ function [outarg1, loss_std, out_test, memo]= xvalidation(epo, model, varargin)
 %                     the name of the function as string, and the following
 %                     cells hold parameters that are passed to the
 %                     sample_fcn.
-%     .xTrials      - <'xTrials', xt> is a short cut for
+%     .XTrials       - <'xTrials', xt> is a short cut for
 %                     <'sample_fcn', {'divisions', xt}>. The value xt is a
 %                     vector [#shuffles, #folds], see sample_divisions,
 %                     default [10 10].
@@ -49,25 +49,25 @@ function [outarg1, loss_std, out_test, memo]= xvalidation(epo, model, varargin)
 %                     evaluate likelihoods, see LOSS_IDENTITY. For this
 %                     loss function, EPO.y is effectively ignored and
 %                     thus need not be provided.
-%     .ms_sample_fcn- like sample_fcn but to be used in model selection.
-%     .msTrials     - like xTrials, but for model selection. when the third
+%     .MsSampleFcn  - like SampleFcn but to be used in model selection.
+%     .MsTrials     - like XTrials, but for model selection. when the third
 %                     value is -1 it is set to the size of the training set
 %                     (useful for outer model selection), default [3 10]
-%                     without .outer_ms and [3 10 -1] with .outer_ms.
-%     .outer_ms     - perform model selection before the xvalidation.
+%                     without .OuterMs and [3 10 -1] with .OuterMs.
+%     .OuterMs     - perform model selection before the xvalidation.
 %                     this can bias the estimation of the xvalidation loss.
 %                     should not be done on the whole set, e.g., by
 %                     choosing opt.MsTrials= [3 10 -1]. default 0.
-%     .divTr,.divTe - specified fixed training / test set splits
+%     .DivTr,.DivTe - specified fixed training / test set splits
 %                     format must be as the output of the sample_* functions.
-%                     if this field is given .sample_fcn is (of course)
+%                     if this field is given .SampleFcn is (of course)
 %                     ignored.
 %                     alternatively these fields can be added to the fv
 %                     structure (first argument)
-%     .msdivTr, .msdivTe - specified fixed training / test set splits for
+%     .MsDivTr, .MsDivTe - specified fixed training / test set splits for
 %                     outer model selection (only possible is .outer_ms=1),
 %                     otherwise the same as above.
-%     .proc         - class dependent preprocessing; this string is
+%     .Proc         - class dependent preprocessing; this string is
 %                     evaluated for each training set (labels of the test
 %                     set are set to NaN),
 %                     the procedure must calculate 'fv' from 'fv'.
@@ -76,71 +76,72 @@ function [outarg1, loss_std, out_test, memo]= xvalidation(epo, model, varargin)
 %                     be restricted in future versions.
 %                     (field proc can also be given in fv structure)
 %                     EXTENDED to free parameters, to be explained.
-%     .out_trainloss- output not only test but also training loss. in this
+%     .OutTrainLoss - output not only test but also training loss. in this
 %                     case loss and loss_std are 2-d vectors, default 0.
-%     .std_of_means - if true output loss_std is calculated as std of the
+%     .StdOfMeans   - if true output loss_std is calculated as std of the
 %                     means of the losses of each fold, default 1.
-%     .classifier_nargout - specify the number of output-arguments to
+%     .ClassifierNargout - specify the number of output-arguments to
 %                     receive from the applyFcn. If this is set > 1 then
 %                     out_test is made a structure with a field for each
 %                     argout and all nargouts are passed to the loss_fcn 
 %                     (which needs to be able the handle them). All argouts
 %                     are assumed to be row-vectors with one number for
 %                     each test point, like the usual continous classifier-out.
-%     .catch_trainerrors - if true, errors when calling the training
+%     .CatchTrainerrors - if true, errors when calling the training
 %                     routine do not cause xvalidation to stop. Instead,
 %                     the respective predictions will be set of NaN. Mind
 %                     that errors during model selection will still cause
 %                     xvalidation to abort. default 0.
-%     .allow_reject - if true, classifier outputs that are NaN will be
+%     .AllowReject - if true, classifier outputs that are NaN will be
 %                     interpreted as "rejected" (can not be classified
 %                     with minimum level of certainty). See below for
 %                     changes in the output of xvalidation. default: 0
-%     .allow_transduction - if true, also the samples of the test set are
+%     .AllowTransduction - if true, also the samples of the test set are
 %                     passed to the classifier, but (of course) with NaN'ed
 %                     labels, default 0.
-%     .verbosity    - level of verbosity (0: silent, 1: normal,
+%     .Verbosity    - level of verbosity (0: silent, 1: normal,
 %                     2: show intermediate results of model selection)
-%     .save_classifier - saves the classifier that was selected by an
+%     .SaveClassifier - saves the classifier that was selected by an
 %                     inner model selection into the memo output variable,
 %                     default 0.
-%     .save_proc    - saves the processing that was selected by an inner
+%     .SaveProc    - saves the processing that was selected by an inner
 %                     process selection into the memo output variable.
-%     .save_proc_params - a cell array of variable names that are free
+%     .SaveProcParams - a cell array of variable names that are free
 %                     variables or output variables of opt.proc and that
 %                     were selected by an inner process selection into
 %                     the memo output variable.
-%     .save_file    - a name of a file intermediate results will be saved, too.
+%     .SaveFile     - a name of a file intermediate results will be saved, too.
 %                     If this fields is defined, a restart of this programm
 %                     will start at the point the last intermediate result
 %                     was saved. This is important for condor.
-%     .clock        - show a work progress clock (in figure)
-%     .progress_bar - show a work progress bar (in terminal)
-%     .out_timing   - prints out elapsed time, default 1.
-%     .out_prefix   - a string that is printed before the result
+%     .Clock        - show a work progress clock (in figure)
+%     .ProgressBar  - show a work progress bar (in terminal)
+%     .OutTiming    - prints out elapsed time, default 1.
+%     .OutPrefix    - a string that is printed before the result
 %                     (unfinished lines printed before calling xvalidation
 %                     are possibly erased by the progress bar)
-%     .train_only   - return (as first output argument instead of loss)
+%     .TrainOnly    - return (as first output argument instead of loss)
 %                     trained classifiers (in a cell array) for each fold
 %                     of the  cross-validation. classifiers are not
 %                     applied to the test sets.
-%     .train_jits   - for training use only samples with those jitter
+%     .TrainJits    - for training use only samples with those jitter
 %                     indices (requires that fv has field jit)
-%     .test_jits    - for testing use only samples with those jitter
+%     .TestJits     - for testing use only samples with those jitter
 %                     indices (requires that fv has field jit)
-%     .fp_bound     - <do we still need this?>
-%
-%     .twoClass2Bool - if true (default) and nClasses == 2 xvalidation will 
+%     .FpBound      - <do we still need this?> adjust bias of the classifier
+%                     such that the rate of false positives equals to this
+%                     value; default 0 meaning no adjustmean.
+%     .TwoClass2Bool - if true (default) and nClasses == 2 xvalidation will 
 %                      detect the binary problem and change fv.y to a
 %                      vector [1 x nSamples] with 0/1.
 %
-% OUT loss      - loss of the test set
+% OUT LOSS      - loss of the test set
 %                 if opt.out_trainloss is true, [loss_test, loss_train]
-%     loss_std  - analog, see opt.std_of_means
-%     out_test  - continuous classifier output for each x-val trial /
+%     LOSS_STD  - analog, see opt.std_of_means
+%     OUT_TEST  - continuous classifier output for each x-val trial /
 %                 sample, a matrix of size [nClasses nSamples nTrials].
 %                 For classifiers with reject option: see below.
-%     memo      - according to opt.save_classifier, opt.save_proc, and
+%     MEMO      - according to opt.save_classifier, opt.save_proc, and
 %                 opt.save_proc_params saves some of the selections that
 %                 are made by a model/process selection within the
 %                 cross-validation.
@@ -190,7 +191,7 @@ function [outarg1, loss_std, out_test, memo]= xvalidation(epo, model, varargin)
 % SEE select_model, select_proc, sample_kfold, sample_divisions, loss_0_1, loss_identity
 
 % Benjamin Blankertz
-% with extensions by guido, anton numerous others
+% with extensions by guido, anton and numerous others
 
 props = { 'SampleFcn'           @sample_divisions       'FUNC|CELL';
           'XTrials',            [10 10],                'DOUBLE[1 2]';
@@ -207,10 +208,9 @@ props = { 'SampleFcn'           @sample_divisions       'FUNC|CELL';
           'AllowReject'         0                       '!BOOL';
           'CatchTrainerrors'    0                       '!BOOL';
           'TrainOnly'           0                       '!BOOL';
-          'BlockMarkers'        []                      ''; % ??
           'Proc'                ''                      'STRUCT';
-          'FpBound'             0                       ''; % ??
-          'AllowTransduction'   0                       '';
+          'FpBound'             0                       'DOUBLE'; 
+          'AllowTransduction'   0                       'BOOL';
           'Verbosity',          1                       '!BOOL';
           'Clock'               0                       '!BOOL';
           'SaveFile'            ''                      'CHAR';
@@ -222,7 +222,7 @@ props = { 'SampleFcn'           @sample_divisions       'FUNC|CELL';
           'SaveProcParams'      []                      'CELL{CHAR}';
           'Debug'               0                       '!BOOL';
           'DsplyPrecision'      3                       'DOUBLE';
-          'DisplayPlusMinus'     char(177)               'CHAR';
+          'DisplayPlusMinus'    char(177)               'CHAR';
           'TwoClass2Bool'       1                       '!BOOL';          
          };
 
@@ -242,7 +242,7 @@ end
 opt_checkProplist(opt, props);
 misc_checkType(epo,'STRUCT(x y)');
 misc_checkType(epo.x,'DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]','epo.x');
-misc_checkType(model,'STRUCT|CHAR|FUNC');
+misc_checkType(model,'STRUCT|CHAR|FUNC|CELL');
 
 t0= cputime;
 
@@ -495,17 +495,8 @@ else              %% classification model without free hyper parameters
   model= [];
 end
 
-% this is a quick fix : classy should be actually a handle throughout...
-if isa(classy,'function_handle')
-    [dummy, train_par]= misc_getFuncParam(classy);
-    train_fcn= classy;
-    dummy= func2str(classy);
-    applyFcn= misc_getApplyFunc(str_tail(dummy,'_'));
-else 
-    [dummy, train_par]= misc_getFuncParam(classy);
-    train_fcn = str2func(['train_' classy]);
-    applyFcn= misc_getApplyFunc(classy);
-end
+[train_fcn, train_par]= misc_getFuncParam(classy);
+applyFcn= misc_getApplyFunc(classy);
 [loss_fcn, loss_par]= misc_getFuncParam(opt.LossFcn);
 
 % Issue a warning if 'loss_identity' is used with labels given, as the
@@ -618,7 +609,7 @@ end
 
 memo= [];
 
-if ~isempty(opt.SaveFile) & exist([opt.SaveFile,'.mat'],'file')
+if ~isempty(opt.SaveFile) && exist([opt.SaveFile,'.mat'],'file')
     load(opt.SaveFile);
     if ~exist('n','var')
         n0 = 1;
@@ -660,7 +651,7 @@ for n= n0:nTrials,
             if prochasfreevar(best_proc),
                 error('not all free variable were bound');
             end
-            [func, train_par]= getFuncParam(classy);
+            [dmy, train_par]= misc_getFuncParam(classy);
         elseif prochasfreevar(opt.Proc),
             fv= xval_selectSamples(epo, idxTr);
             %      if isstruct(opt.proc) & isfield(opt.proc, 'train'),
@@ -716,7 +707,7 @@ for n= n0:nTrials,
         end
         if opt.CatchTrainerrors,
           try
-            C= train_fcn(ff.x, ff.y, ff.classifier_param{:},train_par{:});
+            C= train_fcn(ff.x, ff.y, ff.classifier_param{:}, train_par{:});
           catch
             if opt.Verbosity>0,
               fprintf('Failed to train classifier in division [%d %d]\n', n, d);
@@ -724,7 +715,7 @@ for n= n0:nTrials,
             C = [];
           end
         else
-          C= train_fcn(ff.x, ff.y, ff.classifier_param{:},train_par{:});
+          C= train_fcn(ff.x, ff.y, ff.classifier_param{:}, train_par{:});
         end
         epo.y= label;
 

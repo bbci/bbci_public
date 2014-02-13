@@ -38,7 +38,7 @@ function [bbci, data]= bbci_calibrate_csp(bbci, data)
 %     CSP filters that should be used for classification; 'auto' means
 %     automatic selection. Default is 'auto'.
 %  model: [CHAR or CELL] Classification model.
-%     Default {'RLDAshrink', 'gamma',0, store_means',1, 'scaling',1}.
+%     Default {@train_RLDAshrink, 'gamma',0, store_means',1, 'scaling',1}.
 %  reject_artifacts:
 %  reject_channels:
 %  reject_artifacts_opts: cell array of options which are passed to 

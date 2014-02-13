@@ -1,9 +1,10 @@
-BTB.NirsMatDir = [BTB.DataDir 'nirs/uni/'];
+% IN CONSTRUCTION
+% (the results look strange)
 
 BC= [];
 BC.fcn= @bbci_calibrate_tinyNIRS;
-BC.read_fcn=@file_NIRSreadMatlab;
-BC.folder= BTB.NirsMatDir;
+BC.read_fcn= @file_NIRSreadMatlab;
+BC.folder=  [BTB.DataDir 'bbciDemo/'];
 BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';
 %BC.file= 'VPeae_10_03_05/ni_imag_fbarrow_pcovmeanVPeae*';
 %BC.file= 'VPeah_10_06_19/ni_imag_fbarrow_pcovmeanVPeah*';

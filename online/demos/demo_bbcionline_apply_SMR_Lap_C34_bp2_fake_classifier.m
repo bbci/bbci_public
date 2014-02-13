@@ -2,6 +2,10 @@
 eeg_file= 'VPkg_08_08_07/imag_arrowVPkg';
 
 [cnt, mrk_orig]= file_loadMatlab(eeg_file, 'vars',{'cnt','mrk_orig'});
+%% --- transitional
+mrk_orig.time= mrk_orig.pos*1000/mrk_orig.fs;
+mrk_orig= rmfield(mrk_orig, 'fs');
+% -----
 
 clab= procutil_getClabForLaplacian(cnt, 'C3,4');
 tmp= proc_selectChannels(cnt, clab);
