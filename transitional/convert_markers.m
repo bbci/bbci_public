@@ -1,17 +1,19 @@
 function mrk= convert_markers(mrk_old)
 
-mrk= rmfield(mrk_old, {'pos','toe','fs'});
+mrk= rmfield(mrk_old, {'pos','fs'});
 
 mrk.time= mrk_old.pos/mrk_old.fs*1000;
-mrk.event= struct;
 if isfield(mrk_old, 'toe'),
   mrk.event.desc= mrk_old.toe(:);
+  mrk= rmfield(mrk, {'toe'});
 end
 
+mrk.event= struct;
 if isfield(mrk, 'indexedByEpochs'),
   mrk= rmfield(mrk, mrk.indexedByEpochs);
+  mrk= rmfield(mrk, 'indexedByEpochs');
   nEvents= length(mrk.time);
-  for Fld= mrk.indexedByEpochs,
+  for Fld= mrk_old.indexedByEpochs,
     fld= Fld{1};
     fieldvar= mrk_old.(fld);
     sz= size(fieldvar);
