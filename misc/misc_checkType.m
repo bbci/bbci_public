@@ -52,6 +52,8 @@ function [ok, msg]= misc_checkType(variable, typeDefinition, propname, toplevel)
 %    'CELL' - value has to be a cell array
 %    'CELL{<TYPE>}' - value has to be a cell array and the contents of each 
 %            cell have to be of type <TYPE> (example 'CELL{CHAR}').
+%    'PROPLIST' - Property/value list
+%    'PROPSPEC' - Property specification as used in opt_setDefaults
 %    Furthermore, alternative type specifications can be combined with the
 %    operator '|' (example 'CHAR|DOUBLE[3]' for a color specification).
 %    By default, the empty value is always accepted. In order to force
@@ -181,7 +183,7 @@ elseif str_matchesHead('CELL', typeDefinition),
     if ~strcmp(spec([1 end]), '{}'),
       ok= 0;
       msg= sprintf('Invalid specification ''%s'' of CELL type in variable ''%s''', ...
-            spec, variable);
+            spec, propname);
     end
     vn= sprintf('%s (within cells)', propname);
     [ok_array, msg_array]= ...
@@ -213,10 +215,11 @@ elseif str_matchesHead('STRUCT', typeDefinition),
     end
   end
 elseif str_matchesHead('PROPLIST', typeDefinition),
-  % Should we allow also STRUCT?
   if isempty(variable) || ...
-        ( iscell(variable) && ndims(variable)==2 && size(variable,1)==1 && ...
-          mod(length(variable),2)==0 ),
+        ( iscell(variable) && length(variable)==1 && isstruct(variable{1}) ),
+    ok= 1;
+  elseif iscell(variable) && ndims(variable)==2 && size(variable,1)==1 && ...
+          mod(length(variable),2)==0,
     ok= all(cellfun(@ischar, variable(1:2:end)));
   else
     ok= 0;
