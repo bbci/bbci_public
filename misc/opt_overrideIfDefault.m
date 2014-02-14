@@ -14,7 +14,7 @@ function [opt, isdefault]= opt_overrideIfDefault(opt, isdefault, varargin)
 %  OPT         and
 %  ISDEFAULT - as obtained from set_defaults
 %  NEWOPT    - struct or property/value list as can be input to
-%              function propertylist2struct
+%              function opt_proplistToStruct
 %
 %Output: 
 %  OPT_OUT - struct with updated field values.
@@ -40,13 +40,18 @@ function [opt, isdefault]= opt_overrideIfDefault(opt, isdefault, varargin)
 
 misc_checkType(opt, 'STRUCT');
 misc_checkType(isdefault, 'STRUCT');
-misc_checkType(varargin, 'PROPLIST');
 
 %if ~isequal(fieldnames(opt), fieldnames(isdefault)),
 %  warning('opt and isdefault (i.e. 1st and 2nd argument) have different fields');
 %end
 
-newopt= opt_proplistToStruct(varargin{:});
+if length(varargin)==1 && iscell(varargin{1}),
+  misc_checkType(varargin{1}, 'PROPSPEC', 'varargin{1}');
+  newopt= opt_propspecToStruct(varargin{1});
+else
+  misc_checkType(varargin, 'PROPLIST');
+  newopt= opt_proplistToStruct(varargin{:});
+end
 Fld= fieldnames(newopt);
 for ii= 1:length(Fld),
   if ~isfield(opt, Fld{ii}) || getfield(isdefault, Fld{ii}),
