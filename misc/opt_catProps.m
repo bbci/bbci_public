@@ -19,16 +19,15 @@ function props= opt_catProps(props, varargin)
 %  element) already appeared in an earlier PROPSPECLIST.
 %
 %Example:
-%  props1= {'a', 1; 'b', 2}
-%  props2= {'c', 3; 'a', 4}
+%  props1= {'a', 1; 'b', 2; 'd',  0}
+%  props2= {'c', 3; 'a', 4; 'd', 99}
 %  opt_catProps(props1, props2)
 
 % 06-2012 Benjamin Blankertz
 
 
 props_append= varargin;
-for k= 1:length(varargin),
-  idx_existing= ismember(props_append{k}(:,1), props(:,1),'legacy');
-  props_append{k}(idx_existing,:)= [];
+for k= 1:length(props_append),
+  idx_new= ~ismember(props_append{k}(:,1), props(:,1));
+  props= cat(1, props, props_append{k}(idx_new,:));
 end
-props= cat(1, props, props_append{:});
