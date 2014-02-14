@@ -86,7 +86,7 @@ if mod(length(opt.Vars),2)~=0 || any(~isch(1:2:end)),
   error('wrong format for opt.Vars');
 end
 
-if if fileutil_isAbsolutePath(file),
+if fileutil_isAbsolutePath(file),
   opt.Path = '';
 end
 
