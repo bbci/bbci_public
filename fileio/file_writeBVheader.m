@@ -1,4 +1,4 @@
-function file_writeBVheader(file, varargin)
+function props= file_writeBVheader(file, varargin)
 % FILE_WRITEBVHEADER - Write Header in BrainVision Format
 %
 % Synopsis:
@@ -22,9 +22,25 @@ function file_writeBVheader(file, varargin)
 
 global BTB
 
-props= {'Folder'    BTB.TmpDir    'CHAR'};
+props= {'Folder'       BTB.TmpDir   'CHAR'
+        'Precision'    'int16'      'CHAR(int16 int32 single double)'
+        'DataFile'     ''           'CHAR'
+        'DataPoints'   []           'CHAR|DOUBLE'
+        'MarkerFile'   ''           'CHAR'
+        'Impedances'   []           'DOUBLE[-]'
+        'Fs'           []           '!DOUBLE[1]'
+        'CLab'         ''           '!CELL(CHAR)'
+        'Scale'        'auto'       'CHAR|DOUBLE[-]'
+       };
+if nargin==0,
+  return;
+end
+
+misc_checkType(file, 'CHAR');
+misc_checkType(varargin, 'PROPLIST');
+
 opt= opt_proplistToStruct(varargin{:});
-opt= opt_setDefaults(opt, props);
+[opt, isdefault]= opt_setDefaults(opt, props, 1);
 
 if fileutil_isAbsolutePath(file),
   fullName= file;
@@ -33,11 +49,11 @@ else
 end
 
 [pathstr, fileName]= fileparts(fullName);
-props= {'Precision'     'int16'   'CHAR(int16 int32 single double float32 float64)'
-        'DataFile'     fileName  'CHAR'
-        'MarkerFile'   fileName  'CHAR'
-        'Impedances'   []        'DOUBLE'};
-opt= opt_setDefaults(opt, props);
+proplist= {'DataFile'     fileName
+           'MarkerFile'   fileName
+          };
+opt= opt_overrideIfDefault(opt, isdefault, proplist);
+clear props
 
 if ~ischar(opt.DataPoints),  %% not sure, why DataPoints is a string
   opt.DataPoints= sprintf('%d', opt.DataPoints);

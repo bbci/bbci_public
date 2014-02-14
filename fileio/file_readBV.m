@@ -126,12 +126,15 @@ if ~iscell(file)
 end
 
 fileNames = cell(1,length(file));
+fileTitle = cell(1,length(file));
 % use BTB.RawDir as default dir
 for filePos = 1:length(file)
   if fileutil_isAbsolutePath(file{filePos}),
     fileNames{filePos}= file{filePos};
+    [dmy, fileTitle{filePos}]= fileparts(file{filePos});
   else
     fileNames{filePos} = fullfile(BTB.RawDir, file{filePos});
+    fileTitle{filePos}= file{filePos};
   end
 end
 
@@ -211,7 +214,7 @@ end
 firstFileToRead = 1;
 firstFileSkip = 0;
 lastFileToRead = length(fileNames);
-lastFileLength=inf;
+lastFileLength = inf;
 
 
 % check if we want to load the raw data
@@ -219,7 +222,7 @@ if isequal(opt.Fs, 'raw'),
   opt.Fs= raw_fs;
 end
 cnt.fs= opt.Fs;
-cnt.title = str_vec2str(file);
+cnt.title = str_vec2str(fileTitle);
 cnt.file = str_vec2str(fileNames);
 
 nChans= length(cnt.clab);
