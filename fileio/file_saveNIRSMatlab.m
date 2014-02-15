@@ -51,16 +51,15 @@ misc_checkType(dat, 'STRUCT');
 misc_checkType(mrk, 'STRUCT');
 misc_checkType(mnt, 'STRUCT');
  
-
 fullname= fullfile(opt.Path,file);
 dat.file= fullname;
 
 %% Gather some summary information into structure 'nfo'.
-nfo= copy_struct(dat, 'fs', 'clab','source','detector');
+nfo= struct_copyFields(dat, {'fs', 'clab','source','detector'});
 
 
 if isfield(dat,'x')
-  nfo.T= size(dat.x,1)/dat.fs*1000; % new toolbox time-based
+  nfo.T= size(dat.x,1)*1000/dat.fs; % new toolbox time-based
 end
 if isfield(dat,'x') && ndims(dat.x)>2
   nfo.nEpochs= size(dat.x,3);

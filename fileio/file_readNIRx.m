@@ -241,7 +241,7 @@ if iscell(file),
 end
 
 %% **** Read header ****
-opt_tmp = copy_struct(opt,'System','Path','Verbose','HeaderExt');
+opt_tmp = struct_copyFields(opt, {'System','Path','Verbose','HeaderExt'});
 hdr=file_readNIRxHeader(file,opt_tmp);
 hdr.system = opt.System;
 
@@ -249,7 +249,7 @@ if opt.Verbose; fprintf('Source wavelengths: [%s] nm\n',num2str(hdr.wavelengths)
 
 %% **** Read marker ****
 if nargout>1
-  opt_tmp = copy_struct(opt,'System','Path','Verbose','Prefix');
+  opt_tmp = struct_copyFields(opt,{'System','Path','Verbose','Prefix'});
   mrk = file_readNIRxMarker(file,opt_tmp);
   mrk.fs = hdr.fs;
   if opt.Verbose; fprintf('Markers read, %d events found.\n',numel(mrk.desc)); end
@@ -328,12 +328,13 @@ if nargout >= 3 && (isempty(sourceClab) || isempty(detectorClab))
   end
   cnt.clab=mnt.clab;
 elseif nargout >= 3 % Hadi: made it >= instead of > because of the way calibrate.m calls
-  opt_tmp = copy_struct(opt,'File','ClabPolicy','Projection','Connector');
+  opt_tmp = struct_copyFields(opt, ...
+                              {'File','ClabPolicy','Projection','Connector'});
   mnt = mnt_getNIRSMontage(sourceClab,detectorClab,opt_tmp);
   cnt.clab=[strcat(mnt.clab,'highWL') strcat(mnt.clab,'lowWL')];
   
   if opt.Restrict %JM: does currently not work.
-    opt_tmp = copy_struct(opt,'Dist','RemoveOptodes');
+    opt_tmp = struct_copyFields(opt, {'Dist','RemoveOptodes'});
     allclab = mnt.clab;
     mnt = mnt_restrictNIRSMontage(mnt,opt_tmp); 
     tmp_clab=[strcat(mnt.clab,'highWL') strcat(mnt.clab,'lowWL')];
