@@ -1,8 +1,18 @@
-eeg_file= 'VPiac_10_10_13/CenterSpellerMVEP_VPiac';
+% DEMO_BBCIONLINE_APPLY_ERP_SPELLER
+%  This script demonstrates how to perform simulated online processing
+%  for an ERP speller. To that end, a realistic feature extraction is
+%  set up. Note, that in the normal use case this is done
+%  automatically during the calibration. The calibration of the ERP Speller
+%  is shown in 'demo_bbcionline_calibrate_and_apply_ERP_Speller'.
+%  Here, we just define a random classifier. This classifier is apply in
+%  simulated online mode, and the results of classification are read from
+%  the log file. These are compared with a standard offline classification
+%  analysis from the data itself (i.e., without simulating online operation).
+
+
+eeg_file= fullfile(BTB.DataDir, 'demoMat', 'VPiac_10_10_13', ...
+                   'calibration_CenterSpellerMVEP_VPiac');
 [cnt, mrk]= file_loadMatlab(eeg_file, 'vars',{'cnt','mrk'});
-%% --- transitional
-mrk= convert_markers(mrk);
-% -----
 
 clab= {'F3','Fz','F4', 'C3','Cz','C4', 'P3','Pz','P4'};
 ref_ival= [-200 0];

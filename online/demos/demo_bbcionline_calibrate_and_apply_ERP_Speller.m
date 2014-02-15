@@ -1,7 +1,17 @@
+% DEMO_BBCIONLINE_CALIBRATE_AND_APPY_ERP_SPELLER
+%   This script demonstates a typical use case of the online part of
+%   the BBCI Toolbox. Given calibration data, a classifier is trained on
+%   that data using a calibration function. That function outputs an
+%   online processing chain in the variable 'bbci'. Then one typically
+%   modifies certain points of 'bbci' (e.g., depending on the used hardware
+%   a specific acquire function has to be specified) and starts the fun.
+
+
 BC= [];
 BC.fcn= @bbci_calibrate_ERPSpeller;
 BC.settings.nClasses= 6;
-BC.file= 'VPibq_11_05_18/calibration_CenterSpellerFixedSequenceVPibq';
+BC.file= fullfile(BTB.DataDir, 'demoRaw', 'VPiac_10_10_13', ...
+                  'calibration_CenterSpellerMVEP_VPiac');
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
 BC.marker_param= {{[31:49], [11:29]; 'target', 'nontarget'}};
@@ -44,3 +54,10 @@ out= applyClassifier(fv, 'LDA', bbci.classifier.C);
 
 % validate classifier outputs of simulated online and offline processing
 max(out(:)- cfy)
+
+
+% extract control signals
+isctrl= cellfun(@(x)(length(x)>2), control);
+control_str= sprintf('%s\n', control{find(isctrl)});
+[var_name, var_value]= strread(control_str, '{%s%f}', 'delimiter','=');
+var_value'

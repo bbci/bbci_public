@@ -1,6 +1,16 @@
+% DEMO_BBCIONLINE_CALIBRATE_AND_APPY_CSP_FOR_MOTOR_IMAGERY
+%   This script demonstates a typical use case of the online part of
+%   the BBCI Toolbox. Given calibration data, a classifier is trained on
+%   that data using a calibration function. That function outputs an
+%   online processing chain in the variable 'bbci'. Then one typically
+%   modifies certain points of 'bbci' (e.g., depending on the used hardware
+%   a specific acquire function has to be specified) and starts the fun.
+
+
 BC= [];
 BC.fcn= @bbci_calibrate_csp;
-BC.file= 'VPkg_08_08_07/imag_arrowVPkg';
+BC.file= fullfile(BTB.DataDir, 'demoRaw', 'VPkg_08_08_07', ...
+                  'calibration_motorimageryVPkg');
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
 BC.marker_param= {{1, 2, 3; 'left', 'right', 'foot'}};

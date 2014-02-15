@@ -1,13 +1,21 @@
+% DEMO_BBCIONLINE_ADAPTATION_PCOVMEAN_3_BINARY_CFY
+%   The script illustrates a case of classifier adaptation (in simulated
+%   online mode. The dataset contains three types of motor imagery,
+%   /left hand/, /right hand/, and /feet/. On the data set, three
+%   binary classifiers (L vs R, L vs F, F vs R) are adapted with the
+%   supervised PCOVMEAN method, see [Vidaurre et al, 2011]. Each
+%   classfier starts from a subject-independent LDA classifier. The
+%   features are log band-power in two frequency bands and three channels.
+
+
 % Subject-independent kickstart classifier
-cfy_dir= fullfile(BTB.RawDir, 'subject_independent_classifiers/demo/');
+cfy_dir= fullfile(BTB.DataDir, 'demoMat', 'subject_independent_classifiers');
 bbci= load(fullfile(cfy_dir, 'kickstart_MI_C3CzC4_9-15_15-35'));
 
 % EEG file used of offline simulation of online processing
-eeg_file= 'VPkg_08_08_07/imag_arrowVPkg';
+eeg_file= fullfile(BTB.DataDir, 'demoMat', 'VPkg_08_08_07', ...
+                   'calibration_motorimageryVPkg');
 [cnt, mrk]= file_loadMatlab(eeg_file);
-%- transitional
-mrk= convert_markers(mrk);
-%---
 
 % Specification for pseudo-online analysis
 bbci.source.acquire_fcn= @bbci_acquire_offline;

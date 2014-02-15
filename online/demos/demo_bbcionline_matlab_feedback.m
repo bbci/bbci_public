@@ -45,7 +45,7 @@ return
 %% SANDBOX - test running TWO feedbacks simultaneously and logging
 
 bbci.feedback.log.output= 'file';
-bbci.feedback.log.folder= '/tmp/';
+bbci.feedback.log.folder= BTB.TmpDir;
 
 bbci.feedback(2)= bbci.feedback;
 bbci.feedback(2).opt.fig= 2;
