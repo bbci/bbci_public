@@ -66,7 +66,7 @@ s= textread([fullName '.vhdr'],'%s','delimiter','\n');
 ii= strmatch([keyword '='], s);
 fs= 1000000/sscanf(s{ii}, [keyword '=%f']);
 
-Mrk.time= pos'/fs*1000;
+Mrk.time= pos'*1000/fs;
 % Round time to micro seconds
 % Mrk.time= round(Mrk.time*1000)/1000;
 

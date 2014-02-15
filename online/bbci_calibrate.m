@@ -22,11 +22,13 @@ end
 data.log= bbci_log_open(BC.log);
 
 % Log info about calibration files and BBCI settings
-bbci_log_write(data, '#Calibration files from folder <%s>:', BC.folder);
+folder= fileparts(data.filename); 
+bbci_log_write(data, '#Calibration files from folder <%s>:', folder);
 file_counter= 1;
 for k= 1:length(data.fileinfo),
   for f= 1:length(data.fileinfo{k}),
-    msg= sprintf('File %d: %s <%s>, size %d', file_counter, data.fileinfo{k}(f).name, ...
+    msg= sprintf('File %d: %s <%s>, size %d', file_counter, ...      
+                 data.fileinfo{k}(f).name, ...
                  data.fileinfo{k}(f).date, data.fileinfo{k}(f).bytes);
     bbci_log_write(data, ['#' msg]);
     file_counter= file_counter + 1;

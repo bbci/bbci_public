@@ -16,10 +16,12 @@ function T= opt_substruct(S, fld_list)
 % Let us be gracious:
 if ischar(fld_list),
   fld_list= {fld_list};
+elseif iscell(fld_list) && ismember(size(fld_list,2), [2 3]),
+  fld_list= fld_list(:,1);
 end
 
 fldS= fieldnames(S);
-[dmy, dmy, fld_idx]= intersect(lower(fld_list), lower(fldS),'legacy');
+[dmy, dmy, fld_idx]= intersect(lower(fld_list), lower(fldS), 'legacy');
 fld_list= fldS(fld_idx);
 
 T= [];

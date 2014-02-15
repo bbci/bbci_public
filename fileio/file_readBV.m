@@ -365,13 +365,13 @@ for filePos = firstFileToRead:lastFileToRead
   if nargout>1,
     opt_mrk= opt_substruct(opt, props_readBVmarkers(:,1));
     curmrk= file_readBVmarkers(fileNames{filePos}, opt_mrk);
-    curmrk.time= curmrk.time + dataOffset/cnt.fs*1000;
+    curmrk.time= curmrk.time + dataOffset*1000/cnt.fs;
     % find markers in the loaded interval
-    inival= find(curmrk.time > skip/cnt.fs*1000 & ...
-                 curmrk.time <= (skip+maxlen)/cnt.fs*1000);
+    inival= find(curmrk.time > skip*1000/cnt.fs & ...
+                 curmrk.time <= (skip+maxlen)*1000/cnt.fs);
     curmrk= mrk_selectEvents(curmrk, inival);
     %let the markers start at zero
-    curmrk.time= curmrk.time - skip/cnt.fs*1000;
+    curmrk.time= curmrk.time - skip*1000/cnt.fs;
 
     if firstFileToRead == filePos
       mrk = curmrk;

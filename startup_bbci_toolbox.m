@@ -46,11 +46,13 @@ props= {'Dir'            BBCI_DIR          'CHAR';
        };
 [BTB, isdefault]= opt_setDefaults(BTB, props);
 
-private_folders_to_add= {'utils', 'startup'};
-for kk= 1:length(private_folders_to_add),
-  folder= fullfile(BTB.PrivateDir, private_folders_to_add{kk});
-  if exist(folder, 'dir'),
-    addpath(genpath(folder));
+if exist(BTB.PrivateDir, 'dir'),
+  private_folders_to_add= {'utils', 'startup'};
+  for kk= 1:length(private_folders_to_add),
+    folder= fullfile(BTB.PrivateDir, private_folders_to_add{kk});
+    if exist(folder, 'dir'),
+      addpath(genpath(folder));
+    end
   end
 end
 

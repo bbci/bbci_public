@@ -45,7 +45,8 @@ opt= opt_proplistToStruct(varargin{:});
 
 % Clear opt.Path if mrkName contains absolute path (= starts with '/')
 if fileutil_isAbsolutePath(mrkName),
-    opt.Path=[]; isdefault.Path=0;
+  opt.Path=[];
+  isdefault.Path=0;
 end
 
 opt_checkProplist(opt, props);
@@ -65,17 +66,13 @@ if strcmp(opt.System,'nirx')
   % Remove \t's, flip bits and convert to decimal
   desc = apply_cellwise(s{2},inline('bin2dec(fliplr(strrep(x,sprintf(''\t''),'''')))','x'))';
   desc = apply_cellwise(desc,inline('sprintf(''%s%d'',y,x) ','x','y'),opt.Prefix);
- 
-  % mrk.pos = pos; % new toolbox is not sample, but time based
-  
+
   % get sampling frequency
   hdr=file_readNIRxHeader(fullName);
-  mrk.time= pos/hdr.fs*1000;
+  mrk.time= pos*1000/hdr.fs;
   
   mrk.event.desc = desc';
 end
-
-%mrk.pos = double(mrk.pos);
 mrk.time = double(mrk.time);
 
 % New. Avoids errors in mrk_defineClasses. Adapted from file_readBVmarkers.

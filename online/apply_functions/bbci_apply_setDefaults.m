@@ -170,7 +170,7 @@ for k= 1:length(bbci.feedback),
             'trigger_param'   {}                 'CELL'
            };
   end
-  bbci.feedback(k).opt= opt_setDefaults('bbci.feedback(k).opt', props);
+  bbci.feedback(k).opt= opt_setDefaults(bbci.feedback(k).opt, props);
 end
 
 

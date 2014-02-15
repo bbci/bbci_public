@@ -60,9 +60,9 @@ if isequal(varargin{1}, 'init'),
   state.cnt= cnt;
 
   if isfield(mrk, 'event') && isfield(mrk.event, 'desc'),
-    mrk.desc= mrk.event.desc;
+    mrk.desc= mrk.event.desc(:)';
   else
-    mrk.desc= repmat({'dmy'}, size(mrk.time));
+    [dmy, mrk.desc]= max(mrk.y);
   end
   % --
   state.mrk= mrk;

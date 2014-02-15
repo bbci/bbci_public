@@ -208,7 +208,7 @@ if iscell(file),
     for f = file
       [cnt, mrk,dum,mnt]= file_readNIRx(f{:}, varargin{:});
       % T = [T size(cnt.x,1)]; % Alte Toolbox sample-basiert
-      T = [T size(cnt.x,1)/cnt.fs*1000];
+      T = [T size(cnt.x,1)*1000/cnt.fs];
       if strcmp(f{:},file{1})
         ccnt= cnt;
         cmrk= mrk;

@@ -56,7 +56,7 @@ if isequal(varargin{1}, 'init'),
   state= opt_setDefaults(state, props, 1);
   state.nChannels= length(state.clab);
   state.blocksize_sa= ceil(state.blocksize*state.fs/1000);
-  state.blocksize= state.blocksize_sa/state.fs*1000;
+  state.blocksize= state.blocksize_sa*1000/state.fs;
   state.nsamples= 0;
   state.start_time= tic;
   output= {state};
@@ -94,7 +94,7 @@ else
       packet= receive_udp(sock);
       if ~isempty(packet),
         % we don't know the marker position within the block -> set randomly
-        mrkTime= ceil(state.blocksize_sa*rand)/state.fs*1000;
+        mrkTime= ceil(state.blocksize_sa*rand)*1000/state.fs;
         mrkDesc= str2int(packet);  % -> check format
       else
         mrkTime= [];
@@ -102,7 +102,7 @@ else
       end
      case 'global',
       if ~isempty(ACQ_MARKER),
-        mrkTime= ceil(state.blocksize_sa*rand)/state.fs*1000;
+        mrkTime= ceil(state.blocksize_sa*rand)*1000/state.fs;
         mrkDesc= ACQ_MARKER;
         ACQ_MARKER= [];
       else
