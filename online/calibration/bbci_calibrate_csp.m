@@ -1,8 +1,8 @@
 function [bbci, data]= bbci_calibrate_csp(bbci, data)
-%BBCI_CALIBRATE_CSP - Calibrate for SMR Modulations with CSP
+%BBCI_CALIBRATE_CSP - Calibrate CSP-based detection of SMR Modulations
 %
 %This function is called by bbci_calibrate 
-%(if BBCI.calibate.fcn is set to @bbci_calibrate_CSP).
+%(if BBCI.calibate.fcn is set to @bbci_calibrate_csp).
 %Via BBCI.calibrate.settings, the details can be specified, see below.
 %
 %Synopsis:
@@ -378,41 +378,21 @@ bbci.classifier.C= trainClassifier(fv2, opt.model);
 
 bbci.quit_condition.marker= 255;
 
-
-%% BB: I propose a different validation. For test samples always take a
-%%  FIXED interval, e.g. opt.default_ival. Practically this can be done
-%%  with bidx, train_jits, test_jits.
-opt_xv= struct('sample_fcn',{{@sample_chronKfold,8}}, ...
-               'std_of_means',0, ...
-               'verbosity',0, ...
-               'progress_bar',0);
-[loss,loss_std]= xvalidation(BC_result.feature, opt.model, opt_xv);
+opt_xv= struct('SampleFcn',{{@sample_chronKKfold,8}});
+[loss,loss_std]= crossvalidation(BC_result.feature, opt.model, opt_xv);
 bbci_log_write(data, 'CSP global: %4.1f +/- %3.1f', 100*loss, 100*loss_std);
-proc_logvar= 'fv= proc_variance(fv); fv= proc_logarithm(fv);';
-proc= struct('memo', 'csp_w');
-proc.apply= ['fv= proc_linearDerivation(fv, csp_w); ' proc_logvar];
-if isequal(opt.patterns,'auto'),
-  proc.train= ['[fv,csp_w]= proc_cspAuto(fv, ' int2str(opt.nPatterns) ...
-               '); ' proc_logvar];
-  [loss,loss_std]= xvalidation(fv, opt.model, opt_xv, 'proc',proc);
-  bbci_log_write(data, 'CSP auto inside: %4.1f +/- %3.1f', ...
-                 100*loss, 100*loss_std);
-else
-  proc.train= ['[fv,csp_w]= proc_csp3(fv, ' int2str(opt.nPatterns) '); ' ...
-               proc_logvar];
-  [loss,loss_std] = xvalidation(fv, opt.model, opt_xv, 'proc',proc);
-  bbci_log_write(data, 'CSP inside: %4.1f +/- %3.1f', 100*loss,100*loss_std);
-  if ~isequal(opt.patterns, 1:2*opt.nPatterns),
-    % The CSP filter that was calculated 'globally' on all samples is used
-    % in the cross validation to select 'similar' filters
-    proc.sneakin= {'global_w',csp_w};
-    proc.train= ['[fv,csp_w]= proc_csp3(fv, ''patterns'',global_w, ' ...
-                 '''selectPolicy'',''matchfilters''); ' proc_logvar];
-    [loss,loss_std]= xvalidation(fv, opt.model, opt_xv, 'proc',proc);
-    bbci_log_write(data, 'CSP selPat: %4.1f +/- %3.1f', ...
-                   100*loss, 100*loss_std);
-  end
-end
+proc.train= {{'CSPW', @proc_cspAuto, opt.nPatterns}
+             @proc_variance
+             @proc_logarithm
+            };
+proc.apply= {{@proc_linearDerivation, '$CSPW'}
+             @proc_variance
+             @proc_logarithm
+            };
+[loss,loss_std]= crossvalidation(fv, opt.model, opt_xv, ...
+                                 'Proc', proc);
+bbci_log_write(data, 'CSP auto inside: %4.1f +/- %3.1f', ...
+               100*loss, 100*loss_std);
 mean_loss(ci)= loss;
 std_loss(ci)= loss_std;
 
