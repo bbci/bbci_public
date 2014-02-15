@@ -2,11 +2,15 @@ function mnt= mnt_setElectrodePositions(clab, varargin)
 %MNT_SETELECTRODEPOSITIONS - Electrode positions of standard named channels
 %
 %Usage:
-% MNT= mnt_setElectrodePositions(CLAB);
+% MNT= mnt_setElectrodePositions(CLAB, <OPT>);
 %
 %Input:
 % CLAB: Label of channels (according to the extended international
 %       10-10 system, see mntutil_posExt1010).
+% OPT: Struct or property/value list of optional properties:
+%  'PositionFcn' - FUNC handle of function that specifies eletrode positions,
+%       default @mntutil_posExt1010
+%
 %Output:
 % MNT:  Struct for electrode montage
 %   .x     - x coordiante of electrode positions
@@ -15,48 +19,17 @@ function mnt= mnt_setElectrodePositions(clab, varargin)
 %
 %See also mnt_setGrid
 
-%      posSystem      - name such that ['calc_pos_ ' posSystem] is an m-file
-%                       or a struct with fields x, y, z, clab
-%
 
-% kraulem 08.09.2003
+props= {'PositionFcn'   @mntutil_posExt1010   'FUNC'
+        };
+opt= opt_proplistToStruct(varargin{:});
+opt= opt_setDefaults(opt, props, 1);
 
-if ~exist('clab','var'),
-  [dmy,dmy,dmy,clab]= mntutil_posExt1010;
-end
-if nargin<=1 | isempty(varargin{1}),
-  varargin{1}= mntutil_posExt1010;
-end
-
-if ischar(varargin{1}),
-  posFile= ['calc_pos_' varargin{1}];
-  if exist(posFile, 'file'),
-    posSystem= feval(posFile);
-    displayMontage= {varargin{2:end}};
-  else
-    posSystem= mntutil_posExt1010;
-    displayMontage= {varargin{:}};
-  end
-  x= posSystem.x;
-  y= posSystem.y;
-  z= posSystem.z;
-  elab= posSystem.clab;
-elseif isstruct(varargin{1}),
-  posSystem= varargin{1};
-  displayMontage= {varargin{2:end}};
-  x= posSystem.x;
-  y= posSystem.y;
-  z= posSystem.z;
-  elab= posSystem.clab;
-elseif nargin==5 | (nargin==4 & ~ischar(varargin{3})),
-  elab= clab;
-  [x,y,z]= deal(varargin{1:3});
-  displayMontage= {varargin{4:end}};
-else
-  elab= clab;
-  [x,y,z]= abr2xyz(varargin{1:2});
-  displayMontage= {varargin{3:end}};
-end
+posSystem= opt.PositionFcn();
+x= posSystem.x;
+y= posSystem.y;
+z= posSystem.z;
+elab= posSystem.clab;
 
 maz= max(z(:));
 miz= min(z(:));
@@ -109,7 +82,3 @@ radius = 1.3;
 mnt.x= mnt.x/radius;
 mnt.y= mnt.y/radius;
 mnt.clab= clab;
-
-if ~isempty(displayMontage),
-  mnt= mnt_setGrid(mnt, displayMontage{:});
-end
