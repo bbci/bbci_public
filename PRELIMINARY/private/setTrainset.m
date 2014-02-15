@@ -25,7 +25,7 @@ if ~isstruct(fv),
   return;
 end
 
-dat = copy_struct(fv, 'not', 'x');
+dat = rmfield(fv, 'x');
 dat.x = setTrainset(fv.x,idxTr);
 if isfield(fv,'nx')
    dat.nx = setTrainset(fv.nx,idxTr);
