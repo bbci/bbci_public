@@ -14,8 +14,6 @@ function [dat,state]= online_subtractMovingAverage(dat, state, ms,varargin)
 %      dat    - updated data structure
 %
 
-% bb, ida.first.fhg.de
-
 [dat2,state] = online_movingAverage(dat,state,ms,varargin{:});
 
 dat.x = dat.x-dat2.x;

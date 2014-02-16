@@ -18,8 +18,7 @@ function dat= proc_flaten(dat, varargin)
 % use: dat = proc_flaten(dat, 'ForceFlaten', True);
 % 
 % added support for single trial flatening (Martijn)
-%
-% bb, ida.first.fhg.de
+
 props= { 'ForceFlaten'   0    'BOOL'};
 
 if nargin==0,
