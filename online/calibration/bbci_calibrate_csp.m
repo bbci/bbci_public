@@ -37,6 +37,7 @@ function [bbci, data]= bbci_calibrate_csp(bbci, data)
 %  patterns: [1xN DOUBLE or 'auto'] vector specifying the indices of the
 %     CSP filters that should be used for classification; 'auto' means
 %     automatic selection. Default is 'auto'.
+%     Currently only option 'auto' is implemented!
 %  model: [CHAR or CELL] Classification model.
 %     Default {@train_RLDAshrink, 'gamma',0, store_means',1, 'scaling',1}.
 %  reject_artifacts:
@@ -348,26 +349,27 @@ clear cnt_flt
 if isequal(opt.patterns,'auto'),
   [fv2, csp_w, la, A]= proc_cspAuto(fv, 'Patterns',opt.nPatterns);
 else
-  [fv2, csp_w, la, A]= proc_csp3(fv, 'Patterns',opt.nPatterns);
+  error('currently only ''patterns''=''auto'' is implemented');
+    % [fv2, csp_w, la, A]= proc_csp3(fv, 'Patterns',opt.nPatterns);
 end
 fig_set(figno_offset + 4, 'name', sprintf('CSP %s vs %s', classes{:}));
-if isequal(opt.patterns,'auto'),
-  plotCSPanalysis(fv, mnt, csp_w, A, la, ...
+%if isequal(opt.patterns,'auto'),
+  plot_cspAnalysis(fv, mnt, csp_w, A, la, ...
                   'row_layout',1, 'title','');
-else
-  plotCSPanalysis(fv, mnt, csp_w, A, la, opt_scalp_csp, ...
-                  'mark_patterns', opt.patterns);
-end
+  %else
+  %  plot_cspAnalysis(fv, mnt, csp_w, A, la, opt_scalp_csp, ...
+  %                  'mark_patterns', opt.patterns);
+%end
 drawnow;
 
 bbci.feature.ival= [-750 0];
 bbci.feature.proc= {@proc_variance, @proc_logarithm};
 
 fv2= bbci_calibrate_evalFeature(fv2, bbci.feature);
-if ~isequal(opt.patterns,'auto'),
-  fv2.x= fv2.x(opt.patterns,:);
-  csp_w= csp_w(:,opt.patterns);
-end
+%if ~isequal(opt.patterns,'auto'),
+%  fv2.x= fv2.x(opt.patterns,:);
+%  csp_w= csp_w(:,opt.patterns);
+%end
 
 BC_result.feature= fv2;
 BC_result.csp_w= csp_w;
@@ -378,7 +380,7 @@ bbci.classifier.C= trainClassifier(fv2, opt.model);
 
 bbci.quit_condition.marker= 255;
 
-opt_xv= struct('SampleFcn',{{@sample_chronKKfold,8}});
+opt_xv= struct('SampleFcn',{{@sample_chronKFold,8}});
 [loss,loss_std]= crossvalidation(BC_result.feature, opt.model, opt_xv);
 bbci_log_write(data, 'CSP global: %4.1f +/- %3.1f', 100*loss, 100*loss_std);
 proc.train= {{'CSPW', @proc_cspAuto, opt.nPatterns}

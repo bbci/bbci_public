@@ -36,7 +36,7 @@ for nn= 1:folds(1)
     divTe{nn}{kk}= div(kk)+1:div(kk+1);
     divTr{nn}{kk}= setdiff(nn:nSamples-(folds(1)-nn), divTe{nn}{kk});
     % check that all classes are inhabited
-    if ~all(sum(label(:,divTr{nn}{kk}),
+    if ~all(sum(label(:,divTr{nn}{kk}))),
       error('empty classes in training set');
     end
   end

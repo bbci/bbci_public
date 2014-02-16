@@ -1,4 +1,4 @@
-function [loss, lossStd]= crossvalidation(fv, classy, varargin)
+function [loss, lossSem]= crossvalidation(fv, classy, varargin)
 %CROSSVALIDATION - Perform cross-validation
 %
 %Synopsis:

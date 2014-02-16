@@ -29,6 +29,6 @@ for n= 1:length(cmd),
     if isempty(idx),
       error('variable %s not defined in opt.Proc', varname);
     end
-    cmd{n}= memo(2,idx);
+    cmd{n}= memo{2,idx};
   end
 end
