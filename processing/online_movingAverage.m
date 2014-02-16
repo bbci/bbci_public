@@ -1,29 +1,26 @@
-function [dat,state]= online_movingAverage(dat, state,ms,varargin)
+function [dat,state]= online_movingAverage(dat, state, ms)
 %ONLINE_MOVINGAVERAGE - online computation of moving average
 %
 %Synopsis:
-%[dat,state]= online_movingAverage(dat, state,msec)
+%  [DAT, STATE]= online_movingAverage(DAT, STATE, MSEC)
 %
 %Arguments:
-%      dat    - data structure of continuous or epoched data
-%      state  - to handle online version (some old data)
-%      msec   - length of interval in which the moving average is
-%               to be calculated in msec
-%      varargin
-%             - optional parameters will be passed on to ''movingaverage''
-%         method - 'centered' or 'causal' (default)
+%  DAT	  - data structure of continuous or epoched data
+%  STATE  - to handle online version (some old data)
+%  MSEC	  - length of interval in which the moving average is
+%	    to be calculated in msec
+%
 %Returns:
-%     dat     - updated data structure
-%     state   -  updated state
+%  DAT     - updated data structure
+%  STATE   - updated state
 
-% bb, ida.first.fhg.de
 
-nSamples= procutil_getIvalIndices(ms, dat.fs);
+nSamples= ms*dat.fs/1000;
 sdat = size(dat.x,1);
 
 if isempty(state)
   state.in = dat.x(max(1,sdat-nSamples+1):end,:);
-  dat.x(:,:) = movingAverage(dat.x(:,:), nSamples,varargin{:});
+  dat.x(:,:) = procutil_movingAverage(dat.x(:,:), nSamples);
   state.sm = dat.x(max(1,sdat-nSamples+1):end,:);
 else
   sst = size(state.sm,1);
