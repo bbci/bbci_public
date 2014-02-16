@@ -68,5 +68,6 @@ Comments and bug reports are welcome. Please email to: `bbcitoolbox@neuro.tu-ber
 
 ## Miscellaneous   <a id="Misc"></a>
 
+* [Introduction to Matlab](http://ocw.mit.edu/resources/res-18-002-introduction-to-matlab-spring-2008/)
 * [Git Info](git.html)
 * [Markdown help](markdown.html)
