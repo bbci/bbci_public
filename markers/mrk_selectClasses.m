@@ -24,7 +24,6 @@ function [mrk, ev]= mrk_selectClasses(mrk, varargin)
 % symbol 
 % See also procutil_getClassIndices.
 
-% bb 03/03, ida.first.fhg.de
 
 props= {'RemoveVoidClasses'  1  '!BOOL'};
 props_events= mrk_selectEvents;
