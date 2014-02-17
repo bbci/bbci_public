@@ -1,4 +1,4 @@
-function [bbci,data]= bbci_calibrate_NIRS_tiny(bbci,data)
+function [bbci,data]= bbci_calibrate_NIRS_tiny(bbci, data)
 %BBCI_CALIBRATE_CSP_TINY - Calibrate NIRS data (Tiny ver.)
 %
 %This function is called by bbci_calibrate 
@@ -19,10 +19,12 @@ function [bbci,data]= bbci_calibrate_NIRS_tiny(bbci,data)
 %  DATA - As input.
 %
 %BBCI.calibrate.settings may include the following parameters:
-%  ival: [1x2 DOUBLE] interval which is selected for classifier estimation
-%  clab: [CELL] Labels of the channels that are used for classification,
+%  ival - [1x2 DOUBLE] interval which is used to calculate training features,
+%     (msec), default: [4000 8000]     
+%  ref_ival - [1x2 DOUBLE] reference interval (msec), default [-2000 2000]
+%  clab - [CELL] Labels of the channels that are used for classification,
 %     default {'*'}.
-%  model: [CHAR or CELL] Classification model.
+%  model - [CHAR or CELL] Classification model.
 %     Default {'RLDAshrink', 'gamma',0, store_means',1, 'scaling',1}.
 
 % 09-2012 S. Fazli
@@ -31,35 +33,33 @@ function [bbci,data]= bbci_calibrate_NIRS_tiny(bbci,data)
 default_clab=  {'*'};
 default_model= {@train_RLDAshrink, 'Gamma',0, 'StoreMeans',1, 'Scaling',1};
 
-props= {'clab'         default_clab   'CELL{CHAR}'
-        'segmentation_ival'     [-2000 10000] '!DOUBLE[1 2]'
-        'model_ival'         [4000 8000]    '!DOUBLE[1 2]'
-        'model'        default_model  'FUNC|CELL'
+props= {'clab'       default_clab    'CELL{CHAR}'
+        'ref_ival'   [-2000 2000]    '!DOUBLE[1 2]'
+        'ival'       [4000 8000]     '!DOUBLE[1 2]'
+        'model'      default_model   'FUNC|CELL'
        };
 opt= opt_setDefaults('bbci.calibrate.settings', props);
 
 % make epochs:
-fv= proc_segmentation(data.cnt,data.mrk,opt.segmentation_ival, 'clab', opt.clab);
-fv= proc_baseline(fv,[-2000 2000]);
-fv= proc_selectIval(fv,opt.model_ival);
-fv= proc_meanAcrossTime(fv);
+segmentation_ival= [opt.ref_ival(1) opt.ival(2)];
+fv= proc_segmentation(data.cnt, data.mrk, segmentation_ival, ...
+                      'clab', opt.clab);
+fv= proc_baseline(fv, opt.ref_ival);
+fv= proc_jumpingMeans(fv, opt.ival);
 
+%bbci.signal.proc= {{@online_movingAverage, 5000}};
 bbci.signal.proc={};
 bbci.signal.clab = data.cnt.clab;
 
-bbci.feature.ival =[-5000 0];
-bbci.feature.proc = {@proc_meanAcrossTime};
+bbci.feature.ival= [-5000 0];
+bbci.feature.proc= {@proc_meanAcrossTime};
 
-bbci.classifier.C=trainClassifier(fv,opt.model);
+bbci.classifier.C= trainClassifier(fv, opt.model);
 
-
-
-[loss,loss_std]=xvalidation(fv,opt.model,'progress_bar',0,'verbosity',0);
-disp(sprintf('NIRS classifier trained'))
-disp(sprintf('xvalidation yields a loss of %2.1f +/- %2.1f %%',100*loss,100*loss_std))
+opt_xv= struct('SampleFcn',  {{@sample_chronKFold, 10}});
+[loss,loss_std]= crossvalidation(fv, opt.model, opt_xv);
+fprintf('NIRS classifier trained');
+bbci_log_write(data.log.fid, 'CV loss: %2.1f +/- %2.1f%%', ...
+               100*loss, 100*loss_std);
 
 data.result.classes=fv.className;
-
-
-
-

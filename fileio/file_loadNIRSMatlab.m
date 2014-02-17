@@ -39,10 +39,11 @@ global BTB
 datnames = {'dat','cnt','epo'};
 default_vars= {'dat','mrk','mnt','nfo'};
 
-props={ 'Path'          BTB.MatDir     'CHAR'
-        'Clab'          'ALL'           'CHAR|CELL{CHAR}'
-        'Vars'          default_vars(1:min(4,nargout))  'CELL{CHAR}'
-        'Signal'       'deoxy'          'CHAR'};   
+props= {'Path'      BTB.MatDir      'CHAR'
+        'Clab'      'ALL'           'CHAR|CELL{CHAR}'
+        'Vars'      default_vars(1:min(4,nargout))  'CELL{CHAR}'
+        'Signal'   'deoxy'          'CHAR'
+       };   
       
 if nargin==0,
     mrk= props; return

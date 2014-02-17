@@ -184,7 +184,10 @@ end
 if opt.Verbose,
   nonscalp= setdiff(strtok(epo_r.clab), util_scalpChannels,'legacy');
   if ~isempty(nonscalp),
-    warning(['Presumably non-scalp channel(s) found: ' str_vec2str(nonscalp)]);
+    util_warning(['Presumably non-scalp channel(s) found: ' ...
+                  str_vec2str(nonscalp)], ...
+                 'selectTimeIntervals:nonScalpChans', ...
+                 'Interval',10);
   end
 end
 

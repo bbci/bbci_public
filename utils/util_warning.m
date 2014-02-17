@@ -9,43 +9,40 @@ function state= util_warning(msg, id, varargin)
 % other within a short interval of time.
 %
 %Usage:
-% STATE= util_warning(MSG, ID, <FILE>)
 % STATE= util_warning(MSG, ID, <OPT>)
 %
 %Input:
 % MSG:  (string) the warning message, or 'off' or 'query', see the
 %       help of 'warning'.
 % ID:   (string) 
-% FILE: (string) filename of the function in which the warning is produced.
-%       (A function can determine its name via function 'mfilename'.)
 % OPT:  (struct(proplist) Property/value list or struct of optional parameters:
-%   'interval': Warnings that appear earlier than this interval of time [s]
+%   'Interval': Warnings that appear earlier than this interval of time [s]
 %        after a warning (for the same ID) are suppressed. Default 10*60. 
-%   'file':
-
+%   'File': Display this as the file that issued the warning.
+%        Default: name of the calling function.
+%
 %
 %Example 1 (within a matlab function):
-% util_warning('outer model selection sucks', 'validation', mfilename);
+% util_warning('outer model selection sucks', 'validation');
 %
 %Example 2:
 % wstat= util_warning('off', 'validation');
-% %% ... some code consciously producing 'validation' warnings ...
+% %% ... some code admittedly producing 'validation' warnings ...
 % util_warning(wstat);
-%
-%See also warning, mfilename
 
 
 persistent id_list last_warning
 
-props= {'File',     ''      'CHAR';
-        'Interval'  10*60   'DOUBLE';
-       };
-
-if length(varargin)==1 && ischar(varargin{1}),
-  opt= struct('file', varargin{1});
+st= dbstack;
+if length(st)>1,
+  default_File= st(2).name;
 else
-  opt= opt_proplistToStruct(varargin{:});
+  default_File= '';
 end
+props= {'File'       default_File   'CHAR';
+        'Interval'   10*60          '!DOUBLE[1]';
+       };
+opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props, 1);
 
 misc_checkType(msg, 'CHAR');
@@ -63,7 +60,7 @@ else
   last_warning(id_idx,:)= this_warning;
 end
 
-if ~exist(opt.File), 
+if isempty(opt.File), 
   ff= ''; 
 else
   ff= [opt.File ': '];
@@ -75,11 +72,11 @@ if a>=13,
     warning(msg);
   elseif strcmp(msg, 'off'),
     if nargout>0,
-      state= warning('query', ['bbci:' id]);
+      state= warning('query', ['BBCI:' id]);
     end
     warning('off', ['bbci:' id]);
   elseif strcmp(msg, 'query'),
-    state= warning('query', ['bbci:' id]);
+    state= warning('query', ['BBCI:' id]);
   else
     warning(['bbci:' id], [ff msg]);
   end

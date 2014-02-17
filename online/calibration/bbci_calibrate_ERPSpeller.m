@@ -132,8 +132,8 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
   BC_result.rejected_clab= NaN;
   if opt.reject_artifacts | opt.reject_channels,
     if opt.create_figs, 
-        fig_set(5, 'name','Artifact rejection');         
-        data.figure_handles(end+1)= 5;
+      fig_state= fig_set(5, 'Hide',1, 'Name','Artifact rejection');         
+      data.figure_handles(end+1)= 5;
     end
     [mk_clean , rClab, rTrials]= ...
         reject_varEventsAndChannels(data.cnt, BC_result.mrk, ...
@@ -143,6 +143,7 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
                                     'Verbose', 1, ...
                                     'Visualize', opt.create_figs, ...
                                     opt.reject_artifacts_opts{:});
+    if opt.create_figs, fig_publish(fig_state); end
     if opt.reject_artifacts,
       bbci_log_write(data, 'Rejected: %d trial(s).', length(rTrials));
       BC_result.mrk= mrk_selectEvents(BC_result.mrk, 'not',rTrials);
@@ -197,7 +198,7 @@ epo= proc_baseline(epo, opt.ref_ival, 'channelwise', 1);
 epo_r= proc_rSquareSigned(epo);
 epo_r.className= {'sgn r^2 ( T , NT )'};  %% just make it shorter
 if opt.create_figs, 
-  fig_set(6, 'name','r^2 Matrix', 'set',{'Visible','off'});
+  fig_state= fig_set(6, 'Hide',1, 'Name','r^2 Matrix');
 end
 if isempty(opt.cfy_ival) || isequal(opt.cfy_ival, 'auto'),
   [BC_result.cfy_ival, nfo]= ...
@@ -216,14 +217,14 @@ else
   end
 end
 if opt.create_figs, 
-  set(gcf,  'Visible','on');
+  fig_publish(fig_state);
 end
 
 
 %% --- Visualize ERPs ---
 %
 if opt.create_figs,
-  fig_set(1, 'name','ERP - grid plot', 'set',{'Visible','off'});
+  fig_state= fig_set(1, 'Hide',1, 'Name','ERP - grid plot');
   H= grid_plot(epo, mnt, defopt_erps, 'ColorOrder',opt_scalp_erp.ColorOrder);
   %grid_markInterval(BC_result.cfy_ival);
   if isfield(H, 'scale'),
@@ -231,25 +232,25 @@ if opt.create_figs,
   else
     grid_addBars(epo_r);
   end
-  set(gcf,  'Visible','on');
+  fig_publish(fig_state);
   
-  fig_set(2, 'name','ERP - scalp maps', 'set',{'Visible','off'});
+  fig_state= fig_set(2, 'Hide',1, 'Name','ERP - scalp maps');
   H= plot_scalpEvolutionPlusChannel(epo, mnt, opt.clab_erp, ...
                                     BC_result.cfy_ival, ...
                                     opt_scalp_erp);
   grid_addBars(epo_r);
-  set(gcf,  'Visible','on');
+  fig_publish(fig_state);
   
   if isempty(opt.clab_rsq) || isequal(opt.clab_rsq,'auto'),
     opt.clab_rsq= unique_unsort({nfo.peak_clab}, 4);
   end
-  fig_set(4, 'name','ERP - r^2 scalp maps', 'set',{'Visible','off'});
+  fig_state= fig_set(4, 'Hide',1, 'Name','ERP - r^2 scalp maps');
   plot_scalpEvolutionPlusChannel(epo_r, mnt, opt.clab_rsq, ...
                                  BC_result.cfy_ival, ...
                                  opt_scalp_r);
-  set(gcf,  'Visible','on');
-  clear epo*
+  fig_publish(fig_state);
 end
+clear epo*
 
 
 %% --- Feature extraction ---
@@ -294,17 +295,18 @@ fv= bbci_calibrate_evalFeature(fv, bbci.feature);
 
 bbci.classifier.C= trainClassifier(fv, opt.model);
 
-opt_xv= struct('xTrials',       [1 10], ...
-               'LossFcn',      @loss_rocArea, ...
-               'verbosity',     0);
+opt_xv= struct('SampleFcn',    {{@sample_chronKFold, 10}}, ...
+               'LossFcn',      @loss_rocArea);
 
-[loss, dum, outTe]= xvalidation(fv, opt.model, opt_xv);
-me= val_confusionMatrix(fv, outTe, 'mode','normalized');
-bbci_log_write(data.log.fid, ['ROC-loss: %.1f%%  |  ' ...
-                    'Correct Hits: %.1f%%,  Correct Miss: %.1f%%'], ...
-               100*loss, 100*me(1,1), 100*me(2,2));
+loss= crossvalidation(fv, opt.model, opt_xv);
+bbci_log_write(data.log.fid, 'ROC-loss: %.1f%%', 100*loss);
+%[loss, dum, outTe]= crossvalidation(fv, opt.model, opt_xv);
+%me= val_confusionMatrix(fv, outTe, 'Mode','normalized');
+%bbci_log_write(data.log.fid, ['ROC-loss: %.1f%%  |  ' ...
+%                    'Correct Hits: %.1f%%,  Correct Miss: %.1f%%'], ...
+%               100*loss, 100*me(1,1), 100*me(2,2));
 
 data.feature= fv;
 data.result= BC_result;
 data.result.rocloss = 100*loss;
-data.result.me = me;
+%data.result.me = me;

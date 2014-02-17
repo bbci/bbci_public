@@ -55,6 +55,10 @@ if isequal(varargin{1}, 'init'),
   state.orig_fs= cnt.fs;
   state.fs= cnt.fs;
   state.cnt_step= round(state.blocksize/1000*cnt.fs);
+  if state.cnt_step<1,
+    warning('increasing blocksize to inlcude one samples');
+    state.cnt_step= 1;
+  end
   state.cnt_idx= 1:state.cnt_step;
   state.clab= cnt.clab;
   state.cnt= cnt;

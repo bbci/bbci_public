@@ -20,6 +20,10 @@ function H= plot_cspAnalysis(fv, mnt, W, A, la, varargin)
 %
 %Returns:
 % H: struct of handles to graphic objects
+%
+%For the issue of interpreting spatial patterns (and not filters), see
+%[Haufe et al, NeuroImage 2014].
+
 
 props= {'scalePos','none'
         'title', 1
