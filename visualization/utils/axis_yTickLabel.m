@@ -7,11 +7,10 @@ function ht= axis_yTickLabel(label_list, varargin)
 %Input:
 % LABEL_LIST: string (labels separated by '|') or cell array of strings
 % OPT: struct or property/value list of optional properties:
-%  .HPos - horizontal position
+%  .HPos  - horizontal position
 %  .YTick - position of yticks. If not provided, get(gca,'YTick') is used.
 %  .Color - font color in RGB format. Maybe an [nLabels 3] matrix of color
 %           codes
-%  .Font* - font properties like FontWeight, FontSize, ...
 %  .HorizontalAlignment, .VerticalAlignment
 %
 %Output:
@@ -28,10 +27,7 @@ props= {'YTick'                []       'DOUBLE[-]'
         'HPos'                 -0.03    'DOUBLE[1]'
         'Color'                [0 0 0]  'DOUBLE[- 3]'
         'HorizontalAlignment' 'right'   'CHAR(left center right)'
-        'VerticalAlignment'   'middle'  'CHAR(top cap middle baseline bottom)'
-       };
-%% Matlab7 bug?? VerticalAli='middle' is not in the middle on the screen,
-%% but on print.
+        'VerticalAlignment'   'middle'  'CHAR(top cap middle baseline bottom)'};
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);

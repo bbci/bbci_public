@@ -12,44 +12,42 @@ function h = fig2subplot(hfigs, varargin)
 %Input:
 % HFIGS: a vector of figure handles
 % OPT: struct or property/value list of optional properties. It can be used
-% in two ways to generate a figure.
+% in four ways to generate a figure.
 %(1): Give the number of rows and columns, a subplots with size equal to the
 %     maximum height and width of the figures are created. The sizes 
 %     of the figures are preserved
-%  rowscols:     the number of rows and columns, eg. [2 1]
-%  innerMargin:  minimum margin between plots in pixels [horizontal vertical]
-%  outerMargin:  outer margins [left right top bottom] of the whole plot in
+%  RowsCols:     the number of rows and columns, eg. [2 1]
+%  InnerMargin:  minimum margin between plots in pixels [horizontal vertical]
+%  OuterMargin:  outer margins [left right top bottom] of the whole plot in
 %                pixels
-%
 %(2): Provide a predefined subplot figure
-%  hmain:        handle of a predefined subplot figure. The positions of
-%                 the subplots will be used to place the figures.
+%  HMain:        handle of a predefined subplot figure. The positions of
+%                the subplots will be used to place the figures.
 %(3): Make a subplot of rows and columns
-%  rows:         normalized sizes of the rows (e.g., [.1 .3 .4])
-%  cols:         normalized sizes of the cols. If there is space over, the
-%                 rows and columns are evenly spread.
-%  margin:       outer margins [left right top bottom] of the whole plot
-%
+%  Rows:         normalized sizes of the rows (e.g., [.1 .3 .4])
+%  Cols:         normalized sizes of the columns. If there is space over,
+%                rows and columns are evenly spread.
+%  Margin:       outer margins [left right top bottom] of the whole plot
 %(4): Make an arbitrary subplot
-%  positions:    a n x 4 matrix of normalized axes position data 
-%                 [left bottom width height]
+%  Positions:    a n x 4 matrix of normalized axes position data 
+%                [left bottom width height]
 %
 % If none of these arguments is set, a default n x 1 subplot is created, 
 % where n is the number of figure handles
 %
 % Other options
-%  .deleteFigs -   the original figures are deleted after they were copied
-%                  into the new figure
-%  .label      -   automatically label the subfigures by running numbers or letters.
-%                  Specify label type by a string, eg. '(a)' (for (a) (b), etc), 
-%                  'a', 'a.', capital letters, or numerical variants 
-%                  '(1)' '1', '1.'  (default []). 
-%                  Alternatively, you can provide a cell array of
-%                  strings representing custom labels.
-%  .labelPos   -   positions of the labels, the values correspond to the
-%                  values used for legend positions (default 'NorthWest')
-%  .labelOpt   -   formatting options for label as cell array 
-%                  (default {'FontSize' 12 'FontWeight' 'bold'})
+%  DeleteFigs:    the original figures are deleted after they were copied
+%                 into the new figure
+%  Label:         automatically label the subfigures by running numbers or letters.
+%                 Specify label type by a string, eg. '(a)' (for (a) (b), etc), 
+%                 'a', 'a.', capital letters, or numerical variants 
+%                 '(1)' '1', '1.'  (default []). 
+%                 Alternatively, you can provide a cell array of
+%                 strings representing custom labels.
+%  LabelPos:      positions of the labels, the values correspond to the
+%                 values used for legend positions (default 'NorthWest')
+%  LabelOpt:      formatting options for label as cell array 
+%                 (default {'FontSize' 12 'FontWeight' 'bold'})
 %                 
 %
 %Output:
@@ -66,38 +64,40 @@ function h = fig2subplot(hfigs, varargin)
 % colormap copper
 % figure,contourf(peaks(40),10),colormap winter % fig 3
 % figure,plot(sin(1:.1:pi)'*[1:22],'LineWidth',3); % fig 4
-% H = fig2subplot([1:4],'rowscols',[2 2],'label','(a)')
+% H = fig2subplot([1:4],'RowsCols',[2 2],'label','(a)')
 
 % Author(s): Matthias Treder, Benjamin Blankertz Nov 2009
 % Aug 2010: Added automatic labeling (mt)
 
-props = {'hmain',[],...
-         'rowscols',[],...
-         'rows',[],...
-         'cols',[],...
-         'innerMargin',[0 0],...
-         'outerMargin',[10 10 10 10],...
-         'margin',[.05 .05 .05 .05],...
-         'positions',[],...
-         'deleteFigs',0, ...
-         'label',[], ...
-         'labelPos','northwest', ...
-         'labelOpt',{'FontSize' 14 'FontWeight' 'bold'}};
+props = {'HMain',           [],                     'DOUBLE';
+         'RowsCols',        [],                     'DOUBLE[2]';
+         'Rows',            [],                     'DOUBLE[3]';
+         'Cols',            [],                     'DOUBLE[3]';
+         'InnerMargin',     [0 0],                  'DOUBLE[2]';
+         'OuterMargin',     [10 10 10 10],          'DOUBLE[4]';
+         'Margin',          [.05 .05 .05 .05],      'DOUBLE[4]';
+         'Positions',       [],                     'DOUBLE[4]';
+         'DeleteFigs',      0,                      'BOOL';
+         'Label',           [],                     'CHAR';
+         'LabelPos',        'northwest',            'CHAR';
+         'LabelOpt',        {'FontSize', 14, 'FontWeight', 'bold'},   'STRUCT|CELL'
+         };
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
+opt_checkProplist(opt, props);
 
-if isdefault.hmain && isdefault.rowscols && isdefault.rows && ... 
-    isdefault.positions
+if isdefault.HMain && isdefault.RowsCols && isdefault.Rows && ... 
+    isdefault.Positions
   % Nothing was set
-  opt.rowscols = [numel(hfigs) 1];
+  opt.RowsCols = [numel(hfigs) 1];
 end
 
 % Prepare labels
-if ~isempty(opt.label) && ~iscell(opt.label)
+if ~isempty(opt.Label) && ~iscell(opt.Label)
   ll = cell(1,numel(hfigs));
   for ii=1:numel(hfigs)
-    switch(opt.label)
+    switch(opt.Label)
       case '(a)', ll{ii} = ['(' char(96+ii) ')'];
       case '(A)', ll{ii} = ['(' char(64+ii) ')'];
       case 'a',   ll{ii} = char(96+ii);
@@ -109,16 +109,16 @@ if ~isempty(opt.label) && ~iscell(opt.label)
       case '1.',  ll{ii} = [num2str(ii) '.'];
     end
   end
-  opt.label = ll;
+  opt.Label = ll;
 end
 
-%% Prepare the axes of the new figure
+% Prepare the axes of the new figure
 h = struct('main',[],'axes',[]);
 h.cmap_start_idx = []; % denotes the start indices of the separate colormaps in the compound colormap
-if isempty(opt.hmain)
+if isempty(opt.HMain)
     % No figure yet, make one
     h.main = figure;
-    if ~isempty(opt.rowscols)
+    if ~isempty(opt.RowsCols)
         % option 1
         % Get height and width in px of figures
         set(hfigs,'units','pixels');
@@ -126,8 +126,8 @@ if isempty(opt.hmain)
         pos = cat(1,pos{:});
         widmat=[];heimat=[]; % width and height matrix
         idx=1;
-        for rr = 1:opt.rowscols(1)  % all rows
-          for cc=1:opt.rowscols(2)  % all cols
+        for rr = 1:opt.RowsCols(1)  % all rows
+          for cc=1:opt.RowsCols(2)  % all cols
             if numel(hfigs)>=idx
               widmat(rr,cc) = pos(idx,3); heimat(rr,cc)=pos(idx,4);
             else
@@ -139,8 +139,8 @@ if isempty(opt.hmain)
         rows = max(heimat,[],2);
         cols = max(widmat,[],1);
         % Set figure size
-        figwid = opt.outerMargin(1)+opt.outerMargin(2)+opt.innerMargin(1)*(numel(cols)-1);
-        fighei = opt.outerMargin(3)+opt.outerMargin(4)+opt.innerMargin(2)*(numel(rows)-1);
+        figwid = opt.OuterMargin(1)+opt.OuterMargin(2)+opt.InnerMargin(1)*(numel(cols)-1);
+        fighei = opt.OuterMargin(3)+opt.OuterMargin(4)+opt.InnerMargin(2)*(numel(rows)-1);
         figwid = figwid + sum(cols);
         fighei = fighei + sum(rows);
         set(h.main,'units','pixels');
@@ -152,73 +152,73 @@ if isempty(opt.hmain)
         cols=cols/figwid;
         heimat = heimat/fighei;
         rows=rows/fighei;
-        opt.outerMargin(1) = opt.outerMargin(1)/figwid;
-        opt.outerMargin(2) = opt.outerMargin(2)/fighei;
-        opt.outerMargin(3) = opt.outerMargin(3)/figwid;
-        opt.outerMargin(4) = opt.outerMargin(4)/fighei;
-        opt.innerMargin(1) = opt.innerMargin(1)/figwid;
-        opt.innerMargin(2) = opt.innerMargin(2)/fighei;
+        opt.OuterMargin(1) = opt.OuterMargin(1)/figwid;
+        opt.OuterMargin(2) = opt.OuterMargin(2)/fighei;
+        opt.OuterMargin(3) = opt.OuterMargin(3)/figwid;
+        opt.OuterMargin(4) = opt.OuterMargin(4)/fighei;
+        opt.InnerMargin(1) = opt.InnerMargin(1)/figwid;
+        opt.InnerMargin(2) = opt.InnerMargin(2)/fighei;
         % Place new axes
         h.axes = []; hidx = 1;
-        rowStart = 1-opt.outerMargin(3)-rows(1); % start at top 
+        rowStart = 1-opt.OuterMargin(3)-rows(1); % start at top 
         for rr = 1:numel(rows)
-            colStart = opt.outerMargin(1); % start left
+            colStart = opt.OuterMargin(1); % start left
             for cc = 1:numel(cols)
                 h.axes(hidx) = axes('position', ...
                     [colStart rowStart widmat(rr,cc) heimat(rr,cc)], ...
                     'parent',h.main,'visible','off');
                 axis off;
-                colStart = colStart + cols(cc) + opt.innerMargin(1);
+                colStart = colStart + cols(cc) + opt.InnerMargin(1);
                 hidx = hidx+1;
                 if hidx > numel(hfigs); break;end;
             end
             if rr<numel(rows)
-                rowStart = rowStart - opt.innerMargin(2) - rows(rr+1);
+                rowStart = rowStart - opt.InnerMargin(2) - rows(rr+1);
             end
             if hidx > numel(hfigs); break;end;  % break when rows*cols > number of figures
             numel(hfigs)
         end
-    elseif isempty(opt.positions)
+    elseif isempty(opt.Positions)
         % option 2
         % Inner space left for rows and cols
-        colSpace = 1-opt.margin(1)-opt.margin(2);
-        rowSpace = 1-opt.margin(3)-opt.margin(4);
+        colSpace = 1-opt.Margin(1)-opt.Margin(2);
+        rowSpace = 1-opt.Margin(3)-opt.Margin(4);
         % Calculate space left over between axes
-        rowOver = (rowSpace-sum(opt.rows)) / (numel(opt.rows)-1);
-        colOver = (colSpace-sum(opt.cols)) / (numel(opt.cols)-1);
+        rowOver = (rowSpace-sum(opt.Rows)) / (numel(opt.Rows)-1);
+        colOver = (colSpace-sum(opt.Cols)) / (numel(opt.Cols)-1);
         h.axes = []; hidx = 1;
-        rowStart = 1-opt.margin(3)-opt.rows(1); % start at top 
-        for rr = 1:numel(opt.rows)
-            colStart = opt.margin(1); % start left
-            for cc = 1:numel(opt.cols)
+        rowStart = 1-opt.Margin(3)-opt.Rows(1); % start at top 
+        for rr = 1:numel(opt.Rows)
+            colStart = opt.Margin(1); % start left
+            for cc = 1:numel(opt.Cols)
                 h.axes(hidx) = axes('position', ...
-                    [colStart rowStart opt.cols(cc) opt.rows(rr)], ...
+                    [colStart rowStart opt.Cols(cc) opt.Rows(rr)], ...
                     'parent',h.main,'visible','off');
                 axis off;
-                colStart = colStart + opt.cols(cc) + colOver;
+                colStart = colStart + opt.Cols(cc) + colOver;
                 hidx = hidx+1;
             end
-            if rr<numel(opt.rows)
-                rowStart = rowStart - rowOver - opt.rows(rr+1);
+            if rr<numel(opt.Rows)
+                rowStart = rowStart - rowOver - opt.Rows(rr+1);
             end
         end
     else
         % option 3
-        for ii=1:size(opt.positions,1)
-            h.axes(ii) = axes('position',opt.positions(ii,:),'parent',h.main);
+        for ii=1:size(opt.Positions,1)
+            h.axes(ii) = axes('position',opt.Positions(ii,:),'parent',h.main);
         end
     end
 else
     % Option 1, nothing much to do ..
-    h.main = opt.hmain;   % figure
+    h.main = opt.HMain;   % figure
     h.axes = findobj(h.main,'Type','Axes');   % its children axes
     h.axes = flipud(h.axes);  % to start with ax 1
 end
 
-%% Copy colormap from first figure to the new one
+% Copy colormap from first figure to the new one
 set(h.main, 'Colormap', get(hfigs(1),'Colormap'));
 
-%% Traverse old figures and place them in the new plot
+% Traverse old figures and place them in the new plot
 for ii=1:numel(hfigs)
   % Save connection between Colorbars and their Parent Axes
   hcb= findobj(hfigs(ii), 'Tag','Colorbar');
@@ -308,43 +308,43 @@ for ii=1:numel(hfigs)
 %     end
   end   
   % Place label
-  if ~isempty(opt.label)
+  if ~isempty(opt.Label)
     set(gcf,'CurrentAxes',h.axes(ii))
     xl = get(gca,'XLim');
     yl = get(gca,'YLim');
-    switch(lower(opt.labelPos))
+    switch(lower(opt.LabelPos))
       case 'northwest'
-        h.label(ii) = text(xl(1),yl(2),opt.label{ii}, ...
+        h.label(ii) = text(xl(1),yl(2),opt.Label{ii}, ...
           'VerticalAlignment','top','HorizontalAlignment','left', ...
-          opt.labelOpt{:});
+          opt.LabelOpt{:});
       case 'north'
-        h.label(ii) = text(mean(xl),yl(2),opt.label{ii}, ...
+        h.label(ii) = text(mean(xl),yl(2),opt.Label{ii}, ...
           'VerticalAlignment','top','HorizontalAlignment','center', ...
-          opt.labelOpt{:});
+          opt.LabelOpt{:});
       case 'northeast'
-        h.label(ii) = text(xl(2),yl(2),opt.label{ii}, ...
+        h.label(ii) = text(xl(2),yl(2),opt.Label{ii}, ...
           'VerticalAlignment','top','HorizontalAlignment','right', ...
-          opt.labelOpt{:});
+          opt.LabelOpt{:});
       case 'west'
-        h.label(ii) = text(xl(1),mean(yl),opt.label{ii}, ...
+        h.label(ii) = text(xl(1),mean(yl),opt.Label{ii}, ...
           'VerticalAlignment','middle','HorizontalAlignment','left', ...
-          opt.labelOpt{:});
+          opt.LabelOpt{:});
       case 'east'
-        h.label(ii) = text(xl(2),mean(yl),opt.label{ii}, ...
+        h.label(ii) = text(xl(2),mean(yl),opt.Label{ii}, ...
           'VerticalAlignment','middle','HorizontalAlignment','left', ...
-          opt.labelOpt{:});
+          opt.LabelOpt{:});
       case 'southwest'
-        h.label(ii) = text(xl(1),yl(1),opt.label{ii}, ...
+        h.label(ii) = text(xl(1),yl(1),opt.Label{ii}, ...
           'VerticalAlignment','bottom','HorizontalAlignment','left', ...
-          opt.labelOpt{:});
+          opt.LabelOpt{:});
       case 'south'
-        h.label(ii) = text(mean(xl),yl(1),opt.label{ii}, ...
+        h.label(ii) = text(mean(xl),yl(1),opt.Label{ii}, ...
           'VerticalAlignment','bottom','HorizontalAlignment','center', ...
-          opt.labelOpt{:});
+          opt.LabelOpt{:});
       case 'southeast'
-        h.label(ii) = text(xl(2),yl(1),opt.label{ii}, ...
+        h.label(ii) = text(xl(2),yl(1),opt.Label{ii}, ...
           'VerticalAlignment','bottom','HorizontalAlignment','right', ...
-          opt.labelOpt{:});
+          opt.LabelOpt{:});
     end
   end
 end
@@ -354,6 +354,6 @@ set(h.axes,'visible','off')
 % h.axes = get(gcf,'Children');
 h.children = setdiff(get(gcf,'Children'),h.axes,'legacy'); % Get all children except for the new axes
 
-if opt.deleteFigs
+if opt.DeleteFigs
     delete(hfigs);
 end

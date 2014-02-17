@@ -11,11 +11,5 @@
 %VISUTIL_* - Various helping functions
 
 
-
-
-% !!! TODO !!!
-
-% fig2subplot: property list
-% axis_xticklabel: property list
 % fig_acmAdaptCLim: ??
 % fig_addColormap: ??

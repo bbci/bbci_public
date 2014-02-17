@@ -11,16 +11,16 @@ function H= grid_addBars(fv, varargin)
 %   .HScale:        Handle to the scale of the grid plot (returned by
 %                   grid_plot as .scale), a colorbar will be placed next to
 %                   the scale
-%   .ShiftAxes      'position' or 'ylim'
-%   .CLim           Color limit of colorbar, either a 1-by-2 vector giving
+%   .ShiftAxes:     'position' or 'ylim'
+%   .CLim:          Color limit of colorbar, either a 1-by-2 vector giving
 %                   the limit or 'auto' (default)
-%   .Colormap       The colormap of colorbar, either a x-by-3 vector giving
+%   .Colormap:      The colormap of colorbar, either a x-by-3 vector giving
 %                   the explicit map, or one of the predefined maps (see
 %                   help of 'colormap')
-%   .Channels       Channels for which bar should be added, either a cell
+%   .Channels:      Channels for which bar should be added, either a cell
 %                   of strings giving the channels names, or en empty array
 %                   for all channels, or 'plus'
-%   .Scale*         with * in {'Height','Width','VPos','LeftShift',
+%   .Scale*:        with * in {'Height','Width','VPos','LeftShift',
 %                   'FontSize','Digits','Unit'} define the appearance of
 %                   the scale
 %   
@@ -65,7 +65,7 @@ if nargin==0,
 end
 
 opt= opt_proplistToStruct(varargin{:});
-[opt isdefault]= opt_setDefaults(opt, props);
+[opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
 fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
