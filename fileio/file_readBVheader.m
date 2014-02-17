@@ -120,19 +120,37 @@ getEntry(fid, '[Channel Infos]');
 hdr.clab= cell(1, hdr.NumberOfChannels);
 hdr.clab_ref= cell(1, hdr.NumberOfChannels);
 hdr.scale= zeros(1, hdr.NumberOfChannels);
+hdr.unitOfClab= cell(1, hdr.NumberOfChannels);
 ci= 0;
 while ci<hdr.NumberOfChannels,
   str= fgets(fid);
   if isempty(str) || str(1)==';', continue; end
-  [chno,chname,refname,resol]= ...
-    strread(str, 'Ch%u=%s%s%f%*[^\n]', 'delimiter',',');
+  [chno,chname,refname,resol,unit]= ...
+    strread(str, 'Ch%u=%s%s%f%s', 'delimiter',',');
   ci= ci+1;
   hdr.clab(ci)= chname(1);
   hdr.clab_ref(ci)= refname(1);
+  hdr.unitOfClab{ci}= unit{1};
   if resol==0,
     resol= 1;
   end
   hdr.scale(ci)= resol;
+end
+units= unique(hdr.unitOfClab);
+if length(units)==1,
+  % all channels hvae the same unit
+  if isempty(units{1}),
+    hdr.unit= 'a.u.';
+  else
+    hdr.unit= units{1};
+  end
+else
+  % pick the prevalent unit
+  util_warning('different units found', 'readBVheader:units', 'Interval',10);
+  occurrences= cellfun(@(x)(length(strmatch(x,hdr.unitOfClab,'exact'))), ...
+                       units);
+  [mm, midx]= max(occurrences);
+  unit= units{midx};
 end
 
 check= getEntry(fid, '[Coordinates]', 0, -1);
