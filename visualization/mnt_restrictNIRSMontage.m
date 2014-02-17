@@ -46,8 +46,8 @@ function mnt = mnt_restrictNIRSMontage(mnt,varargin)
 % Markus Wenzel 2013 (adapted it to the new toolbox)
 % Jan Mehnert February 2014 (ready for public BBCI toolbox) (jan@mehnert.org)
 
-%% Check which variant of the function is used
-global BBCI
+% Check which variant of the function is used
+
 props={ 'Chans'         {}      'CHAR|CELL{CHAR}'
         'Source'        {}      'CHAR|CELL{CHAR}'
         'Detector'      {}      'CHAR|CELL{CHAR}'
@@ -88,7 +88,7 @@ if ischar(opt.Chans)
   opt.Chans = {opt.Chans};
 end
                 
-%% Select sources and/or detectors
+% Select sources and/or detectors
 if ~isempty(opt.Source)
   selSou = mnt.source.clab(util_chanind(mnt.source,opt.Source));
   if opt.RemoveOptodes
@@ -102,7 +102,7 @@ if ~isempty(opt.Detector)
   end
 end
 
-%% Find connector for source-detector labels (non-alphanumeric character)
+% Find connector for source-detector labels (non-alphanumeric character)
 str = str_head(mnt.clab);
 [a,a,a,connector] = regexp(str,'[^\w]');
 connector = cell2mat(unique(cell_flaten(connector)));
@@ -112,12 +112,12 @@ elseif numel(connector)>1
   error('Multiple connectors in NIRS clab: [%s]',[connector{:}])
 end
 
-%% Select specified NIRS channels
+% Select specified NIRS channels
 if ~isempty(opt.Chans)
   mnt = mnt_restrictMontage(mnt,opt.Chans,{'ignore' connector}); 
 end
 
-%% Restrict NIRS channels by removing the deleted sources/detectors
+% Restrict NIRS channels by removing the deleted sources/detectors
 if ~isempty(opt.Source) || ~isempty(opt.Detector)
   if isempty(opt.Source), selSou = '*'; end
   if isempty(opt.Detector), selDet = '*'; end
@@ -129,7 +129,7 @@ if ~isempty(opt.Source) || ~isempty(opt.Detector)
 end
 
 
-%% Reduce NIRS channels according to source-detector distance
+% Reduce NIRS channels according to source-detector distance
 if ~isempty(opt.Dist)
   dist = mnt.angulardist * opt.HeadRadius;   % distances in cm
   sel = find(dist<opt.Dist);  

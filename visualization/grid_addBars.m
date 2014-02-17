@@ -68,12 +68,13 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
+% If figure is already inVisible jvm_* functions should not be called
+fig_Visible = strcmp(get(gcf,'Visible'),'on');
 if fig_Visible
   jvm= jvm_hideFig;
 end
 
-if ndims(fv.x)>2,
+if ~ismatrix(fv.x),
   error('only one Class allowed');
 end
 
@@ -141,15 +142,15 @@ else
   ax= gridutil_getSubplots(opt.Channels);
 end
 
-%% For image_localColormap we have to determine the CLim in advance.
-%% Therefore we need to determine the depicted channels.
-%% (If only image was used, this functions would be simpler.)
+% For image_localColormap we have to determine the CLim in advance.
+% Therefore we need to determine the depicted channels.
+% (If only image was used, this functions would be simpler.)
 clab= cell(1, length(ax));
 for ii= 1:length(ax),
   clab{ii}= getfield(get(ax(ii), 'userData'), 'chan');
   if iscell(clab{ii}),
-    clab{ii}= clab{ii}{1};  %% for multiple channels per ax, choose only
-                            %% the first one
+    clab{ii}= clab{ii}{1};  % for multiple channels per ax, choose only
+                            % the first one
   end
 end
 if strcmpi(opt.CLim, 'auto'),
@@ -178,7 +179,7 @@ for ii= 1:length(ax),
   set(ax(ii), 'YLimMode','manual');
   ud= get(ax(ii), 'userData');
   if iscell(ud.chan),
-    ud.chan= ud.chan{1};  %% for multiple channels per axis take only the first
+    ud.chan= ud.chan{1};  % for multiple channels per axis take only the first
   end
   ci= util_chanind(fv, ud.chan);
   if isempty(ci) && isempty(strmatch(ud.chan,opt.ShiftAlso,'exact')),
@@ -215,15 +216,10 @@ for ii= 1:length(ax),
   jj= jj+1;
   H.ax(jj)= axes('position', bar_pos);
   set(H.ax(jj), AxesStyle{:});
-  hold on;      %% otherwise axis properties like ColorOrder are lost
+  hold on;      % otherwise axis properties like ColorOrder are lost
   if opt.UseLocalColormap,
-    %%StHauf
-    %%an error occured in image_local_map, 
-    %%when signed-values were to be plotted
-    %%and some values exceeded clim
     fv.x(fv.x > opt.CLim(2)) = opt.CLim(2);
     fv.x(fv.x < opt.CLim(1)) = opt.CLim(1);
-    %%
     image_localColormap(fv.x(:,ci)', opt.Colormap, 'CLim',opt.CLim);
   else
 %    H.image(jj)= image(fv.t, 1, fv.x(:,ci)', 'cDataMapping','scaled');

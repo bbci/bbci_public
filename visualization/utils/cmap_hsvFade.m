@@ -37,17 +37,17 @@ function map= cmap_hsvFade(m, hue, sat, val)
 % 01-2005 Benjamin Blankertz
 
 
-if nargin<4 | isempty(val),
+if nargin<4 || isempty(val),
   val= 1;
 end
-if nargin<3 | isempty(sat),
+if nargin<3 || isempty(sat),
   sat= [0 1];
 end
-if nargin<2 | isempty(hue),
+if nargin<2 || isempty(hue),
   hue= 0;
 end
 
-if nargin<1 | isempty(m),
+if nargin<1 || isempty(m),
   m= size(get(gcf,'colormap'),1);
 end
 if length(hue)==1,
@@ -63,7 +63,7 @@ end
 map= hsv2rgb([mod(linspace(hue(1), hue(2), m), 1)' ...
               linspace(sat(1), sat(2), m)' ...
               linspace(val(1), val(2), m)']);
-%% We use mod here for hue to account for the circular struture.
-%% So it becomes possible to fade, e.g., from yellow (hue 1/6) to
-%% purple (hue 5/6) going over red (hue 0) and not over green/blue
-%% by using hue= [1/6 -1/6].
+% We use mod here for hue to account for the circular struture.
+% So it becomes possible to fade, e.g., from yellow (hue 1/6) to
+% purple (hue 5/6) going over red (hue 0) and not over green/blue
+% by using hue= [1/6 -1/6].

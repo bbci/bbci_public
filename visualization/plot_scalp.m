@@ -153,7 +153,7 @@ end
 % Allow radius of scalp data to go beyond scalp outline (>1)
 maxrad = max(1,max(max(abs(mnt.x)),max(abs(mnt.y)))) + opt.ContourMargin; 
 
-%% Extrapolation
+% Extrapolation
 if opt.Extrapolation,
   xx= linspace(-maxrad, maxrad, opt.Resolution);
   yy= linspace(-maxrad, maxrad, opt.Resolution)';
@@ -189,7 +189,7 @@ if opt.Extrapolation,
   
 else
   if strcmp(opt.Interpolation, 'v4'),
-    %% get the convex hull from linear Interpolation
+    % get the convex hull from linear Interpolation
     [dmy,dmy,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
     imaskout= isnan(zconv(:));
     [xg,yg,zg]= griddata(xe, ye, w, xx, yy, opt.Interpolation);
@@ -208,7 +208,7 @@ ygc= yg+opt.Offset(2);
 zgc= zg;
 if ~isempty(strmatch(lower(opt.Shading), {'flat','faceted'})) ... 
     && strcmp(opt.Renderer,'pColor'),
-  %% in shading FLAT last row/column is skipped, so add one
+  % in shading FLAT last row/column is skipped, so add one
   xg= [xg-xs/2, xg(:,end)+xs/2];
   xg= [xg; xg(end,:)];
   yg= [yg, yg(:,end)]-ys/2;
@@ -217,13 +217,13 @@ if ~isempty(strmatch(lower(opt.Shading), {'flat','faceted'})) ...
   zg= [zg; zg(end,:)];
 end
 
-%% Render using pColor or contourf
+% Render using pColor or contourf
 xg= xg+opt.Offset(1);
 yg= yg+opt.Offset(2);
 if strcmp(opt.Renderer,'pColor')
   H.patch= pColor(xg, yg, zg);
 else
-  [dmy,H.patch]= contourf(xg, yg, zg, opt.ContourfLevels,'LineStyle','none');
+  [~,H.patch]= contourf(xg, yg, zg, opt.ContourfLevels,'LineStyle','none');
   % *** Hack to enforce cdatamappig = scaled in Colorbarv6.m by introducing
   % a useless patch object
   hold on
@@ -232,19 +232,13 @@ else
   set(ccc(1),'Visible','off');
 end
 
-%%
+%
 tight_caxis= [min(zg(:)) max(zg(:))];
 if isequal(opt.CLim, 'sym'),
   zgMax= max(abs(tight_caxis));
   H.CLim= [-zgMax zgMax];
 elseif isequal(opt.CLim, 'range'),
   H.CLim= tight_caxis;
-%%%elseif isequal(opt.CLim, 'rangesymcol'),
-%%%  H.CLim= tight_caxis;
-%%%  nColors= size(get(gcf, 'colormap'), 1);
-%%%  nColorsNeg= round(nColors*max(0, -H.CLim(1))/diff(H.CLim));
-%%%  nColorsPos= round(nColors*max(0, H.CLim(2))/diff(H.CLim));
-%%%  colormap(cmap_posneg_asym(nColorsNeg, nColorsPos));
 elseif isequal(opt.CLim, '0tomax'),
   H.CLim= [0.0001*diff(tight_caxis) max(tight_caxis)];
 elseif isequal(opt.CLim, 'minto0'),
@@ -325,7 +319,7 @@ if ~isempty(opt.MarkContour),
   set(H.MarkContour, opt.markContourLineprop{:});
 end
 
-%% Scalp outline
+% Scalp outline
 H= plot_scalpOutline(mnt, opt_scalpOutline, 'H',H, 'DisplayChannels',DisplayChannels);
 
 if strcmp(opt.ScalePos, 'none'),
@@ -363,8 +357,8 @@ else
 end
 if opt.NewColormap,
   visutil_acmAdaptCLim(acm);
-  set(H.cb, 'yLim',H.CLim); %% otherwise ticks at the border of the
-                            %% Colorbar might get lost
+  set(H.cb, 'yLim',H.CLim); % otherwise ticks at the border of the
+                            % Colorbar might get lost
 end
 axis('off');
 

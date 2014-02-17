@@ -48,5 +48,5 @@ mr= min(pospix([3 4])./pbox([1 2]));
 pos([3 4])= pbox([1 2])*mr;
 pos([1 2])= pospix([1 2]) + (pospix([3 4])-pos([3 4]))/2;
 
-%% convert to normalized units
+% convert to normalized units
 pos= pos .* posrel ./ pospix;

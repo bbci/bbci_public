@@ -65,7 +65,7 @@ end
 xe= mnt.x(DisplayChannels);
 ye= mnt.y(DisplayChannels);
 
-%% Head
+% Head
 H.ax= gca;
 T= linspace(0, 2*pi, 360);
 xx= cos(T);
@@ -73,7 +73,7 @@ yy= sin(T);
 H.head= plot(xx, yy, 'k');
 hold on;
 
-%% Electrodes
+% Electrodes
 T= linspace(0, 2*pi, 18);
 disc_x= opt.Radius*cos(T); 
 disc_y= opt.Radius*sin(T);
@@ -86,14 +86,14 @@ end
 caxis(opt.CLim);
 
 
-%% Nose
+% Nose
 if opt.DrawNose,
   nose= [1 1.1 1];
   nosi= [86 90 94]+1;
   H.nose= plot(nose.*xx(nosi), nose.*yy(nosi), 'k');
 end
 
-%% Labels
+% Labels
 if opt.ShowLabels,
   labs= {mnt.clab{DisplayChannels}};
   H.label_text= text(xe, ye, labs);

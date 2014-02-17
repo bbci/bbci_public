@@ -92,7 +92,7 @@ if opt.VisuScalps,
         ival= ival.ival;
     end
     % Sort intervals
-    [dmy,si]= sort(ival(:,1));
+    [~,si]= sort(ival(:,1));
     ival= ival(si,:);
     
     for ii= 1:size(ival,1),

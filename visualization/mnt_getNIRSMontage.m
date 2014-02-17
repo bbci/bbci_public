@@ -88,7 +88,7 @@ if any(isnan(mnt.source.pos_3d(:))) || any(isnan(mnt.detector.pos_3d(:)))
     'involving these sources/detectors will also have NaN positions.\n '])
 end
 
-%% Determine positions of source-detector combinations
+% Determine positions of source-detector combinations
 mnt.x = [];
 mnt.y = [];
 mnt.pos_3d = [];

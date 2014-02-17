@@ -141,11 +141,11 @@ set(h.text_ival, 'verticalAli','top', 'horizontalAli','center', ...
                  'Visible','on');  
 if ismember(opt.ScalePos, {'horiz','vert'},'legacy'),
   h.cb= plotutil_colorbarAside(opt.ScalePos);
-  %% hack to fix a matlab bug
+  % hack to fix a matlab bug
   ud= get(h.cb, 'UserData');
   ud.orientation= opt.ScalePos;
   set(h.cb, 'UserData',ud);
-  %% put YUnit on top of Colorbar
+  % put YUnit on top of Colorbar
   if isfield(erp, 'yUnit'),
     axes(h.cb);
     yl= get(h.cb, 'YLim');
