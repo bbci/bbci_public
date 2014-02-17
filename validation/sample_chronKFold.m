@@ -2,7 +2,7 @@ function [divTr, divTe]= sample_chronKfold(label, folds)
 %SAMPLE_CHRONKFOLD - Sampling function: chronological consequtive folds
 %
 %Synopsis:
-%  [PARTR, PARTE]= sample_chronKKfold(LABEL, FOLDS)
+%  [PARTR, PARTE]= sample_chronKfold(LABEL, FOLDS)
 %
 % IN  LABEL   - class labels, but here only the length of the 2nd dim is
 %               used (to determine the number of samples)

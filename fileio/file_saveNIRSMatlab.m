@@ -55,7 +55,7 @@ fullname= fullfile(opt.Path,file);
 dat.file= fullname;
 
 %% Gather some summary information into structure 'nfo'.
-nfo= struct_copyFields(dat, {'fs', 'clab','source','detector'});
+nfo= struct_copyFields(dat, {'fs', 'clab','~source','~detector'});
 
 
 if isfield(dat,'x')

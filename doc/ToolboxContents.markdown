@@ -1,8 +1,5 @@
----
 
 # Contents of the BBCI Matlab Toolbox
-
----
 
 The following sections refer to the folders of the BBCI toolbox.
 

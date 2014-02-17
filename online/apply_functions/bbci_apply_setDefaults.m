@@ -77,6 +77,7 @@ props= {'source'        1         '!INT'
         'param'         {}        'CELL'
        };
 bbci.signal= opt_overwriteVoids(bbci.signal, 'source', 1);
+bbci.signal= opt_overwriteVoids(bbci.signal, 'clab', '*');
 bbci.signal= opt_setDefaults('bbci.signal', props);
 opt_checkExclusiveProps('bbci.signal', {'proc','fcn'; 'proc','param'});
 bbci.signal= bbciutil_transformProc2FcnParam(bbci.signal);

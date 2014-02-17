@@ -39,5 +39,5 @@ cfy= cell2mat(cellfun(@str2num, cfystr, 'UniformOutput',0));
 
 cnt_cfy= struct('fs',25, 'x',cfy, 'clab',{{'cfy-LR','cfy-LF','cfy-FR'}});
 epo_cfy= proc_segmentation(cnt_cfy, mrk, [0 5000]);
-fig_set(1, 'name','classifier outputs'); clf;
+fig_set(1, 'Name','classifier outputs', 'Clf',1);
 grid_plot(epo_cfy);
