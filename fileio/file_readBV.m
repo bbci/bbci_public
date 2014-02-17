@@ -78,6 +78,17 @@ function [varargout] = file_readBV(file, varargin)
 %               - There was an bug in the check for the lag
 
 
+%% check if the mex file is present
+readBV_status = exist('read_bv','file');
+if not(readBV_status == 3)
+    warning('Could not detect mex files for read_bv! Using file_loadBV instead.')
+    varargout= cell(1, nargout);
+    [varargout{:}]= file_loadBV(file, varargin{:});
+    return;
+end
+
+
+%% start file_readBV
 global BTB
 
 props= {'CLab'              ''      'CHAR|CELL{CHAR}'

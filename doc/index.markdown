@@ -65,6 +65,11 @@ following article:
 
 Comments and bug reports are welcome. Please email to: `bbcitoolbox@neuro.tu-berlin.de`. We would also appreciate notifications about publications in which the toolbox has been used.
 
+## Mailing List
+
+We have a mailing list for questions and help regarding the toolbox. Please join
+the ["bbci-tooblox" google group](https://groups.google.com/group/bbci-toolbox).
+
 
 ## Miscellaneous   <a id="Misc"></a>
 
