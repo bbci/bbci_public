@@ -350,9 +350,9 @@ cnt.signal = 'NIRS (high wavelength, low wavelength)';
 
 %% **** modified Beer-Lambert transform ****
 if opt.LB
-	cnt = proc_BeerLambert(cnt,opt.LBparam{:});
+    cnt = proc_BeerLambert(cnt,opt.LBparam{:});
 else
-    cnt.YUnit = 'V';
+    cnt.yUnit = 'V';
 end
 
 %% **** Filter ****
