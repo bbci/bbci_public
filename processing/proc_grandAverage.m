@@ -249,7 +249,7 @@ else
 end
   
 if opt.Stats
-  ga.p = reshape(2*normal_cdf(-abs(ga.x(:)), zeros(size(ga.x(:))), ga.se(:)), size(ga.x));
+  ga.p = reshape(2*stat_normal_cdf(-abs(ga.x(:)), zeros(size(ga.x(:))), ga.se(:)), size(ga.x));
   if opt.Bonferroni
     ga.corrfac = F*T*C*E;
     ga.p = min(ga.p*ga.corrfac, 1);
