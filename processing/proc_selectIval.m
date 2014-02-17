@@ -1,25 +1,33 @@
-function [out, iv]= proc_selectIval(dat, ival, varargin)
-%PROC_SELECTIVAL - Select subinterval from epoched data
+function [varargout]= proc_selectIval(dat, ival, varargin)
+%PROC_SELECTIVAL - Select subinterval from epoched or continuous data
 %
 %Synopsis:
-% OUT= proc_selectIval(DAT, IVAL)
-% OUT= proc_selectIval(DAT, MSEC, <POS>)
-% OUT= proc_selectIval(DAT, IVAL/MSEC, OPT)
+% EPO= proc_selectIval(EPO, IVAL)
+% EPO= proc_selectIval(EPO, MSEC, <POS>)
+% EPO= proc_selectIval(EPO, IVAL/MSEC, OPT)
+% [CNT, MRK]= proc_selectIval(CNT, MRK, IVAL)
 %
 % selects the time segment given by ival ([start_ms end_ms]), or the
 % segment of length msec (scalar) at position defined by 'Pos'.
 %
 %Arguments:
-% DAT  - data structure of continuous or epoched data
+% EPO,CNT - data structure of continuous (with markers MRK) or epoched data
 % IVAL - time segment to be extracted
-% MSEC - length of time segment to e extracted
+% MSEC - length of time segment to be extracted
 % POS  - relative position of time segment, if msec was specified
 %        before, 'beginning', 'relative' or 'end' (default)
 % OPT - struct or property/value list of optional properties:
 %  'Pos': like POS above.
 %  'Dim': dimension in which the subinterval is selected, default 1.
 %  
-% OUT  dat  - updated data structure
+%Returns:
+% EPO,CNT,MRK  - updated data structure
+
+if nargin>=2 && isstruct(ival),
+  varargout= cell(1, nargout);
+  [varargout{:}]= proc_selectIvalFromCnt(dat, ival, varargin{:});
+  return
+end
 
 props= {'Pos'      'beginning'  '!CHAR(beginning end relative)'
         'Dim'       1           '!INT' };
@@ -88,3 +96,6 @@ if isfield(dat, 'p'), out.p= dat.p(iv,:); end
 if isfield(dat, 'V'), out.V= dat.V(iv,:); end
 if isfield(dat, 'sgnlogp'), out.sgnlogp= dat.sgnlogp(iv,:); end
 if isfield(dat, 'se'), out.se= dat.se(iv,:); end
+
+output= {out, iv};
+varargout= output(1:nargout);
