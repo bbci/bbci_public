@@ -387,7 +387,7 @@ else
   [fv, csp_w, la, A]= proc_csp3(fv, 'patterns',opt.nPatterns);
 end
 fig_set(figno_offset + 4, 'name', sprintf('CSP %s vs %s', classes{:}));
-opt_scalp_csp= strukt('colormap', cmap_greenwhitelila(31));
+opt_scalp_csp= struct('colormap', cmap_greenwhitelila(31));
 if isequal(opt.patterns,'auto'),
   plotCSPanalysis(fv, mnt, csp_w, A, la, opt_scalp_csp, ...
                   'row_layout',1, 'title','');
@@ -443,13 +443,11 @@ bbci.quit_condition.marker= 255;
 
 
 %% BB: this validation takes the selection of 3 laplacian filters
-%% which have been selected from the complete data set!
-opt_xv= strukt('sample_fcn',{'chronKfold',8}, ...
-               'std_of_means',0, ...
-               'verbosity',0, ...
-               'progress_bar',0);
-[loss,loss_std]= xvalidation(BC_result.feature, opt.model, opt_xv);
+%  which have been selected from the complete data set!
+opt_xv= struct('SampleFcn',{{@sample_chronKFold, 8}});
+[loss,loss_std]= crossvalidation(BC_result.feature, opt.model, opt_xv);
 bbci_log_write(data, 'CSP global: %4.1f +/- %3.1f', 100*loss, 100*loss_std);
+error('UPDATE FOR CROSSVALIDATION');
 proc_logvar= 'fv= proc_variance(fv); fv= proc_logarithm(fv);';
 proc= struct('memo',  {'spat_w'});
 proc.sneakin= {'sel_clab',sel_clab, 'clab_csp',opt.clab_csp};

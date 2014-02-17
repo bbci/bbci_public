@@ -14,7 +14,7 @@ function [loss, lossSem]= crossvalidation(fv, classy, varargin)
 %  OPT -    Struct or property/value list of optional properties:
 %   'SampleFcn': Function handle of sampling function, see functions
 %           sample_*, or CELL providing also parameters of the samling
-%           function).
+%           function), default @smaple_KFold
 %   'LossFcn': Function handle of loss function, or CELL (+ parameters)
 %   'Proc': Struct with fields 'train' and 'apply'. Each of those is a CELL
 %           specifying a processing chain. See the example
@@ -28,9 +28,9 @@ function [loss, lossSem]= crossvalidation(fv, classy, varargin)
 % 2014-02 Benjamin Blankertz
 
 
-props = {'SampleFcn'   @sample_divisions    '!FUNC|CELL'
-         'LossFcn'     @loss_0_1            '!FUNC|CELL'
-         'Proc'        []                   'STRUCT'
+props = {'SampleFcn'   {@sample_KFold, [10 10]}   '!FUNC|CELL'
+         'LossFcn'     @loss_0_1                  '!FUNC|CELL'
+         'Proc'        []                         'STRUCT'
         };
 
 if nargin==0;

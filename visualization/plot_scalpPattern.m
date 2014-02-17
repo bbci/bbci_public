@@ -41,6 +41,9 @@ opt_scalp= opt_substruct(opt, props_scalp(:,1));
 
 if isdefault.YUnit && isfield(erp, 'yUnit'),
   opt.YUnit= ['[' erp.yUnit ']'];
+elseif isdefault.YUnit && isfield(erp, 'cnt_info') && ...
+        isfield(erp.cnt_info, 'yUnit'),
+  opt.YUnit= ['[' erp.cnt_info.yUnit ']'];
 end
 
 eee= erp;

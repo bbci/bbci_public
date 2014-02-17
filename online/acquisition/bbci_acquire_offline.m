@@ -19,10 +19,10 @@ function varargout= bbci_acquire_offline(varargin)
 %          output is returned (just as the 'true' online acquire function
 %          would do while no new data is available).
 %          For value 0 (default), this function returns one block of data
-%          at each call. Values between 0 and 1 result in speeded-up
-%          realtime. E.g., for 0.5 the next block of data is return, if
-%          half of the time corresponding to OPT.blocksize has elapsed since
-%          the last delivery of data.
+%          at each call. Values above 1 result in speeded-up
+%          realtime. E.g., for 2 the next block of data is returned, if
+%          1/2 of the time corresponding to OPT.blocksize has elapsed since
+%          the last delivery of data, which amounts to a speed-up factor of 2.
 %
 %Output:
 %  STATE - Structure characterizing the incoming signals; fields:
@@ -41,6 +41,8 @@ function varargout= bbci_acquire_offline(varargin)
 % 02-2011 Benjamin Blankertz
 
 
+global BBCI_ACQ_SYNC_TIME
+
 if isequal(varargin{1}, 'init'),
   if nargin<3,
     error('CNT and MRK must be provided as input arguments');
@@ -56,13 +58,15 @@ if isequal(varargin{1}, 'init'),
   state.fs= cnt.fs;
   state.cnt_step= round(state.blocksize/1000*cnt.fs);
   if state.cnt_step<1,
-    warning('increasing blocksize to inlcude one samples');
+    warning('increasing blocksize to include one samples');
     state.cnt_step= 1;
   end
   state.cnt_idx= 1:state.cnt_step;
   state.clab= cnt.clab;
   state.cnt= cnt;
-
+  if state.realtime==0,
+    state.realtime= inf;
+  end
   if isfield(mrk, 'event') && isfield(mrk.event, 'desc'),
     mrk.desc= mrk.event.desc(:)';
   else
@@ -71,7 +75,10 @@ if isequal(varargin{1}, 'init'),
   % --
   state.mrk= mrk;
   state.mrk.time= mrk.time;
-  state.start_time= tic;
+  %state.start_time= tic;
+  if isempty(BBCI_ACQ_SYNC_TIME),
+    BBCI_ACQ_SYNC_TIME= clock + [0 0 0 0 0 1];
+  end
   output= {state};
 elseif length(varargin)~=1,
   error('Except for INIT case, only one input argument expected');
@@ -90,8 +97,9 @@ else
       varargout= output(1:nargout);
       return;
     end
-    time_running= toc(state.start_time);
-    if time_running < state.cnt_idx(end)/state.fs*state.realtime,
+    %time_running= toc(state.start_time)-1;
+    time_running= etime(clock, BBCI_ACQ_SYNC_TIME);
+    if time_running < state.cnt_idx(end)/state.fs/state.realtime,
       output= {[], [], [], state};
       varargout= output(1:nargout);
       return;

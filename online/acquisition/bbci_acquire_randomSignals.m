@@ -58,6 +58,9 @@ if isequal(varargin{1}, 'init'),
   state.blocksize_sa= ceil(state.blocksize*state.fs/1000);
   state.blocksize= state.blocksize_sa*1000/state.fs;
   state.nsamples= 0;
+  if state.realtime==0,
+    state.realtime= inf;
+  end
   state.start_time= tic;
   output= {state};
   switch(state.marker_mode),

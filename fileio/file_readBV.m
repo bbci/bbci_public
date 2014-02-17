@@ -78,6 +78,17 @@ function [varargout] = file_readBV(file, varargin)
 %               - There was an bug in the check for the lag
 
 
+%% check if the mex file is present
+readBV_status = exist('read_bv','file');
+if not(readBV_status == 3)
+    warning('Could not detect mex files for read_bv! Using file_loadBV instead.')
+    varargout= cell(1, nargout);
+    [varargout{:}]= file_loadBV(file, varargin{:});
+    return;
+end
+
+
+%% start file_readBV
 global BTB
 
 props= {'CLab'              ''      'CHAR|CELL{CHAR}'
@@ -333,8 +344,10 @@ for filePos = firstFileToRead:lastFileToRead
     read_opt.filt_subsample = opt.SubsampleFcn;
   end
 
-  read_hdr = struct('fs',hdr{filePos}.fs,'nChans',hdr{filePos}.NumberOfChannels,...
-                    'scale',hdr{filePos}.scale,'endian',hdr{filePos}.endian, ...
+  read_hdr = struct('fs',hdr{filePos}.fs, ...
+                    'nChans',hdr{filePos}.NumberOfChannels, ...
+                    'scale',hdr{filePos}.scale, ...
+                    'endian',hdr{filePos}.endian, ...
                     'BinaryFormat',readbv_binformat(filePos));
 
   % get the position for the data in the whole data set
@@ -359,7 +372,8 @@ for filePos = firstFileToRead:lastFileToRead
 
   % read the data, read_bv will set the data in cnt.x because of the
   % read_opt.data options
-  read_bv([fileNames{filePos} '.eeg'],read_hdr,read_opt);
+  read_bv([fileNames{filePos} '.eeg'], read_hdr, read_opt);
+  cnt.yUnit= hdr{filePos}.unit;
 
   %% Markers
   if nargout>1,
