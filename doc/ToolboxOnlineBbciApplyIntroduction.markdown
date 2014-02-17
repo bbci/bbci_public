@@ -157,22 +157,18 @@ structures are explained in more detail in
 
 
 
-<table border="1" > <tr> <td> field of bbci </td><td> purpose </td> </tr>
-<tr> <td>  .source </td><td> defines the sources from which signals are acquired (may to multiple,
-e.g., EEG+NIRS) </td></tr>
-<tr> <td> .marker </td><td> defines how markers are stored </td></tr>
-<tr> <td> .signal </td><td> defines how the continuous signals are preprocessed after acquisition
-and before cutting out segments, and how signals are stored </td></tr>
-<tr> <td> .feature </td><td> extraction of features from segments of continuous data  </td></tr>
-<tr> <td> .classifier </td><td> specifies which classifier is applied to the features  </td></tr>
-<tr> <td> .control </td><td> defines a function that transforms the classifier output into a control
-signal (may include averaging across ERPs and early stopping)  </td></tr>
-<tr> <td> .feedback </td><td> specifies where the control signal is transmitted to (e.g., via UDP to
-pyff)  </td></tr>
-<tr> <td> .adaptation </td><td> specifies whether/how classifer/feature extraction etc should be adapted  </td></tr>
-<tr> <td> .log </td><td> specifies what information should be logged and how (screen or file)  </td></tr>
-<tr> <td> .quit_condition </td><td> specifies under which condition bbci_apply should stop </td> </tr>
-</table>
+Field            Description
+---------------- -----------------
+.source          defines the sources from which signals are acquired (may to multiple, e.g., EEG+NIRS)
+.marker          defines how markers are stored
+.signal          defines how the continuous signals are preprocessed after acquisition and before cutting out segments, and how signals are stored
+.feature         extraction of features from segments of continuous data
+.classifier      specifies which classifier is applied to the features
+.control         defines a function that transforms the classifier output into a control signal (may include averaging across ERPs and early stopping)
+.feedback        specifies where the control signal is transmitted to (e.g., via UDP to pyff)
+.adaptation      specifies whether/how classifer/feature extraction etc should be adapted
+.log             specifies what information should be logged and how (screen or file)
+.quit_condition  specifies under which condition bbci_apply should stop
 
 ### The variable `data`
 
@@ -183,17 +179,15 @@ and the fields of `data`.
 
 
 
-<table border="1" > <tr> <td> field of data
-</td><td> purpose </td></tr>
-<tr> <td> .source </td><td> short term input buffer (default 40ms), information about acquisition
-source (state), e.g., channels and sampling frequency which is obtained when initializing </td></tr>
-<tr> <td> .marker </td><td> buffer for markers (default for 100 events) </td></tr>
-<tr> <td> .signal </td><td> mid term (ring) buffer of preprocessed, continuous signals (default 10s) </td></tr>
-<tr> <td> .feature </td><td> extracted features for the current event (old features are not buffered) </td></tr>
-<tr> <td> .classifier </td><td> output of the classifier(s) </td></tr>
-<tr> <td> .control </td><td> control signal </td></tr>
-<tr> <td> .log </td><td> id and name of the log file (if logging is on) </td></tr>
-</table>
+Field of Data  Purpose
+-------------- -----------------
+.source        short term input buffer (default 40ms), information about acquisition source (state), e.g., channels and sampling frequency which is obtained when initializing
+.marker        buffer for markers (default for 100 events)
+.signal        mid term (ring) buffer of preprocessed, continuous signals (default 10s)
+.feature       extracted features for the current event (old features are not buffered)
+.classifier    output of the classifier(s)
+.control       control signal
+.log           id and name of the log file (if logging is on)
 
 
 ### A simplified `bbci_apply.m`
