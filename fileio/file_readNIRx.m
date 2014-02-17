@@ -40,7 +40,6 @@ function [varargout] = file_readNIRx(file, varargin)
 %   'Extension' : extension for the data files for wavelengths 1 and 2. If
 %           not set, the extension is determined automatically based on the
 %           NIRS system. %%JM: ?
-%   'File' : see getChannelPositions %%JM:??
 %
 % Parameters to the nirs functions called can be passed to nirsfile_loadRaw 
 % and are automatically transmitted.
@@ -97,7 +96,6 @@ props={ 'CLab'          ''              'CHAR|CELL{CHAR}'
         'Source'        []              'CHAR|CELL{CHAR}'
         'Detector'      []              'CHAR|CELL{CHAR}'     
         'Restrict'      1               'BOOL'
-        'File'          '5_5'           'CHAR|CELL{CHAR}'
         'Fs'            'raw'           'CHAR|DOUBLE'
         'Filt'          []              'STRUCT(a b)'      
         'FiltType'      1               'DOUBLE'
@@ -329,7 +327,7 @@ if nargout >= 3 && (isempty(sourceClab) || isempty(detectorClab))
   cnt.clab=mnt.clab;
 elseif nargout >= 3 % Hadi: made it >= instead of > because of the way calibrate.m calls
   opt_tmp = struct_copyFields(opt, ...
-                              {'File','~ClabPolicy', ...
+                              {'~ClabPolicy', ...
                                '~Projection','~Connector'});
   mnt = mnt_getNIRSMontage(sourceClab,detectorClab,opt_tmp);
   cnt.clab=[strcat(mnt.clab,'highWL') strcat(mnt.clab,'lowWL')];
@@ -350,9 +348,9 @@ cnt.signal = 'NIRS (high wavelength, low wavelength)';
 
 %% **** modified Beer-Lambert transform ****
 if opt.LB
-    cnt = proc_BeerLambert(cnt,opt.LBparam{:});
+	cnt = proc_BeerLambert(cnt,opt.LBparam{:});
 else
-    cnt.yUnit = 'V';
+    cnt.YUnit = 'V';
 end
 
 %% **** Filter ****
