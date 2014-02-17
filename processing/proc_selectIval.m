@@ -31,7 +31,7 @@ if nargin==0,
 end
 
 if length(varargin)==1 && ~isstruct(varargin{1}),
-  opt= strukt('Pos', varargin{1});
+  opt= struct('Pos', {varargin{1}});
 else
   opt= opt_proplistToStruct(varargin{:});
 end
