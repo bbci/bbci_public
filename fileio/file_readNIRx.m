@@ -241,16 +241,16 @@ if iscell(file),
 end
 
 %% **** Read header ****
-opt_tmp = struct_copyFields(opt, {'System','Path','Verbose','HeaderExt'});
-hdr=file_readNIRxHeader(file,opt_tmp);
+opt_tmp = struct_copyFields(opt, {'System','Verbose'});
+hdr=file_readNIRxHeader(file, opt_tmp);
 hdr.system = opt.System;
 
 if opt.Verbose; fprintf('Source wavelengths: [%s] nm\n',num2str(hdr.wavelengths)); end
 
 %% **** Read marker ****
 if nargout>1
-  opt_tmp = struct_copyFields(opt,{'System','Path','Verbose','Prefix'});
-  mrk = file_readNIRxMarker(file,opt_tmp);
+  opt_tmp = struct_copyFields(opt,{'System','Verbose'});
+  mrk = file_readNIRxMarker(file, opt_tmp);
   mrk.fs = hdr.fs;
   if opt.Verbose; fprintf('Markers read, %d events found.\n',numel(mrk.desc)); end
 end
@@ -329,7 +329,8 @@ if nargout >= 3 && (isempty(sourceClab) || isempty(detectorClab))
   cnt.clab=mnt.clab;
 elseif nargout >= 3 % Hadi: made it >= instead of > because of the way calibrate.m calls
   opt_tmp = struct_copyFields(opt, ...
-                              {'File','ClabPolicy','Projection','Connector'});
+                              {'File','~ClabPolicy', ...
+                               '~Projection','~Connector'});
   mnt = mnt_getNIRSMontage(sourceClab,detectorClab,opt_tmp);
   cnt.clab=[strcat(mnt.clab,'highWL') strcat(mnt.clab,'lowWL')];
   
