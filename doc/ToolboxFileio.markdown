@@ -1,60 +1,45 @@
-Documentation: Functions for reading and writing data files
-===========================================================
+# Documentation: Functions for reading and writing data files
 
-* * * * *
 
-**IN CONSTRUCTION**
+## Location of Data Files
 
-* * * * *
+The data that we record (using the Brain Vision Recorder) is stored in raw
+format in a subdirectory of `EEG_RAW_DIR` (global variable). The naming scheme
+for the subdirectories is `Subject_yy_mm_dd`, e.g., `Basti_02_11_24`. One data
+set in BrainVision generic data format consists for three files: (1) a binary
+data file, extension .eeg, (2) a header file holding information on the settings
+of the recording as sampling rate, used channels, etc., extension .vhdr, and (3)
+a marker file, extension .vmrk. Data we receive in other formats from other labs
+are stored in a subdirectory of `EEG_IMPORT_DIR`.
 
-Location of Data Files
-----------------------
+Preprocessed data is stored in matlab format in a subdirectory of `EEG_MAT_DIR`.
+The name of this subdirectory should be the same as that of the raw data.
+Typically the data is stored in a version which is just downsampled and in a
+version which is filtered and downsampled for display purpose. The former fi le
+is called like the original data, and the latter has the appendix `_display`.
+Each matlab file should include the variables cnt, mrk and mnt.
 
-The data that we record (using the
-Brain Vision Recorder)
-is stored in raw format in a subdirectory of EEG_RAW_DIR (global
-variable). The naming scheme for the subdirectories is
-Subject_yy_mm_dd, e.g., Gabriel_02_11_24. One data set in
-BrainVision generic
-data format consists for three files: (1) a binary data file, extension
-.eeg, (2) a header file holding information on the settings of the
-recording as sampling rate, used channels, etc., extension .vhdr, and
-(3) a marker file, extension .vmrk. Data we receive in other formats
-from other labs are stored in a subdirectory of EEG_IMPORT_DIR.
 
-Preprocessed data is stored in matlab format in a subdirectory of
-EEG_MAT_DIR. The name of this subdirectory should be the same as that
-of the raw data. Typically the data is stored in a version which is just
-downsampled and in a version which is filtered and downsampled for
-display purpose. The former fi le is called like the original data, and
-the latter has the appendix _display. Each matlab file should include
-the variables cnt, mrk and mnt.
-
-Loading Data which is in the Original Generic Data Format
----------------------------------------------------------
+## Loading Data which is in the Original Generic Data Format
 
 For the EEG experiments, that we record at our lab, we store data in
-"preprocessed" formats. One version is just
-downsampled, which can also be done when reading the original data
-(using readGenericEEG). But loading the preprocessed data (using
-eegfile_loadMatlab) has the advantage that the markers are already
-brought to a nice format. If you want to load data in this convenient
-way.
-Otherwise read on in this section.
+"preprocessed" formats. One version is just downsampled, which can also be done
+when reading the original data (using readGenericEEG). But loading the
+preprocessed data (using eegfile_loadMatlab) has the advantage that the markers
+are already brought to a nice format. If you want to load data in this
+convenient way. Otherwise read on in this section.
 
+```matlab
+cnt = readGenericEEG(file, [clab, fs, from, maxlen]);
+```
 
-
-	   1 cnt = readGenericEEG(file, [clab, fs, from, maxlen]);
-	   2 
-
-This function can be used to load data which is in
-BrainVision 's generic
-data format. So far it is quite constrained to take only specific
-variants of the general generic data format. Data must be multiplexed
-and in the binary format INT16. (To read data in binary format float
-there is the function readGenericEEG_float: should be integrated in one
-function?) To determine the available channels or the length of the data
-use the function readGenericHeader.
+This function can be used to load data which is in BrainVision's generic data
+format. So far it is quite constrained to take only specific variants of the
+general generic data format. Data must be multiplexed and in the binary format
+INT16. (To read data in binary format float there is the function
+`readGenericEEG_float`: should be integrated in one function?) To determine the
+available channels or the length of the data use the function
+`readGenericHeader`.
 
 Field   Description
 ------- -----------------
@@ -70,16 +55,15 @@ Field  Description
 ------ ------------------
 cnt    struct of continous EEG data.
 
-See also: eegfile_loadMatlab, readGenericHeader, readGenericMarkers.
+See also: `eegfile_loadMatlab`, `readGenericHeader`, `readGenericMarkers`.
 
+```matlab
+[clab, scale, fs, endian, len] = readGenericHeader(file);
+```
 
-
-	   1 [clab, scale, fs, endian, len] = readGenericHeader(file);
-	   2 
-
-This function is used by readGenericEEG. It can also be called directly
-to determine the original sampling rate, the length of the signals and
-the recorded channels.
+This function is used by `readGenericEEG`. It can also be called directly to
+determine the original sampling rate, the length of the signals and the recorded
+channels.
 
 
 Field  Description
@@ -97,16 +81,14 @@ endian  big ('b') or little ('l') endian byte order.
 len     length of the EEG signals in seconds.
 
 
-	   1 Mrk = readGenerikMarkers(file, [outputStructArray]);
-	   2 
-	   
+```matlab
+Mrk = readGenerikMarkers(file, [outputStructArray]);
+```
 
-This function reads all markers of
-BrainVision 's generic
-data format. If you are only interested in 'Stimulus' and 'Response'
-markers, readMarkerTable is your friend. Note: this function returns the
-markers in the original sampling rate. In contrast, readMarkerTable
-returns markers by default resampled to 100 Hz.
+This function reads all markers of BrainVision's generic data format. If you are
+only interested in 'Stimulus' and 'Response' markers, `readMarkerTable` is your
+friend. Note: this function returns the markers in the original sampling rate.
+In contrast, `readMarkerTable` returns markers by default resampled to 100 Hz.
 
 
 Field              Description
@@ -122,21 +104,20 @@ Field  Description
 Mrk    struct array of markers with fields type, desc, pos, length, chan, time which are defined in the BrainVision  generic data format, see the comment lines in any \*.vmrk marker file.
 fs     sampling rate, as read from the corresponding header file.
 
-See also: readMarkerTable, readGenericHeader.
+See also: `readMarkerTable`, `readGenericHeader`.
 
 
+```matlab
+mrk = readMarkerTable(file, [fs=100, markerTypes, flag]);
+```
 
-	   1 mrk = readMarkerTable(file, [fs=100, markerTypes, flag]);
-	   2 
-	   
+This function reads all 'Stimulus' and 'Response' markers from the header file.
+For reading markers of other types you can use `readAlternativeMarker`. See also
+`readMarkerTableArtifacts` for reading the marker file of an artifact
+measurement (with annotated artifacts), and `readSegmentBorders`. A general
+function that reads all marker information of the BrainVision generic data
+format is `readGenericMarkers`.
 
-This function reads all 'Stimulus' and 'Response' markers from the
-header file. For reading markers of other types you can use
-readAlternativeMarker. See also readMarkerTableArtifacts for reading the
-marker file of an artifact measurement (with annotated artifacts), and
-readSegmentBorders. A general function that reads all marker information
-of the BrainVision
-generic data format is readGenericMarkers.
 
 Field        Description
 ------------ -------------------
@@ -145,32 +126,31 @@ fs           sampling rate for the returned marker structure. The default value 
 markerTypes  read only markers of this type, default {'Stimulus','Response'}.
 flag         a vector of the same length as markerTypes which defines the sign of the marker values (in the type-of-event field toe of the returned marker structure). The default is [1 -1], i.e., stimulus markers give positive marker numbers and response markers give negative marker numbers.
 
+
 Output:
 
 Field  Description
 ------ ---------------
 mrk     struct of EEG marker
 
-Saving and Loading EEG Data in Matlab Format
---------------------------------------------
+
+## Saving and Loading EEG Data in Matlab Format
 
 
+```matlab
+[dat, mrk, mnt] = eegfile_loadMatlab(file, [opt]);
+[var1, var2, ...] = eegfile_loadMatlab(file, opt);
+``` 
 
-	   1 [dat, mrk, mnt] = eegfile_loadMatlab(file, [opt]);
-	   2 [var1, var2, ...] = eegfile_loadMatlab(file, opt);
-	   3 
-	   
-
-This function loads EEG data, that was stored using eegfile_saveMatlab.
-It can also concat a series of such files.
+This function loads EEG data, that was stored using `eegfile_saveMatlab`. It can
+also concat a series of such files.
 
 
 Field  Description
 ------ --------------
 file   name of data file, or cell array of file names. In the latter case all files are concatenated. Each file name is taken relative to opt.path (see below), unless it starts with the character '/'. (Under Windows the condition for an absolute pathname is that the second character is a ':').
 
-The options struct or property/value list can have the
-following properties:
+The options struct or property/value list can have the following properties:
 
 
 Field  Description
@@ -191,25 +171,22 @@ varx   variables as requested by opt.vars.
 
 Example:
 
-	   1 >> file= 'Gabriel_03_05_21/selfpaced2sGabriel';
-	   2 >> [cnt,mrk,mnt]= eegfile_loadMatlab(file);
-	   3 >> %% or just to load variables 'mrk' and 'mnt':
-	   4 >> [mrk,mnt]= eegfile_loadMatlab(file, {'mrk','mnt'});
-	   5 >> %% or to load only some central channels
-	   6 >> [cnt, mnt]= eegfile_loadMatlab(file, 'clab','C5-6', 'vars',{'cnt','mnt'});
-	   7 
+```matlab
+file= 'Gabriel_03_05_21/selfpaced2sGabriel';
+[cnt,mrk,mnt]= eegfile_loadMatlab(file);
+%% or just to load variables 'mrk' and 'mnt':
+[mrk,mnt]= eegfile_loadMatlab(file, {'mrk','mnt'});
+%% or to load only some central channels
+[cnt, mnt]= eegfile_loadMatlab(file, 'clab','C5-6', 'vars',{'cnt','mnt'});
 
+eegfile_saveMatlab(file, dat, mrk, mnt, [opt]);
+```
 
+This functions saves (potentially preprocessed) EEG data along with structures
+defining markers and a display montage. Optionally additional variable can also
+be stored.
 
-	   1 eegfile_saveMatlab(file, dat, mrk, mnt, [opt]);
-	   2 
-
-This functions saves (potentially preprocessed) EEG data along with
-structures defining markers and a display montage. Optionally additional
-variable can also be stored.
-
-|| file|| is the name of the file. The same applies as for
-eegfile_loadMatlab.||
+`file` is the name of the file. The same applies as for `eegfile_loadMatlab`.
 
 Field  Description
 ------ --------------
@@ -217,8 +194,7 @@ dat    structure of EEG data, may be continuous or epoched.
 mrk    marker structure
 mnt    electrode montage structure
 
-The options struct or property/value list can have the
-following properties:
+The options struct or property/value list can have the following properties:
 
 Field             Description
 ----------------- --------------------
@@ -230,19 +206,15 @@ Field             Description
 vars              Additional variables that should be stored. opt.vars must be a cell array with a variable name / variable value structure, e.g., {'Mrk',Mrk, 'blah',blah} when Mrk and blah are the variables to be stored.
 
 
-Exporting Data to the Generic Data Format
------------------------------------------
+## Exporting Data to the Generic Data Format
 
-
-
-
-	   1 writeGenericData(dat, [mrk, scale]);
-	   2 
-
-
+```matlab
+writeGenericData(dat, [mrk, scale]);
+```
 
 Field  Description
 ------ -------------
 dat    structure of continuous or epoched EEG data.
 mrk    struct of EEG marker
 scale  scaling factor used in the generic data format to bring data from the INT16 range -32768 to 32767 to µV values. This is implemented as a division by the scaling factor before saving the signals. Individual scaling factors may be specified for each channel in a vector, or a global scaling as scalar, default is 0.1 (i.e., signal range is -3276.8 to 3276.7 µV). Use scale= max(abs(cnt.x))'/32768 to achive best resolution (least information loss in INT16 conversion) without clipping.
+
