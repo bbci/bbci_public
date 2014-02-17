@@ -1,5 +1,5 @@
 eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
-    'demo_VPibq_10_09_24', 'calibration_CenterSpellerMVEP_VPibq');
+    'VPibq_10_09_24', 'calibration_CenterSpellerMVEP_VPibq');
 
 % Load data
 [cnt, mrk, mnt] = file_loadMatlab(eeg_file);
