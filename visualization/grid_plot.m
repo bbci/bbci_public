@@ -316,7 +316,8 @@ end
 %warning(w_cm);
 
 H.ax= zeros(1, nDisps);
-opt_plot= {'Legend',1, 'Title','', 'UnitDispPolicy','none','GridOverPatches',0};
+opt_plot= {'Legend',1, 'Title','', 'UnitDispPolicy','none', ...
+           'GridOverPatches',0};
 if isfield(mnt, 'box') && isnan(mnt.box(1,end))
   % no grid position for legend available
   opt_plot{2}= 0;
@@ -353,7 +354,7 @@ for ia= 1:nDisps,
       leg_pos(3:4)= leg_pos_orig(3:4);  %% use original size
       set(H.leg, 'position', leg_pos);
       ud= get(H.leg, 'userData');
-      ud= opt_setDefaults(ud,{ 'type','ERP plus'; 'chan','legend'});
+      ud= opt_setDefaults(ud, {'type','ERP plus'; 'chan','legend'});
       set(H.leg, 'userData',ud);
       if exist('verLessThan')~=2 || verLessThan('matlab','7'),
         set(H.leg, 'Visible','off');
@@ -388,19 +389,19 @@ if ~strcmp(opt.TitleDir, 'none'),
     tit= [tit, str_vec2str(epo.className, [], ' / ') ', '];
   end
   if isfield(epo, 'N'),
-    tit= [tit, 'N= ' str_vec2str(epo.N,[],'/') ',  '];
+    tit= [tit, 'N= ' str_vec2str(epo.N,[],'/') ', '];
   end
   if isfield(epo, 't'),
-    tit= [tit, sprintf('[%g %g] %s  ', util_trunc(epo.t([1 end])), opt.XUnit)];
+    tit= [tit, sprintf('[%g %g] %s, ', util_trunc(epo.t([1 end])), opt.XUnit)];
   end
-  tit= [tit, sprintf('[%g %g] %s', util_trunc(yLim(1,:)), opt.YUnit)];
+  tit= [tit sprintf('[%g %g] %s', util_trunc(yLim(1,:)), opt.YUnit)];
   if strcmpi(opt.YDir, 'reverse'),
-    tit= [tit, ' neg. up'];
+    tit= [tit ' neg. up'];
   end
-  if isfield(opt, 'TitleAppendix'),
-    tit= [tit, ', ' opt.TitleAppendix];
+  if ~isempty(opt.TitleAppendix),
+    tit= [tit ', ' opt.TitleAppendix];
   end
- H.title= visutil_addTitle(tit, opt.TitleDir);
+  H.title= visutil_addTitle(tit, opt.TitleDir);
 end
 
 if ~isempty(opt.ShiftAxesUp) && opt.ShiftAxesUp~=0,
