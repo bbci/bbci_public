@@ -2,6 +2,7 @@
 BC= [];
 BC.fcn= @bbci_calibrate_tinyNIRS;
 BC.read_fcn=@file_loadNIRSMatlab;
+BC.read_param= {'Signal','oxy'};
 BC.folder=  fullfile(BTB.DataDir, 'demoMat');
 BC.file= fullfile('VPean_10_07_26', 'NIRS', 'real_movementVPean');
 BC.marker_fcn= @mrk_defineClasses;
@@ -11,10 +12,6 @@ BC.log.folder= BTB.TmpDir;
 
 bbci_nirs= struct('calibrate', BC);
 [bbci_nirs, calib_nirs]= bbci_calibrate(bbci_nirs);
-
-bbci_nirs.source.acquire_fcn= @bbci_acquire_offline;
-bbci_nirs.source.acquire_param= {calib_nirs.cnt, calib_nirs.mrk, ...
-                    struct('realtime',10, 'blocksize',200)};
 
 
 %% now do the calibration for the EEG data:
@@ -33,44 +30,30 @@ bbci= struct('calibrate', BC);
 
 [bbci, calib_eeg]= bbci_calibrate(bbci);
 
-%% Putting things together
 
+%% Putting things together
 % for signal:
-bbci.signal(1).source=1;
-bbci.signal(2).clab={'*'};
-bbci.signal(2).proc={};
-bbci.signal(2).source=2;
+bbci.signal(1).source= 1;
+bbci.signal(2).source= 2;
 
 % for feature:
-bbci.feature(1).signal=1;
-bbci_nirs.feature.signal=2;
-bbci.feature(2)=bbci_nirs.feature;
+bbci.feature(2)= bbci_nirs.feature;
+bbci.feature(1).signal= 1;
+bbci.feature(2).signal= 2;
 
 % for classifier:
-bbci.classifier(1).feature=1;
-bbci_nirs.classifier.feature=2;
-bbci.classifier(2)=bbci_nirs.classifier;
+bbci.classifier(2)= bbci_nirs.classifier;
+bbci.classifier(1).feature= 1;
+bbci.classifier(2).feature= 2;
 
 % for control:
-bbci.control(1).classifier=1;
-bbci.control(1).fcn='';
-bbci.control(1).param={};
-bbci.control(1).condition=[];
-bbci.control(1).source_list=1;
+bbci.control(1).classifier= 1;
+bbci.control(2).classifier= 2;
 
-bbci.control(2).classifier=2;
-bbci.control(2).fcn='';
-bbci.control(2).param={};
-bbci.control(2).condition=[];
-bbci.control(2).source_list=2;
-
-% for log:
+% the usual setting for log:
 bbci.log.output= 'screen&file';
 bbci.log.folder= BTB.TmpDir;
 bbci.log.classifier= 1;
-
-% acquiring NIRS must not block acquiring EEG
-bbci.source(2).min_blocklength=0;
 
 % For online simulation, we need to synchronize the two data sets
 [calib_eeg.cnt, calib_eeg.mrk]= ...
@@ -80,12 +63,15 @@ bbci.source(2).min_blocklength=0;
     proc_selectIval(calib_nirs.cnt, calib_nirs.mrk, ...
                     [calib_nirs.mrk.time(1)-5000 inf]);
 
+% Define acquire functions for online simulation
 bbci.source(1).acquire_fcn= @bbci_acquire_offline;
 bbci.source(1).acquire_param= {calib_eeg.cnt, calib_eeg.mrk, ...
                     struct('realtime',10)};
-
-bbci.source(2).acquire_fcn= bbci_nirs.source.acquire_fcn;
-bbci.source(2).acquire_param= bbci_nirs.source.acquire_param;
+bbci.source(2).acquire_fcn= @bbci_acquire_offline;
+bbci.source(2).acquire_param= {calib_nirs.cnt, calib_nirs.mrk, ...
+                    struct('realtime',10, 'blocksize',200)};
+% acquiring NIRS must not block acquiring EEG
+bbci.source(2).min_blocklength= 0;
 
 %% perform the multimodal feedback
 % the first two lines are a hack to synchronize the offline polling
@@ -94,7 +80,7 @@ global BBCI_ACQ_SYNC_TIME
 BBCI_ACQ_SYNC_TIME= [];
 data= bbci_apply(bbci);
 
-%% analyse the outputs
+%% analyze the outputs
 log_format= '%fs | CTRL%d | [%f] | {cl_output=%f}';
 [time, cfy_no, cfy, ctrl]= textread(data.log.filename, log_format, ...
                             'delimiter','','commentstyle','shell');
@@ -113,3 +99,6 @@ cnt_cfy_NIRS= struct('fs', 1/mean(diff(time(idx_NIRS))), ...
 epo_cfy_NIRS= proc_segmentation(cnt_cfy_NIRS, mrk_cfy, [-5000 15000]);
 fig_set(2, 'Name','NIRS classifier output', 'clf',1);
 plot_channel(epo_cfy_NIRS);
+
+% Note: this is just a demo. Here, the same data was used for training
+%  the classifiers and evaluation.
