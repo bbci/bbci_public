@@ -1,40 +1,56 @@
-BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
+% IN CONSTRUCTION
+% (the results look strange)
 
-%% Load data
-[cnt, mrk, mnt] = file_loadNIRSMatlab(filename, 'Signal','oxy');
+BC= [];
+BC.fcn= @bbci_calibrate_tinyNIRS;
+BC.read_fcn= @file_NIRSreadMatlab;
+BC.folder=  [BTB.DataDir 'demoMat/'];
+BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';
+%BC.file= 'VPeae_10_03_05/ni_imag_fbarrow_pcovmeanVPeae*';
+%BC.file= 'VPeah_10_06_19/ni_imag_fbarrow_pcovmeanVPeah*';
+%BC.file= 'VPeaj_10_06_22/ni_imag_fbarrow_pcovmeanVPeaj*';
 
-%% define classes according to makers
-stimDef= {1,2;'left','right'};
-mrk = mrk_defineClasses(mrk, stimDef);
+% define a tmp folder
+BC.save.folder= BTB.TmpDir;
+BC.log.folder= BTB.TmpDir;
 
-%% intervalls for display and segmentation, and fequencies for filter
-ival_base=  [-1000 0];
-ival_epo= [-1000 15000];
-lp_freq= [1/128 .4];
-ival_scalps= [0:2500:12500];
-clab=[];
+% rewrite to bbci variable
+bbci= struct('calibrate', BC);
+% do the calibration
+[bbci, calib]= bbci_calibrate(bbci);
+% save the classifier
+bbci_save(bbci, calib);
 
-%% band-pass filter
-[b,a]= butter(3, lp_freq/cnt.fs*2);
-cnt= proc_filtfilt(cnt, b, a);
 
-%% segmentation and baseline correction
-epo= proc_segmentation(cnt, mrk, ival_epo);
-epo= proc_baseline(epo, ival_base);
+%%
 
-%% r-values
-epo_r= proc_rSquareSigned(epo);
+% load feedback file:
+file = [BTB.NirsMatDir 'VPeag_10_06_17/ni_imag_fbarrow_pmeanVPeag'];
+%file = [BTB.NirsMatDir 'VPeae_10_03_05/ni_imag_fbarrow_pmeanVPeae'];
+%file = [BTB.NirsMatDir 'VPeah_10_06_19/ni_imag_fbarrow_pmeanVPeah'];
+%file = [BTB.NirsMatDir 'VPeaj_10_06_22/ni_imag_fbarrow_pmeanVPeaj'];
 
-%% display
-fig_set(1)
-H= grid_plot(epo, mnt, defopt_erps);
-grid_addBars(epo_r, 'HScale',H.scale);
+[cnt, mrk]= file_NIRSreadMatlab(file);
 
-fig_set(2);
-H= plot_scalpEvolution(epo, mnt, ival_scalps, ...
-                       defopt_scalp_erp, ...
-                       'ExtrapolateToMean', 1);
+% test consistency of classifier outputs in simulated online mode
+bbci.source.acquire_fcn= @bbci_acquire_offline;
+bbci.source.acquire_param= {cnt, mrk, struct('blocksize',500)};
 
-fig_set(4, 'Resize',[1 0.5]);
-H= plot_scalpEvolution(epo_r, mnt, ival_scalps, ...
-                       defopt_scalp_r);
+% define some logging
+bbci.log.output= 'screen&file';
+bbci.log.folder= BTB.TmpDir;
+bbci.log.classifier= 1;
+
+% start the feedback
+data= bbci_apply(bbci);
+
+% analyse the logged feedback
+log_format= '%fs | [%f] | {cl_output=%f}';
+[time, cfy, ctrl]= textread(data.log.filename, log_format, ...
+                            'delimiter','','commentstyle','shell');
+
+cnt_cfy= struct('fs', 2, 'x',cfy, ...
+                'clab', {{sprintf('cfy %s vs %s', calib.result.classes{:})}});
+epo_cfy= proc_segmentation(cnt_cfy, calib.mrk, [0 10000]);
+fig_set(1, 'name','classifier output'); clf;
+plot_channel(epo_cfy, 1, 'YUnit','[a.u.]');
