@@ -1,9 +1,8 @@
-%file= 'demo_VPibv_10_11_02/calibration_CenterSpellerMVEP_VPibv';
-file= 'demo_VPibq_10_09_24/calibration_CenterSpellerMVEP_VPibq';
-
+eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
+    'demo_VPibq_10_09_24', 'calibration_CenterSpellerMVEP_VPibq');
 
 % Load data
-[cnt, mrk, mnt] = file_loadMatlab(file);
+[cnt, mrk, mnt] = file_loadMatlab(eeg_file);
 
 
 % Electrode Montage
@@ -28,7 +27,7 @@ b= procutil_firlsFilter(0.5, cnt.fs);
 cnt= proc_filtfilt(cnt, b);
   
 % Artifact rejection based on variance criterion
-%mrk= reject_varEventsAndChannels(cnt, mrk, disp_ival, 'verbose', 1);
+mrk= reject_varEventsAndChannels(cnt, mrk, disp_ival, 'verbose', 1);
 
 % Segmentation
 epo= proc_segmentation(cnt, mrk, disp_ival);
