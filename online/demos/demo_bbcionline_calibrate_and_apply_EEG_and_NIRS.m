@@ -74,10 +74,6 @@ bbci.source(2).acquire_param= {calib_nirs.cnt, calib_nirs.mrk, ...
 bbci.source(2).min_blocklength= 0;
 
 %% perform the multimodal feedback
-% the first two lines are a hack to synchronize the offline polling
-% from EEG and NIRS (not require in the real online case)
-global BBCI_ACQ_SYNC_TIME
-BBCI_ACQ_SYNC_TIME= [];
 data= bbci_apply(bbci);
 
 %% analyze the outputs
