@@ -119,7 +119,7 @@ for cc= 1:nClasses,
   end
   opt_scalpPattern.Class= cc;
   clscol= opt.ColorOrder(min(cc,size(opt.ColorOrder,1)),:);
-  opt_scalpPattern= set_defaults(opt_scalpPattern, 'Linespec', {'linewidth',2, 'Color',clscol});
+  opt_scalpPattern= opt_setDefaults(opt_scalpPattern, 'Linespec', {'linewidth',2, 'Color',clscol});
   h.H_topo(cc)= plot_scalpPattern(erp, mnt, ival(cc,:), opt_scalpPattern);
   if ismember(cc, opt.MarkPatterns,'legacy'),
     set([h.H_topo(cc).head h.H_topo(cc).nose], opt.MarkStyle{:});

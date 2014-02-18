@@ -2,63 +2,60 @@ function H= plotutil_channel1D(epo, clab, varargin)
 %plotutil_channel1D - Plot the Classwise averages of one channel. Takes 1D data,
 %i.e. time or frequency data.
 %
-%Usage:
+%Synposis:
 % H= plotutil_channel1D(EPO, CLAB, <OPT>)
 %
 %Input:
-% EPO  - Struct of epoched signals, see makeEpochs
-% CLAB - Name (or index) of the channel to be plotted.
-% OPT  - struct or property/value list of optional properties:
-%  .Butterfly  - Butterfly plot. Recommended when CLAB =  '*'. Only
-%                first class is considered for plotting. If ColorOrder is
-%                default, the current colormap is used.
-%  .PlotStd - if true, the standard deviation 
-%  .Legend - show Class legend (1, default), or not (0).
-%  .LegendPos - position of the legend, see help of function 'legend'.
-%  .XUnit  - unit of x axis, default 'ms'
-%  .YUnit  - unit of y axis, default epo.yUnit if this field
-%                     exists, 'a.u.' otherwise
-%  .UnitDispPolicy - the units can either ('label', default) be displayed as 
-%             xlabel resp ylabel, or ('lastTick') instead of the label of 
-%             the last (x- resp. y-) tick
-%  .YDir   -  'normal' (negative down) or 'reverse' (negative up)
-%  .RefCol -  Color of patch indicating the baseline interval
-%  .RefVSize - (value, default 0.05) controls the Height of the patch
-%             marking the Reference interval.
-%  .ColorOrder - specifies the Colors for drawing the curves of the
-%             different Classes. If not given the ColorOrder
-%             of the current axis is taken. As special gimmick
-%             you can use 'rainbow' as ColorOrder.
+% EPO: struct of epoched signals, see makeEpochs
+% CLAB: name (or index) of the channel to be plotted.
+% OPT: struct or property/value list of optional properties:
+%  .Butterfly    - Butterfly plot. Recommended when CLAB =  '*'. Only
+%                  first class is considered for plotting. If ColorOrder is
+%                  default, the current colormap is used.
+%  .PlotStd      - if true, the standard deviation 
+%  .Legend       - show Class legend (1, default), or not (0).
+%  .LegendPos    - position of the legend, see help of function 'legend'.
+%  .XUnit        - unit of x axis, default 'ms'
+%  .YUnit        - unit of y axis, default epo.yUnit if this field
+%                  exists, 'a.u.' otherwise
+%  .YDir         - 'normal' (negative down) or 'reverse' (negative up)
+%  .RefCol       -  Color of patch indicating the baseline interval
+%  .RefVSize     - (value, default 0.05) controls the Height of the patch
+%                  marking the Reference interval.
+%  .ColorOrder   - specifies the Colors for drawing the curves of the
+%                  different Classes. If not given the ColorOrder
+%                  of the current axis is taken. As special gimmick
+%                  you can use 'rainbow' as ColorOrder.
 %  .LineWidthOrder - (numerical vector) analog to ColorOrder.
 %  .LineStyleOrder - (cell array of strings) analog to ColorOrder.
 %  .LineSpecOrder - (cell array of cell array) analog to ColorOrder,
-%             giving full control on the appearance of the curves.
-%             (If LineSpecOrder is defined, LineWidthOrder and LineStyleOrder
-%             are ignored, but ColorOrder is not.)
-%  .XGrid, ... -  many axis properties can be used in the usual
-%                 way
-%  .YLim - Define the y limits. If empty (default) an automatic selection
-%             according to 'YLimPolicy' is performed.
-%  .YLimPolicy - policy of how to select the YLim (only if 'YLim' is
-%             empty resp unspecified): 'auto' uses the
-%             usual mechanism of Matlab; 'tightest' selects YLim as the
-%             exact data range; 'tight' (default) takes the data range,
-%             adds a little border and selects 'nice' limit values.
-%  .Title   - title of the plot to be displayed above the axis. 
-%             If OPT.title equals 1, the channel label is used.
-%  .Title*  - with * in {'Color', 'FontWeight', 'FontSize'}
-%             selects the appearance of the title.
-%  .XZeroLine  - draw an axis along the x-axis at y=0
-%  .YZeroLine  - draw an axis along the y-axis at x=0
-%  .ZeroLine*  - with * in {'Color','Style'} selects the
-%                drawing style of the axes at x=0/y=0
-%  .AxisTitle  - (string) title to be displayed *within* the axis.
-%  .AxisTitle* - with * in {'Color', 'HorizontalAlignment',
-%                 'VerticalAlignment', 'FontWeight', 'FontSize'}
-%                 selects the appearance of the subplot titles.
+%                  giving full control on the appearance of the curves.
+%                  (If LineSpecOrder is defined, LineWidthOrder and
+%                  LineStyleOrder are ignored, but ColorOrder is not.)
+%  .XGrid, ...   - many axis properties can be used in the usual
+%                  way
+%  .YLim         - Define the y limits. If empty (default) an automatic
+%                  selection according to 'YLimPolicy' is performed.
+%  .YLimPolicy   - policy of how to select the YLim (only if 'YLim' is
+%                  empty resp unspecified): 'auto' uses the
+%                  usual mechanism of Matlab; 'tightest' selects YLim as the
+%                  exact data range; 'tight' (default) takes the data range,
+%                  adds a little border and selects 'nice' limit values.
+%  .Title        - title of the plot to be displayed above the axis. 
+%                  If OPT.title equals 1, the channel label is used.
+%  .Title*       - with * in {'Color', 'FontWeight', 'FontSize'}
+%                  selects the appearance of the title.
+%  .XZeroLine    - draw an axis along the x-axis at y=0
+%  .YZeroLine    - draw an axis along the y-axis at x=0
+%  .ZeroLine*    - with * in {'Color','Style'} selects the
+%                  drawing style of the axes at x=0/y=0
+%  .AxisTitle    - (string) title to be displayed *within* the axis.
+%  .AxisTitle*   - with * in {'Color', 'HorizontalAlignment',
+%                  'VerticalAlignment', 'FontWeight', 'FontSize'}
+%                  selects the appearance of the subplot titles.
 %
 %Output:
-% H - Handle to several graphical objects.
+% H: Handle to several graphical objects.
 %
 %Do not call this function directly, rather use the superfunction
 %plot_channel.
@@ -196,7 +193,7 @@ elseif nChans>1 && opt.Butterfly
   end
 end
 
-%% Post-process opt properties
+% Post-process opt properties
 if ~iscell(opt.StdLineSpec),
   opt.StdLineSpec= {opt.StdLineSpec};
 end
@@ -286,7 +283,7 @@ if length(opt.RefCol)==1,
   opt.RefCol= opt.RefCol*[1 1 1];
 end
 
-%% Set missing optional fields of epo to default values
+% Set missing optional fields of epo to default values
 if ~isfield(epo, 't'),
   epo.t= 1:size(epo.x,1);
 end
@@ -401,8 +398,8 @@ end
 switch(lower(opt.XUnitDispPolicy)),
  case 'label',
   H.XLabel= xlabel(opt.XUnit);
- case 'lasttick',
-  setLastXTickLabel(opt.XUnit);
+%  case 'lasttick',
+%   setLastXTickLabel(opt.XUnit);
  case 'none',
   % Not a lot to do here ...
  otherwise,
@@ -411,8 +408,8 @@ end
 switch(lower(opt.YUnitDispPolicy)),
  case 'label',
   H.YLabel= ylabel(opt.YUnit);
- case 'lasttick',
-  setLastYTickLabel(opt.YUnit);
+%  case 'lasttick',
+%   setLastYTickLabel(opt.YUnit);
  case 'none',
   % Not a lot to do here ...
  otherwise,
@@ -433,7 +430,7 @@ if ~isequal(opt.Title, 0),
 end
 
 if ~isempty(opt.AxisTitle),
-%% This was necessary for older Matlab versions
+%%% This was necessary for older Matlab versions
 %  if strcmp(opt.AxisType, 'cross'),
 %    shiftAwayFromBorder= 0;
 %  else
