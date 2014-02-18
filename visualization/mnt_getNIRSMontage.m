@@ -1,9 +1,9 @@
 function mnt = mnt_getNIRSMontage(varargin)
-% mnt_getNIRSMontage - get montage with NIRS channel positions for a given set
+%MNT_GETNIRSMONTAGE - get montage with NIRS channel positions for a given set
 %         of sources and detectors. NIRS channels are placed half-way 
 %         between a source and a detector on a spherical head model.
 %
-% Synopsis:
+%Synopsis:
 %   MNT = nirs_getMontage(CLABSOURCE,CLABDETECTOR,<OPT>)
 %         If you give channels labels of the source and detectors (should
 %         correspond to EEG channel labels), montages for source and
@@ -15,36 +15,33 @@ function mnt = mnt_getNIRSMontage(varargin)
 %         montages are already given in .source and .detector fields.
 %         In this case, only the source-detector combinations are determined.
 %
-% OPT - struct or property/value list of optional properties:
-%   'File'      : montage file used for channel positions
-%   'ClabPolicy': specifies how the source-detector combinations are
-%                 labeled. 'Label' (default) concatenates the labels of
-%                 source and detector (eg. FzCz), 'Number' concatenates
-%                 the channel numbers (eg. 112)
-%   'Connector' : specify how source and detectors labels are connected
-%                 (default ''). To have no connector, set to ''.
-%   'Projection' : determine projection of 3D coordinates to 2D
-%                  'orthogonal' or 'euclidean' (default)
+%Input
+% OPT: struct or property/value list of optional properties:
+%  .File       - montage file used for channel positions
+%  .ClabPolicy - specifies how the source-detector combinations are
+%                labeled. 'Label' (default) concatenates the labels of
+%                source and detector (eg. FzCz), 'Number' concatenates
+%                the channel numbers (eg. 112)
+%  .Connector  - specify how source and detectors labels are connected
+%                (default ''). To have no connector, set to ''.
+%  .Projection - determine projection of 3D coordinates to 2D
+%                'orthogonal' or 'euclidean' (default)
 %
-% OUT: mnt          - montage struct of the nirs-channels
-%      channel_info - cell array with nirs-channel info structs (one per channel)
+%Output:
+% MNT: NIRS montage 
+%  .x           - x coordinate of channel positions (2d projection)
+%  .y           - y coordinate of channel positions (2d projection)
+%  .pos_3d      - 3d positions on spherical head model
+%  .clab        - channel labels
+%  .angulardist - angular distances between sources and detectors on the
+%                 spherical model head (in radians)
+%  .sd          - source and detector index to which eg the channel belongs [1 12]
+%  .source      - struct with montage for the sources
+%  .detector    - struct with montage for the detectors
 %
-% Remark: 
+%See also: setElectrodeMontage, nirs_reduceMontage
 %
-% Returns:
-%   MNT: NIRS montage 
-%        .x     - x coordinate of channel positions (2d projection)
-%        .y     - y coordinate of channel positions (2d projection)
-%        .pos_3d - 3d positions on spherical head model
-%        .clab: channel labels
-%        .angulardist: angular distances between sources and detectors on the spherical
-%               model head (in radians)
-%        .sd   : source and detector index to which eg the channel belongs [1 12]
-%        .source : struct with montage for the sources
-%        .detector : struct with montage for the detectors
-%
-% See also: setElectrodeMontage, nirs_reduceMontage
-%
+
 % matthias.treder@tu-berlin.de 2011
 % Markus Wenzel 2013 (adapted it to the new toolbox)
 % Jan Mehnert February 2014 (ready for public BBCI toolbox) (jan@mehnert.org)

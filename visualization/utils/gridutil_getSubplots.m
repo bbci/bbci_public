@@ -11,7 +11,7 @@ if ~isempty(chans) && ~iscell(chans),
   chans= {chans};
 end
 
-if length(chans)>0 && ischar(chans{1}) && ...
+if ~isempty(chans) && ischar(chans{1}) && ...
       strcmp(chans{1},'plus'),
   search_type= '^ERP';   % starting with 'ERP'
   chans= chans(2:end); 

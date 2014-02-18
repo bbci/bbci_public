@@ -2,49 +2,41 @@ function H= plot_scalpOutline(mnt, varargin)
 %PLOT_SCALPOUTLINE - schematic sketch of the scalp (head, nose, DrawEars) and
 % the electrode positions including labels
 %
-% Synopsis:
-%   H = PLOT_SCALPOUTLINE(MNT, <OPT>)
+%Synopsis:
+% H= PLOT_SCALPOUTLINE(MNT, <OPT>)
 %
-% Arguments:
-%   MNT: mount struct
-%
-%   OPT: struct or property/value list of optional properties:
-%   'ShowLabels'           : if true, electrode labels are depicted in circles,
-%                            otherwise only the positions are indicated; default 0.
-%   'LabelProperties'      : text properties of labels (eg 'FontSize', 'Color')
-%   'MinorLabelProperties' : text properties of long labels (>3 characters)
-%   'MarkerProperties'     : line/marker properties of electrode position markers
-%   'LineProperties'       : specify line properties of scalp outline
-%   'MarkChannels'         : give cell array of channels to be marked
-%   'MarkLabelProperties'  : same as labelProperties, but only for marked
+%Input:
+% MNT: mount struct
+% OPT: struct or property/value list of optional properties:
+%  .ShowLabels           - if true, electrode labels are depicted in circles,
+%                          otherwise only the positions are indicated; default 0.
+%  .LabelProperties      - text properties of labels (eg 'FontSize', 'Color')
+%  .MinorLabelProperties - text properties of long labels (>3 characters)
+%  .MarkerProperties     - line/marker properties of electrode position markers
+%  .LineProperties       - specify line properties of scalp outline
+%  .MarkChannels         - give cell array of channels to be marked
+%  .MarkLabelProperties  - same as labelProperties, but only for marked
 %                            channels
-%   'MarkMarkerProperties' : same as markerProperties, but only for marked
+%  .MarkMarkerProperties - same as markerProperties, but only for marked
 %                            channels
-%   'DisplayChannels'      : channels to display, as a cell array of labels
+%  .DisplayChannels      - channels to display, as a cell array of labels
 %                            or alternatively a vector of indices
-%   'DrawEars'             : if true, draws DrawEars; default 0
-%   'Reference'            : draws the Reference at 'nose' 'linked_DrawEars'
+%  .DrawEars             - if true, draws DrawEars; default 0
+%  .Reference            - draws the Reference at 'nose' 'linked_DrawEars'
 %                            or 'linked_mastoids'; default none
-%   'ReferenceProps'       : Reference text properties
-%   'H'                    : provide axes handle (useful if you want to plot 
+%  .ReferenceProps       - Reference text properties
+%  .H                    - provide axes handle (useful if you want to plot 
 %                            the scalp in a subplot)
 %
 %Output:
-%   H    : struct with handles for the current, the scalp plot, 
+% H: struct with handles for the current, the scalp plot, 
 %
-% Example:
+%Example:
 % plot_scalpOutline(mnt,'ShowLabels',1,'LineProperties',{'LineWidth',3},'LabelProperties',{'FontWeight','bold'},'MarkerProperties',{'LineWidth',5,'Color','red'},'DrawEars',1); 
 %
 % This plots a scalp with DrawEars and red-Colored markers.
-%
-% Author: Benjamin Blankertz
-%
-% 2009-06-1  Matthias Treder: 
-%          added DrawEars and Reference, rearranged and extended OPT struct so
-%          all usual line/font/marker options can be used
-% 2009-06-10 Matthias Treder:
-%          Added backward-compatibility
-%
+
+% Author: Benjamin Blankertz, Matthias Treder
 
 props = {
          'DisplayChannels',         [],              'DOUBLE|CELL{CHAR}'

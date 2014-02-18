@@ -4,14 +4,16 @@ function H= grid_markTimeBox(intervals, varargin)
 %
 %H= grid_markTimebox(intervals, <opts>)
 %
-% IN  time intervals - vectors, e.g. [min max],
-%     opts - struct or property/value list with optional fields/properties:
-%       .clab     - channels which should be marked
-%       .Color    - Colors of the line
-%       .Linespec - linepsec of the box plot (overrides .Color)
-%       .Height   - relative Height of the line
-%       .VPos     - vertical position of the line
-% OUT
+%Input:
+% INTERVALS: vectors, e.g. [min max]
+% OPTS:      struct or property/value list with optional fields/properties:
+%  .CLab     - channels which should be marked
+%  .Color    - Colors of the line
+%  .Linespec - linepsec of the box plot (overrides .Color)
+%  .Height   - relative Height of the line
+%  .VPos     - vertical position of the line
+%
+%Output:
 %   H - handle to graphic opbjects
 
 props = {'Clab',                [],             'CELL{CHAR}|DOUBLE';

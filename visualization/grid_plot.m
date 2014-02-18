@@ -11,39 +11,40 @@ function H= grid_plot(epo, mnt, varargin)
 %  .ScaleGroup -  groups of channels, where each group should
 %                 get the same y limits, cell array of cells,
 %                 default {util_scalpChannels, {'EMG*'},{'EOGh'},{'EOGv'}};
-%                 As group you can also use util_scalpChannels (without quotes!)
-%                 or 'all' (with quotes!).
+%                 As group you can also use util_scalpChannels (without
+%                  quotes!) or 'all' (with quotes!).
 %  .ScalePolicy - says how the y limits are chosen:
 %                 'auto': choose automatically,
 %                 'sym': automatically but symmetric around 0
 %                 'individual': choose automatically y limits individual
-%                    for each channel
-%                 'individual_sym': choose automatically y limits individual
-%                    for each channel, but symmetric around 0
-%                 'individual_tight': choose automatically y limits individual
-%                    for each channel, but tight limits
+%                 for each channel
+%                 'individual_sym': choose automatically y limits
+%                 individual for each channel, but symmetric around 0
+%                 'individual_tight': choose automatically y limits
+%                 individual for each channel, but tight limits
 %                 [lower upper]: define y limits;
 %                 .scapePolicy is usually a cell array, where
 %                 each cell corresponds to one .ScaleGroup. Otherwise it
-%                 applies only to the first group (util_scalpChannels by defaults).
+%                 applies only to the first group (util_scalpChannels by
+%                 defaults)
 %  .ScaleUpperLimit - values (in magnitude) above this limit are not 
-%                 considered, when choosing the y limits, default inf
+%                     considered, when choosing the y limits, default inf
 %  .ScaleLowerLimit - values (in magnitude) below this limit are not 
-%                 considered, when choosing the y limits, default 0
-%  .TitleDir    - direction of figure title,
-%                 'horizontal' (default), 'vertical', 'none'
+%                     considered, when choosing the y limits, default 0
+%  .TitleDir    - direction of figure title, 'horizontal' (default),
+%                 'vertical', 'none'
 %
-%    * The following properties of OPT are passed to plot_channel:
-%  .XUnit  - unit of x axis, default 'ms'
-%  .YUnit  - unit of y axis, default epo.unit if this field
-%            exists, 'a.u.' otherwise
-%  .YDir   - 'normal' (negative down) or 'reverse' (negative up)
-%  .RefCol - Color of patch indicating the baseline interval
-%  .ColorOrder -  defines the Colors for drawing the curves of the
+%   * The following properties of OPT are passed to plot_channel:
+%  .XUnit       - unit of x axis, default 'ms'
+%  .YUnit       - unit of y axis, default epo.unit if this field
+%                 exists, 'a.u.' otherwise
+%  .YDir        - 'normal' (negative down) or 'reverse' (negative up)
+%  .RefCol      - Color of patch indicating the baseline interval
+%  .ColorOrder  - defines the Colors for drawing the curves of the
 %                 different Classes. if not given the ColorOrder
 %                 of the current axis is taken. as special gimmick
 %                 you can use 'rainbow' as ColorOrder.
-%  .XGrid, ... -  many axis properties can be used in the usual
+%  .XGrid, ...  - many axis properties can be used in the usual
 %                 way
 %  .XZeroLine   - if true, draw an axis along the x-axis at y=0
 %  .YZeroLine   - if true, draw an axis along the y-axis at x=0
@@ -52,6 +53,9 @@ function H= grid_plot(epo, mnt, varargin)
 %  .AxisTitle*  - with * in {'Color', 'HorizontalAlignment',
 %                 'VerticalAlignment', 'FontWeight', 'FontSize'}
 %                 selects the appearance of the subplot titles.
+%
+%Output:
+%   H - handle to graphic objects
 %
 % SEE  makeEpochs, setDisplayMontage, plot_channel, grid_*
 

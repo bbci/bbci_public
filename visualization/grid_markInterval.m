@@ -2,15 +2,16 @@ function H= grid_markInterval(ival, chans, markCol)
 %GRID_MARKINTERVAL - Draw time interval inside grid plots as colored
 %patches
 %
-%grid_markInterval(ival, <chans, markCol>)
-%grid_markInterval(ival, <axis_handles, markCol>)
+%Synopsis:
+% grid_markInterval(ival, <chans, markCol>)
+% grid_markInterval(ival, <axis_handles, markCol>)
 %
-% IN  ival    - interval [msec], may also contain several intervals,
-%                each as one row
-%     chans   - channels which should be marked, default [] meaning all
-%     markCol - Color of the patch, if it is scalar take it as gray value,
-%                default 0.8
-
+%Input:
+% IVAL:    interval [msec], may also contain several intervals,
+%          each as one row
+% CHANS:   channels which should be marked, default [] meaning all
+% MARKCOL: Color of the patch, if it is scalar take it as gray value,
+%          default 0.8
 
 if ~exist('chans','var'), chans=[]; end
 if ~exist('markCol','var'), markCol= 0.85; end
