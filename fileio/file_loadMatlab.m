@@ -168,7 +168,7 @@ if ~isempty(iData),
     if isequal(opt.CLab, 'ALL'),
       chind= 1:size(dat.x,2);
     else
-      chind= chanind(dat, opt.CLab);
+      chind= util_chanind(dat, opt.CLab);
       dat= proc_selectChannels(dat, opt.CLab);
     end
     dat.x= double(dat.x);

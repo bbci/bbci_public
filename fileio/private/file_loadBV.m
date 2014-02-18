@@ -164,7 +164,7 @@ lag = raw_fs/opt.Fs;
 
 if ~isempty(opt.LinearDerivation),
   rm_clab= cell_flaten({opt.LinearDerivation.rm_clab});
-  rmidx= chanind(cnt.clab, rm_clab);
+  rmidx= util_chanind(cnt.clab, rm_clab);
   cnt.clab(rmidx)= [];
   cnt.clab= cat(2, cnt.clab, rm_clab);
 end
@@ -174,7 +174,7 @@ nChans= length(cnt.clab);
 if isempty(opt.CLab),
   chInd= 1:nChans;
 else
-  chInd= unique(chanind(cnt.clab, opt.CLab));
+  chInd= unique(util_chanind(cnt.clab, opt.CLab));
   cnt.clab= {cnt.clab{chInd}};
 end
 uChans= length(chInd);
@@ -190,7 +190,6 @@ if ~isempty(opt.Filt),
   for cc= 1:uChans,
     if cc==1 & nargout>1,
       [cnt_sc, mrk]= file_loadBV(file, opt_tmp, 'clab',cnt.clab{cc});
-      mrk= mrk_resample(mrk, opt.Fs);
     else
       cnt_sc= file_loadBV(file, opt_tmp, 'clab',cnt.clab{cc});
     end
@@ -207,15 +206,15 @@ if ~isempty(opt.Filt),
     end
     cnt.x(:,cc)= cnt_sc.x;
     if opt.Verbose,
-      print_progress(cc, uChans);
+      util_printProgress(cc, uChans);
     end
   end
   if ~isempty(opt.LinearDerivation),
     ld= opt.LinearDerivation;
     for cc= 1:length(ld),
-      ci= chanind(cnt.clab, ld(cc).chan);
+      ci= util_chanind(cnt.clab, ld(cc).chan);
       support= find(ld(cc).filter);
-      s2= chanind(cnt.clab, ld(cc).clab(support));
+      s2= util_chanind(cnt.clab, ld(cc).clab(support));
       cnt.x(:,ci)= cnt.x(:,s2) * ld(cc).filter(support);
       cnt.clab{ci}= ld(cc).new_clab;
     end
@@ -378,9 +377,9 @@ cnt.file= fullName;
 if ~isempty(opt.LinearDerivation),
   ld= opt.LinearDerivation;
   for cc= 1:length(ld),
-    ci= chanind(cnt.clab, ld(cc).chan);
+    ci= util_chanind(cnt.clab, ld(cc).chan);
     support= find(ld(cc).filter);
-    s2= chanind(cnt.clab, ld(cc).clab(support));
+    s2= util_chanind(cnt.clab, ld(cc).clab(support));
     cnt.x(:,ci)= cnt.x(:,s2) * ld(cc).filter(support);
     cnt.clab{ci}= ld(cc).new_clab;
   end

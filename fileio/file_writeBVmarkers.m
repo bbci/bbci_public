@@ -61,7 +61,7 @@ fprintf(fid, [13 10 '[Marker Infos]' 13 10]);
 pos= round(mrk.time/1000*opt.Fs);
 if opt.UseClassLabels,
   [dmy, toe]= max(mrk.y);
-  desc= cprintf('S%3d', toe);
+  desc= str_cprintf('S%3d', toe);
 else
   if iscell(mrk.event.desc),
     desc= mrk.event.desc;

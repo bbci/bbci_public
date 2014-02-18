@@ -104,7 +104,7 @@ props = {'AxisType',                        'box',                '!CHAR';
          'XGrid',                           'on',                   'CHAR';
          'YGrid',                           'on',                   'CHAR';
          'XUnit',                           '[ms]',                 'CHAR';
-         'YUnit',                           'a.u.',                 'CHAR';
+         'YUnit',                           '[a.u.]',                 'CHAR';
          'UnitDispPolicy',                  'label',                'CHAR';
          'XUnitDispPolicy',                 'label',                'CHAR';
          'YUnitDispPolicy',                 'label',                'CHAR';
