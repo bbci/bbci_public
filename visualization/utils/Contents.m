@@ -17,4 +17,7 @@
 % fig_publish: extremely simple, only used by online/calibration/bbci_calibrate_ERPSpeller.m
 % and online/calibration/bbci_calibrate_csp.m, remove?
 %
+% axis_getEffectivePosition: only used in plotutil_colorbarAside, made
+% private!!!
 %
+% 

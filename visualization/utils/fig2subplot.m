@@ -289,7 +289,7 @@ for ii=1:numel(hfigs)
   if  ii>1 && ~isequal(get(hfigs(ii),'colormap'),get(h.main,'colormap')),
     newcb= findobj(newax, 'Tag', 'Colorbar');
     newaxes= setdiff(newax, newcb,'legacy');
-    fig_acmAdaptCLim(acm, newaxes);
+    visutil_acmAdaptCLim(acm, newaxes);
     % Adjust the displaying of the new colorbar [wieder einkommentiert]
     scnew = size(get(hfigs(ii),'colormap'),1);
     sc = size(colormap,1);

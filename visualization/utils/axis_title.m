@@ -5,13 +5,13 @@ function ht= axis_title(title_list, varargin)
 % H= axis_title(TITLE, <OPT>)
 %
 %Input:
-% TITLE:    CHAR|CELL       string or cell array of strings
-% OPT: struct or property/value list of optional properties:
-%  .vpos - vertical position
-%  .color - font color in RGB format. Maybe an [nTit 3] matrix of color
+% TITLE: string or cell array of strings
+% OPT:   struct or property/value list of optional properties:
+%  .VPpos - vertical position
+%  .Color - font color in RGB format. Maybe an [nTit 3] matrix of color
 %           codes
-%  .font* - font properties like fontWeight, fontSize, ...
-%  .horizontalAlignment, .verticalAlignment
+%  .Font* - font properties like fontWeight, fontSize, ...
+%  .HorizontalAlignment, .verticalAlignment
 %
 %Output:
 % H: handle to the text object(s)

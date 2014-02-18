@@ -1,5 +1,6 @@
 function h_out= axis_getQuitely(varargin)
-%AXIS_GETQUIETLY
+%AXIS_GETQUIETLY - Make an axis the current axis without interfering the
+% 'Visible' property
 
 vis= get(gcf, 'Visible');
 if nargin==1,
