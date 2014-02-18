@@ -45,7 +45,7 @@ function [dat, varargout]= proc_cspAuto(dat, varargin)
 
 % Author(s): Benjamin Blankertz
 props= { 'patterns'     3           'INT'
-         'score'        'medianvar' 'CHAR'
+         'score'        'medianvar' '!CHAR(eigenvalues medianvar auc)'
          'covPolicy'    'average'   'CHAR'
          'scaling'      'none'      'CHAR'
          'normalize'    0           'BOOL'
@@ -103,21 +103,13 @@ switch(lower(opt.score)),
     v2= median(fv.x(1,kk,c2),3);
     score(kk)= v2/(v1+v2);
   end
- case 'roc',
+ case 'auc',
   fv= proc_linearDerivation(dat, W);
   fv= proc_variance(fv);
-  fv= proc_rocAreaValues(fv);
-%  score= abs(fv.x);
-  score= -fv.x;
- case 'fisher',
-  fv= proc_linearDerivation(dat, W);
-  fv= proc_variance(fv);
-  fv= proc_logarithm(fv);
-  fv= proc_rfisherScore(fv, 'preserve_sign',1);
-%  score= abs(fv.x);
+  fv= proc_aucValues(fv);
   score= -fv.x;
  otherwise,
-  error('unknown option for score');
+  error('unknown option for score. It should be ''eigenvalues'', ''medianvar'' or ''auc'' ');
 end
 %% force score to be a column vector
 score= score(:);

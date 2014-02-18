@@ -38,15 +38,15 @@ if isnumeric(dat),
   dat = reshape(dat, [prod(sz(1:end-1)) sz(end)]); 
 elseif isstruct(dat),
   % Old code from the BCI toolbox:
-  if isstruct(dat.x),
-    dat= proc_flatenGuido(dat);
-  else
+  if isnumeric(dat.x),
     sz = size(dat.x);
     if numel(sz) == 2 && opt.ForceFlaten,
       dat.x = reshape(dat.x, prod(sz), 1);
     else
       dat.x = reshape(dat.x, [prod(sz(1:end-1)) sz(end)]);
     end
+  else
+    error('Don''t know how to flatten this type of data');
   end
 else
   error('Don''t know how to flatten this type of data');

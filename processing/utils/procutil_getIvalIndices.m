@@ -55,7 +55,7 @@ if isstruct(dat),
     if isfield(dat, 'xUnit'),
       dati.xUnit= dat.xUnit{opt.dim};
     end
-    iv= getIvalIndices(ival, dati);
+    iv= procutil_getIvalIndices(ival, dati);
     return;
   end
   
