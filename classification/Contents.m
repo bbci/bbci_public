@@ -10,6 +10,8 @@
 %TRAINCLASSIFIER - Given a collection of data (FV), and a type of classifier model, 
 %                  the classifier is trained, i.e. the free parameters of the model are determined
 %TRAIN_RLDASHRINK - Special case of TRAINCLASSIFIER: classifier is a LDA model 
+%                   (linear discriminant analysis). Good initial choice to try on a new classification problem.
+%TRAIN_RLDASHRINK - Special case of TRAINCLASSIFIER: classifier is a LDA model 
 %                   (linear discriminant analysis), and shrinkage of the estimated covariance is 
 %                   used for regularization. Good initial choice to try on a new classification problem.
 %TRAIN_SWLDAMATLAB - Special case of TRAINCLASSIFIER: classifier is a stepwise-linear LDA model. 

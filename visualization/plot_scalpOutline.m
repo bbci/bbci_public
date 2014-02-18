@@ -64,7 +64,7 @@ opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
 if isempty(opt.DisplayChannels)
-    opt= set_defaults(opt, 'DisplayChannels', 1:length(mnt.clab));
+    opt= opt_setDefaults(opt, 'DisplayChannels', 1:length(mnt.clab));
 end
 
 if opt.ShowLabels, opt= opt_setDefaults(opt,{ 'MarkerProperties', {'Marker','o','MarkerSize',20,'MarkerEdgeColor','k'}});
