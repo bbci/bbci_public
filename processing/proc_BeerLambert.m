@@ -1,4 +1,7 @@
-function dat = nirs_LB(dat, varargin)
+function dat = proc_BeerLambert(dat, varargin)
+% PROC_BEERLAMBERT - apply the BeerLambert function, which is useful to analyze
+% NIRS data:  relative concentration is calculated as a function of total photon path length
+%
 % Synopsis:
 %   DAT = nirs_LB(DAT, 'Property1',Value1, ...)
 %
