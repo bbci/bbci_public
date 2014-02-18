@@ -24,9 +24,27 @@ function [loss, lossSem]= crossvalidation(fv, classy, varargin)
 %  LOSS -   Loss averaged over all folds and repetitions
 %  LOSSSEM - Standard error of the mean. First the loss is averaged across
 %           all folds, and then the SEM across all shuffles is calculated.
-
+%
+% Examples:
+%   loss = crossvalidation(fv, @train_RLDAshrink)
+%   loss = crossvalidation(fv, @train_RLDAshrink, 'SampleFcn', {@sample_chronKFold, 5})
+%
+% cross-validation with CSP filter computation on training data:
+%   proc = {}
+%   proc.train= {{'CSPW', @proc_cspAuto, 3}
+%                @proc_variance
+%                @proc_logarithm
+%               };
+%   proc.apply= {{@proc_linearDerivation, '$CSPW'}
+%                @proc_variance
+%                @proc_logarithm
+%               };
+% 
+%   crossvalidation(fv, {@train_RLDAshrink, 'Gamma',0}, ...
+%                   'SampleFcn', {@sample_chronKFold, 8}, ...
+%                   'Proc', proc)
+ 
 % 2014-02 Benjamin Blankertz
-
 
 props = {'SampleFcn'   {@sample_KFold, [10 10]}   '!FUNC|CELL'
          'LossFcn'     @loss_0_1                  '!FUNC|CELL'
