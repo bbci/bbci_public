@@ -25,12 +25,12 @@ function dat= proc_envelope(dat, varargin)
 % Author(s): Benjamin Blankertz
 % added channelwise option by Claudia
 % 07-2012 Johannes Hoehne - Updated documentation and parameter naming
-props= {'EnvelopMethod'     'hilbert'    '!CHAR(hilbert)'
-        'MovAvgMethod'      'centered'   '!CHAR(centered causal)'
-        'MovAvgMsec'        100          'DOUBLE[1]'
-        'MovAvgOpts'        {}           'CELL'
-        'Channelwise'       false        'BOOL'};
-
+props= {'EnvelopMethod'   'hilbert'    '!CHAR(hilbert)'
+        'MovAvgMethod'    'centered'   '!CHAR(centered causal)'
+        'MovAvgMsec'      100          'DOUBLE[1]'
+        'MovAvgOpts'      {}           'CELL'
+        'Channelwise'     false        'BOOL'
+       };
 if nargin==0,
   dat= props; return
 end
