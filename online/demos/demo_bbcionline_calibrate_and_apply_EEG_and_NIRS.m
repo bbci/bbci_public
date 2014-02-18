@@ -7,8 +7,7 @@ BC.folder=  fullfile(BTB.DataDir, 'demoMat');
 BC.file= fullfile('VPean_10_07_26', 'NIRS', 'real_movementVPean');
 BC.marker_fcn= @mrk_defineClasses;
 BC.marker_param= {{1, 2; 'left', 'right'}};
-BC.save.folder= BTB.TmpDir;
-BC.log.folder= BTB.TmpDir;
+BC.log.output= 'screen';
 
 bbci_nirs= struct('calibrate', BC);
 [bbci_nirs, calib_nirs]= bbci_calibrate(bbci_nirs);
@@ -23,16 +22,15 @@ BC.read_fcn= @file_readBV;
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
 BC.marker_param= {{1, 2; 'left', 'right'}};
-BC.save.folder= BTB.TmpDir;
-BC.log.folder= BTB.TmpDir;
+BC.log.output= 'screen';
 
 bbci= struct('calibrate', BC);
-
 [bbci, calib_eeg]= bbci_calibrate(bbci);
 
 
 %% Putting things together
 % for signal:
+bbci.signal(2)= bbci_nirs.signal;
 bbci.signal(1).source= 1;
 bbci.signal(2).source= 2;
 
@@ -53,7 +51,6 @@ bbci.control(2).classifier= 2;
 % the usual setting for log:
 bbci.log.output= 'screen&file';
 bbci.log.folder= BTB.TmpDir;
-bbci.log.classifier= 1;
 
 % For online simulation, we need to synchronize the two data sets
 [calib_eeg.cnt, calib_eeg.mrk]= ...
@@ -75,9 +72,9 @@ bbci.source(2).min_blocklength= 0;
 data= bbci_apply(bbci);
 
 %% analyze the outputs
-log_format= '%fs | CTRL%d | [%f] | {cl_output=%f}';
-[time, cfy_no, cfy, ctrl]= textread(data.log.filename, log_format, ...
-                            'delimiter','','commentstyle','shell');
+log_format= '%fs | CTRL%d | {cl_output=%f}';
+[time, cfy_no, cfy]= textread(data.log.filename, log_format, ...
+                              'delimiter','','commentstyle','shell');
 idx_EEG= find(cfy_no==1);
 idx_NIRS= find(cfy_no==2);
 
@@ -94,5 +91,16 @@ epo_cfy_NIRS= proc_segmentation(cnt_cfy_NIRS, mrk_cfy, [-5000 15000]);
 fig_set(2, 'Name','NIRS classifier output', 'clf',1);
 plot_channel(epo_cfy_NIRS);
 
-% Note: this is just a demo. Here, the same data was used for training
+% Note 1: This is just a demo. Here, the same data was used for training
 %  the classifiers and evaluation.
+
+% Note 2: The task for online processing of the NIRS data was simplified here, 
+%  since preprocessed data was used.
+
+% Note 3: Here we are just interested in logging the different classifier 
+%  outputs. In a realistic case, one might be interested in having one
+%  control function that receives input from the EEG-based as well as from
+%  the NIRS-based classifier. To that end one could define
+%    bbci.control= struct('classifier', [1 2]);
+%    bbci.control.fcn= @bbci_control_MyMultiModalController
+% and implement the function bbci_control_MyMultiModalController.
