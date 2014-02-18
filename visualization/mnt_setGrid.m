@@ -1,19 +1,19 @@
 function mnt= mnt_setGrid(mnt, displayMontage, varargin)
 %MNT_SETGRID - Define a new eletrode grid layout for an electrode montage
 %
-%Usage:
-% mnt= mnt_setGrid(mnt, displayMontage, <opts>)
+%Synposis:
+% MNT= mnt_setGrid(MNT, DISPLAYMONTAGE, <OPTS>)
 %
 %Input:
-% mnt            - struct for electrode montage, see setElectrodeMontage
-% displayMontage - any *.mnt file in EEG_CFG_DIR, 
-%                  e.g., 'small', 'medium', 'large',
-%                  or a string defining the montage (see example)
-% opts - struct or property/value list of optional field:
-%   .CenterClab  - label of channel to be positioned at (0,0)
+% MNT:            struct for electrode montage, see setElectrodeMontage
+% DISPLAYMONTAGE: any *.mnt file in EEG_CFG_DIR, 
+%                 e.g., 'small', 'medium', 'large',
+%                 or a string defining the montage (see example)
+% OPTS:           struct or property/value list of optional field:
+%  .CenterClab  - label of channel to be positioned at (0,0)
 %
 %Output:
-% mnt: updated struct for electrode montage
+% MNT: updated struct for electrode montage
 %
 %Example:
 % grd= sprintf('legend,Fz,scale\n,C3,Cz,C4\nP3,Pz,P4');

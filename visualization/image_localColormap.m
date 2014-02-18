@@ -2,39 +2,37 @@ function image_localColormap(C, cmap, varargin)
 %IMAGE_LOCALCOLORMAP - Display image without using the figure's colormap
 %
 %Description:
-%  One problem in Matlab's graphics is that all subplots of one figure
-%  all share the same colormap. This function allows one work-around by
-%  displaying an image without using the figure's colormap. To this end
-%  each rectangular of the image is plotted using the function FILL,
-%  which can be quite time consuming.
+% One problem in Matlab's graphics is that all subplots of one figure
+% all share the same colormap. This function allows one work-around by
+% displaying an image without using the figure's colormap. To this end
+% each rectangular of the image is plotted using the function FILL,
+% which can be quite time consuming.
 %
 %Usage:
-%  image_localColormap(C, CMAP, <OPT>)
+% image_localColormap(C, CMAP, <OPT>)
 %
 %Input:
-%  C:    Matrix to be displayed
-%  CMAP: Colormap to be used, [nColors 3]-sized array of RGB-coded colors.
-%  OPT:  Property/value list or struct of optional properties:
-%   .CLim - The values of the color matrix C, whose values are in the
-%           range CLim= [Cmin, Cmax] are mapped to color indices in the
-%           range [1 nColors], indexing into the specified colormap CMAP.
-%           When .CLim is set to 'auto' (default) the range [Cmin Cmax]
-%           is chosen tight as [min(C(:)) max(C(:))].
-%   .EdgeColor - Specifies the edge color of the rectangulars,
-%           default 'none'.
-%   .Optimize - Can be 'rows' or 'columns' and determines in which
-%           direction consequtive entries in the color matrix that
-%           index the same color are represented by one patch.
-%           Note: this does not change the look of the image, it just
-%           optimizes the internal representation by having (potentially)
-%           less paches.
+% C:    Matrix to be displayed
+% CMAP: Colormap to be used, [nColors 3]-sized array of RGB-coded colors.
+% OPT:  Property/value list or struct of optional properties:
+%  .CLim      - The values of the color matrix C, whose values are in the
+%               range CLim= [Cmin, Cmax] are mapped to color indices in the
+%               range [1 nColors], indexing into the specified colormap CMAP.
+%               When .CLim is set to 'auto' (default) the range [Cmin Cmax]
+%               is chosen tight as [min(C(:)) max(C(:))].
+%  .EdgeColor - Specifies the edge color of the rectangulars,
+%               default 'none'.
+%  .Optimize -  Can be 'rows' or 'columns' and determines in which
+%               direction consequtive entries in the color matrix that
+%               index the same color are represented by one patch.
+%               Note: this does not change the look of the image, it just
+%               optimizes the internal representation by having (potentially)
+%               less paches.
 %
 %Example:
-%  clf; colormap default;
-%  subplot(1,2,1); imagesc(toeplitz(1:10));
-%  subplot(1,2,2); image_localColormap(toeplitz(1:4), summer(10));
-%
-%See also iscolormapinuse.
+% clf; colormap default;
+% subplot(1,2,1); imagesc(toeplitz(1:10));
+% subplot(1,2,2); image_localColormap(toeplitz(1:4), summer(10));
 
 % blanker@first.fhg.de, 01/2005
 

@@ -2,37 +2,38 @@ function H= grid_addBars(fv, varargin)
 %GRID_ADDBARS - Add a Colorbar to the Bottom of Each Subplot of a Grid Plot
 %
 %Synopsis:
-%  H= grid_addBars(FV, <opt>)
+% H= grid_addBars(FV, <opt>)
 %
-%Arguments:
-%  FV: data structure (like epo)
-%  OPT: struct or property/value list of optional properties:
-%   .Height:        Height of the colorbar
-%   .HScale:        Handle to the scale of the grid plot (returned by
-%                   grid_plot as .scale), a colorbar will be placed next to
-%                   the scale
-%   .ShiftAxes:     'position' or 'ylim'
-%   .CLim:          Color limit of colorbar, either a 1-by-2 vector giving
-%                   the limit or 'auto' (default)
-%   .Colormap:      The colormap of colorbar, either a x-by-3 vector giving
-%                   the explicit map, or one of the predefined maps (see
-%                   help of 'colormap')
-%   .Channels:      Channels for which bar should be added, either a cell
-%                   of strings giving the channels names, or en empty array
-%                   for all channels, or 'plus'
-%   .Scale*:        with * in {'Height','Width','VPos','LeftShift',
-%                   'FontSize','Digits','Unit'} define the appearance of
-%                   the scale
+%Input:
+% FV: data structure (like epo)
+% OPT: struct or property/value list of optional properties:
+%  .Height    - Height of the colorbar
+%  .HScale    - Handle to the scale of the grid plot (returned by
+%               grid_plot as .scale), a colorbar will be placed next to
+%               the scale
+%  .ShiftAxes - 'position' or 'ylim'
+%  .CLim      - Color limit of colorbar, either a 1-by-2 vector giving
+%               the limit or 'auto' (default)
+%  .Colormap  - The colormap of colorbar, either a x-by-3 vector giving
+%               the explicit map, or one of the predefined maps (see
+%               help of 'colormap')
+%  .Channels  - Channels for which bar should be added, either a cell
+%               of strings giving the channels names, or en empty array
+%               for all channels, or 'plus'
+%  .Scale*    - with * in {'Height','Width','VPos','LeftShift',
+%               'FontSize','Digits','Unit'} define the appearance of
+%               the scale
 %   
+%Output:
+%   H - handle to graphic objects
 %
 %Caveat:
-%  You have to make sure that the FV data fits to the data that was displayed
-%  with grid_plot before (e.g. for the length of the vector in the time
-%  dimension). The channels are matched automatically. FV may have less
-%  channels than displayed by grid_plot.
+% You have to make sure that the FV data fits to the data that was displayed
+% with grid_plot before (e.g. for the length of the vector in the time
+% dimension). The channels are matched automatically. FV may have less
+% channels than displayed by grid_plot.
 %
 %Example:
-%  
 % H= grid_plot(epo, mnt, defopt_erps)
 % epo_rsq= proc_r_square_signed(epo);
 % grid_addBars(epo_rsq, 'HScale',H.scale)

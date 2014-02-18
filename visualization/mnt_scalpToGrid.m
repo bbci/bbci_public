@@ -2,31 +2,31 @@ function mnt= mnt_scalpToGrid(mnt, varargin)
 %MNT_SCALPTOGRID - Montage for grid plot with boxes at scalp locations
 %
 %Usage:
-%  MNT= mnt_scalpToGrid(MNT, <OPTS>)
+% MNT= mnt_scalpToGrid(MNT, <OPTS>)
 %
 %Input:
-%  MNT: Display montage
-%  OPTS: property/value list or struct of optional properties:
-%   .clab     - choose only locations for those specified channels,
-%               cell array, for format see function util_chanind.
-%   .AxisSize - [width Height]: size of axis. Default [] means choosing
-%               automatically the large possible size, without overlapping.
-%   .Oversize - factor to increase AxisSize to allow partial overlapping,
-%               default 1.2.
-%   .MaximizeAngle - when choosing automatically the AxisSize, the
-%               criterium is to maximize size in direction of this angle.
-%   .LegendPos - [hpos VPos], where hpos=0 means leftmost, and hpos=1 means
-%               rightmost edge, and VPos=0 means lower and VPos=1 means
-%               upper edge.
-%   .ScalePos - [hpos VPos], analog to .LegendPos
-%   .PosCorrection - type of corrections for channel positions. There
-%               are some popular variants hard coded here. Default 0.
+% MNT: Display montage
+% OPTS: property/value list or struct of optional properties:
+%  .CLab     - choose only locations for those specified channels,
+%              cell array, for format see function util_chanind.
+%  .AxisSize - [width Height]: size of axis. Default [] means choosing
+%              automatically the large possible size, without overlapping.
+%  .Oversize - factor to increase AxisSize to allow partial overlapping,
+%              default 1.2.
+%  .MaximizeAngle - when choosing automatically the AxisSize, the
+%              criterium is to maximize size in direction of this angle.
+%  .LegendPos - [hpos VPos], where hpos=0 means leftmost, and hpos=1 means
+%              rightmost edge, and VPos=0 means lower and VPos=1 means
+%              upper edge.
+%  .ScalePos  - [hpos VPos], analog to .LegendPos
+%  .PosCorrection - type of corrections for channel positions. There
+%              are some popular variants hard coded here. Default 0.
 %
 %Output:
-%  MNT: Updated display montage
+% MNT: Updated display montage
 %
 %See also setDisplayMontage, projectElectrodePositions, grid_plot,
-%  mnt_restrictMontage
+% mnt_restrictMontage
 
 % blanker@first.fhg.de 01/2005
 

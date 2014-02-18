@@ -1,17 +1,17 @@
 function mnt= mnt_restrictMontage(mnt, varargin)
 %MNT_RESTRICTMONTAGE - Restrict an electrode montage to a subset of channels.
 %
-%Usage:
-%  mnt= mnt_restrictMontage(mnt, chans);
-%  mnt= mnt_restrictMontage(mnt, dat);
+%Synposis:
+%  mnt= mnt_restrictMontage(MNT, CHANS);
+%  mnt= mnt_restrictMontage(MNT, DAT);
 %
 %Input:
-%  mnt   - display montage, see setElectrodeMontage, setDisplayMontage
-%  chans - channels, format as accepted by util_chanind
-%  dat   - structure which has a field 'clab', such as cnt, epo, ...
+%  MNT:   display montage, see setElectrodeMontage, setDisplayMontage
+%  CHANS: channels, format as accepted by util_chanind
+%  DAT:   structure which has a field 'clab', such as cnt, epo, ...
 %
 %Output:
-%  mnt   - updated display montage
+%  MNT:   updated display montage
 %
 %Example:
 %  [cnt, mrk, mnt]= loadProcessedEEG('Gabriel_00_09_05/selfpaced2sGabriel');

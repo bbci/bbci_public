@@ -1,37 +1,41 @@
 function H= plot_scalpEvolutionPlusChannel(erp, mnt, clab, ival, varargin)
 %PLOT_SCALPEVOLUTIONPLUSCHANNEL - Display evolution of scalp topographies 
 %
-%Usage:
+%Synposis:
 % H= plot_scalpEvolutionPlusChannel(ERP, MNT, CLAB, IVAL, <OPTS>)
 %
+%Description:
 % Makes an ERP plot in the upper panel with given interval marked,
 % and draws below scalp topographies for all marked intervals,
 % separately for each Class. For each Classes topographies are plotted
 % in one row and shared the same Color map scaling. (In future versions
 % there might be different options for Color scaling.)
 %
-% IN: erp  - struct of epoched EEG data. For convenience used Classwise
-%            averaged data, e.g., the result of proc_average.
-%     mnt  - struct defining an electrode montage
-%     clab - label of the channel(s) which are to be displayed in the
-%            ERP plot.
-%     ival - [nIvals x 2]-sized array of interval, which are marked in the
-%            ERP plot and for which scalp topographies are drawn.
-%            When all interval are consequtive, ival can also be a
-%            vector of interval borders.
-%     opts - struct or property/value list of optional fields/properties:
-%      .IvalColor - [nColors x 3]-sized array of rgb-coded Colors
-%                    with are used to mark intervals and corresponding 
-%                    scalps. Colors are cycled, i.e., there need not be
-%                    as many Colors as interval. Two are enough,
-%                    default [0.4 1 1; 1 0.6 1].
-%      .LegendPos - specifies the position of the legend in the ERP plot,
-%                    default 0 (see help of legend for choices).
-%      .PrintIvalUnits - appends the unit when writing the ival borders,
-%                    default 1
-%      the opts struct is passed to plot_scalpPattern
+%Input:
+% ERP: struct of epoched EEG data. For convenience used Classwise
+%      averaged data, e.g., the result of proc_average.
+% MNT: struct defining an electrode montage
+% CLAB: label of the channel(s) which are to be displayed in the
+%       ERP plot.
+% IVAL: [nIvals x 2]-sized array of interval, which are marked in the
+%       ERP plot and for which scalp topographies are drawn.
+%       When all interval are consequtive, ival can also be a
+%       vector of interval borders.
+% OPTS: struct or property/value list of optional fields/properties:
+%  .IvalColor  - [nColors x 3]-sized array of rgb-coded Colors
+%                with are used to mark intervals and corresponding 
+%                scalps. Colors are cycled, i.e., there need not be
+%                as many Colors as interval. Two are enough,
+%                default [0.4 1 1; 1 0.6 1].
+%  .LegendPos  - specifies the position of the legend in the ERP plot,
+%                default 0 (see help of legend for choices).
+%  .PrintIvalUnits - appends the unit when writing the ival borders,
+%                default 1
 %
-% OUT H - struct of handles to the created graphic objects.
+%The opts struct is passed to plot_scalpPattern
+%
+%Output:
+% H: struct of handles to the created graphic objects.
 %
 %See also plot_scalpEvolution, plot_scalpPatternsPlusChannel, plot_scalp.
 

@@ -1,21 +1,21 @@
 function mnt= mnt_setElectrodePositions(clab, varargin)
 %MNT_SETELECTRODEPOSITIONS - Electrode positions of standard named channels
 %
-%Usage:
+%Synopsis:
 % MNT= mnt_setElectrodePositions(CLAB, <OPT>);
 %
 %Input:
 % CLAB: Label of channels (according to the extended international
 %       10-10 system, see mntutil_posExt1010).
 % OPT: Struct or property/value list of optional properties:
-%  'PositionFcn' - FUNC handle of function that specifies eletrode positions,
-%       default @mntutil_posExt1010
+%  .PositionFcn - FUNC handle of function that specifies eletrode positions,
+%                 default @mntutil_posExt1010
 %
 %Output:
-% MNT:  Struct for electrode montage
-%   .x     - x coordiante of electrode positions
-%   .y     - y coordinate of electrode positions
-%   .clab  - channel labels
+% MNT: Struct for electrode montage
+%  .x     - x coordiante of electrode positions
+%  .y     - y coordinate of electrode positions
+%  .clab  - channel labels
 %
 %See also mnt_setGrid
 

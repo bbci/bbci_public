@@ -2,14 +2,13 @@ function H= plot_channel(epo, clab, varargin)
 %PLOT_CHANNEL - Plot the classwise averages of one channel of 1D (time OR
 % frequency) or 2D data (time x frequency)
 %
-%Usage:
+%Synopsis:
 % H= plot_channel(EPO, CLAB, <OPT>)
 %
 %Input:
-% EPO  - Struct of epoched signals, see makeEpochs
-% CLAB - Name (or index) of the channel to be plotted.
-%
-% OPT  is a struct or property/value list of optional properties, see
+% EPO:  Struct of epoched signals, see makeEpochs
+% CLAB: Name (or index) of the channel to be plotted.
+% OPT:  Struct or property/value list of optional properties, see
 % plotutil_channel1D for 1D plots and plotutil_channel2D for 2D plots.
 %
 %Output:

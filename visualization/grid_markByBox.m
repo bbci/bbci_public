@@ -1,18 +1,23 @@
 function H= grid_markByBox(fractiles, varargin)
 %GRID_MARKBYBOX - Draw error or percentiles box inside grid plots
 %
-% IN  fractiles - vector, e.g. [min 25%ile median 75%tile max],
-%                 as obtained by 'stat_percentiles(blah, [])'.
-%     opts - struct or property/value list with optional fields/properties:
-%       .clab     - channels which should be marked
-%       .Color    - Color of the box plot
-%       .Linespec - linepsec of the box plot (overrides .Color)
-%       .Height   - relative Height of the box plot, default 0.075
-%       .VPos     - vertical position of the box plot (0: bottom, 1: top)
-% OUT
+%Synopsis:
+% H= grid_markByBox(FRACTILES, <OPT>)
+%
+%Input:
+% FRACTILES: vector, e.g. [min 25%ile median 75%tile max], as obtained
+%            by 'stat_percentiles(blah, [])'
+% OPTS:      struct or property/value list with optional fields/properties:
+%  .CLab     - channels which should be marked
+%  .Color    - Color of the box plot
+%  .Linespec - linespec of the box plot (overrides .Color)
+%  .Height   - relative Height of the box plot, default 0.075
+%  .VPos     - vertical position of the box plot (0: bottom, 1: top)
+%
+%Output:
 %   H - handle to graphic objects
 %
-% EXAMPLE
+%Example:
 %  grid_plot(erp, mnt, defopt_erps);
 %  grid_markBybox(stat_percentiles(mrk.latency, [5 25 50 75 95]);
 

@@ -1,20 +1,19 @@
 function mnt= mnt_adaptMontage(mnt, varargin)
 %MNT_ADAPTMONTAGE - Adapts an electrode montage to another electrode set
 %
-%Usage:
-% mnt= mnt_adaptMontage(mnt, clab);
-% mnt= mnt_adaptMontage(mnt, dat);
+%Synposis:
+% mnt= mnt_adaptMontage(MNT, CLAB);
+% mnt= mnt_adaptMontage(MNT, DAT);
 %
 %Input:
-% mnt  - display montage, see setElectrodeMontage, setDisplayMontage
-% clab - channels, format as accepted by util_chanind
-% dat  - a data struct which has a field clab with format as above
+% MNT:   display montage, see setElectrodeMontage, setDisplayMontage
+% CLAB:  channels, format as accepted by util_chanind
+% DAT:   a data struct which has a field clab with format as above
 %
 %Output:
-% mnt  - updated display montage
+% MNT:   updated display montage
 %
-%Example:
-% 
+%Example:% 
 % file= 'Gabriel_00_09_05/selfpaced2sGabriel';
 % [cnt,mrk,mnt]= loadProcessedEEG(file);
 % epo= makeEpochs(cnt, mrk, [-1500 500]);

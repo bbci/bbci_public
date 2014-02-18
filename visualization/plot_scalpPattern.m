@@ -5,21 +5,21 @@ function [H, Ctour]= plot_scalpPattern(erp, mnt, ival, varargin)
 % H= plot_scalpPattern(ERP, MNT, IVAL, <OPTS>)
 %
 %Input:
-% ERP  - struct of epoched EEG data. For convenience used Classwise
+% ERP: struct of epoched EEG data. For convenience used Classwise
 %        averaged data, e.g., the result of proc_average.
-% MNT  - struct defining an electrode montage
-% IVAL - The time interval for which scalp topography is to be plotted.
-% OPTS - struct or property/value list of optional fields/properties:
+% MNT: struct defining an electrode montage
+% IVAL: time interval for which scalp topography is to be plotted.
+% OPTS: struct or property/value list of optional fields/properties:
 %  .Class - specifies the Class (name or index) of which the topogaphy
-%        is to be plotted. For displaying topographies of several Classes
-%        use plot_scalpPatterns.
-%  The opts struct is passed to plot_scalp.
+%           is to be plotted. For displaying topographies of several Classes
+%           use plot_scalpPatterns.
+%The opts struct is passed to plot_scalp.
 %
 %Output:
 % H:     Handle to several graphical objects.
 % Ctour: Struct of contour information
 %
-%See also plot_scalpPatterns, plot_scalpEvolution, plot_scalp.
+%See also plot_scalpPatterns, plot_scalpEvolution, plot_scalp
 
 props= {'Class',     [],   '';
         'Contour',   0,    'DOUBLE';

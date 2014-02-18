@@ -1,24 +1,27 @@
 function H= plot_scoreMatrix(epo_r, ival, varargin)
 %PLOT_SCOREMATRIX - Visualizes score matrix of e.g. r-values
 %
-%Usage:
-% H= plot_scoreMatrix(epo_r, ival, <opts>)
+%Synposis:
+% H= plot_scoreMatrix(EPO_R, IVAL, <OPTS>)
 %
+%Description:
 % Visualizes the [Time x Channel] score matrix in epo_r and optionally
 % plots scalp maps for given time intervals.
 %
-% IN: epo_r - struct of score data as returned by e.g. proc_rSquareSigned
-%             or proc_aucValues
-%     ival  - [nIvals x 2]-sized array of intervals, which are marked in
-%             the score matrix and for which scalp topographies are drawn.
-%             If ival is empty no scalp topographies are drawn.
-%     opts  - struct or property/value list of optional fields/properties:
-%      .Mnt      - struct defining an electrode montage. Default is the
-%                  electrode montage returend by mnt_setElectrodePositions
-%      .MarkClab - list of channels to be marked with labels on the y axis
-%                  of the score matrix. Default: Fz, FCz, Cz, CPz, Pz, Oz.
+%Input:
+% EPO_R: struct of score data as returned by e.g. proc_rSquareSigned
+%        or proc_aucValues
+% IVAL: [nIvals x 2]-sized array of intervals, which are marked in
+%       the score matrix and for which scalp topographies are drawn.
+%       If ival is empty no scalp topographies are drawn.
+% OPTS: struct or property/value list of optional fields/properties:
+%  .Mnt      - struct defining an electrode montage. Default is the
+%              electrode montage returend by mnt_setElectrodePositions
+%  .MarkClab - list of channels to be marked with labels on the y axis
+%              of the score matrix. Default: Fz, FCz, Cz, CPz, Pz, Oz.
 %
-% OUT H - struct of handles to the created graphic objects.
+%Output:
+% H: struct of handles to the created graphic objects.
 %
 %See also plot_scalpEvolution, plot_scalpPatternsPlusChannel
 

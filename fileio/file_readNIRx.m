@@ -176,10 +176,10 @@ end
 
 % Convert numeric clab to cell array of strings
 if isnumeric(opt.Source)
-  opt.Source = apply_cellwise(num2cell(opt.Source),'num2str');
+  opt.Source = cellfun(@num2str, num2cell(opt.Source));  
 end
 if isnumeric(opt.Detector)
-  opt.Detector = apply_cellwise(num2cell(opt.Detector),'num2str');
+  opt.Detector = cellfun(@num2str, num2cell(opt.Detector));  
 end
 
 %% *** Process multiple files ***
@@ -191,7 +191,7 @@ if ischar(file) && ismember('*', file)
   if isempty(dd)
     error('no files matching %s found', file);
   end
-  file = apply_cellwise({dd.name}, inline('x(1:end-4)','x'));
+  file = cellfun(@(x)(x(1:end-4)), {dd.name}, 'UniformOutput',0);
   file = strcat(fp,filesep,file);
 end
 
@@ -201,7 +201,7 @@ if iscell(file),
     hdr = file_readNIRxHeader(file);
     T= [];
     fprintf('concatenating files in the following order:\n');
-    fprintf('%s\n', vec2str(file));
+    fprintf('%s\n', str_vec2str(file));
 
     for f = file
       [cnt, mrk,dum,mnt]= file_readNIRx(f{:}, varargin{:});
