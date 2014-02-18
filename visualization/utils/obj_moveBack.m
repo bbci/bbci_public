@@ -1,9 +1,11 @@
 function obj_moveBack(ho)
-%OBJ_MOVEBACK - ???
+%OBJ_MOVEBACK - Move graphic object to the background
 %
-%obj_moveBack(<ho>)
+%Synposis:
+% obj_moveBack(<HO>)
 %
-% IN  ho - handle of graphic object, default: last plotted object
+%Input:
+% HO: handle of graphic object, default: last plotted object
 
 if ~exist('ho', 'var'),
   ho= gco;
@@ -16,7 +18,7 @@ end
 
 hp= get(ho, 'parent');
 hc= get(hp, 'children');
-if ~exist('ho', 'var') | isempty(ho),
+if ~exist('ho', 'var') || isempty(ho),
   hi= length(hc);
 else
   hi= find(hc==ho);

@@ -9,22 +9,22 @@ function yesorno= visutil_isColormapUsed(hf)
 %  without destroying other subplots on the figure. In this case the
 %  function image_local_cmap can be used.
 %
-%Usage:
-%YESORNO= iscolormapused(<HF>);
+%Synposis:
+% YESORNO= iscolormapused(<HF>);
 %
 %Input:
-%  HF: Handle of the figure. If none is specified the current figure
-%      is inspected, i.e., default gcf.
+% HF: Handle of the figure. If none is specified the current figure
+%     is inspected, i.e., default gcf.
 %
 %Example:
-%  clf; subplot(1,3,1); plot(randn(100,2));
-%  iscolormapused
-%  subplot(1,3,2);
-%  patch([0 1 1 0],[0 0 1 1], [1 0.1 0.7]);  %% specify color directly
-%  iscolormapused
-%  subplot(1,3,3); 
-%  patch([0 1 1 0],[0 0 1 1], 2);  %% specify color by indexing into colormap
-%  iscolormapused
+% clf; subplot(1,3,1); plot(randn(100,2));
+% iscolormapused
+% subplot(1,3,2);
+% patch([0 1 1 0],[0 0 1 1], [1 0.1 0.7]);  %% specify color directly
+% iscolormapused
+% subplot(1,3,3); 
+% patch([0 1 1 0],[0 0 1 1], 2);  %% specify color by indexing into colormap
+% iscolormapused
 %
 %See also image_local_cmap.
 

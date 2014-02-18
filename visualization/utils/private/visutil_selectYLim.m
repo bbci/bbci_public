@@ -26,9 +26,9 @@ switch(opt.Policy),
   visutil_backaxes(h);
   axis('tight');
   yl= get(h, 'YLim');
-  %% add border not to make it too tight:
+  % add border not to make it too tight:
   yl= yl + [-1 1]*opt.TightenBorder*diff(yl);
-  %% determine nicer limits
+  % determine nicer limits
   dig= floor(log10(diff(yl)));
   if diff(yl)>1,
     dig= max(1, dig);

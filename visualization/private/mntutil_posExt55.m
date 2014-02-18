@@ -1,5 +1,5 @@
-function [x,y,z,clab]= calc_pos_5_5
-% [X,Y,Z,CLAB]= CLAB_POS_5_5
+function [x,y,z,clab]= mntutil_posExt55
+% [X,Y,Z,CLAB]= MNTUTIL_POSEXT55
 %Calculating clab's and positions taking values according to 
 % Oostenveld R, Praastra P (2001): The five percent electrode system for high-resolution
 % EEG and ERP measurements. Clinical Neurophysiology 112 (2001) 713-719

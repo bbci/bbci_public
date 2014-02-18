@@ -1,6 +1,6 @@
 function opt= defopt_scalp_csp(varargin)
 %DEFOPT_SCALP_CSP - Properties for plot_scalp* functions, optimized for
-%visualizing spatial filters such as CSP
+%visualizing spatial filters or patterns, such as returned by CSP
 
 props= {'Shading'               'flat'
         'Extrapolation'         0

@@ -1,10 +1,12 @@
 function hsp= gridutil_getSubplots(chans)
-%hsp= gridutil_getSubplots(<chans>)
-%
-% returns the handles of the subplots of an grid plot (cf. grid_plot)
+%GRIDUTIL_GETSUBPLOTS - Returns the handles of the subplots of a grid plot
 % that correspond to given channels
 %
-% IN  - channels, [] means all, default []
+%Synposis:
+% HSP= gridutil_getSubplots(<CHANS>)
+%
+%Input:
+% CHANS: channel indices, [] means all, default []
 
 if ~exist('chans','var'), chans=[]; end
 if ~isempty(chans) && ~iscell(chans),

@@ -1,13 +1,15 @@
 function grid= mntutil_getGrid(displayMontage)
-%grid= mntutil_getGrid(displayMontage)
 %
-% IN   displayMontage - any *.mnt file in EEG_CFG_DIR, 
-%                       e.g., 'small', 'medium', 'large',
-%                       or a string defining the montage
+%Synposis:
+% GRID= mntutil_getGrid(DISPLAYMONTAGE)
 %
-% OUT  grid           - 2-d cell array containing the channel labels
+%Input:
+% DISPLAYMONTAGE: any *.mnt file in EEG_CFG_DIR, 
+%                 e.g., 'small', 'medium', 'large',
+%                 or a string defining the montage
 %
-% GLOBZ EEG_CFG_DIR
+%Output:
+% GRID: 2-d cell array containing the channel labels
 
 global EEG_CFG_DIR;
 

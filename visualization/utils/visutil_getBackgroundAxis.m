@@ -19,10 +19,10 @@ elseif create,
   h_bax= axes('position', [0 0 1 1]);
   set(h_bax, 'visible','off', 'UserData','BackgroundAxis', ...
              'tickLength',[0 0], 'XLim',[0 1], 'YLim',[0 1]);
-%% If you want to have a non transparent background (e.g. for printing)
-%% you can do the following
-%% >> set(ax, 'visible','on'); moveObjectBack(ax);
-%% To this end we set tickLength to 0.
+% If you want to have a non transparent background (e.g. for printing)
+% you can do the following
+% >> set(ax, 'visible','on'); moveObjectBack(ax);
+% To this end we set tickLength to 0.
 else
   h_bax= [];
 end

@@ -2,13 +2,13 @@ function H= gridutil_addScale(mnt, varargin)
 %GRIDUTIL_ADDSCALE - Add a Scale for X- and Y-Axis Units to a a Grid Plot
 %
 %Synopsis:
-%  H= gridutil_addScale(MNT, <OPT>)
+% H= gridutil_addScale(MNT, <OPT>)
 %
-%Arguments:
-%  MNT: struct for electrode montage, see setElectrodeMontage
-%  OPT: struct or property/value list of optional properties:
-%   XUnit       - Unit of X-Axis, default: 'ms'
-%   YUnit       - Unit of Y-Axis, default: '\muV'
+%Input:
+% MNT: struct for electrode montage, see setElectrodeMontage
+% OPT: struct or property/value list of optional properties:
+%  .XUnit - Unit of X-Axis, default: 'ms'
+%  .YUnit - Unit of Y-Axis, default: '\muV'
 %   
 % Usually called by grid_plot
 
