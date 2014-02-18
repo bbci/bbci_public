@@ -65,11 +65,9 @@ bbci.log.classifier= 1;
 
 % Define acquire functions for online simulation
 bbci.source(1).acquire_fcn= @bbci_acquire_offline;
-bbci.source(1).acquire_param= {calib_eeg.cnt, calib_eeg.mrk, ...
-                    struct('realtime',10)};
+bbci.source(1).acquire_param= {calib_eeg.cnt, calib_eeg.mrk};
 bbci.source(2).acquire_fcn= @bbci_acquire_offline;
-bbci.source(2).acquire_param= {calib_nirs.cnt, calib_nirs.mrk, ...
-                    struct('realtime',10, 'blocksize',200)};
+bbci.source(2).acquire_param= {calib_nirs.cnt, calib_nirs.mrk};
 % acquiring NIRS must not block acquiring EEG
 bbci.source(2).min_blocklength= 0;
 
