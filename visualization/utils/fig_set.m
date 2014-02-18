@@ -2,7 +2,7 @@ function fig_state= fig_set(varargin)
 %FIG_SET
 
 props= {'Fn'              1            '!INT'
-        'Silent'          1            '!BOOL'
+        'Silent'          0            '!BOOL'
         'Hide'            0            '!BOOL'
         'ToolsOff'        1            '!BOOL'
         'GridSize'        [2 2]        '!DOUBLE[2]'
