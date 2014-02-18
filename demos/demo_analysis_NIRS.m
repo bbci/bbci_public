@@ -11,13 +11,8 @@ mrk = mrk_defineClasses(mrk, stimDef);
 %% intervalls for display and segmentation, and fequencies for filter
 ival_base=  [-1000 0];
 ival_epo= [-1000 15000];
-lp_freq= [1/128 .4];
 ival_scalps= [0:2500:12500];
 clab=[];
-
-%% band-pass filter
-[b,a]= butter(3, lp_freq/cnt.fs*2);
-cnt= proc_filtfilt(cnt, b, a);
 
 %% segmentation and baseline correction
 epo= proc_segmentation(cnt, mrk, ival_epo);
