@@ -1,6 +1,5 @@
 function epo= proc_subtractReferenceClass(epo, epo_ref, varargin)
-%PROC_SUBTRACTREFERENCECLASS - subtracts the data from the reference class
-%in epo_ref from the data in epo.
+%PROC_SUBTRACTREFERENCECLASS - subtracts a reference class in epo_ref from the data in epo.
 %
 %Synopsis:
 % EPO= proc_subtractReferenceClass(EPO, EPO_REF, <OPT>)
