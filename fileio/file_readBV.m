@@ -383,6 +383,11 @@ for filePos = firstFileToRead:lastFileToRead
     % find markers in the loaded interval
     inival= find(curmrk.time > skip*1000/cnt.fs & ...
                  curmrk.time <= (skip+maxlen)*1000/cnt.fs);
+    % add special case: don't loose t=0 markers
+    if skip==0,
+      idxzero= find(curmrk.time==0);
+      inival= [idxzero, inival];
+    end
     curmrk= mrk_selectEvents(curmrk, inival);
     %let the markers start at zero
     curmrk.time= curmrk.time - skip*1000/cnt.fs;
