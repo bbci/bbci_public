@@ -8,7 +8,7 @@ function image_localColormap(C, cmap, varargin)
 % each rectangular of the image is plotted using the function FILL,
 % which can be quite time consuming.
 %
-%Usage:
+%Synopsis:
 % image_localColormap(C, CMAP, <OPT>)
 %
 %Input:
@@ -22,7 +22,7 @@ function image_localColormap(C, cmap, varargin)
 %               is chosen tight as [min(C(:)) max(C(:))].
 %  .EdgeColor - Specifies the edge color of the rectangulars,
 %               default 'none'.
-%  .Optimize -  Can be 'rows' or 'columns' and determines in which
+%  .Optimize  - Can be 'rows' or 'columns' and determines in which
 %               direction consequtive entries in the color matrix that
 %               index the same color are represented by one patch.
 %               Note: this does not change the look of the image, it just

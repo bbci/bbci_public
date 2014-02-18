@@ -1,7 +1,5 @@
 function acm= visutil_addColormap(cmap, varargin)
-%FIG_ADDCOLORMAP - Add a colormap to the current figure
-%
-% !!! TESTING !!!
+%VISUTIL_ADDCOLORMAP - Add a colormap to the current figure
 %
 %Description:
 % This function adds a colormap to the current figure. If applied
@@ -9,16 +7,16 @@ function acm= visutil_addColormap(cmap, varargin)
 % a single figure.
 %
 %Synopsis:
-% CLIMFACTOR= fig_addColormap(CMAP)
+% ACM= visutil_addColormap(CMAP)
 %
-%Arguments:
-% CMAP - [N 3] double array defining the colormap.
+%Input:
+% CMAP: [N 3] double array defining the colormap
 %
-%Returns:
-% ACM - Struct to be used for adapting the CLim and colorbar of new axes:
-%    .cLimFactor - Factor for rescaling the CLim of a new axis that should
-%       use the new colormap.
-%    .nColors - Number of colors in the new colormap.
+%Output:
+% ACM: Struct to be used for adapting the CLim and colorbar of new axes:
+%  .cLimFactor - Factor for rescaling the CLim of a new axis that should
+%                use the new colormap
+%  .nColors    - Number of colors in the new colormap.
 %
 %Example:
 % % make a colorful plot using colormap 'hot'
@@ -27,17 +25,17 @@ function acm= visutil_addColormap(cmap, varargin)
 % imagesc([1:100]); colorbar;
 %
 % % add a new colormap 'copper' to the figure
-% acm= fig_addColormap(copper(21));
+% acm= visutil_addColormap(copper(21));
 % % do your rendering as usual
 % subplot(1, 2, 2);
 % imagesc(100+[1:100]'); colorbar;
 % % and correct the CLim and colorbar
-% fig_acmAdaptCLim(acm);
+% visutil_acmAdaptCLim(acm);
 % 
 %See: cmap_* for some nice colormaps.
 
 %Known Bug(s):
-%In some special cases, fig_addColormap changes the mapping a little bit
+%In some special cases, visutil_addColormap changes the mapping a little bit
 %clf;
 %colormap default;
 %ax1= subplot(1,2,1);
@@ -45,7 +43,7 @@ function acm= visutil_addColormap(cmap, varargin)
 %imagesc(1:6); colorbar
 %
 %%Look before the next command
-%acm= fig_addColormap(cool(7));
+%acm= visutil_addColormap(cool(7));
 %%and compare with this.
 
 % Author(s): Benjamin Blankertz, Oct 2006
@@ -81,7 +79,8 @@ for ii= 1:length(hc),
   end
   set(hax, 'CLim',newCLim);
   if ~isempty(hcb),
-    if numel(cbXLim)==1
+    %if numel(cbXLim)==1
+    if ~iscell(cbXLim)
         set(hcb, 'XLim', cbXLim);
         set(hcb, 'YLim', cbYLim);
     else

@@ -1,7 +1,7 @@
 function axis_raiseTitle(ax, rel)
 %AXIS_RAISETITLE - Raise the title of a plot
 %
-%Usage:
+%Synposis:
 %  axis_raiseTitle(REL_RAISE)
 %  axis_raiseTitle(AX, REL_RAISE)
 %

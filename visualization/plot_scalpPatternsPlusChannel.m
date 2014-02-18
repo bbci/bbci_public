@@ -161,7 +161,7 @@ elseif nClasses>1,
   visutil_unifyCLim([h.H_topo.ax], [zeros(1,nClasses)]);
 end
 if opt.NewColormap,
-  fig_acmAdaptCLim(acm, [h.H_topo.ax]);
+  visutil_acmAdaptCLim(acm, [h.H_topo.ax]);
 end
 
 if opt.PlotChannel,

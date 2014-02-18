@@ -1,18 +1,18 @@
 function h_cb= plotutil_colorbarAside(varargin)
-%PLOT_COLORBARASIDE - Add a colorbar without shrining the axis
+%PLOT_COLORBARASIDE - Add a colorbar without shrinking the axis
 %
 %Synopsis:
 % H_CB= plotutil_colorbarAside(<OPT>)
 % H_CB= plotutil_colorbarAside(ORIENTATION, <OPT>)
 %
-%Arguments:
+%Input:
 % ORIENTATION: see OPT.Orientation
 % OPT: struct or property/value list of optional properties
-%  .orientation: orientation resp. location of the colorbar relative
-%     to the axis: 'vert','horiz', 'NorthOutside', 'EastOutside',
-%     'SouthOutside', 'WestOutside'.
+%  .orientation - orientation resp. location of the colorbar relative
+%                 to the axis: 'vert','horiz', 'NorthOutside',
+%                 'EastOutside','SouthOutside', 'WestOutside'
 %
-%Returns:
+%Output:
 % HCB: handle of the colorbar
 %
 %Note:
@@ -20,8 +20,9 @@ function h_cb= plotutil_colorbarAside(varargin)
 % the new orientation modes of Matlab 7.
 
 % blanker@cs.tu-berlin.de
-props = {'Orientation'          'vert'          '!CHAR(vert horiz NorthOutside EastOutside SouthOutside WestOutside)';
-         'Gap'                  0.02            '!DOUBLE';
+
+props = {'Orientation'      'vert'      '!CHAR(vert horiz NorthOutside EastOutside SouthOutside WestOutside)';
+         'Gap'              0.02        '!DOUBLE';
          };
 
 if mod(nargin, 2)==1,

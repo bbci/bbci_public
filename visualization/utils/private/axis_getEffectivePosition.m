@@ -11,9 +11,7 @@ function pos= axis_getEffectivePosition(ax)
 %  on the figure property 'PaperSize'.
 %  Note: At the moment this function only works for 2-D plots.
 %
-%Status: unstable
-%
-%Usage:
+%Synposis:
 %  POS= axis_getEffectivePosition(<AX>)
 %
 %Input:

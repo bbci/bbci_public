@@ -1,7 +1,7 @@
 function visutil_acmAdaptCLim(acm, h_ax, varargin)
-%FIG_ACMADAPTCLIM - Helper function to be used with fig_adaptColormap
+%FIG_ACMADAPTCLIM - Helper function to be used with visutil_adaptColormap
 %
-%See help of fig_adaptColormap
+%See help of visutil_adaptColormap
 
 if nargin<2 || isempty(h_ax),
   h_ax= gca;
