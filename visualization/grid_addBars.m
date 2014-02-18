@@ -45,7 +45,6 @@ props= {'VPos',                 0,                      'DOUBLE';
         'CLim',                 'auto',                 'CHAR|DOUBLE[2]';
         'Colormap',             flipud(gray(32)),       'DOUBLE[- 3]';
         'UseLocalColormap',     1,                      'BOOL';
-        'Rectify',              0,                      'BOOL';
         'MoveBack',             0,                      'BOOL';
         'Box',                  'on',                   'CHAR';
         'Visible',              'off',                  'CHAR';
@@ -131,10 +130,6 @@ if opt.UseLocalColormap,
 %  end
 else
   set(gcf, 'colormap',opt.Colormap);
-end
-
-if opt.Rectify,
-  fv= proc_RectifyChannels(fv);
 end
 
 if isnumeric(opt.Channels)

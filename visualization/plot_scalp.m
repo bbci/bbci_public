@@ -286,7 +286,7 @@ if ~isequal(opt.Contour,0),
       ctick= v(v>=mi & v<=ma);
       v(v<=mi | v>=ma)= [];
      case 'choose',
-      ctick= goodContourValues(mi, ma, -abs(opt.Contour));
+      ctick= visutil_goodContourValues(mi, ma, -abs(opt.Contour));
       v= ctick;
      otherwise
       error('ContourPolicy not known');
@@ -325,11 +325,7 @@ H= plot_scalpOutline(mnt, opt_scalpOutline, 'H',H, 'DisplayChannels',DisplayChan
 if strcmp(opt.ScalePos, 'none'),
   H.cb= [];
 else
-  if verLessThan('matlab', '7.14')
-    H.cb= colorbarv6(opt.ScalePos);
-  else
-    H.cb= colorbar(opt.ScalePos);
-  end
+  H.cb= colorbar(opt.ScalePos);
   if opt.TicksAtContourLevels && opt.Contour,
     if strcmpi(opt.ScalePos, 'vert'),
       set(H.cb, 'yLim',H.CLim, 'yTick', ctick);
