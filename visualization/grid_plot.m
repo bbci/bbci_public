@@ -36,7 +36,7 @@ function H= grid_plot(epo, mnt, varargin)
 %    * The following properties of OPT are passed to plot_channel:
 %  .XUnit  - unit of x axis, default 'ms'
 %  .YUnit  - unit of y axis, default epo.unit if this field
-%            exists, '\muV' otherwise
+%            exists, 'a.u.' otherwise
 %  .YDir   - 'normal' (negative down) or 'reverse' (negative up)
 %  .RefCol - Color of patch indicating the baseline interval
 %  .ColorOrder -  defines the Colors for drawing the curves of the
@@ -85,7 +85,7 @@ props= {'Axes',                           [],                     'DOUBLE';
         'TitleAppendix',                  '',                     'CHAR';
         'XTickAxes',                      '*',                    'CHAR';
         'XUnit',                          'ms',                   'CHAR';
-        'YUnit',                          '\muV',                 'CHAR';
+        'YUnit',                          'a.u.',                 'CHAR';
         'YDir',                           'normal',               'CHAR';
         'YLim',                           [],                     'DOUBLE[2]';
         };
@@ -101,9 +101,6 @@ end
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props, props_channel, props_addScale);
-
-opt_channel= opt_substruct(opt, props_channel(:,1));
-opt_addScale = opt_substruct(opt, props_addScale(:,1));
 
 % fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
 % if fig_Visible
@@ -138,11 +135,14 @@ if isdefault.ShiftAxesUp && ...
       (isfield(opt, 'XTick') && ~isempty(opt.xTick)), ...
       opt.ShiftAxesUp= 0.05;
 end
-if isdefault.XUnit && isfield(epo, 'XUnit'),
+if isdefault.XUnit && isfield(epo, 'xUnit'),
   opt.XUnit= epo.xUnit;
 end
-if isdefault.YUnit && isfield(epo, 'YUnit'),
+if isdefault.YUnit && isfield(epo, 'yUnit'),
   opt.YUnit= epo.yUnit;
+elseif isdefault.YUnit && isfield(epo, 'cnt_info') && ...
+        isfield(epo.cnt_info, 'yUnit'),
+  opt.YUnit= epo.cnt_info.yUnit;
 end
 if ~isempty(opt.YLim),
   if ~isdefault.ScalePolicy,
@@ -208,6 +208,9 @@ end
 if length(opt.ShrinkAxes)==1,
   opt.ShrinkAxes= [1 opt.ShrinkAxes];
 end
+
+opt_channel= opt_substruct(opt, props_channel(:,1));
+opt_addScale = opt_substruct(opt, props_addScale(:,1));
 
 if isfield(mnt, 'box'),
   mnt.box_sz(1,:)= mnt.box_sz(1,:) * opt.ShrinkAxes(1);
@@ -316,7 +319,8 @@ end
 %warning(w_cm);
 
 H.ax= zeros(1, nDisps);
-opt_plot= {'Legend',1, 'Title','', 'UnitDispPolicy','none','GridOverPatches',0};
+opt_plot= {'Legend',1, 'Title','', 'UnitDispPolicy','none', ...
+           'GridOverPatches',0};
 if isfield(mnt, 'box') && isnan(mnt.box(1,end))
   % no grid position for legend available
   opt_plot{2}= 0;
@@ -353,7 +357,7 @@ for ia= 1:nDisps,
       leg_pos(3:4)= leg_pos_orig(3:4);  %% use original size
       set(H.leg, 'position', leg_pos);
       ud= get(H.leg, 'userData');
-      ud= opt_setDefaults(ud,{ 'type','ERP plus'; 'chan','legend'});
+      ud= opt_setDefaults(ud, {'type','ERP plus'; 'chan','legend'});
       set(H.leg, 'userData',ud);
       if exist('verLessThan')~=2 || verLessThan('matlab','7'),
         set(H.leg, 'Visible','off');
@@ -388,19 +392,19 @@ if ~strcmp(opt.TitleDir, 'none'),
     tit= [tit, str_vec2str(epo.className, [], ' / ') ', '];
   end
   if isfield(epo, 'N'),
-    tit= [tit, 'N= ' str_vec2str(epo.N,[],'/') ',  '];
+    tit= [tit, 'N= ' str_vec2str(epo.N,[],'/') ', '];
   end
   if isfield(epo, 't'),
-    tit= [tit, sprintf('[%g %g] %s  ', util_trunc(epo.t([1 end])), opt.XUnit)];
+    tit= [tit, sprintf('[%g %g] %s, ', util_trunc(epo.t([1 end])), opt.XUnit)];
   end
-  tit= [tit, sprintf('[%g %g] %s', util_trunc(yLim(1,:)), opt.YUnit)];
+  tit= [tit sprintf('[%g %g] %s', util_trunc(yLim(1,:)), opt.YUnit)];
   if strcmpi(opt.YDir, 'reverse'),
-    tit= [tit, ' neg. up'];
+    tit= [tit ' neg. up'];
   end
-  if isfield(opt, 'TitleAppendix'),
-    tit= [tit, ', ' opt.TitleAppendix];
+  if ~isempty(opt.TitleAppendix),
+    tit= [tit ', ' opt.TitleAppendix];
   end
- H.title= visutil_addTitle(tit, opt.TitleDir);
+  H.title= visutil_addTitle(tit, opt.TitleDir);
 end
 
 if ~isempty(opt.ShiftAxesUp) && opt.ShiftAxesUp~=0,

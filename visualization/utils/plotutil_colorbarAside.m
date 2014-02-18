@@ -34,10 +34,10 @@ opt_checkProplist(opt, props);
 
 ax= gca;
 pos= get(ax, 'position');
-%% this has an influence on the behavious when resizing the figure:
+% this has an influence on the behavious when resizing the figure:
 epos= axis_getEffectivePosition(ax);
-%% this would require Matlab 7:
-%% h_cb= colorbar(opt.Orientation);
+% this would require Matlab 7:
+% h_cb= colorbar(opt.Orientation);
 if ismember(lower(opt.Orientation), {'horiz','northoutside','southoutside'},'legacy'),
   h_cb= colorbar('horiz');
 %  h_cb= colorbar('SouthOutside');

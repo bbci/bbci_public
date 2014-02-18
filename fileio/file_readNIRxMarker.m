@@ -31,11 +31,11 @@ function mrk = file_readNIRxMarker(mrkName, varargin)
 % Jan Mehnert February 2014 (ready for pubic BTB toolbox) (jan@mehnert.org)
 
 global BTB
-props={ 'Path'      BTB.RawDir  'CHAR'
-        'System'    'nirx'      'CHAR'    
-        'Prefix',   'S ',       'CHAR'
-        'Verbose',  0,          'BOOL'
-        'MarkerFormat'   'numeric'   'CHAR(string numeric)'}; % MarkerFormat: New toolbox
+props={ 'Path'           BTB.RawDir   'CHAR'
+        'System'         'nirx'       'CHAR'    
+        'Prefix'         'S'          'CHAR'
+        'Verbose'        0            'BOOL'
+        'MarkerFormat'   'numeric'    'CHAR(string numeric)'};
 if nargin==0,
     mrk= props; return
 end
@@ -64,8 +64,8 @@ if strcmp(opt.System,'nirx')
   s= textscan(fid,'%d %s','delimiter','\n');
   pos = s{1}';
   % Remove \t's, flip bits and convert to decimal
-  desc = apply_cellwise(s{2},inline('bin2dec(fliplr(strrep(x,sprintf(''\t''),'''')))','x'))';
-  desc = apply_cellwise(desc,inline('sprintf(''%s%d'',y,x) ','x','y'),opt.Prefix);
+  descno = cellfun(@(x)(bin2dec(fliplr(strrep(x,sprintf('\t'),'')))), s{2})';
+  desc = str_cprintf([opt.Prefix '%3d'], descno);
 
   % get sampling frequency
   hdr=file_readNIRxHeader(fullName);

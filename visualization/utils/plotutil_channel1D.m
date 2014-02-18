@@ -16,8 +16,8 @@ function H= plotutil_channel1D(epo, clab, varargin)
 %  .Legend - show Class legend (1, default), or not (0).
 %  .LegendPos - position of the legend, see help of function 'legend'.
 %  .XUnit  - unit of x axis, default 'ms'
-%  .YUnit  - unit of y axis, default epo.unit if this field
-%                     exists, '\muV' otherwise
+%  .YUnit  - unit of y axis, default epo.yUnit if this field
+%                     exists, 'a.u.' otherwise
 %  .UnitDispPolicy - the units can either ('label', default) be displayed as 
 %             xlabel resp ylabel, or ('lastTick') instead of the label of 
 %             the last (x- resp. y-) tick
@@ -107,7 +107,7 @@ props = {'AxisType',                        'box',                '!CHAR';
          'XGrid',                           'on',                   'CHAR';
          'YGrid',                           'on',                   'CHAR';
          'XUnit',                           '[ms]',                 'CHAR';
-         'YUnit',                           '[\muV]',               'CHAR';
+         'YUnit',                           'a.u.',                 'CHAR';
          'UnitDispPolicy',                  'label',                'CHAR';
          'XUnitDispPolicy',                 'label',                'CHAR';
          'YUnitDispPolicy',                 'label',                'CHAR';
@@ -233,6 +233,9 @@ if isdefault.XUnit && isfield(epo, 'xUnit'),
 end
 if isdefault.YUnit && isfield(epo, 'yUnit'),
   opt.YUnit= ['[' epo.yUnit ']'];
+elseif isdefault.YUnit && isfield(epo, 'cnt_info') && ...
+        isfield(epo.cnt_info, 'yUnit');
+  opt.YUnit= ['[' epo.cnt_info.yUnit ']'];
 end
 if strcmpi(opt.YUnitDispPolicy, 'lasttick'),
   opt.YUnit= strrep(opt.YUnit, '\mu','u');

@@ -1,18 +1,17 @@
-iunction ht= axis_xTickLabel(label_list, varargin)
+function ht= axis_xTickLabel(label_list, varargin)
 %AXIS_XTICKLABEL - Add x-ticklabels to the current axis
 %
 %Synopsis:
-% H= axis_xticklabel(TITLE, <OPT>)
+% H= axis_xTickLabel(LABEL_LIST, <OPT>)
 %
 %Input:
 % LABEL_LIST: string or cell array of strings
 % OPT: struct or property/value list of optional properties:
-%  .vpos - vertical position
-%  .mode - meta setting of other properties. So far besides {1,'normal'}
+%  .VPos - vertical position
+%  .Mode - meta setting of other properties. So far besides {1,'normal'}
 %     only {2,'vertical'} is implemented.
-%  .color - font color in RGB format. Maybe an [nLabels 3] matrix of color
+%  .Color - font color in RGB format. Maybe an [nLabels 3] matrix of color
 %           codes
-%  .font* - font properties like fontWeight, fontSize, ...
 %  .horizontalAlignment, .verticalAlignment, .rotation
 %
 %Output:
@@ -22,13 +21,14 @@ iunction ht= axis_xTickLabel(label_list, varargin)
 % The position of the text object is defined *within* the axis. So you should
 % set XLimMode and YLimMode to 'manual' before calling AXIS_XTICKLABEL.
 
-props = {'XTick', [], ...
-         'Mode', 1, ...
-         'HPos', -0.03, ...
-         'Color', [0 0 0], ...
-         'HorizontalAlignment','center', ...
-         'VerticalAlignment','top', ...
-         'Rotation',0};
+props = {'XTick',               [],         'DOUBLE[-]';
+         'Mode',                1,          'DOUBLE[1]';
+         'VPos',                -0.03,      'DOUBLE[1]';
+         'Color',               [0 0 0],    'DOUBLE[- 3]';
+         'HorizontalAlignment', 'center',   'CHAR(left center right)';
+         'VerticalAlignment',   'top',      'CHAR(top cap middle baseline bottom)';
+         'Rotation',            0,          'DOUBLE[1]'
+         };
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
@@ -72,8 +72,8 @@ end
 if length(opt.xtick)~=nLab,
   error('number of labels must match number of xticks');
 end
-if nLab>1 & size(opt.color,1)==1,
-  opt.color= repmat(opt.color, [nLab 1]);
+if nLab>1 & size(opt.Color,1)==1,
+  opt.Color= repmat(opt.Color, [nLab 1]);
 end
 
 opt_fn= fieldnames(opt);
@@ -87,11 +87,11 @@ font_pl= struct2propertylist(font_opt);
 
 xx= opt.xtick;
 YLim= get(gca, 'YLim');
-yy= YLim(1) + opt.vpos*diff(YLim);
+yy= YLim(1) + opt.VPos*diff(YLim);
 
 for tt= 1:nLab,
   ht(tt)= text(xx(tt), yy, label_list{tt});
-  set(ht(tt), font_pl{:}, 'Color',opt.color(tt,:));
+  set(ht(tt), font_pl{:}, 'Color',opt.Color(tt,:));
 end
 
 if opt.clearoldlabel,

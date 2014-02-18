@@ -19,10 +19,10 @@ function varargout= bbci_acquire_offline(varargin)
 %          output is returned (just as the 'true' online acquire function
 %          would do while no new data is available).
 %          For value 0 (default), this function returns one block of data
-%          at each call. Values between 0 and 1 result in speeded-up
-%          realtime. E.g., for 0.5 the next block of data is return, if
-%          half of the time corresponding to OPT.blocksize has elapsed since
-%          the last delivery of data.
+%          at each call. Values above 1 result in speeded-up
+%          realtime. E.g., for 2 the next block of data is returned, if
+%          1/2 of the time corresponding to OPT.blocksize has elapsed since
+%          the last delivery of data, which amounts to a speed-up factor of 2.
 %
 %Output:
 %  STATE - Structure characterizing the incoming signals; fields:
@@ -41,6 +41,8 @@ function varargout= bbci_acquire_offline(varargin)
 % 02-2011 Benjamin Blankertz
 
 
+global BBCI_ACQ_SYNC
+
 if isequal(varargin{1}, 'init'),
   if nargin<3,
     error('CNT and MRK must be provided as input arguments');
@@ -56,22 +58,27 @@ if isequal(varargin{1}, 'init'),
   state.fs= cnt.fs;
   state.cnt_step= round(state.blocksize/1000*cnt.fs);
   if state.cnt_step<1,
-    warning('increasing blocksize to inlcude one samples');
+    warning('increasing blocksize to include one sample');
     state.cnt_step= 1;
   end
   state.cnt_idx= 1:state.cnt_step;
   state.clab= cnt.clab;
   state.cnt= cnt;
-
+  if state.realtime==0,
+    state.realtime= inf;
+  end
   if isfield(mrk, 'event') && isfield(mrk.event, 'desc'),
     mrk.desc= mrk.event.desc(:)';
   else
     [dmy, mrk.desc]= max(mrk.y);
   end
-  % --
   state.mrk= mrk;
   state.mrk.time= mrk.time;
-  state.start_time= tic;
+  % -- MULTIMODAL
+  % Bit of a hack: get source # from bbci_apply_initData
+  state.source_no= evalin('caller', 'k');
+  BBCI_ACQ_SYNC(state.source_no)= 0;
+  % --
   output= {state};
 elseif length(varargin)~=1,
   error('Except for INIT case, only one input argument expected');
@@ -90,12 +97,17 @@ else
       varargout= output(1:nargout);
       return;
     end
-    time_running= toc(state.start_time);
-    if time_running < state.cnt_idx(end)/state.fs*state.realtime,
-      output= {[], [], [], state};
-      varargout= output(1:nargout);
-      return;
+    % -- MULTIMODAL
+    BBCI_ACQ_SYNC(state.source_no)= evalin('caller','source.time');
+    if state.source_no>1,
+      if BBCI_ACQ_SYNC(state.source_no) + state.cnt_step*1000/state.fs ...
+              > BBCI_ACQ_SYNC(1),
+        output= {[], [], [], state};
+        varargout= output(1:nargout);
+        return;
+      end
     end
+    % --
     cntx= state.cnt.x(state.cnt_idx, :);
     si= 1000/state.fs;
     TIMEEPS= si/100;
@@ -104,6 +116,8 @@ else
     mrkTime= state.mrk.time(mrk_idx) - (state.cnt_idx(1)-1)*si;
     mrkDesc= state.mrk.desc(mrk_idx);
     state.cnt_idx= state.cnt_idx + state.cnt_step;
+    BBCI_ACQ_SYNC(state.source_no)= BBCI_ACQ_SYNC(state.source_no) + ...
+        state.cnt_step*1000/state.fs;
     output= {cntx, mrkTime, mrkDesc, state};
   else
     error('unrecognized input argument');

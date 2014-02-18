@@ -34,7 +34,7 @@ mnt.x(off)= [];
 mnt.y(off)= [];
 mnt.clab(off)= [];
 
-%% Nirs specific
+% Nirs specific
 if isfield(mnt,'dist')
   mnt.dist(off)=[];
 end
@@ -42,7 +42,7 @@ if isfield(mnt,'sd')
   mnt.sd(off,:) = [];
 end
 
-%% box
+% box
 if isfield(mnt, 'box'),
   mnt.box(:,off)= [];
   mnt.box_sz(:,off)= [];

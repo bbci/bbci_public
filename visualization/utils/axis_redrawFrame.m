@@ -1,8 +1,9 @@
 function H= axis_redrawFrame(ax, varargin)
-%AXIS_REDRAWFRAME - Redraws the frames of axes
+%AXIS_REDRAWFRAME - Redraws the frames of axes. Can be useful when patch
+%objects have been drawn, which sometimes overlay the original frame.
 
-props = {'VPos',                        0               '!DOUBLE';
-         'LineWidth'                    1               '!DOUBLE'
+props = {'VPos',            0,          '!DOUBLE';
+         'LineWidth',       1,          '!DOUBLE'
          };
 
 if nargin==0

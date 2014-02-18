@@ -4,7 +4,7 @@ function pos= gridutil_getAxisPos(mnt, ic)
 % ic=0 or ic=nChans+1 for status box
 
 nChans= length(mnt.clab);
-if length(ic)==1 & ic==0,
+if length(ic)==1 && ic==0,
   ic= nChans+1;
 end
 

@@ -6,7 +6,6 @@ BC.marker_fcn= @mrk_defineClasses;
 BC.marker_param= {{1, 2; 'left', 'right'}};
 BC.folder=  fullfile(BTB.DataDir, 'demoMat');
 BC.file= fullfile('VPean_10_07_26', 'NIRS', 'real_movementVPean');
-%BC.file= 'VPeag_10_06_17/ni_imag_fbarrow_pcovmeanVPeag*';
 
 % define a tmp folder
 BC.log.folder= BTB.TmpDir;
@@ -21,7 +20,6 @@ bbci= struct('calibrate', BC);
 
 % load feedback file:
 file= fullfile(BC.folder, 'VPean_10_07_26', 'NIRS', 'real_movementVPean');
-%file = [BTB.NirsMatDir 'VPeag_10_06_17/ni_imag_fbarrow_pmeanVPeag'];
 
 [cnt, mrk]= file_loadNIRSMatlab(file, 'Signal','oxy');
 
@@ -46,4 +44,10 @@ cnt_cfy= struct('fs', 1/mean(diff(time)), 'x',cfy, ...
                 'clab', {{sprintf('cfy %s vs %s', calib.result.classes{:})}});
 epo_cfy= proc_segmentation(cnt_cfy, calib.mrk, [-10000 20000]);
 fig_set(1, 'Name','classifier output', 'clf',1);
-plot_channel(epo_cfy, 1, 'YUnit','[a.u.]');
+plot_channel(epo_cfy);
+
+epo_auc= proc_aucValues(epo_cfy);
+fig_set(2, 'clf',1, 'Name','AUC of classifier outputs');
+plot_channel(epo_auc);
+
+% The 

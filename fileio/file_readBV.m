@@ -344,8 +344,10 @@ for filePos = firstFileToRead:lastFileToRead
     read_opt.filt_subsample = opt.SubsampleFcn;
   end
 
-  read_hdr = struct('fs',hdr{filePos}.fs,'nChans',hdr{filePos}.NumberOfChannels,...
-                    'scale',hdr{filePos}.scale,'endian',hdr{filePos}.endian, ...
+  read_hdr = struct('fs',hdr{filePos}.fs, ...
+                    'nChans',hdr{filePos}.NumberOfChannels, ...
+                    'scale',hdr{filePos}.scale, ...
+                    'endian',hdr{filePos}.endian, ...
                     'BinaryFormat',readbv_binformat(filePos));
 
   % get the position for the data in the whole data set
@@ -370,7 +372,8 @@ for filePos = firstFileToRead:lastFileToRead
 
   % read the data, read_bv will set the data in cnt.x because of the
   % read_opt.data options
-  read_bv([fileNames{filePos} '.eeg'],read_hdr,read_opt);
+  read_bv([fileNames{filePos} '.eeg'], read_hdr, read_opt);
+  cnt.yUnit= hdr{filePos}.unit;
 
   %% Markers
   if nargout>1,

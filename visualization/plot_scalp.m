@@ -6,7 +6,7 @@ function [H, Ctour]= plot_scalp(mnt, w, varargin)
 % In many cases it is more wise to use one of the other plot_scalp*
 % functions.
 %
-%Usage:
+%Synopsis:
 % H= plot_scalp(MNT, W, <OPT>)
 %
 %Input:
@@ -18,43 +18,43 @@ function [H, Ctour]= plot_scalp(mnt, w, varargin)
 %      that the entries of W are matching with MNT.clab, or
 %      MNT.clab(find(~isnan(MNT.x))).
 % OPT: struct or property/value list of optional properties:
-%  .CLim :        'range', 'sym' (default), '0tomax', 'minto0',
-%                 or [minVal maxVal]
-%  .ScalePos:     Placement of the Colorbar 'horiz', 'vert' (default), 
-%                 or 'none'
-%  .Contour:      Specifies at what Heights contour lines are drawn.
-%                 If 'contour' is a vector, its entries define the
-%                 Heights. If is a scalar it specifies
-%                 - according to 'ContourPolicy' - the number
-%                 of or the spacing between contour levels. To display
-%                 no contour lines set 'contour' to 0 (not []!).
+%  .CLim :         'range', 'sym' (default), '0tomax', 'minto0',
+%                  or [minVal maxVal]
+%  .ScalePos:      Placement of the Colorbar 'horiz', 'vert' (default), 
+%                  or 'none'
+%  .Contour:       Specifies at what Heights contour lines are drawn.
+%                  If 'contour' is a vector, its entries define the
+%                  Heights. If is a scalar it specifies
+%                  - according to 'ContourPolicy' - the number
+%                  of or the spacing between contour levels. To display
+%                  no contour lines set 'contour' to 0 (not []!).
 %  .ContourPolicy: 'levels' (default): 'contour' specifies exactly the
-%                 number of contour levels to be drawn, or
-%                 'spacing': 'contour' specifies the spacing between two
-%                 adjacent Height levels, or
-%                 'choose': '.contour' specifies approximately the
-%                 number of Height levels to be drawn, but the function
-%                 'goodContourValues' is called to find nice values.
-%  .Resolution:   default 40. Number of steps around circle used for
-%                 plotting the scalp.
-%  .ShowLabels:   Display channel names (1) or not (0), default 0.
-%  .Shading:     shading method for the pColor plot, default 'flat'.
-%                Use 'interp' to get nice, smooth plots. But saving
-%                needs more space.
-%  .Extrapolation  Default value (1) extends the scalp plot to the peripheral
-%                areas where no
-%                channels are located. Value (0) turns off extrapolation.
+%                  number of contour levels to be drawn, or
+%                  'spacing': 'contour' specifies the spacing between two
+%                  adjacent Height levels, or
+%                  'choose': '.contour' specifies approximately the
+%                  number of Height levels to be drawn, but the function
+%                  'goodContourValues' is called to find nice values.
+%  .Resolution:    default 40. Number of steps around circle used for
+%                  plotting the scalp.
+%  .ShowLabels:    Display channel names (1) or not (0), default 0.
+%  .Shading:       shading method for the pColor plot, default 'flat'.
+%                  Use 'interp' to get nice, smooth plots. But saving
+%                  needs more space.
+%  .Extrapolation  Default value (1) extends the scalp plot to the
+%                  peripheral areas where no channels are located.
+%                  Value (0) turns off extrapolation.
 %  .ExtrapolateToMean: Default value (1) paints peripheral area
-%                in Color of average (zero?) value. Needs .Extrapolation 
-%                activated. 
+%                  in Color of average (zero?) value. Needs .Extrapolation 
+%                  activated. 
 %  .ExtrapolateToZero: Value (1) paints peripheral area in "zero"-Color.
-%                Needs .Extrapolation activated. 
-%  .Renderer:    The function used for rendering the scalp map, 'pColor'
-%                or 'contourf' (default).
+%                  Needs .Extrapolation activated. 
+%  .Renderer:      The function used for rendering the scalp map, 'pColor'
+%                  or 'contourf' (default).
 %  .ContourfLevels: number of levels for contourf function (default 100).
-%  .Offset       a vector of length 2  -  [x_Offset y_Offset]
-%                normally, the scalpplot is drawn centered at the origin,
-%                i.e. [x_Offset y_Offset] = [0 0] by default
+%  .Offset         a vector of length 2  -  [x_Offset y_Offset]
+%                  normally, the scalpplot is drawn centered at the origin,
+%                  i.e. [x_Offset y_Offset] = [0 0] by default
 %
 %Output:
 % H:     handle to several graphical objects
@@ -80,7 +80,7 @@ props= {
         'ExtrapolateToMean',     0,                'BOOL';
         'ExtrapolateToZero',     0,                'BOOL';
         'Interpolation',         'linear',         'CHAR';
-        'LineProperties',              {'k'},            'CELL';
+        'LineProperties',        {'k'},            'CELL';
         'MarkContour',           [],               'DOUBLE[0-2]';
         'MarkContourLineprop',   {'LineWidth',2},  'PROPLIST';
         'NewColormap',           0,                'BOOL';
@@ -93,6 +93,7 @@ props= {
         'TicksAtContourLevels',  1,                'BOOL';
         'WClab',                 {},               'CELL{CHAR}';
         };
+
 props_scalpOutline = plot_scalpOutline;
 
 if nargin==0,
@@ -152,7 +153,7 @@ end
 % Allow radius of scalp data to go beyond scalp outline (>1)
 maxrad = max(1,max(max(abs(mnt.x)),max(abs(mnt.y)))) + opt.ContourMargin; 
 
-%% Extrapolation
+% Extrapolation
 if opt.Extrapolation,
   xx= linspace(-maxrad, maxrad, opt.Resolution);
   yy= linspace(-maxrad, maxrad, opt.Resolution)';
@@ -188,7 +189,7 @@ if opt.Extrapolation,
   
 else
   if strcmp(opt.Interpolation, 'v4'),
-    %% get the convex hull from linear Interpolation
+    % get the convex hull from linear Interpolation
     [dmy,dmy,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
     imaskout= isnan(zconv(:));
     [xg,yg,zg]= griddata(xe, ye, w, xx, yy, opt.Interpolation);
@@ -207,7 +208,7 @@ ygc= yg+opt.Offset(2);
 zgc= zg;
 if ~isempty(strmatch(lower(opt.Shading), {'flat','faceted'})) ... 
     && strcmp(opt.Renderer,'pColor'),
-  %% in shading FLAT last row/column is skipped, so add one
+  % in shading FLAT last row/column is skipped, so add one
   xg= [xg-xs/2, xg(:,end)+xs/2];
   xg= [xg; xg(end,:)];
   yg= [yg, yg(:,end)]-ys/2;
@@ -216,13 +217,13 @@ if ~isempty(strmatch(lower(opt.Shading), {'flat','faceted'})) ...
   zg= [zg; zg(end,:)];
 end
 
-%% Render using pColor or contourf
+% Render using pColor or contourf
 xg= xg+opt.Offset(1);
 yg= yg+opt.Offset(2);
 if strcmp(opt.Renderer,'pColor')
   H.patch= pColor(xg, yg, zg);
 else
-  [dmy,H.patch]= contourf(xg, yg, zg, opt.ContourfLevels,'LineStyle','none');
+  [~,H.patch]= contourf(xg, yg, zg, opt.ContourfLevels,'LineStyle','none');
   % *** Hack to enforce cdatamappig = scaled in Colorbarv6.m by introducing
   % a useless patch object
   hold on
@@ -231,19 +232,13 @@ else
   set(ccc(1),'Visible','off');
 end
 
-%%
+%
 tight_caxis= [min(zg(:)) max(zg(:))];
 if isequal(opt.CLim, 'sym'),
   zgMax= max(abs(tight_caxis));
   H.CLim= [-zgMax zgMax];
 elseif isequal(opt.CLim, 'range'),
   H.CLim= tight_caxis;
-%%%elseif isequal(opt.CLim, 'rangesymcol'),
-%%%  H.CLim= tight_caxis;
-%%%  nColors= size(get(gcf, 'colormap'), 1);
-%%%  nColorsNeg= round(nColors*max(0, -H.CLim(1))/diff(H.CLim));
-%%%  nColorsPos= round(nColors*max(0, H.CLim(2))/diff(H.CLim));
-%%%  colormap(cmap_posneg_asym(nColorsNeg, nColorsPos));
 elseif isequal(opt.CLim, '0tomax'),
   H.CLim= [0.0001*diff(tight_caxis) max(tight_caxis)];
 elseif isequal(opt.CLim, 'minto0'),
@@ -324,7 +319,7 @@ if ~isempty(opt.MarkContour),
   set(H.MarkContour, opt.markContourLineprop{:});
 end
 
-%% Scalp outline
+% Scalp outline
 H= plot_scalpOutline(mnt, opt_scalpOutline, 'H',H, 'DisplayChannels',DisplayChannels);
 
 if strcmp(opt.ScalePos, 'none'),
@@ -362,8 +357,8 @@ else
 end
 if opt.NewColormap,
   visutil_acmAdaptCLim(acm);
-  set(H.cb, 'yLim',H.CLim); %% otherwise ticks at the border of the
-                            %% Colorbar might get lost
+  set(H.cb, 'yLim',H.CLim); % otherwise ticks at the border of the
+                            % Colorbar might get lost
 end
 axis('off');
 

@@ -26,7 +26,7 @@ for f= 1:length(bbci_feature),
   BF= bbci_feature(f);
   fv= signal(BF.signal);
   if nargin>=3,
-    fv= cntToEpo(fv, mrk, BF.ival);
+    fv= proc_segmentation(fv, mrk, BF.ival);
   end
 
   if f==1 && isfield(fv, 'y'),

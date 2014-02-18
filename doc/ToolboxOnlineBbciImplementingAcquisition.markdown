@@ -33,10 +33,10 @@ information is stored in the variable `state` (STRUCT), that
 is used in subsequent calls to get the data. Required fields of the
 variable `state` are
 
-<table border="1" > <tbody>
-<tr> <td>state.clab </td><td> CELL of CHAR holding the channel labels  </td></tr>
-<tr> <td> state.fs  </td><td> DOUBLE holding the sampling rate</td> </tr>
-</tbody></table>
+Field       Description
+----------- ------------
+state.clab  CELL of CHAR holding the channel labels
+state.fs    DOUBLE holding the sampling rate
 
 Optional parameters can be specified as further arguments in the
 initialization. There are no strict rules for these parameters.
@@ -53,18 +53,11 @@ to the acquisition hardware was closed (externally), the field
 state.running has to be set to 0. The acquired
 data is returned in the first three output arguments.
 
-<table border="1"  f> 
-<tr> <td>CNTX </td><td> DOUBLE [Time Channels] signals </td></tr>
-<tr> <td> MRKTIME </td><td>   DOUBLE [1 nMarkers] position [msec] within data block. A
-marker occurrence within the first sample would give 
-MRKTIME= 1/STATE.fs. </td></tr>
- <tr> <td> MRKDESC   </td>
-    <td>  <table border="1" > <tbody>
-    <tr> <td> CELL {1 nMarkers} descriptors like 'S 52', **OR** </td></tr>
-     <tr> <td> DOUBLE [1 nMarkers] numeric representation of markers </td>  </tr>
-     </tbody></table> 
-</td> </tr>
-</table>
+Field    Description
+-------- ----------------
+CNTX     DOUBLE [Time Channels] signals
+MRKTIME  DOUBLE [1 nMarkers] position [msec] within data block. A marker occurrence within the first sample would give MRKTIME= 1/STATE.fs.
+MRKDESC  CELL {1 nMarkers} descriptors like 'S 52', **OR** DOUBLE [1 nMarkers] numeric representation of markers
 
 Whether a *symbolic* or a *numeric* representation of markers is used,
 is a matter of taste. If possible, the numeric representation is to be
