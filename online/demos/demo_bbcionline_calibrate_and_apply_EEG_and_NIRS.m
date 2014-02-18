@@ -95,7 +95,8 @@ plot_channel(epo_cfy_NIRS);
 %  the classifiers and evaluation.
 
 % Note 2: The task for online processing of the NIRS data was simplified here, 
-%  since preprocessed data was used.
+%  since preprocessed data was used. For the real thing one needs to use
+%  online filtering and Lambert-Beer.
 
 % Note 3: Here we are just interested in logging the different classifier 
 %  outputs. In a realistic case, one might be interested in having one

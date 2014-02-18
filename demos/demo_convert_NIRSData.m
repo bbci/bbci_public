@@ -27,6 +27,8 @@ filename= fullfile('VPean_10_07_26', 'NIRS', 'real_movementVPean');
 lp_freq= [1/128 .4];
 [b,a]= butter(3, lp_freq/cnt.fs*2);
 cnt= proc_filtfilt(cnt, b, a);
+% Here we use an acausal filter to avoid phase shifts in the time courses.
+% However, this kind of filtering is not possible in online processing.
 
 grd= sprintf(['C3FCC5h,C3FCC3h,C1FCC3h,C1FCC1h,C2FCC2h,C2FCC4h,C4FCC4h,C4FCC6h\n'...
               'scale,C3CCP3h,C1CCP3h,_,_,C2CCP4h,C4CCP4h,legend']);
