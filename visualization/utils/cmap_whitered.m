@@ -1,24 +1,24 @@
 function cmap= cmap_whitered(m, varargin)
-%CMAP_WHITERED - Colormap going from white to white
+%CMAP_WHITERED - Colormap going from white to red
 %
-%Usage:
-%  MAP= cmap_whitered(M, <OPT>)
+%Synopsis:
+% MAP= cmap_whitered(M, <OPT>)
 %
 %Input:
-%  M  : Size of the colormap (number of entries). Default value: Same size
-%       as current colormap
-%  OPT: Struct or property/value list of optinal properties:
-%    'MinSat': minimal saturation (HSV model) from which fading is started
-%    'MinVal': minimal value (in HSV model) from which fading is started
-%    'MaxVal': maximal value (in HSV model) to which fading is performed
+% M: Size of the colormap (number of entries). Default value: Same size
+%    as current colormap
+% OPT: Struct or property/value list of optinal properties:
+%  .MinSat - minimal saturation (HSV model) from which fading is started
+%  .MinVal - minimal value (in HSV model) from which fading is started
+%  .MaxVal - maximal value (in HSV model) to which fading is performed
 %
 %Output:
-%  MAP: A colormap matrix of size [M 3]
+% MAP: A colormap matrix of size [M 3]
 %
 %Example:
-%  clf; 
-%  colormap(cmap_whitered(15));
-%  imagesc(toeplitz(1:15)); colorbar;
+% clf; 
+% colormap(cmap_whitered(15));
+% imagesc(toeplitz(1:15)); colorbar;
 %
 %See also COLORMAP, HSV2RGB, CMAP_HSVFADE
 

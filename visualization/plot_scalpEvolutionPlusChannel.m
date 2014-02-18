@@ -246,7 +246,7 @@ for cc= 1:nClasses,
   end
   pos= get(H.scalp(cc,end).ax, 'position');
   yy= pos(2)+0.5*pos(4);
-  H.background= fig_getBackgroundAxis;
+  H.background= visutil_getBackgroundAxis;
   H.text(cc)= text(0.01, yy, erp.className{cc});
   set(H.text(cc), 'verticalAli','top', ...
                   'horizontalAli','center', ...

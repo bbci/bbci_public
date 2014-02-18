@@ -1,26 +1,22 @@
 function map= cmap_rainbow(m, varargin)
 %CMAP_RAINBOW - Colormap going from red to violet
 %
-%Description:
-%  This function returns a colormap. The colors range from red over
-%   yellow, green and blue to violet.
-%
-%Usage:
-%  MAP= cmap_rainbow(M, <OPT>)
+%Synposis:
+% MAP= cmap_rainbow(M, <OPT>)
 %
 %Input:
-%  M  : Size of the colormap (number of entries). Default value: Same size
-%       as current colormap
-%  OPT: Struct or property/value list of optinal properties:
-%    'Sat': Saturation of the colors (in the HSV color model)
-%    'Val': Value of the colors (in the HSV color model)
+% M: Size of the colormap (number of entries). Default value: Same size
+%    as current colormap
+% OPT: Struct or property/value list of optinal properties:
+%  .Sat - Saturation of the colors (in the HSV color model)
+%  .Val - Value of the colors (in the HSV color model)
 %
 %Output:
-%  MAP: A colormap matrix of size [M 3]
+% MAP: A colormap matrix of size [M 3]
 %
 %Example:
-%  clf; imagesc(toeplitz(1:50)); colorbar;
-%  colormap(cmap_rainbow);
+% clf; imagesc(toeplitz(1:50)); colorbar;
+% colormap(cmap_rainbow);
 % 
 %See also COLORMAP, HSV2RGB, CMAP_HSVFADE
 

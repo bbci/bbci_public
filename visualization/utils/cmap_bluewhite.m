@@ -1,23 +1,23 @@
 function cmap= cmap_bluewhite(m, varargin)
 %CMAP_BLUEWHITE - Colormap going from blue to white
 %
-%Usage:
+%Synposis:
 %  MAP= cmap_bluewhite(M, <OPT>)
 %
 %Input:
-%  M  : Size of the colormap (number of entries). Default value: Same size
-%       as current colormap
-%  OPT: Struct or property/value list of optinal properties:
-%    'MinSat': minimal saturation (HSV model) from which fading is started
-%    'MinVal': minimal value (in HSV model) from which fading is started
+% M: Size of the colormap (number of entries). Default value: Same size
+%     as current colormap
+% OPT: Struct or property/value list of optinal properties:
+%  .MinSat - minimal saturation (HSV model) from which fading is started
+%  .MinVal - minimal value (in HSV model) from which fading is started
 %
 %Output:
-%  MAP: A colormap matrix of size [M 3]
+% MAP: A colormap matrix of size [M 3]
 %
 %Example:
-%  clf; 
-%  colormap(cmap_bluewhite(15));
-%  imagesc(toeplitz(1:15)); colorbar;
+% clf; 
+% colormap(cmap_bluewhite(15));
+% imagesc(toeplitz(1:15)); colorbar;
 %
 %See also COLORMAP, HSV2RGB, CMAP_HSVFADE
 

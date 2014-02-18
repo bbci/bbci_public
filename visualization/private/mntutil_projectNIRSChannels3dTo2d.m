@@ -1,30 +1,28 @@
-function mnt = projectChannels3dTo2d(mnt,varargin)
+function mnt = mntutil_projectNIRSChannels3dTo2d(mnt,varargin)
+%MNTUTIL_PROJECTCHANNELS3DTO2D - projects 3D channel positions in .pos_3d
+% to a 2D map using different projection methods.
+%
+%Synposis:
+% MNT = projectChannels3dTo2d(MNT)
+% MNT = projectChannels3dTo2d(MNT,PROJECTION)
+%
+%Input:
+% MNT: montage struct with 3D positions
+% PROJECTION: the method for projecting 3D electrode positions onto 2D.
+%             'euclidean': euclidean distance from the channel
+%             to the upper vertex ('Cz')
+%             'orthogonal': orthogonal projection of the upper half-sphere
+%             'sphere': similar to euclidean but takes the distance on the
+%             sphere instead of the Euclidean distance (default
+%             'sphere')
+%
+%Output:
+% MNT: Struct for electrode montage
+%  .x - x coordinate for 2D projection
+%  .y - y coordinate for 2D projection
+%
 
-%PROJECTCHANNELS3DTO2D - projects 3D channel positions in .pos_3d to a
-%                            2D map using different projection methods.
-%
-%Usage:
-% mnt = projectChannels3dTo2d(mnt)
-% mnt = projectChannels3dTo2d(mnt,projection)
-%
-%Arguments:
-% MNT - montage struct with 3D positions
-% PROJECTION -  the method for projecting 3D electrode positions onto 2D.
-%               'euclidean': euclidean distance from the channel
-%                to the upper vertex ('Cz')
-%               'orthogonal': orthogonal projection of the upper half-sphere
-%               'sphere': similar to euclidean but takes the distance on the
-%                 sphere instead of the Euclidean distance (default
-%                 'sphere')
-%
-%Returns:
-% MNT:  Struct for electrode montage
-%   .x     - x coordinate for 2D projection
-%   .y     - y coordinate for 2D projection
-%
-% See also getChannelPositions
-% ...
-% Markus Wenzel 2013 (adapted it to the new toolbox)
+% Markus Wenzel 2013 (adapted to the new toolbox)
 
 
 props={ 'Projection'   'sphere'     'CHAR'};        
@@ -45,7 +43,7 @@ opt_checkProplist(opt, props);
 misc_checkType(mnt, 'STRUCT');
 
                
-%% Projection to 2D
+% Projection to 2D
 switch(opt.Projection)
   
   case 'orthogonal'

@@ -1,62 +1,61 @@
 function h = fig2subplot(hfigs, varargin)
-% FIGS2SUBPLOT - Arrange figures in subplots
+%FIGS2SUBPLOT - Arrange figures in subplots within one figure
 %
 %Description:
-% Takes a number of figure handles and arranges figures in a single subplot.
-% The order of figure handles should correspond to the numbering of the
-% axes in the subplot.
+% Takes a number of figure handles and arranges them as subplot within a
+% single figure. The order of figure handles should correspond to the
+% numbering of the axes in the subplot.
 %
-%Usage:
+%Synposis:
 % H = figs2subplot(HFIGS, <OPT>)
 %
 %Input:
 % HFIGS: a vector of figure handles
 % OPT: struct or property/value list of optional properties. It can be used
 % in four ways to generate a figure.
-%(1): Give the number of rows and columns, a subplots with size equal to the
-%     maximum height and width of the figures are created. The sizes 
-%     of the figures are preserved
-%  RowsCols:     the number of rows and columns, eg. [2 1]
-%  InnerMargin:  minimum margin between plots in pixels [horizontal vertical]
-%  OuterMargin:  outer margins [left right top bottom] of the whole plot in
-%                pixels
-%(2): Provide a predefined subplot figure
-%  HMain:        handle of a predefined subplot figure. The positions of
-%                the subplots will be used to place the figures.
-%(3): Make a subplot of rows and columns
-%  Rows:         normalized sizes of the rows (e.g., [.1 .3 .4])
-%  Cols:         normalized sizes of the columns. If there is space over,
-%                rows and columns are evenly spread.
-%  Margin:       outer margins [left right top bottom] of the whole plot
-%(4): Make an arbitrary subplot
-%  Positions:    a n x 4 matrix of normalized axes position data 
-%                [left bottom width height]
+%   (1) Give the number of rows and columns, a subplots with size equal to
+%       the maximum height and width of the figures are created. The sizes 
+%       of the figures are preserved
+%    .RowsCols    - the number of rows and columns, eg. [2 1]
+%    .InnerMargin - minimum margin between plots in pixels [horizontal vertical]
+%    .OuterMargin - outer margins [left right top bottom] of the whole plot in
+%                   pixels
+%   (2) Provide a predefined subplot figure
+%    .HMain - handle of a predefined subplot figure. The positions of
+%             the subplots will be used to place the figures.
+%   (3) Make a subplot of rows and columns
+%    .Rows   - normalized sizes of the rows (e.g., [.1 .3 .4])
+%    .Cols   - normalized sizes of the columns. If there is space over,
+%              rows and columns are evenly spread.
+%    .Margin - outer margins [left right top bottom] of the whole plot
+%   (4) Make an arbitrary subplot
+%    .Positions - a n x 4 matrix of normalized axes position data 
+%                 [left bottom width height]
 %
 % If none of these arguments is set, a default n x 1 subplot is created, 
 % where n is the number of figure handles
 %
 % Other options
-%  DeleteFigs:    the original figures are deleted after they were copied
-%                 into the new figure
-%  Label:         automatically label the subfigures by running numbers or letters.
-%                 Specify label type by a string, eg. '(a)' (for (a) (b), etc), 
-%                 'a', 'a.', capital letters, or numerical variants 
-%                 '(1)' '1', '1.'  (default []). 
-%                 Alternatively, you can provide a cell array of
-%                 strings representing custom labels.
-%  LabelPos:      positions of the labels, the values correspond to the
-%                 values used for legend positions (default 'NorthWest')
-%  LabelOpt:      formatting options for label as cell array 
-%                 (default {'FontSize' 12 'FontWeight' 'bold'})
+%  .DeleteFigs - the original figures are deleted after they were copied
+%                into the new figure
+%  .Label      - automatically label the subfigures by running numbers or
+%                letters. Specify label type by a string, eg. '(a)'
+%                (for (a) (b), etc), 'a', 'a.', capital letters, or
+%                numerical variants '(1)' '1', '1.'  (default []). 
+%                Alternatively, you can provide a cell array of
+%                strings representing custom labels.
+%  .LabelPos   - positions of the labels, the values correspond to the
+%                values used for legend positions (default 'NorthWest')
+%  .LabelOpt   - formatting options for label as cell array 
+%                (default {'FontSize' 12 'FontWeight' 'bold'})
 %                 
 %
 %Output:
-% H = Handle to the new subplot figure and its children
+% H: Handle to the new subplot figure and its children
 % .axes     - axes wherein the new subplots are placed
 % .children - the copied graphics objects
 %
 %Example: (4 figures with four different colormaps arranged in a 2x2 subplot)
-%
 % close all
 % [X,Y,Z] = peaks(30); % fig 1
 % surf(X,Y,Z), colormap jet

@@ -6,31 +6,31 @@ function map= cmap_hsvFade(m, hue, sat, val)
 %  color model a start and an end value can be specified, between
 %  which this function generates a linear interpolation.
 %
-%Usage:
-%  MAP= cmap_hsvFade(M, <HUE, SAT, VAL>)
+%Synposis:
+% MAP= cmap_hsvFade(M, <HUE, SAT, VAL>)
 %
 %Input:
-%  M  : Size of the colormap (number of entries). Default value: Same size
-%       as current colormap
-%  HUE: A pair of two values [HUE1 HUE2] according to the HSV color model.
-%       The returned colormap linearly fades from HUE1 to HUE2.
-%       If a scalar HUE is given, it is interpreted as [HUE HUE].
-%  VAL: A pair of two values [VAL1 VAL2] according to the HSV color model.
-%       The returned colormap linearly fades from VAL1 to VAL2.
-%       If a scalar VAL is given, it is interpreted as [VAL VAL].
-%  SAT: A pair of two values [SAT1 SAT2] according to the HSV color model.
-%       The returned colormap linearly fades from SAT1 to SAT2.
-%       If a scalar SAT is given, it is interpreted as [SAT SAT].
+% M: Size of the colormap (number of entries). Default value: Same size
+%    as current colormap
+% HUE: A pair of two values [HUE1 HUE2] according to the HSV color model.
+%      The returned colormap linearly fades from HUE1 to HUE2.
+%      If a scalar HUE is given, it is interpreted as [HUE HUE].
+% VAL: A pair of two values [VAL1 VAL2] according to the HSV color model.
+%      The returned colormap linearly fades from VAL1 to VAL2.
+%      If a scalar VAL is given, it is interpreted as [VAL VAL].
+% SAT: A pair of two values [SAT1 SAT2] according to the HSV color model.
+%      The returned colormap linearly fades from SAT1 to SAT2.
+%      If a scalar SAT is given, it is interpreted as [SAT SAT].
 %
 %Output:
-%  MAP: A colormap matrix of size [M 3]
+% MAP: A colormap matrix of size [M 3]
 %
 %Example:
-%  clf; imagesc(toeplitz(1:50))
-%  map1= cmap_hsvFade(10, 1/6, [0 1], 1);
-%  map2= cmap_hsvFade(11, [1/6 0], 1, 1);
-%  colormap([map1; map2(2:end,:)]);
-%  colorbar;
+% clf; imagesc(toeplitz(1:50))
+% map1= cmap_hsvFade(10, 1/6, [0 1], 1);
+% map2= cmap_hsvFade(11, [1/6 0], 1, 1);
+% colormap([map1; map2(2:end,:)]);
+% colorbar;
 % 
 %See also COLORMAP, HSV2RGB
 

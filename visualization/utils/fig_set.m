@@ -53,7 +53,7 @@ if opt.Hide,
   set(opt.Fn, 'Visible','off');
 end
 if opt.ToolsOff,
-  fig_toolsoff;
+  set(gcf, 'ToolBar','none', 'MenuBar','none');
 end
 fig_size_orig= fig_size;
 fig_size= round(fig_size .* opt.Resize);

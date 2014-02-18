@@ -1,5 +1,15 @@
 function [AxesStyle, LineStyle]= opt_extractPlotStyles(opt)
 %OPT_EXTRACTPLOTSTYLES - Extract graphic object properties
+%
+%Synposis:
+% [AXESSTYLE, LINESTYLE]= opt_extractPlotStyles(OPT)
+%
+%Input:
+% OPT: Property names to be extracted
+%
+%Output:
+% AXESSTYLE: Axes properties extracted
+% LINESTYLE: Line properties extracted
 
 StyleList= {'Box', 'Visible', ...
              'TickLength', 'TickDir', 'TickDirMode', ...

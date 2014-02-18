@@ -1,24 +1,20 @@
 function cmap= cmap_greenwhitelila(m)
-%CMAP_RAINBOW - Colormap going from green over white to lila
+%CMAP_GREENWHITELILA - Colormap going from green over white to lila
 %
-%Description:
-%  This function returns a colormap. The colors goes from red to
-%   yellow to white to cyan to blue.
-%
-%Usage:
-%  MAP= cmap_rainbow(M)
+%Synposis:
+% MAP= cmap_greenwhitelila(M)
 %
 %Input:
-%  M  : Size of the colormap (number of entries). Default value: Same size
-%       as current colormap
+% M: Size of the colormap (number of entries). Default value: Same size
+%    as current colormap
 %
 %Output:
-%  MAP: A colormap matrix of size [M 3]
+% MAP: A colormap matrix of size [M 3]
 %
 %Example:
-%  clf; 
-%  colormap(cmap_posneg(65));
-%  imagesc(toeplitz(1:65)); colorbar;
+% clf; 
+% colormap(cmap_posneg(65));
+% imagesc(toeplitz(1:65)); colorbar;
 %
 %See also COLORMAP, HSV2RGB, CMAP_HSVFADE
 
