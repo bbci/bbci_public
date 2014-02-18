@@ -124,7 +124,7 @@ if opt.Stats
 %   fv_rval.indexedByEpochs = {'p', 'sgnlogp', 'se'}; 
   iV= reshape(iV, [sz(1:end-1) 1]);
   fv_rval.se = 1./sqrt(iV);
-  fv_rval.p = reshape(2*normal_cdf(-abs(atanh(fv_rval.x(:))), zeros(size(fv_rval.x(:))), fv_rval.se(:)), size(fv_rval.x));
+  fv_rval.p = reshape(2*stat_normal_cdf(-abs(atanh(fv_rval.x(:))), zeros(size(fv_rval.x(:))), fv_rval.se(:)), size(fv_rval.x));
   if opt.Bonferroni
     fv_rval.corrfac = prod(sz(1:end-1));
     fv_rval.p = min(fv_rval.p*fv_rval.corrfac, 1);

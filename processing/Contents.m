@@ -13,6 +13,7 @@
 %PROC_APPENDEPOCHS - appends two or more epochs.
 %PROC_APPENDSAMPLES - append samples of data structs
 %PROC_BASELINE - substract a baseline from a epoched data structure
+%PROC_SUBTRACTREFERENCECLASS - subtracts a given the reference class
 %PROC_REJECTARTIFACTSMAXMIN - Reject epochs according to max-min criterion
 %PROC_SEGMENTATION - Segment continuous signals into epochs
 %PROC_SELECTCHANNELS - Select channels from continuous or epoched data

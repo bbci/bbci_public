@@ -1,7 +1,9 @@
-file= 'demo_Pavel_01_11_23/selfpaced2sPavel';
+eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
+    'demo_Pavel_01_11_23', 'selfpaced2sPavel');
 
 %% Load data
-[cnt, mrk, mnt] = file_loadMatlab(file);
+[cnt, mrk, mnt] = file_loadMatlab(eeg_file);
+
 
 %% Electrode Montage
 grd= sprintf(['EOGh,_,F3,Fz,F4,_,EOGv\n' ...
@@ -36,12 +38,12 @@ spec_lar_r= proc_rSquareSigned(spec_lar);
 spec_lar_r= proc_selectChannels(spec_lar_r, 'not','E*');
 
 fig_set(1);
-H= grid_plot(spec, mnt, opt_grid_spec);
+H= grid_plot(spec, mnt, opt_grid_spec,'XUnit', spec.xUnit, 'YUnit', spec.yUnit)
 %grid_markIval(band_erd);     % to shade a certain frequency band
 grid_addBars(spec_r, 'HScale',H.scale);
 
 fig_set(5);
-H= grid_plot(spec_lar, mnt, opt_grid_spec);
+H= grid_plot(spec_lar, mnt, opt_grid_spec, 'XUnit',spec_lar.xUnit,'YUnit',spec_lar.yUnit);
 grid_addBars(spec_lar_r, 'HScale',H.scale);
 
 fig_set(2);
@@ -49,11 +51,13 @@ H= plot_scalpEvolutionPlusChannel(spec, mnt, clab, band_list, ...
                              defopt_scalp_power, ...
                              'ColorOrder',colOrder, ...
                              'ScalePos','horiz', ...
-                             'GlobalCLim',0);
+                             'GlobalCLim',0,...
+                             'XUnit', spec.xUnit, 'YUnit', spec.yUnit);
 grid_addBars(spec_r);
 
 fig_set(4, 'shrink',[1 2/3]);
-plot_scalpEvolutionPlusChannel(spec_r, mnt, clab, band_list, defopt_scalp_r);
+plot_scalpEvolutionPlusChannel(spec_r, mnt, clab, band_list, defopt_scalp_r,...
+    'XUnit', spec_r.xUnit, 'YUnit', spec_r.yUnit);
 
 
 %% Do the same with subtracting the spectrum in a reference time interval
@@ -67,11 +71,10 @@ mrk_ref= reject_varEventsAndChannels(cnt, mrk_ref, ref_ival);
 spec_baseline= proc_segmentation(cnt, mrk_ref, ref_ival);
 spec_baseline= proc_spectrum(spec_baseline, [5 40], kaiser(winlen,2));
 spec_baseline= proc_average(spec_baseline);
-spec_ref= proc_subtractReferenceClass(spec, spec_baseline);
+spec_ref= proc_subtractReferenceClass(spec, spec_baseline); % here the power is devided by power in spec_baseline, not subtracted!
 
 fig_set(6);
 H= plot_scalpEvolutionPlusChannel(spec_ref, mnt, clab, band_list, ...
                              defopt_scalp_power, ...
-                             'Extrapolate', 0, ...
-                             'ColorOrder',colOrder);
+                             'ColorOrder',colOrder,'XUnit', spec.xUnit, 'YUnit', spec.yUnit);
 grid_addBars(spec_r);

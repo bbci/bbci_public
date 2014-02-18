@@ -1,18 +1,23 @@
-files = {'VPibv_10_11_02\calibration_CenterSpellerMVEP_VPibv',
-  'VPibq_10_09_24\calibration_CenterSpellerMVEP_VPibq',
-  'VPiac_10_10_13\calibration_CenterSpellerMVEP_VPiac',
-  'VPibs_10_10_20\calibration_CenterSpellerMVEP_VPibs',
-  'VPibt_10_10_21\calibration_CenterSpellerMVEP_VPibt'};
-  
+files = {
+  fullfile('VPibv_10_11_02','calibration_CenterSpellerMVEP_VPibv')
+  fullfile('VPibq_10_09_24','calibration_CenterSpellerMVEP_VPibq')
+  fullfile('VPiac_10_10_13','calibration_CenterSpellerMVEP_VPiac')
+  fullfile('VPibs_10_10_20','calibration_CenterSpellerMVEP_VPibs')
+  fullfile('VPibt_10_10_21','calibration_CenterSpellerMVEP_VPibt')
+  };
+
+%%
 nsub = length(files);
 for isub = 1:nsub
   file = files{isub};
+  file= fullfile(BTB.DataDir, 'demoMat', file);
+
   %% Load data
-  hdr= file_readBVheader(file);
-  Wps= [42 49]/hdr.fs*2;
-  [n, Ws]= cheb2ord(Wps(1), Wps(2), 3, 40);
-  [filt.b, filt.a]= cheby2(n, 50, Ws);
-  [cnt, mrk_orig]= file_readBV(file, 'Fs',100, 'Filt',filt);
+  fprintf('loading %s \n', file)
+  
+  [cnt, mrk_orig, mnt] = file_loadMatlab(file);
+
+  
 
   %% Marker struct
   stimDef= {[31:46], [11:26];
@@ -38,7 +43,7 @@ for isub = 1:nsub
   mnt= mnt_setElectrodePositions(cnt.clab);
   mnt= mnt_setGrid(mnt, grd);
 
-  % Define some settings
+  %% Define some settings
   disp_ival= [-200 1000];
   ref_ival= [-200 0];
   crit_maxmin= 70;
@@ -47,21 +52,21 @@ for isub = 1:nsub
   clab= {'Cz','PO7'};
   colOrder= [1 0 1; 0.4 0.4 0.4];
 
-  % Apply highpass filter to reduce drifts
+  %% Apply highpass filter to reduce drifts
   b= procutil_firlsFilter(0.5, cnt.fs);
   cnt= proc_filtfilt(cnt, b);
 
-  % Artifact rejection based on variance criterion
+  %% Artifact rejection based on variance criterion
   %mrk= reject_varEventsAndChannels(cnt, mrk, disp_ival, 'verbose', 1);
 
-  % Segmentation
+  %% Segmentation
   epo= proc_segmentation(cnt, mrk, disp_ival);
 
-  % Artifact rejection based on maxmin difference criterion on frontal chans
+  %% Artifact rejection based on maxmin difference criterion on frontal chans
   [epo iArte] = proc_rejectArtifactsMaxMin(epo, crit_maxmin, 'Clab',crit_clab, ...
                                   'Ival',crit_ival, 'Verbose',1);
 
-  % Baseline subtraction, and calculation of a measure of discriminability
+  %% Baseline subtraction, and calculation of a measure of discriminability
   epo= proc_baseline(epo, ref_ival);
 
   epos_av{isub} = proc_average(epo, 'Stats', 1);
@@ -73,7 +78,8 @@ for isub = 1:nsub
 
 end
 
-% grand average
+
+%% grand average
 epo_av = proc_grandAverage(epos_av, 'Average', 'INVVARweighted', 'Stats', 1, 'Bonferroni', 1, 'Alphalevel', 0.01);
 epo_r = proc_grandAverage(epos_r, 'Average', 'INVVARweighted', 'Stats', 1, 'Bonferroni', 1, 'Alphalevel', 0.01);
 epo_diff = proc_grandAverage(epos_diff, 'Average', 'INVVARweighted', 'Stats', 1, 'Bonferroni', 1, 'Alphalevel', 0.01);
@@ -82,27 +88,27 @@ epo_auc = proc_grandAverage(epos_auc, 'Average', 'INVVARweighted', 'Stats', 1, '
 mnt = mnt_setElectrodePositions(epo_av.clab);
 mnt= mnt_setGrid(mnt, grd);
 
-% Select some discriminative intervals, with constraints to find N2, P2, P3 like components.
+%% Select some discriminative intervals, with constraints to find N2, P2, P3 like components.
 constraint= ...
       {{-1, [100 300], {'I#','O#','PO7,8','P9,10'}, [50 300]}, ...
        {1, [200 350], {'P3-4','CP3-4','C3-4'}, [200 400]}, ...
        {1, [400 500], {'P3-4','CP3-4','C3-4'}, [350 600]}};
 [ival_scalps, nfo]= ...
-    select_time_intervals(epo_r, 'Visualize', 0, 'VisuScalps', 1, ...
+    procutil_selectTimeIntervals(epo_r, 'Visualize', 0, 'VisuScalps', 1, ...
                           'Title', util_untex(file), ...
                           'Clab',{'not','E*'}, ...
                           'Constraint', constraint);
 %printFigure('r_matrix', [18 13]);
 ival_scalps= visutil_correctIvalsForDisplay(ival_scalps, 'fs',epo.fs);
 
-% plot classwise grand-average ERPs
+%% plot classwise grand-average ERPs
 fig_set(1);
 H= plot_scalpEvolutionPlusChannel(epo_av, mnt, clab, ival_scalps, defopt_scalp_erp, ...
                              'ColorOrder',colOrder);
 grid_addBars(epo_r);
 %printFigure(['erp_topo'], [20  4+5*size(epo.y,1)]);
 
-% plot difference of the class means
+%% plot difference of the class means
 fig_set(2, 'shrink',[1 2/3]);
 plot_scalpEvolutionPlusChannel(epo_diff, mnt, clab, ival_scalps, defopt_scalp_r);
 %printFigure(['erp_topo_r'], [20 9]);
@@ -119,7 +125,7 @@ epo_diff_sgnlogp.yUnit = 'sgnlogp';
 plot_scalpEvolutionPlusChannel(epo_diff_sgnlogp, mnt, clab, ival_scalps, defopt_scalp_r);
 %printFigure(['erp_topo_r'], [20 9]);
 
-% now plot differences again, with all insignificant results set to zero
+%% now plot differences again, with all insignificant results set to zero
 epo_diff.x = epo_diff.x.*epo_diff.sigmask;
 fig_set(4, 'shrink',[1 2/3]);
 plot_scalpEvolutionPlusChannel(epo_diff, mnt, clab, ival_scalps, defopt_scalp_r);
