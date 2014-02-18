@@ -21,6 +21,7 @@
 %PROC_SELECTEPOCHS - Select specified epochs within epoch structure
 %PROC_SELECTIVAL - Select subinterval from epoched data
 %PROC_SELECTSAMPLES - Select a subset of samples of a data set
+%PROC_COMBINECLASSES - combine/merge several Classes into one
 %
 %
 %PROC_AUCVALUES - Computes the area under the curve (AUC) score for each feature

@@ -52,7 +52,7 @@ elseif nClasses>2,
       end
 % end sthf 
     else
-      fv_tsc= proc_appendEpochs(fv_tsc, proc_t_scale(ep,alpha));
+      fv_tsc= proc_appendEpochs(fv_tsc, proc_tScale(ep,alpha));
     end
   end
 %   util_warning(state);

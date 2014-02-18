@@ -47,9 +47,8 @@ fv= proc_segmentation(data.cnt, data.mrk, segmentation_ival, ...
 fv= proc_baseline(fv, opt.ref_ival);
 fv= proc_jumpingMeans(fv, opt.ival);
 
-%bbci.signal.proc= {{@online_movingAverage, 5000}};
-bbci.signal.proc={};
 bbci.signal.clab = data.cnt.clab;
+bbci.signal.proc={};
 
 bbci.feature.ival= [-5000 0];
 bbci.feature.proc= {@proc_meanAcrossTime};
