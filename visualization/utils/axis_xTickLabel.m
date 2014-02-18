@@ -83,7 +83,7 @@ ifp= find(ismember(lower(opt_fn), ...
                     'rotation'},'legacy'));
 ifp= cat(1, ifp, strmatch('font', opt_fn));
 font_opt= struct_copyFields(opt, opt_fn(ifp));
-font_pl= struct2propertylist(font_opt);
+font_pl= opt_proplistToStruct(font_opt);
 
 xx= opt.xtick;
 YLim= get(gca, 'YLim');

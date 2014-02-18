@@ -101,7 +101,7 @@ end
 
 % Find connector for source-detector labels (non-alphanumeric character)
 str = str_head(mnt.clab);
-[a,a,a,connector] = regexp(str,'[^\w]');
+[~,~,~,connector] = regexp(str,'[^\w]');
 connector = cell2mat(unique(cell_flaten(connector)));
 if isempty(connector)
   connector = '';
@@ -121,7 +121,7 @@ if ~isempty(opt.Source) || ~isempty(opt.Detector)
   if ~iscell(selSou), selSou = {selSou}; end
   % Build selection string
   sel = strcat(selSou,connector);
-  sel = cell_flaten(apply_cellwise(sel,'strcat',selDet));
+  sel = cell_flaten(cellfun('strcat',sel,selDet));
   mnt = mnt_restrictMontage(mnt,sel);
 end
 
