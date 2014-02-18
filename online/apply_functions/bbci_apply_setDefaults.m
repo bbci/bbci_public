@@ -48,7 +48,10 @@ props= {'acquire_fcn'           @bbci_acquire_bv   '!FUNC'
         'marker_mapping_fcn'    []                 'FUNC'
         'log'                   struct             'STRUCT'
        };
+bbci.source= opt_overwriteVoids(bbci.source, 'min_blocklength', props);
+bbci.source= opt_overwriteVoids(bbci.source, 'record_signals', props);
 [bbci.source, isdefault_source]= opt_setDefaults('bbci.source', props);
+% this should be removed again:
 if length(bbci.source)==1 && ...
       isequal(bbci.source.acquire_fcn, @bbci_acquire_bv) && ...
       isdefault_source.acquire_param,
@@ -70,14 +73,14 @@ bbci.marker= opt_setDefaults('bbci.marker', props);
 
 
 props= {'source'        1         '!INT'
-        'clab'          '*'       'CHAR|CELL{CHAR}'
+        'clab'          '*'       '!CHAR|CELL{CHAR}'
         'buffer_size'   5*1000    '!INT[1]'
         'proc'          {}        'CELL'
         'fcn'           []        'FUNC|CELL{FUNC}'
         'param'         {}        'CELL'
        };
-bbci.signal= opt_overwriteVoids(bbci.signal, 'source', 1);
-bbci.signal= opt_overwriteVoids(bbci.signal, 'clab', '*');
+bbci.signal= opt_overwriteVoids(bbci.signal, 'source', props);
+bbci.signal= opt_overwriteVoids(bbci.signal, 'clab', props);
 bbci.signal= opt_setDefaults('bbci.signal', props);
 opt_checkExclusiveProps('bbci.signal', {'proc','fcn'; 'proc','param'});
 bbci.signal= bbciutil_transformProc2FcnParam(bbci.signal);
@@ -89,7 +92,7 @@ props= {'signal'         1      '!INT[1]'
         'fcn'            []     'FUNC|CELL{FUNC}'
         'param'          {}     'CELL'
        };
-bbci.feature= opt_overwriteVoids(bbci.feature, 'signal', 1);
+bbci.feature= opt_overwriteVoids(bbci.feature, 'signal', props);
 bbci.feature= opt_setDefaults('bbci.feature', props);
 opt_checkExclusiveProps('bbci.feature', {'proc','fcn'; 'proc','param'});
 bbci.feature= bbciutil_transformProc2FcnParam(bbci.feature);
@@ -99,7 +102,7 @@ props= {'feature'     1                             '!INT'
         'fcn'         @apply_separatingHyperplane   'FUNC'
         'C'           struct                        '!STRUCT'
        };
-bbci.classifier= opt_overwriteVoids(bbci.classifier, 'feature', 1);
+bbci.classifier= opt_overwriteVoids(bbci.classifier, 'feature', props);
 bbci.classifier= opt_setDefaults('bbci.classifier', props);
 
 
@@ -108,7 +111,7 @@ props= {'classifier'     1      '!INT'
         'fcn'            ''     'FUNC'
         'param'          {}     'CELL'
         'condition'      []     'STRUCT(marker)|STRUCT(interval)'};
-bbci.control= opt_overwriteVoids(bbci.control, 'classifier', 1);
+bbci.control= opt_overwriteVoids(bbci.control, 'classifier', props);
 bbci.control= opt_setDefaults('bbci.control', props);
 opt_checkExclusiveProps('bbci.control', {'proc','fcn'; 'proc','param'});
 
@@ -155,7 +158,7 @@ props= {'control'     1             '!INT'
         'host'        '127.0.0.1'   'CHAR'
         'port'        12345         'INT'
        };
-bbci.feedback= opt_overwriteVoids(bbci.feedback, 'control', 1);
+bbci.feedback= opt_overwriteVoids(bbci.feedback, 'control', props);
 [bbci.feedback, isdefault]=  opt_setDefaults('bbci.feedback', props);
 % defaults for bbci.feedback.log are set below
 % (because it refers to bbci.log)
@@ -187,7 +190,7 @@ props= {'active'            1                   '!BOOL'
         'load_classifier'   0                   '!BOOL'
         'log'               struct('output','screen')   'STRUCT(output)'
        };
-bbci.adaptation= opt_overwriteVoids(bbci.adaptation, 'classifier', 1);
+bbci.adaptation= opt_overwriteVoids(bbci.adaptation, 'classifier', props);
 [bbci.adaptation, adapt_default]= opt_setDefaults('bbci.adaptation', props);
 opt_checkExclusiveProps('bbci.adaptation', {'proc','fcn'; 'proc','param'});
 
