@@ -31,6 +31,7 @@ props= {'Folder'       BTB.TmpDir   'CHAR'
         'Fs'           []           '!DOUBLE[1]'
         'CLab'         ''           '!CELL(CHAR)'
         'Scale'        'auto'       'CHAR|DOUBLE[-]'
+        'Unit'         'a.u.'       'CHAR|CELL{CHAR}'
        };
 if nargin==0,
   return;
@@ -55,14 +56,18 @@ proplist= {'DataFile'     fileName
 opt= opt_overrideIfDefault(opt, isdefault, proplist);
 clear props
 
-if ~ischar(opt.DataPoints),  %% not sure, why DataPoints is a string
+if ~iscell(opt.Unit),
+  opt.Unit= {opt.Unit};
+end
+
+if ~ischar(opt.DataPoints),  % not sure, why DataPoints is a string
   opt.DataPoints= sprintf('%d', opt.DataPoints);
 end
 
 fid= fopen([fullName '.vhdr'], 'w','b');
 if fid==-1, error(sprintf('cannot write to %s.vhdr', fullName)); end
 fprintf(fid, ['Brain Vision Data Exchange Header File Version 1.0' 13 10]);
-fprintf(fid, ['; Data exported from BTB Matlab Toolbox' 13 10]);
+fprintf(fid, ['; Data exported from BBCI Matlab Toolbox' 13 10]);
 fprintf(fid, [13 10 '[Common Infos]' 13 10]);
 fprintf(fid, ['DataFile=%s.eeg' 13 10], opt.DataFile);
 fprintf(fid, ['MarkerFile=%s.vmrk' 13 10], opt.MarkerFile);
@@ -88,8 +93,8 @@ switch(lower(opt.Precision)),
 end
 fprintf(fid, [13 10 '[Channel Infos]' 13 10]);
 for ic= 1:length(opt.CLab),
-  fprintf(fid, ['Ch%d=%s,,%g' 13 10], ic, opt.CLab{ic}, ...
-          opt.Scale(min(ic,end)));
+  fprintf(fid, ['Ch%d=%s,,%g,%s' 13 10], ic, opt.CLab{ic}, ...
+          opt.Scale(min(ic,end)), opt.Unit{min(ic,end)});
 end
 fprintf(fid, ['' 13 10]);
 
