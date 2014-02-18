@@ -20,14 +20,14 @@ function [divTr, divTe]= sample_KFold(label, folds, varargin)
 
 % 2014-02 Martijn Schreuder
 
+props = {'Stratified'      true          'BOOL|DOUBLE[1]'
+        };
+
+opt= opt_proplistToStruct(varargin{:});
+[opt,isdefault] = opt_setDefaults(opt, props, 1);
+
 misc_checkType(label, 'DOUBLE[- -]');
 misc_checkType(folds, 'DOUBLE|DOUBLE[2]');
-if nargin >= 3,
-   stratified = varargin{1};
-   misc_checkType(stratified, 'BOOL[1]'); 
-else
-   stratified = true;
-end
 
 nSamples = sum(label,2);
 
@@ -46,7 +46,7 @@ end
 for nn= 1:folds(1)
   clear idx;
   % prepare indices
-  if stratified
+  if opt.Stratified
       for cl = 1:length(nSamples)
           clid = find(label(cl,:));
           idx{cl} = clid(randperm(nSamples(cl)));
