@@ -26,7 +26,7 @@ function mnt = projectChannels3dTo2d(mnt,varargin)
 % ...
 % Markus Wenzel 2013 (adapted it to the new toolbox)
 
-global BBCI
+
 props={ 'Projection'   'sphere'     'CHAR'};        
   
 if nargin==0,

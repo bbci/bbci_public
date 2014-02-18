@@ -34,7 +34,6 @@ function dat = nirs_LB(dat, varargin)
 % ToDo: possibility to define individual baseline; online functionability
 
 
-global BBCI
 props={'Citation'   1             'INT'
         'Opdist'    2.5           'DOUBLE'
         'Ival'      'all'         'CHAR|DOUBLE'
