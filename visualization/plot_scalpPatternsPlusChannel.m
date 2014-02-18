@@ -1,27 +1,28 @@
 function H= plot_scalpPatternsPlusChannel(erp, mnt, clab, ival, varargin)
 %PLOT_SCALPPATTERNSPLUSCHANNEL - Display Classwise topographies and one channel
 %
-%Usage:
+%Synposis:
 % H= plot_scalpPatternsPlusChannel(ERP, MNT, CLAB, IVAL, <OPTS>)
 %
 %Input:
-% ERP  - struct of epoched EEG data. For convenience used Classwise
-%        averaged data, e.g., the result of proc_average.
-% MNT  - struct defining an electrode montage
-% CLAB - label of the channel(s) which are to be displayed in the
+% ERP:  struct of epoched EEG data. For convenience used Classwise
+%       averaged data, e.g., the result of proc_average.
+% MNT:  struct defining an electrode montage
+% CLAB: label of the channel(s) which are to be displayed in the
 %        ERP plot.
-% IVAL - The time interval for which scalp topographies are to be plotted.
-%        May be either one interval for all Classes, or specific
-%        intervals for each Class. In the latter case the k-th row of IVAL
-%        defines the interval for the k-th Class.
-% OPTS - struct or property/value list of optional fields/properties:
+% IVAL: time interval for which scalp topographies are to be plotted.
+%       May be either one interval for all Classes, or specific
+%       intervals for each Class. In the latter case the k-th row of IVAL
+%       defines the interval for the k-th Class.
+% OPTS: struct or property/value list of optional fields/properties:
 %  .LegendPos - specifies the position of the legend in the ERP plot,
-%                default 0 (see help of legend for choices).
-%  .MarkIval - When true, the time interval is marked in the channel plot.
-%  The opts struct is passed to plot_scalpPattern.
+%               default 0 (see help of legend for choices).
+%  .MarkIval  - When true, the time interval is marked in the channel plot.
+%
+%The opts struct is passed to plot_scalpPattern
 %
 %Output:
-% H: Handle to several graphical objects.
+% H: Handle to several graphical objects
 %
 %See also plot_scalpPatterns, plot_scalpEvolutionPlusChannel, plot_scalp.
 

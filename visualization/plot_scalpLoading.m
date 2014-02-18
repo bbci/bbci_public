@@ -14,9 +14,9 @@ function H= plot_scalpLoading(mnt, w, varargin)
 %      concide with the length of MNT.clab or the number of non-NaN
 %      entries of MNT.x, or OPT must include a field 'WClab'.
 % OPT: struct or property/value list of optional properties:
-%  .CLim :        'range', 'sym' (default), '0tomax', 'minto0',
-%                 or [minVal maxVal]
-%  .ShowLabels:   Display channel names (1) or not (0), default 1.
+%  .CLim       - 'range', 'sym' (default), '0tomax', 'minto0',
+%                or [minVal maxVal]
+%  .ShowLabels - Display channel names (1) or not (0), default 1.
 %
 %Output:
 % H:     handle to several graphical objects

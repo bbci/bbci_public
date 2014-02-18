@@ -11,15 +11,15 @@ function H= plot_cspAnalysis(fv, mnt, W, A, la, varargin)
 % CSP_A: CSP 'mixing' matrix (patterns in rows)
 % CSP_EIG: eigenvalues of CSP patterns
 % OPT: struct or property/value list of optional properties:
-%  .RowLayout:    if true, shows filter/pattern pairs in rows, rather than
-%                 the default as columns
-%  .MarkPatterns: vector of indices: these patterns are marked
-%  .MarkStyle:    the outline of the marked scalps is marked by setting
-%                 its properties to this property/value list (given in a
-%                 cell array)
-%  .ColorOrder:   can be used to give scalp outlines class specific colors
-%  .NComps:       select top NComps patterns for both class (only for
-%                 two-class cases)
+%  .RowLayout    - if true, shows filter/pattern pairs in rows, rather than
+%                  the default as columns
+%  .MarkPatterns - vector of indices: these patterns are marked
+%  .MarkStyle    - the outline of the marked scalps is marked by setting
+%                  its properties to this property/value list (given in a
+%                  cell array)
+%  .ColorOrder   - can be used to give scalp outlines class specific colors
+%  .NComps       - select top NComps patterns for both class (only for
+%                  two-class cases)
 %
 %Output:
 % H: struct of handles to graphic objects
