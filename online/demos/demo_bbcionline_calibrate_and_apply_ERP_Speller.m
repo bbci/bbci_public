@@ -9,9 +9,8 @@
 
 BC= [];
 BC.fcn= @bbci_calibrate_ERPSpeller;
-BC.settings.nClasses= 6;
-BC.file= fullfile(BTB.DataDir, 'demoRaw', 'VPiac_10_10_13', ...
-                  'calibration_CenterSpellerMVEP_VPiac');
+BC.folder= fullfile(BTB.DataDir, 'demoRaw');
+BC.file= fullfile('VPiac_10_10_13', 'calibration_CenterSpellerMVEP_VPiac');
 BC.read_param= {'fs',100};
 BC.marker_fcn= @mrk_defineClasses;
 BC.marker_param= {{[31:49], [11:29]; 'target', 'nontarget'}};
@@ -42,6 +41,7 @@ log_format= '%fs | M(%u) | %fs | [%f] | %s';
     textread(data.log.filename, log_format, ...
              'delimiter','','commentstyle','shell');
 
+% markers acquired in simulated online mode are consistent
 isequal(marker_desc, calib.mrk.event.desc)
 
 ref_ival= bbci.feature.proc{1}{2};
