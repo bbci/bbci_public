@@ -6,7 +6,7 @@ function C = train_LDA(xTr, yTr, varargin)
 %   C = train_LDA(XTR, YTR, OPTS)
 %
 %Arguments:
-%   XTR: DOUBLE [MxN] - Data matrix, with N feature dimensions, and M training points/examples. 
+%   XTR: DOUBLE [NxM] - Data matrix, with N feature dimensions, and M training points/examples. 
 %   YTR: INT [CxM] - Class membership labels of points in X_TR. C by M matrix of training
 %                     labels, with C representing the number of classes and M the number of training examples/points.
 %                     Y_TR(i,j)==1 if the point j belongs to class i.
