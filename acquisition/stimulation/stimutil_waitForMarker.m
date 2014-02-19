@@ -56,7 +56,7 @@ if isequal(opt.acquire_fcn, @acquire_sigserv),
     % get sampling rate from signal server
     [sig_info, dmy, dmy]= mexSSClient('localhost',9000,'tcp');
     opt.fs= sig_info(1);
-    acquire_func('close');
+    opt.acquire_fnc('close');
   end
 end
 
