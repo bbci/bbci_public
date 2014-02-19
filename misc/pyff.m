@@ -9,7 +9,7 @@ function res = pyff(command, varargin)
 %IN:
 % 'command' -  command to be issued: 'startup', 'init', 
 %              'setdir','set', 'get', 'refresh','play', 'stop','quit',
-%              'saveSettings'
+%              'saveSettings', 'loadSettings'
 %
 % res = pyff('startup',<OPT>): startup pyff in a separate console window.
 % res contains the command string that is executed. For
@@ -89,7 +89,7 @@ persistent ACQ_STARTED
 props = {'Os',                    'win',            '!CHAR(win unix)';
          'PyffDir'                BTB.PyffDir      'CHAR';
          'ReplaceHtmlEntities',   1,                '!BOOL';
-         'Parport',               BTB.IOAddr,     'DOUBLE[1]';
+         'Parport',               dec2hex(BTB.IOAddr),     'CHAR';
          'A',                     [],               'CHAR';
          'Gui',                   0,                'BOOL';
          'L',                     'debug',          'CHAR';
@@ -99,6 +99,7 @@ props = {'Os',                    'win',            '!CHAR(win unix)';
          'OutputProtocol',        [],               'CHAR';
          'Host',                 'localhost',       'CHAR';
          'Port',                  12345,            'INT';
+         'Impedances'             1                 'BOOL';
 
 };
 
@@ -106,26 +107,26 @@ if nargin==0,
   dat= props; return
 end
 
-misc_checkType(command,'CHAR(startup init set setint setdir play refresh stop quit saveSettings)');
+misc_checkType(command,'CHAR(startup init set setint setdir play refresh stop quit saveSettings loadSettings)');
 
 %% Case-dependent check of parameters
 switch(command)
 
   case {'stop','quit'}
-    narginchk(1,1);
+    nargchk(1,1,nargin);
     opt=[];
   case 'startup'
     opt = opt_proplistToStruct(varargin{:});
 
   case 'init'
-    narginchk(2,2);
+    nargchk(2,2,nargin);
     feedback = varargin{1};
     opt=[];
     misc_checkType(feedback,'!CHAR');
     ACQ_STARTED= 0;
     
   case 'setdir'
-    narginchk(2,inf);
+    nargchk(2,inf,nargin);
     if nargin==2
       opt=[];
       opt.TodayDir = '';
@@ -148,11 +149,11 @@ switch(command)
     end
     
   case 'play'
-    narginchk(1,5);
+    nargchk(1,5,nargin);
     opt = opt_proplistToStruct(varargin{:});
     
-  case {'saveSettings'}
-    narginchk(2,2);
+  case {'saveSettings','loadSettings'}
+    nargchk(2,2,nargin);
     opt=[];
     filename = varargin{1};
     misc_checkType(filename,'!CHAR');
@@ -274,13 +275,13 @@ switch(command)
     pyff_sendUdp('interaction-signal', settings{:});
 
   case 'play'
-    if isempty(varargin),
-      ACQ_STARTED= 0;
-    else
-      ACQ_STARTED= 1;
-      bvr_startrecording(varargin{2}, 'append_BTB.Tp.Code',1, varargin{3:end});
-      pause(0.01);
-    end
+ %   if isempty(varargin),
+ %     ACQ_STARTED= 0;
+ %   else
+ %     ACQ_STARTED= 1;
+ %     bvr_startrecording(varargin{2}, 'AppendTpCode',1, varargin{3:end});
+ %     pause(0.01);
+ %   end
     pyff_sendUdp('interaction-signal', 'command', 'play'); 
     
   case 'stop'
@@ -288,11 +289,14 @@ switch(command)
     
   case 'quit'
     pyff_sendUdp('interaction-signal', 'command', 'quit'); 
-    if strcmp(func2str(acquire_func), 'acquire_bv') && ACQ_STARTED,
-        bvr_sendcommand('stoprecording');
-        ACQ_STARTED= 0;
-    end
+%     if strcmp(func2str(acquire_func), 'acquire_bv') && ACQ_STARTED,
+%        bvr_sendcommand('stoprecording');
+%        ACQ_STARTED= 0;
+%     end
      
+  case 'loadSettings'
+    pyff_sendUdp('interaction-signal', 'loadvariables', settings_file);
+
   case 'saveSettings'
     pyff_sendUdp('interaction-signal', 'savevariables', settings_file);
     
