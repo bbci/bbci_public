@@ -160,13 +160,13 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
   if iscell(BC_result.rejected_clab),   %% that means rejected_clab is not NaN
     cidx= find(ismember(BC_result.clab, BC_result.rejected_clab));
     BC_result.clab(cidx)= [];
-    cidx= find(ismember(BC_result.cfy_clab, BC_result.rejected_clab));
-    BC_result.cfy_clab(cidx)= [];
   end
 else
-  result_flds= {'rejected_trials', 'rejected_clab', 'clab', 'cfy_clab'};
+  result_flds= {'rejected_trials', 'rejected_clab', 'clab'};
   BC_result= struct_copyFields(BC_result, previous, result_flds);
 end
+cidx= find(ismember(BC_result.cfy_clab, BC_result.rejected_clab));
+BC_result.cfy_clab(cidx)= [];
 
 
 %% --- Segmentation and baselining ---

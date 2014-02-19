@@ -356,10 +356,10 @@ fig_state= fig_set(figno_offset+4, 'Hide',1, ...
                    'Name', sprintf('CSP %s vs %s', classes{:}));
 %if isequal(opt.patterns,'auto'),
   plot_cspAnalysis(fv, mnt, csp_w, A, la, ...
-                  'row_layout',1, 'title','');
+                  'RowLayout',1, 'Title','');
   %else
   %  plot_cspAnalysis(fv, mnt, csp_w, A, la, opt_scalp_csp, ...
-  %                  'mark_patterns', opt.patterns);
+  %                  'MarkPatterns', opt.patterns);
 %end
 fig_publish(fig_state);
 
