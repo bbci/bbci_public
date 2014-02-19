@@ -35,9 +35,17 @@ if nargin==0,
 end
 
 props= opt_importProps(props, props_writeBVheader, ...
-                       {'Scale','Folder','Precision'});
+                       {'Scale','Folder','Precision','Unit'});
 [opt, isdefault]= opt_setDefaults(opt, props, 1);
 clear props
+
+if isdefault.Unit,
+  if isfield(dat, 'yUnit'),
+    opt.Unit= dat.yUnit;
+  elseif isfield(dat, 'cnt_info') && isfield(dat.cnt_info, 'yUnit'),
+    opt.Unit= dat.cnt_info.yUnit;
+  end
+end
 
 if fileutil_isAbsolutePath(file),
   fullName= file;
@@ -93,7 +101,7 @@ fclose(fid);
 
 if opt.WriteHdr,
   opt_hdr= struct_copyFields(dat, {'fs','clab'});
-  opt_hdr= struct_copyFields(opt_hdr, opt, {'Scale', 'Precision'});
+  opt_hdr= struct_copyFields(opt_hdr, opt, {'Scale', 'Precision', 'Unit'});
   opt_hdr.DataPoints= size(cntX,2);
   file_writeBVheader(fullName, opt_hdr);
 end

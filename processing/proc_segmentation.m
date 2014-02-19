@@ -114,6 +114,7 @@ IV= [-len_sa+1:0]'*ones(1,nMarkers) + ones(len_sa,1)*pos_end;
 complete= find(all(IV>=1 & IV<=size(cnt.x,1),1));
 if length(complete)<nMarkers,
   IV= IV(:,complete);
+  mrk= mrk_selectEvents(mrk, complete);
   warning('%d segments dropped', nMarkers-length(complete));
   nMarkers= length(complete);
 end
@@ -143,14 +144,10 @@ epo.t= linspace(timeival(1), timeival(2), len_sa);
 basic_fields_of_mrk= {'y','className','~event'};
 fields_to_copy_from_mrk= intersect(fieldnames(mrk), basic_fields_of_mrk,'legacy');
 epo= struct_copyFields(epo, mrk, basic_fields_of_mrk);
-if size(epo.y,2)>size(epo.x,ndims(epo.x))  
-  % segments have been dropped, adjust .y and .event fields
-  epo = proc_selectEpochs(epo,complete);
-end
 
-fields_exclude= union({'clab', 'time'}, basic_fields_of_mrk,'legacy');
-fields_to_copy_from_mrk= setdiff(fieldnames(mrk), fields_exclude,'legacy');
+fields_exclude= union({'clab', 'time'}, basic_fields_of_mrk);
+fields_to_copy_from_mrk= setdiff(fieldnames(mrk), fields_exclude);
 epo.mrk_info= struct_copyFields(mrk, fields_to_copy_from_mrk);
 
-fields_to_copy_from_cnt= setdiff(fieldnames(cnt), {'x','clab','fs'},'legacy');
+fields_to_copy_from_cnt= setdiff(fieldnames(cnt), {'x','clab','fs'});
 epo.cnt_info= struct_copyFields(cnt, fields_to_copy_from_cnt);

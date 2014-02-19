@@ -72,12 +72,12 @@ props= {'Dir'       ''    'CHAR'
 BTB.Tp= opt_setDefaults(BTB.Tp, props);
 
 % Information about data acquistion
-props= {'Prefix'          'a'    'CHAR'
-        'StartLetter'     'a'    'CHAR'
-        'Dir'             ''     'CHAR'
-        'Geometry'        []     'DOUBLE[1 4]'
-        'IoAddr'          []     'INT'
-        'IoLib'           ''     'CHAR'
+props= {'Prefix'          'a'          'CHAR'
+        'StartLetter'     'a'          'CHAR'
+        'Dir'             BTB.TmpDir   'CHAR'
+        'Geometry'        []           'DOUBLE[1 4]'
+        'IoAddr'          []           'INT'
+        'IoLib'           ''           'CHAR'
        };
 BTB.Acq= opt_setDefaults(BTB.Acq, props);
 
