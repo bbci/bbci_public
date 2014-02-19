@@ -1,4 +1,4 @@
-function dat= proc_filtfilt(dat,b, a)
+function dat= proc_filtfilt(dat,varargin)
 %PROC_FILTFILT - Zero-phase forward and reverse digital filtering
 %
 %Synopsis:
@@ -25,4 +25,10 @@ function dat= proc_filtfilt(dat,b, a)
 %
 %See also proc_filt.
 
-dat.x(:,:)= filtfilt(b, a, dat.x(:,:));
+dat = misc_history(dat);
+misc_checkType(dat, 'STRUCT(x)'); 
+
+if size(varargin,2) == 1
+  varargin= cat(2, varargin, {1});
+end
+dat.x(:,:)= filtfilt(varargin{1}, varargin{2}, dat.x(:,:));
