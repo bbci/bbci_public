@@ -10,6 +10,7 @@
 
 ### Table of Contents
 
+* [Convert](#Convert) - _Conversion of EEG data from BrainVision format to Matlab_
 * [ERP Analysis](#ErpAnalysis) - _Analysis of Event-Related Potentials (ERPs)_
 * [Spectral Analysis](#SpectralAnalsis) - _Event-Related Spectral Analysis_
 * [Spectral Analysis 2](#LongTermSpectralAnalysis) - _Analysis of long term spectral modulations_ (missing)
@@ -19,21 +20,85 @@
 
 ---
 
-## Analysis of Event-Related Potentials (ERPs)   <a id="ErpAnalysis"></a>
+## Conversion of EEG data from BrainVision format to Matlab  <a id="Convert"></a>
+
+Sometimes it is convinient to convert the raw data files to Matlab format 
+and do some preprocessing before performing different kinds of analysis. 
+An example of such preprocessing can be re-referencing or the (re-)combination of 
+stimulus markers.
+
+The following script illustrates how to do the conversion.
 
 ```
-file= 'demo_VPibq_10_09_24/calibration_CenterSpellerMVEP_VPibq';
-% Load data
-[cnt, mrk, mnt] = file_loadMatlab(file);
+BTB_memo= BTB;
+BTB.RawDir= fullfile(BTB.DataDir, 'demoRaw');
+BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
 
-% Electrode Montage
-grd= sprintf(['scale,_,F5,F3,Fz,F4,F6,_,legend\n' ...
-              'FT7,FC5,FC3,FC1,FCz,FC2,FC4,FC6,FT8\n' ...
-              'T7,C5,C3,C1,Cz,C2,C4,C6,T8\n' ...
-              'P7,P5,P3,P1,Pz,P2,P4,P6,P8\n' ...
-              'PO9,PO7,PO3,O1,Oz,O2,PO4,PO8,PO10']);
-mnt= mnt_setGrid(mnt, grd);
+% add more to the list if you want to do it in a row
+subdir_list= {'VPiac_10_10_13'};
+% you could have more files also
+basename_list= {'calibration_CenterSpellerMVEP_'};
 
+Fs = 100; % new sampling rate
+% definition of classes based on markers 
+stimDef= {[31:46], [11:26];
+          'target','nontarget'};
+
+
+% load raw files (with filtering), define classes and montage,
+% and save in matlab format
+for k= 1:length(subdir_list);
+ for ib= 1:length(basename_list),
+  subdir= subdir_list{k};
+  sbj= subdir(1:find(subdir=='_',1,'first')-1);
+  file= fullfile(subdir, [basename_list{ib} sbj]);
+  fprintf('converting %s\n', file)
+  % header of the raw EEG files
+  hdr = file_readBVheader(file);
+  
+  % low-pass filter
+  Wps = [42 49]/hdr.fs*2;
+  [n, Ws] = cheb2ord(Wps(1), Wps(2), 3, 40);
+  [filt.b, filt.a]= cheby2(n, 50, Ws);
+  % load raw data, downsampling is done while loading (after filtering)
+  [cnt, mrk_orig] = file_readBV(file, 'Fs',Fs, 'Filt',filt);
+
+  % Re-referencing to linked-mastoids
+  %   (data was referenced to A2 during acquisition)
+  A = eye(length(cnt.clab));
+  iref2 = util_chanind(cnt.clab, 'A1');
+  A(iref2,:) = -0.5;
+  A(:,iref2) = [];
+  cnt = proc_linearDerivation(cnt, A);
+  
+  % create mrk and mnt
+  mrk= mrk_defineClasses(mrk_orig, stimDef);
+  mrk.orig= mrk_orig;
+  mnt= mnt_setElectrodePositions(cnt.clab);
+  mnt= mnt_setGrid(mnt, 'M+EOG');
+  
+  % save in matlab format
+  file_saveMatlab(file, cnt, mrk, mnt, 'Vars','hdr');
+ end
+end
+
+BTB= BTB_memo;
+```
+
+
+## Analysis of Event-Related Potentials (ERPs)   <a id="ErpAnalysis"></a>
+
+
+Specify the data path and data file name. Here we use data that was already convert to matlab format.
+```
+BTB_memo= BTB;
+BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
+file= fullfile('VPiac_10_10_13', ...
+               'calibration_CenterSpellerMVEP_VPiac');
+```
+
+Define some experiment-specific settings.
+```
 % Define some settings
 disp_ival= [-200 1000];
 ref_ival= [-200 0];
@@ -42,13 +107,24 @@ crit_ival= [100 800];
 crit_clab= {'F9,z,10','AF3,4'};
 clab= {'Cz','PO7'};
 colOrder= [1 0 1; 0.4 0.4 0.4];
+```
+
+
+```
+% Load data
+try
+  [cnt, mrk, mnt] = file_loadMatlab(file);
+catch
+  error('You need to run ''demo_convert_ERPSpeller'' first');
+end
+
 
 % Apply highpass filter to reduce drifts
 b= procutil_firlsFilter(0.5, cnt.fs);
 cnt= proc_filtfilt(cnt, b);
   
 % Artifact rejection based on variance criterion
-%mrk= reject_varEventsAndChannels(cnt, mrk, disp_ival, 'verbose', 1);
+mrk= reject_varEventsAndChannels(cnt, mrk, disp_ival, 'verbose', 1);
 
 % Segmentation
 epo= proc_segmentation(cnt, mrk, disp_ival);
@@ -62,7 +138,7 @@ epo= proc_baseline(epo, ref_ival);
 epo_r= proc_rSquareSigned(epo);
 
 % Select some discriminative intervals, with constraints to find N2, P2, P3 like components.
-fig_set(1);
+fig_set(3);
 constraint= ...
       {{-1, [100 300], {'I#','O#','PO7,8','P9,10'}, [50 300]}, ...
        {1, [200 350], {'P3-4','CP3-4','C3-4'}, [200 400]}, ...
@@ -75,7 +151,7 @@ constraint= ...
 %printFigure('r_matrix', [18 13]);
 ival_scalps= visutil_correctIvalsForDisplay(ival_scalps, 'Fs',epo.fs);
 
-fig_set(3)
+fig_set(1)
 H= grid_plot(epo, mnt, defopt_erps, 'ColorOrder',colOrder);
 grid_addBars(epo_r, 'HScale',H.scale);
 %printFigure(['erp'], [19 12]);
@@ -90,6 +166,8 @@ grid_addBars(epo_r);
 fig_set(4, 'Resize',[1 2/3]);
 plot_scalpEvolutionPlusChannel(epo_r, mnt, clab, ival_scalps, defopt_scalp_r);
 %printFigure(['erp_topo_r'], [20 9]);
+
+BTB= BTB_memo;
 ```
 
 ## Event-Related Spectral Analysis   <a id="SpectralAnalysis"></a>
