@@ -8,12 +8,15 @@
 %   features are log band-power in two frequency bands and three channels.
 
 
+BTB_memo= BTB;
+BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
+
 % Subject-independent kickstart classifier
-cfy_dir= fullfile(BTB.DataDir, 'demoMat', 'subject_independent_classifiers');
+cfy_dir= fullfile(BTB.MatDir, 'subject_independent_classifiers');
 bbci= load(fullfile(cfy_dir, 'kickstart_MI_C3CzC4_9-15_15-35'));
 
 % EEG file used of offline simulation of online processing
-eeg_file= fullfile(BTB.DataDir, 'demoMat', 'VPkg_08_08_07', ...
+eeg_file= fullfile('VPkg_08_08_07', ...
                    'calibration_motorimageryVPkg');
 [cnt, mrk]= file_loadMatlab(eeg_file);
 
@@ -41,3 +44,5 @@ cnt_cfy= struct('fs',25, 'x',cfy, 'clab',{{'cfy-LR','cfy-LF','cfy-FR'}});
 epo_cfy= proc_segmentation(cnt_cfy, mrk, [0 5000]);
 fig_set(1, 'Name','classifier outputs', 'Clf',1);
 grid_plot(epo_cfy);
+
+BTB= BTB_memo;
