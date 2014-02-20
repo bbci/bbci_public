@@ -4,8 +4,6 @@
 
 ---
 
-***under construction***  **TODO: Sven!**
-
 Here we show example scripts of how to apply the BBCI Toolbox for typical offline analysis scenarios. 
 
 ---
