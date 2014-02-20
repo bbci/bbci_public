@@ -40,10 +40,9 @@ function file_saveMatlab(file, dat, mrk, mnt, varargin)
 %   'AddChannels' - BOOL: (true or false) Adds the channels in DAT to the
 %                   existing MAT file (default 0)
 %   'Vars': Additional variables that should be stored. 'opt.Vars' must be a
-%           cell array with a variable name / variable value strucutre, e.g.,
-%           {'blub',blub, 'blah',blah} when blub and blah are the variables
-%           to be stored.
-%   'FsOrig': store information about the original sampling rate
+%           cell array of variable names, e.g., {'hdr', 'patient_info'}
+%   'SaveParam': additonal parameters to be passes to the Matlab save function,
+%           default {'-v7'}
 %
 %Description:
 %   Saves data, marker, montage and (if requested) additional variables in
@@ -55,37 +54,27 @@ function file_saveMatlab(file, dat, mrk, mnt, varargin)
 
 global BTB
 
-props = {'Path',            BTB.MatDir    'CHAR';
-         'Channelwise',     1               '!BOOL';
-         'Format'           'auto'          '!CHAR(double float int16 auto)';
-         'Resolution'       'auto'          '!CHAR(auto)|!DOUBLE[1]|!DOUBLE[-]';
-         'ResolutionList'  [1 0.5 0.1]     '!DOUBLE[-]';
-         'Accuracy'         10e-10          '!DOUBLE[1]';
-         'AddChannels'      0               '!BOOL';
-         'FsOrig'           []              'DOUBLE[1]';
-         'Vars'             {}              'CELL';
-         };
+props = {'Path',             BTB.MatDir   'CHAR'
+         'Channelwise',      1            '!BOOL'
+         'Format'            'auto'       '!CHAR(double float int16 auto)'
+         'Resolution'        'auto'       '!CHAR(auto)|!DOUBLE[1]|!DOUBLE[-]'
+         'ResolutionList'   [1 0.5 0.1]   '!DOUBLE[-]'
+         'Accuracy'          10e-10       '!DOUBLE[1]'
+         'AddChannels'       0            '!BOOL'
+         'Vars'              {}           'CHAR|CELL{CHAR}'
+         'SaveParam'         {'-v7'}      'CELL'
+        };
 
 misc_checkType(dat,'STRUCT(x fs clab)');
-misc_checkType(mrk,'STRUCT(time y className)');
+misc_checkType(mrk,'STRUCT(time y)');
 misc_checkType(mnt,'STRUCT(x y clab)');
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-vers = version;
-if (str2double(vers(1)) == 7)
-  opt_save= {'-v6'};
-else
-  opt_save= {};
+if ischar(opt.Vars),
+  opt.Vars= {opt.Vars};
 end
-
-%% Check format of vars:
-isch= cellfun(@ischar,opt.Vars);
-if mod(length(opt.Vars),2)~=0 || any(~isch(1:2:end)),
-  error('wrong format for opt.Vars');
-end
-
 if fileutil_isAbsolutePath(file),
   opt.Path = '';
 end
@@ -102,7 +91,7 @@ if opt.AddChannels,
     warning('add_channels requested: forcing channelwise mode');
     opt.Channelwise= 1;
   end
-  nfo_old= file_loadMatlab(fullname, 'vars','nfo');
+  nfo_old= file_loadMatlab(fullname, 'Vars','nfo');
   if ~isdefault.format && opt.Format~=nfo_old.format,
     warning(sprintf('format mismatch: using %s', nfo_old.format));
   end
@@ -189,9 +178,6 @@ if isfield(mrk, 'className')
 else
   nfo.className= {};
 end
-if ~isempty(opt.FsOrig)
-  nfo.fs_orig= opt.FsOrig;
-end
 
 %% if adding channels is requested, merge the nfo structures
 if opt.AddChannels,
@@ -214,10 +200,10 @@ end
 
 if opt.AddChannels,
   %% update the nfo structure
-  save(fullname, '-APPEND', 'nfo', opt_save{:});
+  save(fullname, '-APPEND', 'nfo', opt.SaveParam{:});
   chan_offset= length(nfo_old.clab);
 else
-  save(fullname, 'mrk', 'mnt', 'nfo', opt_save{:});
+  save(fullname, 'mrk', 'mnt', 'nfo', opt.SaveParam{:});
   chan_offset= 0;
 end
 
@@ -236,7 +222,7 @@ if opt.Channelwise,
   for cc= 1:nChans,
     varname= ['ch' int2str(chan_offset+cc)];
     eval([varname '= ' evalstr]);
-    save(fullname, '-APPEND', varname, opt_save{:});
+    save(fullname, '-APPEND', varname, opt.SaveParam{:});
     clear(varname);
   end
   dat= rmfield(dat, 'x');
@@ -245,7 +231,7 @@ if opt.Channelwise,
   if ~ismember(upper(opt.Format), {'FLOAT','DOUBLE'},'legacy'),
     dat.resolution= nfo.resolution;
   end
-  save(fullname, '-APPEND', 'dat', opt_save{:});
+  save(fullname, '-APPEND', 'dat', opt.SaveParam{:});
 else
   switch(upper(opt.Format)), 
    case 'INT16',
@@ -259,13 +245,14 @@ else
    case 'DOUBLE',
     %% nothing to do
   end
-  save(fullname, '-APPEND', 'dat', opt_save{:});
+  save(fullname, '-APPEND', 'dat', opt.SaveParam{:});
 end
 
 %% Save additional variables, as requested.
 if ~isempty(opt.Vars),
-  for vv= 1:length(opt.Vars)/2,
-    eval([opt.Vars{2*vv-1} '= opt.Vars{2*vv};']);
+  vars= struct;
+  for vv= 1:length(opt.Vars),
+    vars.(opt.Vars{vv})= evalin('caller', opt.Vars{vv});
   end
-  save(fullname, '-APPEND', opt.Vars{1:2:end}, opt_save{:});
+  save(fullname, '-APPEND', '-STRUCT', 'vars', opt.SaveParam{:});
 end

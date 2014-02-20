@@ -91,8 +91,12 @@ set(H.ax, 'YLim',ylimits+[-2 2], 'NextPlot','add');
 ylimits= ylimits+[-1 1];
 
 if opt.VisuScalps,
-    if isstruct(ival),
-        ival= ival.ival;
+    if isstruct(ival)
+        ival_struct= ival;
+        ival= zeros(length(ival_struct),2);
+        for ii= 1:length(ival_struct)
+            ival(ii,:)= ival_struct(ii).ival;
+        end
     end
     % Sort intervals
     [~,si]= sort(ival(:,1));

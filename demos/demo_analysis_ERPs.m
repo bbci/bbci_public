@@ -1,17 +1,15 @@
-eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
-    'VPibq_10_09_24', 'calibration_CenterSpellerMVEP_VPibq');
+BTB_memo= BTB;
+BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
+
+file= fullfile('VPiac_10_10_13', ...
+               'calibration_CenterSpellerMVEP_VPiac');
 
 % Load data
-[cnt, mrk, mnt] = file_loadMatlab(eeg_file);
-
-
-% Electrode Montage
-grd= sprintf(['scale,_,F5,F3,Fz,F4,F6,_,legend\n' ...
-              'FT7,FC5,FC3,FC1,FCz,FC2,FC4,FC6,FT8\n' ...
-              'T7,C5,C3,C1,Cz,C2,C4,C6,T8\n' ...
-              'P7,P5,P3,P1,Pz,P2,P4,P6,P8\n' ...
-              'PO9,PO7,PO3,O1,Oz,O2,PO4,PO8,PO10']);
-mnt= mnt_setGrid(mnt, grd);
+try
+  [cnt, mrk, mnt] = file_loadMatlab(file);
+catch
+  error('You need to run ''demo_convert_ERPSpeller'' first');
+end
 
 % Define some settings
 disp_ival= [-200 1000];
@@ -41,7 +39,7 @@ epo= proc_baseline(epo, ref_ival);
 epo_r= proc_rSquareSigned(epo);
 
 % Select some discriminative intervals, with constraints to find N2, P2, P3 like components.
-fig_set(1);
+fig_set(3);
 constraint= ...
       {{-1, [100 300], {'I#','O#','PO7,8','P9,10'}, [50 300]}, ...
        {1, [200 350], {'P3-4','CP3-4','C3-4'}, [200 400]}, ...
@@ -54,7 +52,7 @@ constraint= ...
 %printFigure('r_matrix', [18 13]);
 ival_scalps= visutil_correctIvalsForDisplay(ival_scalps, 'Fs',epo.fs);
 
-fig_set(3)
+fig_set(1)
 H= grid_plot(epo, mnt, defopt_erps, 'ColorOrder',colOrder);
 grid_addBars(epo_r, 'HScale',H.scale);
 %printFigure(['erp'], [19 12]);
@@ -66,6 +64,8 @@ H= plot_scalpEvolutionPlusChannel(epo, mnt, clab, ival_scalps, ...
 grid_addBars(epo_r);
 %printFigure(['erp_topo'], [20  4+5*size(epo.y,1)]);
 
-fig_set(4, 'shrink',[1 2/3]);
+fig_set(4, 'Resize',[1 2/3]);
 plot_scalpEvolutionPlusChannel(epo_r, mnt, clab, ival_scalps, defopt_scalp_r);
 %printFigure(['erp_topo_r'], [20 9]);
+
+BTB= BTB_memo;
