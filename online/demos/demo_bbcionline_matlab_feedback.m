@@ -35,23 +35,5 @@ fprintf('Now doing a replay of that feedback from the logfile.\n'); pause(2);
 
 bbci_fbutil_replay(data.feedback.log.filename);
 
-% Replay in time lapse:
+% Replay in fast forward:
 %bbci_fbutil_replay(data.feedback.log.filename, 'realtime',0);
-
-
-return
-
-
-%% SANDBOX - test running TWO feedbacks simultaneously and logging
-
-bbci.feedback.log.output= 'file';
-bbci.feedback.log.folder= BTB.TmpDir;
-
-bbci.feedback(2)= bbci.feedback;
-bbci.feedback(2).opt.fig= 2;
-bbci.feedback(2).opt.geometry= BTB.Tp.Geometry + [BTB.Tp.Geometry(3) 0 0 0];
-bbci.feedback(2).opt.trigger_fcn= '';
-
-bbci.quit_condition.marker= 255;
-
-data= bbci_apply(bbci);
