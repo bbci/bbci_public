@@ -366,21 +366,15 @@ grid_addBars(spec_r);
 ```
 
 
-
-## Analysis of long term spectral modulations   <a 
-id="LongTermSpectralAnalysis"></a>
-
-**TODO** (transfer from the old toolbox)
-
-
 ## Analysis of event-related modulations of brain rythms (ERD/ERS)   <a id="ErdAnalysis"></a>
 
 ```
-file= 'demo_Pavel_01_11_23/selfpaced2sPavel';
+
+eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
+    'demo_Pavel_01_11_23', 'selfpaced2sPavel');
 
 %% Load data
-[cnt, mrk, mnt] = file_loadMatlab(file);
-
+[cnt, mrk, mnt] = file_loadMatlab(eeg_file);
 
 %% Electrode Montage
 grd= sprintf(['scale,_,F3,Fz,F4,_,legend\n' ...
@@ -429,6 +423,50 @@ grid_addBars(erd_r);
 
 fig_set(4, 'Resize',[1 2/3]);
 plot_scalpEvolutionPlusChannel(erd_r, mnt, clab, ival_scalps, defopt_scalp_r);
+
 ```
 
+## Analysis of NIRS data   <a id="NIRSAnalysis"></a>
+
+This example shows how to identify taks-related difference in NIRS data.
+
+```
+BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
+filename= fullfile('VPean_10_07_26', 'NIRS', 'real_movementVPean');
+
+%% Load data
+[cnt, mrk, mnt] = file_loadNIRSMatlab(filename, 'Signal','oxy');
+
+%% define classes according to makers
+stimDef= {1,2;'left','right'};
+mrk = mrk_defineClasses(mrk, stimDef);
+
+%% intervalls for display and segmentation, and fequencies for filter
+ival_base=  [-1000 0];
+ival_epo= [-1000 15000];
+ival_scalps= [0:2500:12500];
+clab=[];
+
+%% segmentation and baseline correction
+epo= proc_segmentation(cnt, mrk, ival_epo);
+epo= proc_baseline(epo, ival_base);
+
+%% r-values
+epo_r= proc_rSquareSigned(epo);
+
+%% display
+fig_set(1)
+H= grid_plot(epo, mnt, defopt_erps);
+grid_addBars(epo_r, 'HScale',H.scale);
+
+fig_set(2);
+H= plot_scalpEvolution(epo, mnt, ival_scalps, ...
+                       defopt_scalp_erp, ...
+                       'ExtrapolateToMean', 1);
+
+fig_set(4, 'Resize',[1 0.5]);
+H= plot_scalpEvolution(epo_r, mnt, ival_scalps, ...
+                       defopt_scalp_r);
+
+```
 
