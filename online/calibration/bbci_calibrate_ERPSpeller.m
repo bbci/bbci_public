@@ -34,7 +34,7 @@ default_grd= sprintf(['scale,FC3,FC1,FCz,FC2,FC4,legend\n' ...
                  
 props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
         'disp_ival'     [-200 800]                     '!DOUBLE[1 2]'
-        'clab'          '*'                            'CHAR|CELL{CHAR}'
+        'clab'          {'not','E*'}                   'CHAR|CELL{CHAR}'
         'cfy_clab'      {'not','E*','Fp*','A*'}        'CHAR|CELL{CHAR}'
         'cfy_ival'                    'auto'           'CHAR(auto)|DOUBLE[- 2]'
         'cfy_ival_pick_peak'          [100 700]        'DOUBLE[1 2]'

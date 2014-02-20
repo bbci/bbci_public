@@ -52,7 +52,7 @@ bbci.classifier.C= C;
 
 bbci.adaptation.active= 1;
 bbci.adaptation.fcn= @bbci_adaptation_pmean;
-bbci.adaptation.param= {struct('ival',[500 4000])};
+bbci.adaptation.param= {'ival', [500 4000]};
 bbci.adaptation.log.output= 'screen';
 
 bbci.quit_condition.marker= 254;
