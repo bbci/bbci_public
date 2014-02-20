@@ -1,19 +1,16 @@
-eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
-    'VPibq_10_09_24', 'calibration_CenterSpellerMVEP_VPibq');
-file= fullfile(BTB.DataDir, 'demoMat', 'VPiac_10_10_13', ...
+BTB_memo= BTB;
+BTB.RawDir= fullfile(BTB.DataDir, 'demoRaw');
+BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
+
+file= fullfile('VPiac_10_10_13', ...
                'calibration_CenterSpellerMVEP_VPiac');
 
 % Load data
-[cnt, mrk, mnt] = file_loadMatlab(file);
-
-
-% Electrode Montage
-grd= sprintf(['scale,_,F5,F3,Fz,F4,F6,_,legend\n' ...
-              'FT7,FC5,FC3,FC1,FCz,FC2,FC4,FC6,FT8\n' ...
-              'T7,C5,C3,C1,Cz,C2,C4,C6,T8\n' ...
-              'P7,P5,P3,P1,Pz,P2,P4,P6,P8\n' ...
-              'PO9,PO7,PO3,O1,Oz,O2,PO4,PO8,PO10']);
-mnt= mnt_setGrid(mnt, grd);
+try,
+  [cnt, mrk, mnt] = file_loadMatlab(file);
+catch,
+  error('You need to run ''demo_convert_ERPSpeller'' first');
+end
 
 % Define some settings
 disp_ival= [-200 1000];
@@ -71,3 +68,5 @@ grid_addBars(epo_r);
 fig_set(4, 'shrink',[1 2/3]);
 plot_scalpEvolutionPlusChannel(epo_r, mnt, clab, ival_scalps, defopt_scalp_r);
 %printFigure(['erp_topo_r'], [20 9]);
+
+BTB= BTB_memo;

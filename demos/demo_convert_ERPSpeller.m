@@ -1,62 +1,53 @@
-basename= 'CenterSpellerMVEP_';
-subdir_list= {'VPibv_10_11_02'};
-%subdir_list= {'VPibq_10_09_24'
-%              'VPiac_10_10_13'
-%              'VPibs_10_10_20'
-%              'VPibt_10_10_21'
-%              'VPfat_10_10_27'
-%              'VPibu_10_10_28'
-%              'VPibv_10_11_02'
-%              'VPibw_10_11_04'
-%              'VPibx_10_11_10'
-%              'VPiby_10_11_12'
-%              'VPice_10_12_17'
-%              'VPgdf_11_06_09'
-%              'VPicv_11_06_10'
-%              'VPgdg_11_06_22'
-%              'VPibe_11_06_16'
-%              'VPiba_11_06_23'
-%             }; 
+BTB_memo= BTB;
+BTB.RawDir= fullfile(BTB.DataDir, 'demoRaw');
+BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
+
+% add more to the list if you want to do it in a row
+subdir_list= {'VPiac_10_10_13'};
+% you could have more files also
+basename_list= {'calibration_CenterSpellerMVEP_'};
 
 Fs = 100; % new sampling rate
+% definition of classes based on markers 
 stimDef= {[31:46], [11:26];
           'target','nontarget'};
 
 
-%% load raw files and save in matlab format
-
+% load raw files (with filtering), define classes and montage,
+% and save in matlab format
 for k= 1:length(subdir_list);
+ for ib= 1:length(basename_list),
   subdir= subdir_list{k};
   sbj= subdir(1:find(subdir=='_',1,'first')-1);
-  raw_file= fullfile(subdir, ['*_' basename sbj]);
-  fprintf('converting %s\n', raw_file)
+  file= fullfile(subdir, [basename_list{ib} sbj]);
+  fprintf('converting %s\n', file)
   % header of the raw EEG files
-  hdr = file_readBVheader(raw_file);
+  hdr = file_readBVheader(file);
   
   % low-pass filter
   Wps = [42 49]/hdr.fs*2;
   [n, Ws] = cheb2ord(Wps(1), Wps(2), 3, 40);
   [filt.b, filt.a]= cheby2(n, 50, Ws);
-  % load raw data, downsampling is done while loading
-  [cnt, mrk_orig] = file_readBV(raw_file, 'Fs',Fs, 'Filt',filt);
+  % load raw data, downsampling is done while loading (after filtering)
+  [cnt, mrk_orig] = file_readBV(file, 'Fs',Fs, 'Filt',filt);
 
   % Re-referencing to linked-mastoids
+  %   (data was referenced to A2 during acquisition)
   A = eye(length(cnt.clab));
-  iA1 = util_chanind(cnt.clab,'A1');
-  if isempty(iA1)
-    iA1 = util_chanind(cnt.clab,'A2');
-  end
-  A(iA1,:) = -0.5;
-  A(:,iA1) = [];
+  iref2 = util_chanind(cnt.clab, 'A1');
+  A(iref2,:) = -0.5;
+  A(:,iref2) = [];
   cnt = proc_linearDerivation(cnt, A);
   
-  % create mrk and mnt, and the new filename
-  mrk = mrk_defineClasses(mrk_orig, stimDef);
-  mnt = mnt_setElectrodePositions(cnt.clab);
-  mat_file_name = fullfile(subdir, ['demo_' basename, sbj]);
+  % create mrk and mnt
+  mrk= mrk_defineClasses(mrk_orig, stimDef);
+  mrk.orig= mrk_orig;
+  mnt= mnt_setElectrodePositions(cnt.clab);
+  mnt= mnt_setGrid(mnt, 'M+EOG');
   
   % save in matlab format
-  fprintf('saving %s\n', mat_file_name)
-  file_saveMatlab(mat_file_name, cnt, mrk, mnt);
-  
+  file_saveMatlab(file, cnt, mrk, mnt, 'Vars','hdr');
+ end
 end
+
+BTB= BTB_memo;
