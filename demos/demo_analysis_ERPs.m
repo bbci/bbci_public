@@ -1,5 +1,4 @@
 BTB_memo= BTB;
-BTB.RawDir= fullfile(BTB.DataDir, 'demoRaw');
 BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
 
 file= fullfile('VPiac_10_10_13', ...
