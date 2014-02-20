@@ -66,8 +66,8 @@ if isdefault.TmpDir
 end
 
 % Information about the test person (Tp)
-props= {'Dir'       ''    'CHAR'
-        'Code'      ''    'CHAR'
+props= {'Dir'    BTB.TmpDir  'CHAR'
+        'Code'   ''          'CHAR'
        };
 BTB.Tp= opt_setDefaults(BTB.Tp, props);
 
