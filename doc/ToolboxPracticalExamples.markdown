@@ -14,9 +14,10 @@ Here we show example scripts of how to apply the BBCI Toolbox for typical offlin
 
 * [Convert](#Convert) - _Conversion of EEG data from BrainVision format to Matlab_
 * [ERP Analysis](#ErpAnalysis) - _Analysis of Event-Related Potentials (ERPs)_
-* [Grand Average ERP Analysis](#GrandAverageErp) - _ERP analysis with multiple participants (including robu
-* [Spectral Analysis](#SpectralAnalsis) - _Event-Related Spectral Analysis_
-* [ERD/ERS Analysis](#ErdAnalysis) - _Analysis of event-related modulations of brain rythms_st statistics)_
+* [Grand Average ERP Analysis](#GrandAverageErp) - _ERP analysis with multiple participants (including robust statistics)_
+* [Spectral Analysis](#SpectralAnalsis) - _Event-related spectral Analysis_
+* [ERD/ERS Analysis](#ErdAnalysis) - _Analysis of event-related modulations of brain rythms_
+* [NIRS Analysis](#NirsAnalysis) - _Analysis of Near-Infrared Spectroscopy (NIRS) data)_
 * more to come ...
 
 ---
@@ -425,3 +426,49 @@ fig_set(4, 'Resize',[1 2/3]);
 plot_scalpEvolutionPlusChannel(erd_r, mnt, clab, ival_scalps, defopt_scalp_r);
 
 ```
+
+
+## Analysis of NIRS data   <a id="NirsAnalysis"></a>
+
+This example shows how to identify taks-related difference in NIRS data.
+
+```
+BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
+filename= fullfile('VPean_10_07_26', 'NIRS', 'real_movementVPean');
+
+%% Load data
+[cnt, mrk, mnt] = file_loadNIRSMatlab(filename, 'Signal','oxy');
+
+%% define classes according to makers
+stimDef= {1,2;'left','right'};
+mrk = mrk_defineClasses(mrk, stimDef);
+
+%% intervalls for display and segmentation, and fequencies for filter
+ival_base=  [-1000 0];
+ival_epo= [-1000 15000];
+ival_scalps= [0:2500:12500];
+clab=[];
+
+%% segmentation and baseline correction
+epo= proc_segmentation(cnt, mrk, ival_epo);
+epo= proc_baseline(epo, ival_base);
+
+%% r-values
+epo_r= proc_rSquareSigned(epo);
+
+%% display
+fig_set(1)
+H= grid_plot(epo, mnt, defopt_erps);
+grid_addBars(epo_r, 'HScale',H.scale);
+
+fig_set(2);
+H= plot_scalpEvolution(epo, mnt, ival_scalps, ...
+                       defopt_scalp_erp, ...
+                       'ExtrapolateToMean', 1);
+
+fig_set(4, 'Resize',[1 0.5]);
+H= plot_scalpEvolution(epo_r, mnt, ival_scalps, ...
+                       defopt_scalp_r);
+
+```
+
