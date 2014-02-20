@@ -58,7 +58,7 @@ props = {'Clf',             1,              '!BOOL';
          };
 
 if nargin==0,
-  dat= props; return
+  H= props; return
 end
 
 misc_checkType(y,'!DOUBLE[- -]');

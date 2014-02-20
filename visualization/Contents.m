@@ -17,6 +17,8 @@
 %
 %MNT_ADAPTMONTAGE - Adapts an electrode montage to another electrode set
 %MNT_RESTRICTMONTAGE - Restrict an electrode montage to a subset of channels
+%MNT_RESTRICTNIRSMONTAGE - restrict a NIRS montage to a subset of channels
+%MNT_GETNIRSMONTAGE - Get montage with NIRS channel positions
 %MNT_SCALPTOGRID - Montage for grid plot with boxes at scalp locations
 %MNT_SETELECTRODEPOSITIONS - Electrode positions of standard named channels
 %MNT_SETGRID - Define a new eletrode grid layout for an electrode montage
@@ -31,6 +33,7 @@
 %PLOT_SCALPLOADING - Visualize single channel loadings of a weight vector
 %PLOT_SCALPOUTLINE - Schematic sketch of the scalp
 %PLOT_SCALPPATTERN - Display average trials as scalp topography
+%PLOT_CSPANALYSIS - Show CSP filters and patterns as topographies
 %PLOT_SCOREMATRIX - Visualizes score matrix of e.g. r-values
 
 

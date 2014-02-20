@@ -68,12 +68,6 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-% If figure is already inVisible jvm_* functions should not be called
-fig_Visible = strcmp(get(gcf,'Visible'),'on');
-if fig_Visible
-  jvm= jvm_hideFig;
-end
-
 if ~ismatrix(fv.x),
   error('only one Class allowed');
 end
@@ -124,10 +118,6 @@ if opt.UseLocalColormap,
     opt.Colormap(iswhite,:)= 0.9999*[1 1 1];
   end
   H.image= 'sorry: fakeimage - no handle';
-%  if ~isempty(opt.HScale),
-%    warning('sorry, no Colorbar in local colormap mode (so far)');
-%    opt.HScale= [];
-%  end
 else
   set(gcf, 'colormap',opt.Colormap);
 end
@@ -218,7 +208,6 @@ for ii= 1:length(ax),
     fv.x(fv.x < opt.CLim(1)) = opt.CLim(1);
     image_localColormap(fv.x(:,ci)', opt.Colormap, 'CLim',opt.CLim);
   else
-%    H.image(jj)= image(fv.t, 1, fv.x(:,ci)', 'cDataMapping','scaled');
     H.image(jj)= image(fv.x(:,ci)', 'cDataMapping','scaled');
   end
   set(H.ax(jj), AxesStyle{:});
@@ -226,7 +215,7 @@ for ii= 1:length(ax),
   set(H.ax(jj), 'userData',ud);
   hold off;
   if strcmp(get(H.ax(jj), 'box'), 'on'),
-    h= axis_redrawFrame(H.ax(jj), 'LineWidth',0.3);
+    h= axis_redrawFrame(H.ax(jj), 0.3);
     if jj==1,
       H.frame= h;
     else
@@ -235,7 +224,6 @@ for ii= 1:length(ax),
   end
 end
 if diff(opt.CLim)==0, opt.CLim(2)= opt.CLim(2)+eps; end
-%set(H.ax, 'xLim',fv.t([1 end]), 'xTick',[], 'yTick',[], 'CLim',opt.CLim);
 set(H.ax, 'xLim',[0.5 size(fv.x,1)+0.5], 'xTick',[], 'yTick',[], ...
           'CLim',opt.CLim);
 
@@ -279,11 +267,6 @@ if ~isempty(opt.HScale),
   end
 end
 
-
 if nargout==0,
   clear H;
-end
-
-if fig_Visible
-  jvm_restoreFig(jvm, opt);
 end

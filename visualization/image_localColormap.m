@@ -45,7 +45,7 @@ opt= opt_proplistToStruct(varargin{:});
 opt_checkProplist(opt, props);
 
 [sy,sx]= size(C);
-if isdefault.Optimize & sx==1,
+if isdefault.Optimize && sx==1,
   opt.Optimize= 'columns';
 end
 

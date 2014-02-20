@@ -1,4 +1,4 @@
-function h_out= axis_getQuitely(varargin)
+function h_out= axis_getQuietly(varargin)
 %AXIS_GETQUIETLY - Make an axis the current axis without interfering the
 % 'Visible' property
 

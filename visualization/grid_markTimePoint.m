@@ -2,11 +2,17 @@ function H = grid_markTimePoint(tp, chans, varargin)
 %GRID_MARKTIMEPOINT - Draw a time point inside grid plots as a vertical
 %line
 %
-%grid_markTimePoint(tp, <chans, Linespec>)
+%Synposis:
+% H= grid_markTimePoint(TP, <CHANS, LINESPEC>)
 %
 %Input:
-% TP:    time point [msec]
-% CHANS: channels which should be marked, default [] meaning all
+% TP:       time point [msec]
+% CHANS:    channels which should be marked, default [] meaning all
+% LINESPEC: property/value list defining specifications for drawing the
+%           line
+%
+%Output:
+% H: handle to line object
 
 if ~exist('chans','var'), chans=[]; end
 

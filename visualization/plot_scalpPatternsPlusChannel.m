@@ -110,7 +110,7 @@ for cc= 1:nClasses,
     subplotxl(1, nClasses+opt.PlotChannel, cc+opt.PlotChannel, ...
               0.07, [0.07 0.02 0.1]);
   else
-    axis_getQuitely(opt.Subplot(cc));
+    axis_getQuietly(opt.Subplot(cc));
   end
   opt_scalpPattern= setfield(opt_scalpPattern, 'ScalePos','none');
   if opt.NewColormap,
