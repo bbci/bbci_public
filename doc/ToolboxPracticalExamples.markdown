@@ -88,17 +88,15 @@ BTB= BTB_memo;
 
 ## Analysis of Event-Related Potentials (ERPs)   <a id="ErpAnalysis"></a>
 
+This script shows the analysis of Event-Related Potentials. 
+We will work data that has been converted to Matlab format as outlined in the practical example above.
 
-Specify the data path and data file name. Here we use data that was already convert to matlab format.
 ```
 BTB_memo= BTB;
 BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
 file= fullfile('VPiac_10_10_13', ...
                'calibration_CenterSpellerMVEP_VPiac');
-```
 
-Define some experiment-specific settings.
-```
 % Define some settings
 disp_ival= [-200 1000];
 ref_ival= [-200 0];
@@ -107,10 +105,7 @@ crit_ival= [100 800];
 crit_clab= {'F9,z,10','AF3,4'};
 clab= {'Cz','PO7'};
 colOrder= [1 0 1; 0.4 0.4 0.4];
-```
 
-
-```
 % Load data
 try
   [cnt, mrk, mnt] = file_loadMatlab(file);
