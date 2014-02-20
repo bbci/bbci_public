@@ -2,8 +2,6 @@ files = {
   fullfile('VPibv_10_11_02','calibration_CenterSpellerMVEP_VPibv')
   fullfile('VPibq_10_09_24','calibration_CenterSpellerMVEP_VPibq')
   fullfile('VPiac_10_10_13','calibration_CenterSpellerMVEP_VPiac')
-  fullfile('VPibs_10_10_20','calibration_CenterSpellerMVEP_VPibs')
-  fullfile('VPibt_10_10_21','calibration_CenterSpellerMVEP_VPibt')
   };
 
 %%
@@ -15,24 +13,7 @@ for isub = 1:nsub
   %% Load data
   fprintf('loading %s \n', file)
   
-  [cnt, mrk_orig, mnt] = file_loadMatlab(file);
-
-  
-
-  %% Marker struct
-  stimDef= {[31:46], [11:26];
-            'target','nontarget'};
-  mrk= mrk_defineClasses(mrk_orig, stimDef);
-
-  %% Re-referencing to linked-mastoids
-  A= eye(length(cnt.clab));
-  iA1= util_chanind(cnt.clab,'A1');
-  if isempty(iA1)
-      iA1= util_chanind(cnt.clab,'A2');
-  end
-  A(iA1,:)= -0.5;
-  A(:,iA1)= [];
-  cnt= proc_linearDerivation(cnt, A);
+  [cnt, mrk, mnt] = file_loadMatlab(file);
 
   %% Electrode Montage
   grd= sprintf(['scale,_,F5,F3,Fz,F4,F6,_,legend\n' ...
@@ -57,7 +38,7 @@ for isub = 1:nsub
   cnt= proc_filtfilt(cnt, b);
 
   %% Artifact rejection based on variance criterion
-  %mrk= reject_varEventsAndChannels(cnt, mrk, disp_ival, 'verbose', 1);
+  mrk= reject_varEventsAndChannels(cnt, mrk, disp_ival, 'verbose', 1);
 
   %% Segmentation
   epo= proc_segmentation(cnt, mrk, disp_ival);
