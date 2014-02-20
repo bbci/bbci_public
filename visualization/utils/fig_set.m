@@ -1,5 +1,8 @@
 function fig_state= fig_set(varargin)
-%FIG_SET
+%FIG_SET - Setup a new figure
+%
+%Synposis:
+% 
 
 props= {'Fn'              1            '!INT'
         'Silent'          0            '!BOOL'
@@ -22,6 +25,7 @@ else
   opt= opt_proplistToStruct(varargin{:});
 end
 [opt, isdefault]= opt_setDefaults(opt, props);
+opt_checkProplist(opt, props);
 
 pos_screen= get(0, 'ScreenSize');
 actualsize(1)= pos_screen(3) - opt.GridSize(2)*2*opt.WindowBorder(1);

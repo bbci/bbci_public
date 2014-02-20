@@ -55,7 +55,7 @@ H= plot_scalpEvolutionPlusChannel(spec, mnt, clab, band_list, ...
                              'XUnit', spec.xUnit, 'YUnit', spec.yUnit);
 grid_addBars(spec_r);
 
-fig_set(4, 'shrink',[1 2/3]);
+fig_set(4, 'Resize',[1 2/3]);
 plot_scalpEvolutionPlusChannel(spec_r, mnt, clab, band_list, defopt_scalp_r,...
     'XUnit', spec_r.xUnit, 'YUnit', spec_r.yUnit);
 

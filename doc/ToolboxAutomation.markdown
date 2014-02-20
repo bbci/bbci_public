@@ -126,7 +126,7 @@ clab= {'Cz','PO7'};
   grid_addBars(epo_r);
   printFigure(['erp_topo'], [20  4+5*size(epo.y,1)], opt_fig);
 
-  fig_set(4, 'shrink',[1 2/3]);
+  fig_set(4, 'Resize',[1 2/3]);
   scalpEvolutionPlusChannel(epo_r, mnt, clab, ival_scalps, ...
                             defopt_scalp_r2);
   printFigure(['erp_topo_r'], [20 9], opt_fig);
@@ -173,7 +173,7 @@ for ff = 1:length(filelist),
             'yLim', range_grid.erp);
   printFigure('erp', [19 12]*1.3, opt_fig);
 
-  fig_set(3, 'shrink',[2/3 1]);
+  fig_set(3, 'Resize',[2/3 1]);
   head= mnt_restrictMontage(mnt, 'AF3,4','F7,z,8','FT7,8','FC3,4','C5,z,6', ...
                            'TP7,8','CP3,4','Pz','PO7,8','Oz');
   head= mnt_scalpToGrid(head, 'oversize',[1.2 1.6], 'pos_correction', 1, ...
@@ -195,7 +195,7 @@ for ff = 1:length(filelist),
                                'colAx', range.scalp);	
   printFigure('erp_topo', [25 16], opt_fig);
 
- fig_set(4, 'shrink',[1 2/3]);
+ fig_set(4, 'Resize',[1 2/3]);
   H= scalpEvolutionPlusChannel(erp_r_ga, mnt, clab, ival_scalps, ...
                                defopt_scalp_r2, ...
                                'channelAtBottom', 1, ...
