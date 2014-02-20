@@ -223,7 +223,7 @@ else
 end
 header_line= '# Logfile of BBCI online - <TIME>';
 props= {'output'       default_output     '!BOOL|CHAR(screen file screen&file)'
-        'folder'       BTB.Tp.Dir        'CHAR'
+        'folder'       BTB.Tp.Dir         'CHAR'
         'file'         'bbci_apply_log'   'CHAR'
         'header'       {header_line}      'CELL{CHAR}'
         'force_overwriting'   0           '!BOOL'
