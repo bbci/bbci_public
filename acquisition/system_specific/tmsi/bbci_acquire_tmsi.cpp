@@ -1,12 +1,11 @@
 /*
-  bbci_acquire_en.c
-
-  This file defines a mex-Function to communicate with the enobios
-  server via matlab. The execution pathes are:
-  1. state = bbci_acquire_en('init', state); 
-  2. [data] = bbci_acquire_en(state);
-  3. [data, marker_time] = bbci_acquire_en(state);
-  4. [data, marker_time, marker_descr,state] = bbci_acquire_en(state);
+  bbci_acquire_tmsi.c
+  
+  1. state = bbci_acquire_tmsi('init', state); 
+  2. [data] = bbci_acquire_tmsi(state);
+  3. [data, marker_time] = bbci_acquire_tmsi(state);
+  4. [data, marker_time, marker_descr,state] = bbci_acquire_tmsi(state);
+  5. bbci_acquire_tmsi('close');
 */
 
 #include <stdio.h>
@@ -40,8 +39,8 @@ using std::string;
 */
 static bool g_bIsConnected = false;  // shows where we are connected to the server or not
 static bool g_bIsMac = false; // shows whether its a direct connection
-static SOCKET g_Socket; // active socket, which is connected to the enobio server
-static SOCKET g_ServerSocket; // active socket, which is connected to the enobio server
+static SOCKET g_Socket; // active socket, which is connected to the server
+static SOCKET g_ServerSocket; // active socket, which is connected to the server
 static SOCKET g_ActiveSocket; 
 //static FILE *g_Fp;
 
@@ -53,12 +52,12 @@ static ULONG g_SampleRateInHz;
 static HANDLE g_Handle;
 static HINSTANCE g_LibHandle;
 static unsigned long long g_total;
-// The Following Constants will only be used during the testing stages
+
 // Afterwards the user will be able to set them(we will have to change the acquire function a little bit
 const int p    = 5;          // Duration of the pause before acquisition (seconds, min 1s)
 const int N    = 8;          // number of channels
 const int bps  = 4;          // bytes per sample
-const int Fs   = 500;        // Enobio's sampling rate
+const int Fs   = 500;        // sampling rate
 const int Ns   = 20;         // number of samples to read in the buffer each time (between 20 and 250)
 const int buff = bps*Ns*N;   // Number of bytes to read in total for all channels
 int  datenPuffer[Ns*N]={0};
@@ -67,7 +66,7 @@ int  datenPuffer[Ns*N]={0};
 static const char* FIELD_IP = "hostIP";
 static const char* FIELD_MAC = "hostMAC";
 static const char* FIELD_Channels = "numChan";
-static const char* FIELD_Freq = "freq";
+static const char* FIELD_Freq = "fs";
 
 
 struct chData
@@ -82,6 +81,8 @@ struct markerData
 	unsigned long long timeStamp;
 	double time;
 };
+
+void quitTMSI();
 static queue<chData> gDataQueue;
 static queue<markerData> gMarkerQueue;
 
@@ -192,6 +193,13 @@ DWORD WINAPI threadObtain( LPVOID lpParam )
 								break ;
 						}
 					}
+				}
+				
+				
+				if(bTerminate)
+				{
+					bTerminate=false;
+					return 0;
 				}
 				WaitForSingleObject(ghMutexData, INFINITE );
 				WaitForSingleObject(ghMutexCount, INFINITE );
@@ -354,12 +362,8 @@ void initTMSI() {
 						NULL,          // argument to thread function 
 						0,                      // use default creation flags 
 						&dummy);   // returns the thread identifier 
-						
+		g_bIsConnected = true;				
 }
-
-//
-// Declaration of Enobio and consumers
-//
 
 
 
@@ -394,6 +398,11 @@ DWORD WINAPI threadMarkerServer( LPVOID lpParam )
         rBytes=recvfrom(markerPassiveSocket,curMarker, 256,0, (struct sockaddr *) &si_other, &slen);
 			if(rBytes!=SOCKET_ERROR)
 			{
+			
+			if(!strncmp(curMarker,"QUIT_CALLED",rBytes)) {
+				mexPrintf("QUITTING");
+				break;
+			}
 			curMarker[4]=0;
 			WaitForSingleObject(ghMutexMarkers, INFINITE );
 			string curString = curMarker;
@@ -427,42 +436,13 @@ DWORD WINAPI threadMarkerServer( LPVOID lpParam )
 			ReleaseMutex(ghMutexMarkers);
 			}
 		}
-		closesocket(markerActiveSocket);
-		
+		//closesocket(markerActiveSocket);
+		closesocket(markerPassiveSocket);
 	}
 	return 0;
 }
 
 
-SOCKET initConnection()
-{
-  SOCKET s;
-  SOCKADDR_IN address;
-  WSADATA wsa;
-  short  datenPuffer[bps*Ns/2]={0};
-  if(WSAStartup(MAKEWORD(2,0),&wsa)) {
-    mexErrMsgTxt("bbci_acquire_en: Init. Error during WSA Startup\n");
-	return INVALID_SOCKET;
-  }
-  memset(&address,0,sizeof(SOCKADDR_IN));
-
-  if((s=socket(AF_INET,SOCK_STREAM,0))==INVALID_SOCKET)
-  {
-    mexErrMsgTxt("bbci_acquire_en: Init. Error during socket initialization\n");
-	return INVALID_SOCKET;
-  }
-
-  address.sin_family=AF_INET;
-  address.sin_port=htons(1234); 
-  address.sin_addr.s_addr=inet_addr("127.0.0.1"); 
-
-  if(connect(s,(SOCKADDR*)&address,sizeof(SOCKADDR))==SOCKET_ERROR)
-  {
-     mexErrMsgTxt("bbci_acquire_en: Init. Error during connection to server.\n");
-  }
-  
-  return s;
-}
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
@@ -483,54 +463,47 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		}
 		else if(!strcmp(cPi,"init")) 
 		{
-			//mexPrintf("BLAAAAAAAAAA");
-			gMarkerQueue = queue<markerData>();
-			gDataQueue = queue<chData>();	
-			mxArray* numChannels = mxGetField(prhs[1], 0,FIELD_Channels);
-			if(numChannels)
-				{
-					double* t= (double*)mxGetData(numChannels);
-					g_numCh = *t;
-				}
-			ghMutexData = CreateMutex(NULL,              // default security attributes
-									  FALSE,             // initially not owned
-									  NULL);             // unnamed mutex
-			ghMutexMarkers = CreateMutex(NULL,              // default security attributes
-									  FALSE,             // initially not owned
-									  NULL);             // unnamed mutex
-			ghMutexCount= CreateMutex(NULL,              // default security attributes
-									  FALSE,             // initially not owned
-									  NULL);             // unnamed mutex
-	 
-			mxArray* OUT_STATE;
-			OUT_STATE = mxDuplicateArray(prhs[1]);
-			plhs[0] = OUT_STATE;
-			DWORD dummy;
-					  hServerThread = CreateThread( 
-						NULL,                   // default security attributes
-						0,                      // use default stack size  
-						threadMarkerServer,       // thread function name
-						NULL,          // argument to thread function 
-						0,                      // use default creation flags 
-						&dummy);   // returns the thread identifier 
-						
+			if(g_bIsConnected) {
+				mexPrintf("ALREADY CONNECTED. CLOSING PREVIOUS CONNECTION");
+				quitTMSI();
+			}
 			
-			initTMSI();
+				gMarkerQueue = queue<markerData>();
+				gDataQueue = queue<chData>();	
+				mxArray* numChannels = mxGetField(prhs[1], 0,FIELD_Channels);
+				if(numChannels)
+					{
+						double* t= (double*)mxGetData(numChannels);
+						g_numCh = *t;
+					}
+				ghMutexData = CreateMutex(NULL,              // default security attributes
+										  FALSE,             // initially not owned
+										  NULL);             // unnamed mutex
+				ghMutexMarkers = CreateMutex(NULL,              // default security attributes
+										  FALSE,             // initially not owned
+										  NULL);             // unnamed mutex
+				ghMutexCount= CreateMutex(NULL,              // default security attributes
+										  FALSE,             // initially not owned
+										  NULL);             // unnamed mutex
+		 
+				mxArray* OUT_STATE;
+				OUT_STATE = mxDuplicateArray(prhs[1]);
+				plhs[0] = OUT_STATE;
+				DWORD dummy;
+						  hServerThread = CreateThread( 
+							NULL,                   // default security attributes
+							0,                      // use default stack size  
+							threadMarkerServer,       // thread function name
+							NULL,          // argument to thread function 
+							0,                      // use default creation flags 
+							&dummy);   // returns the thread identifier 
+							
+				
+				initTMSI();
+			
 		}
-		else if((!strcmp(cPi,"quit"))||(!strcmp(cPi,"close"))) {
-			g_bIsConnected = false;
-			g_numCh = 8;
-			//fclose(g_Fp);
-			gDataQueue = queue<chData>();
-			gMarkerQueue = queue<markerData>();
-
-
-			TerminateThread(hServerThread,0);
-			CloseHandle(hServerThread);
-			//TerminateThread(hObtainThread,0);
-			bTerminate=true;
-			CloseHandle(hObtainThread);
-			closesocket(markerPassiveSocket);
+		else if((!strcmp(cPi,"quit"))||(!strcmp(cPi,"close"))) {	
+			quitTMSI();
 		}
 		else {
 			mexErrMsgTxt("bbci_acquire_en: invalid string in first parameter. Did you mean init?");
@@ -706,29 +679,57 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	// Close
 	else if(nlhs==0&&nrhs==1)
 	{
+		quitTMSI();
+	}
+}
+
+
+void quitTMSI() {
+	if(g_bIsConnected) {
 		g_bIsConnected = false;
 		g_numCh = 8;
-		//fclose(g_Fp);
-		gDataQueue = queue<chData>();
-		gMarkerQueue = queue<markerData>();
-
-
-		TerminateThread(hServerThread,0);
+		
+		//TerminateThread(hServerThread,0);
+		sockaddr_in si_other;
+		SOCKET s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+		memset((char*) &si_other,0,sizeof(si_other));
+		si_other.sin_family = AF_INET;
+		si_other.sin_port = htons(1206);
+		si_other.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+		char quitmsg[] = "QUIT_CALLED";
+		int slen = sizeof(si_other);
+		sendto(s,quitmsg, strlen(quitmsg),0, (sockaddr*) &si_other, slen);
+		
 		CloseHandle(hServerThread);
-		//TerminateThread(hObtainThread,0);
+			//TerminateThread(hObtainThread,0);
 		bTerminate=true;
+		Sleep(1000);
 		CloseHandle(hObtainThread);
 		closesocket(markerPassiveSocket);
-		Sleep(10);
+				
+			
+		WaitForSingleObject(ghMutexData, INFINITE );
+		WaitForSingleObject(ghMutexMarkers, INFINITE );
+		gDataQueue = queue<chData>();
+		gMarkerQueue = queue<markerData>();
+		ReleaseMutex( ghMutexMarkers);
+		ReleaseMutex( ghMutexData);
+		
+		if(g_Handle) {
+			fpStop(g_Handle);
+			fpClose(g_Handle);
+			Sleep(1000);
+		}
+		
 		if( DeviceList != NULL ) 
 			fpFreeDeviceList( g_Handle, NrOfDevices, DeviceList );
-
+			
 		DeviceList = NULL;
 		if(g_Handle) {
 			fpLibraryExit( g_Handle );
-		g_Handle = NULL;
+			g_Handle = NULL;
 		}
-		
+			
 		if(g_LibHandle) {
 			FreeLibrary(g_LibHandle);
 			g_LibHandle = NULL;
