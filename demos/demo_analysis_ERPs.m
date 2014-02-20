@@ -1,8 +1,10 @@
 eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
     'VPibq_10_09_24', 'calibration_CenterSpellerMVEP_VPibq');
+file= fullfile(BTB.DataDir, 'demoMat', 'VPiac_10_10_13', ...
+               'calibration_CenterSpellerMVEP_VPiac');
 
 % Load data
-[cnt, mrk, mnt] = file_loadMatlab(eeg_file);
+[cnt, mrk, mnt] = file_loadMatlab(file);
 
 
 % Electrode Montage
@@ -41,7 +43,7 @@ epo= proc_baseline(epo, ref_ival);
 epo_r= proc_rSquareSigned(epo);
 
 % Select some discriminative intervals, with constraints to find N2, P2, P3 like components.
-fig_set(1);
+fig_set(3);
 constraint= ...
       {{-1, [100 300], {'I#','O#','PO7,8','P9,10'}, [50 300]}, ...
        {1, [200 350], {'P3-4','CP3-4','C3-4'}, [200 400]}, ...
@@ -54,7 +56,7 @@ constraint= ...
 %printFigure('r_matrix', [18 13]);
 ival_scalps= visutil_correctIvalsForDisplay(ival_scalps, 'Fs',epo.fs);
 
-fig_set(3)
+fig_set(1)
 H= grid_plot(epo, mnt, defopt_erps, 'ColorOrder',colOrder);
 grid_addBars(epo_r, 'HScale',H.scale);
 %printFigure(['erp'], [19 12]);
