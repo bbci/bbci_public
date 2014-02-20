@@ -52,8 +52,14 @@ If you plan to work with our Open Source Framework Pyff for Stimulus Presentatio
 
 #### Mac OS
 
-missing
+Open the terminal. If you cannot find the terminal either go to your Desktop or open Finder. Then click on Go -> Utilities.
+Then type in
 
+```Bash
+mkdir ~/git
+cd ~/git
+git clone http://repo.ml.tu-berlin.de/git/bbci/public bbci_public 
+```
 
 #### Windows
 
