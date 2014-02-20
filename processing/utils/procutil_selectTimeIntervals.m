@@ -170,13 +170,13 @@ if ~isempty(opt.Constraint),
   end
   epo_r.x= X_memo;
   if opt.Sort,
-    [so,si]= sort(ival(:,1));
+    [~,si]= sort(ival(:,1));
     ival= ival(si,:);
   end
   if opt.Visualize,
     opt_plot= opt_substruct(opt, props_plot(:,1));
-    H=plot_scoreMatrix(epo_r, nfo, opt_plot);
-  else H=[];
+    H= plot_scoreMatrix(epo_r, nfo, opt_plot);
+  else H= [];
   end
   return;
 end

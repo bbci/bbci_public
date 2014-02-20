@@ -5,9 +5,9 @@ file= fullfile('VPiac_10_10_13', ...
                'calibration_CenterSpellerMVEP_VPiac');
 
 % Load data
-try,
+try
   [cnt, mrk, mnt] = file_loadMatlab(file);
-catch,
+catch
   error('You need to run ''demo_convert_ERPSpeller'' first');
 end
 
