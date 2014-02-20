@@ -152,22 +152,19 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
     if opt.reject_channels,
       bbci_log_write(data, 'Rejected channels: <%s>', str_vec2str(rClab));
       BC_result.rejected_clab= rClab;
+      if iscell(BC_result.rejected_clab),   %% that means rejected_clab is not NaN
+          cidx= find(ismember(BC_result.clab, BC_result.rejected_clab));
+          BC_result.clab(cidx)= [];
+      end
     end
   else
     % Avoid confusion with old figure from previous run
     fig_closeIfExists(5);
   end
-  if iscell(BC_result.rejected_clab),   %% that means rejected_clab is not NaN
-    cidx= find(ismember(BC_result.clab, BC_result.rejected_clab));
-    BC_result.clab(cidx)= [];
-  end
 else
   result_flds= {'rejected_trials', 'rejected_clab', 'clab'};
   BC_result= struct_copyFields(BC_result, previous, result_flds);
 end
-cidx= find(ismember(BC_result.cfy_clab, BC_result.rejected_clab));
-BC_result.cfy_clab(cidx)= [];
-
 
 %% --- Segmentation and baselining ---
 %

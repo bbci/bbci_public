@@ -275,13 +275,13 @@ switch(command)
     pyff_sendUdp('interaction-signal', settings{:});
 
   case 'play'
- %   if isempty(varargin),
- %     ACQ_STARTED= 0;
- %   else
- %     ACQ_STARTED= 1;
- %     bvr_startrecording(varargin{2}, 'AppendTpCode',1, varargin{3:end});
- %     pause(0.01);
- %   end
+    if isempty(varargin),
+      ACQ_STARTED= 0;
+    else
+      ACQ_STARTED= 1;
+      bvr_startrecording(varargin{2}, 'AppendTpCode',1, varargin{3:end});
+      pause(0.01);
+    end
     pyff_sendUdp('interaction-signal', 'command', 'play'); 
     
   case 'stop'
@@ -290,9 +290,10 @@ switch(command)
   case 'quit'
     pyff_sendUdp('interaction-signal', 'command', 'quit'); 
 %     if strcmp(func2str(acquire_func), 'acquire_bv') && ACQ_STARTED,
-%        bvr_sendcommand('stoprecording');
-%        ACQ_STARTED= 0;
-%     end
+    if ACQ_STARTED
+       bvr_sendcommand('stoprecording');
+       ACQ_STARTED= 0;
+    end
      
   case 'loadSettings'
     pyff_sendUdp('interaction-signal', 'loadvariables', settings_file);

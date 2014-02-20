@@ -166,10 +166,10 @@ bbci.feedback= opt_overwriteVoids(bbci.feedback, 'control', props);
 for k= 1:length(bbci.feedback),
   switch(bbci.feedback(k).receiver),
    case 'pyff',
-    props= {'geometry'        BTB.Tp.Geometry    'INT[4]'
+    props= {'geometry'        BTB.Acq.Geometry    'INT[4]'
            };
    case 'matlab',
-    props= {'geometry'        BTB.Tp.Geometry    'INT[4]'
+    props= {'geometry'        BTB.Acq.Geometry    'INT[4]'
             'trigger_fcn'     @ppTrigger         'FUNC'
             'trigger_param'   {}                 'CELL'
            };
