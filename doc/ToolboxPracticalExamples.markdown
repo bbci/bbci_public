@@ -87,7 +87,7 @@ H= plot_scalpEvolutionPlusChannel(epo, mnt, clab, ival_scalps, ...
 grid_addBars(epo_r);
 %printFigure(['erp_topo'], [20  4+5*size(epo.y,1)]);
 
-fig_set(4, 'shrink',[1 2/3]);
+fig_set(4, 'Resize',[1 2/3]);
 plot_scalpEvolutionPlusChannel(epo_r, mnt, clab, ival_scalps, defopt_scalp_r);
 %printFigure(['erp_topo_r'], [20 9]);
 ```
@@ -149,7 +149,7 @@ H= plot_scalpEvolutionPlusChannel(spec, mnt, clab, band_list, ...
                              'GlobalCLim',0);
 grid_addBars(spec_r);
 
-fig_set(4, 'shrink',[1 2/3]);
+fig_set(4, 'Resize',[1 2/3]);
 plot_scalpEvolutionPlusChannel(spec_r, mnt, clab, band_list, defopt_scalp_r);
 
 
@@ -235,7 +235,7 @@ H= plot_scalpEvolutionPlusChannel(erd, mnt, clab, ival_scalps, ...
                                   'ColorOrder',colOrder);
 grid_addBars(erd_r);
 
-fig_set(4, 'shrink',[1 2/3]);
+fig_set(4, 'Resize',[1 2/3]);
 plot_scalpEvolutionPlusChannel(erd_r, mnt, clab, ival_scalps, defopt_scalp_r);
 ```
 
@@ -348,7 +348,7 @@ grid_addBars(epo_r);
 %printFigure(['erp_topo'], [20  4+5*size(epo.y,1)]);
 
 % plot difference of the class means
-fig_set(2, 'shrink',[1 2/3]);
+fig_set(2, 'Resize',[1 2/3]);
 plot_scalpEvolutionPlusChannel(epo_diff, mnt, clab, ival_scalps, defopt_scalp_r);
 %printFigure(['erp_topo_r'], [20 9]);
 
@@ -357,7 +357,7 @@ plot_scalpEvolutionPlusChannel(epo_diff, mnt, clab, ival_scalps, defopt_scalp_r)
 % interpretation: abs(sgnlogp) > 1   <-->  p < 0.1
 %                 abs(sgnlogp) > 2   <-->  p < 0.01
 %                 abs(sgnlogp) > 3   <-->  p < 0.001 , and so on
-fig_set(3, 'shrink',[1 2/3]);
+fig_set(3, 'Resize',[1 2/3]);
 epo_diff_sgnlogp = epo_diff;
 epo_diff_sgnlogp.x = epo_diff_sgnlogp.sgnlogp;
 epo_diff_sgnlogp.yUnit = 'sgnlogp';
@@ -366,6 +366,6 @@ plot_scalpEvolutionPlusChannel(epo_diff_sgnlogp, mnt, clab, ival_scalps, defopt_
 
 % now plot differences again, with all insignificant results set to zero
 epo_diff.x = epo_diff.x.*epo_diff.sigmask;
-fig_set(4, 'shrink',[1 2/3]);
+fig_set(4, 'Resize',[1 2/3]);
 plot_scalpEvolutionPlusChannel(epo_diff, mnt, clab, ival_scalps, defopt_scalp_r);
 ```

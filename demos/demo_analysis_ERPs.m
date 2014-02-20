@@ -64,7 +64,7 @@ H= plot_scalpEvolutionPlusChannel(epo, mnt, clab, ival_scalps, ...
 grid_addBars(epo_r);
 %printFigure(['erp_topo'], [20  4+5*size(epo.y,1)]);
 
-fig_set(4, 'shrink',[1 2/3]);
+fig_set(4, 'Resize',[1 2/3]);
 plot_scalpEvolutionPlusChannel(epo_r, mnt, clab, ival_scalps, defopt_scalp_r);
 %printFigure(['erp_topo_r'], [20 9]);
 
