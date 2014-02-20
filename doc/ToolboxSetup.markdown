@@ -25,7 +25,7 @@ If you want to run the demos of the toolbox you also need to download the demo d
 
 ### Getting the lastest snapshot of the BBCI Toolbox
 
-Download this <a href="">archieve</a> and unzip it at an approriate place.
+Download this <a href="http://doc.ml.tu-berlin.de/bbci/ToolboxData/BBCIToolboxSnapshot.zip">archieve</a> and unzip it at an approriate place.
 
 
 ### Checking out the GIT repository of the BBCI Toolbox
@@ -75,8 +75,9 @@ Alternatively, you can use the GUI provided by Git for Windows to clone the repo
 ## Getting data for the demos   <a id="GettingData"></a>
 
 There are files in raw data format (as stored by the EEG recording software, Brain Vision Recorder in this case), and files that have been converted to Matlab format already. This typically involves already some kind of preprocessing (e.g., low-pass filtering, subsampling), and the definition of classes based on markers. You should dedicate one directory for data of the BBCI Toolbox, e.g., `~/data` under Linux and `d:\data` under Windows and unzip the following archieves there, such that subfolders `demoRaw` and `demoMat` are created in your data folder.
- * dataRaw(http://doc.ml.tu-berlin.de/bbci/ToolboxData/demoRaw.zip)
- * dataMat(http://doc.ml.tu-berlin.de/bbci/ToolboxData/demoMat.zip)
+
+* dataRaw(http://doc.ml.tu-berlin.de/bbci/ToolboxData/demoRaw.zip)
+* dataMat(http://doc.ml.tu-berlin.de/bbci/ToolboxData/demoMat.zip)
 
 
 ## Starting the Toolbox   <a id="StartUp"></a>
@@ -96,3 +97,10 @@ If you want to define a different folder for temporary files, you can do it like
 ```
 
 There are more options in `startup_public_bbci`, that should described here. Until then, you have to inspect to code to learn about the other possibilities.
+
+To enable all the demos of the toolbox (which are in the folders `demos` and `online/demos`, you need to run the convert-demos first (only one time - the converted data is saved in a subfolder of your `demoMat`, see above):
+```Matlab
+  >> demo_convert_ERPSpeller
+  >> demo_convert_MotorImagery
+  >> demo_convert_NIRSData.
+```
