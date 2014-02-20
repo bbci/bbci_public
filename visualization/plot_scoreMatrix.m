@@ -11,10 +11,10 @@ function H= plot_scoreMatrix(epo_r, ival, varargin)
 %Input:
 % EPO_R: struct of score data as returned by e.g. proc_rSquareSigned
 %        or proc_aucValues
-% IVAL: [nIvals x 2]-sized array of intervals, which are marked in
-%       the score matrix and for which scalp topographies are drawn.
-%       If ival is empty no scalp topographies are drawn.
-% OPTS: struct or property/value list of optional fields/properties:
+% IVAL:  [nIvals x 2]-sized array of intervals, which are marked in
+%        the score matrix and for which scalp topographies are drawn.
+%        If ival is empty no scalp topographies are drawn.
+% OPTS:  struct or property/value list of optional fields/properties:
 %  .Mnt      - struct defining an electrode montage. Default is the
 %              electrode montage returend by mnt_setElectrodePositions
 %  .MarkClab - list of channels to be marked with labels on the y axis

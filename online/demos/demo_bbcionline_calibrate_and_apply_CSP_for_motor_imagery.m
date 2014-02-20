@@ -48,7 +48,7 @@ log_format= '%fs | {cl_output=%f}';
 cnt_cfy= struct('fs',1/mean(diff(time)), 'x',cfy, ...
                 'clab', {{sprintf('cfy %s vs %s', calib.result.classes{:})}});
 epo_cfy= proc_segmentation(cnt_cfy, calib.mrk, [0 5000]);
-fig_set(1, 'Name','classifier output', 'clf',1);
+fig_set(1, 'Name','classifier output', 'Clf',1);
 plot_channel(epo_cfy);
 
 BTB= BTB_memo;

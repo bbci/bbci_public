@@ -43,11 +43,11 @@ log_format= '%fs | [%f] | {cl_output=%f}';
 cnt_cfy= struct('fs', 1/mean(diff(time)), 'x',cfy, ...
                 'clab', {{sprintf('cfy %s vs %s', calib.result.classes{:})}});
 epo_cfy= proc_segmentation(cnt_cfy, calib.mrk, [-10000 20000]);
-fig_set(1, 'Name','classifier output', 'clf',1);
+fig_set(1, 'Name','classifier output', 'Clf',1);
 plot_channel(epo_cfy);
 
 epo_auc= proc_aucValues(epo_cfy);
-fig_set(2, 'clf',1, 'Name','AUC of classifier outputs');
+fig_set(2, 'Clf',1, 'Name','AUC of classifier outputs');
 plot_channel(epo_auc);
 
 % The 

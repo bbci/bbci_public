@@ -107,11 +107,6 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props, props_channel, props_addScale);
 
-% fig_Visible = strcmp(get(gcf,'Visible'),'on'); % If figure is already inVisible jvm_* functions should not be called
-% if fig_Visible
-%   jvm= jvm_hideFig;
-% end
-
 if nargin<2 || isempty(mnt),
   mnt= struct('clab',{epo.clab});
 else
@@ -240,25 +235,19 @@ if isfield(mnt, 'box'),
   DisplayChannels= intersect(DisplayChannels, find(~isnan(mnt.box(1,1:end-1))),'legacy');
 end
 nDisps= length(DisplayChannels);
-% mnt.clab{DisplayChannels(ii)} may differ from epo.clab{ii}, e.g. the former
 % may be 'C3' while the latter is 'C3 lap'
 idx= util_chanind(epo, mnt.clab(DisplayChannels));
 axestitle= epo.clab(idx);
 
-%w_cm= warning('query', 'bci:missing_channels');
-%warning('off', 'bci:missing_channels');
-%all_idx= 1:length(mnt.clab);
 yLim= zeros(length(opt.ScaleGroup), 2);
 for ig= 1:length(opt.ScaleGroup),
   ax_idx= util_chanind(mnt.clab(DisplayChannels), opt.ScaleGroup{ig});
   if isempty(ax_idx), continue; end
-%  ch_idx= find(ismember(all_idx, ax_idx));
   ch_idx= util_chanind(epo, mnt.clab(DisplayChannels(ax_idx)));
   if isnumeric(opt.ScalePolicy{ig}),
     yLim(ig,:)= opt.ScalePolicy{ig};
   else
     dd= epo.x(:,ch_idx,:);
-%    idx= find(~isinf(dd(:)));
     idx= find(abs(dd(:))<opt.ScaleUpperLimit & ...
               abs(dd(:))>=opt.ScaleLowerLimit);
     yl= [nanmin(dd(idx)) nanmax(dd(idx))];
@@ -283,12 +272,8 @@ for ig= 1:length(opt.ScaleGroup),
     yLim(ig,:)= [-1 1];
   end
   if ig==1 && length(ax_idx)>1,
-%    scale_with_group1= setdiff(1:nDisps, util_chanind(mnt.clab(DisplayChannels), ...
-%                                                 [opt.ScaleGroup{2:end}]));
-%    set(H.ax(scale_with_group1), 'yLim',yLim(ig,:));
     ch2group= ones(1,nDisps);
   else
-%    set(H.ax(ax_idx), 'yLim',yLim(ig,:));
     ch2group(ax_idx)= ig;
     for ia= ax_idx,
       if max(abs(yLim(ig,:)))>=100,
@@ -321,7 +306,6 @@ for ig= 1:length(opt.ScaleGroup),
     end
   end
 end
-%warning(w_cm);
 
 H.ax= zeros(1, nDisps);
 opt_plot= {'Legend',1, 'Title','', 'UnitDispPolicy','none', ...
@@ -335,9 +319,9 @@ for ia= 1:nDisps,
   ic= DisplayChannels(ia);
   if ~isempty(opt.Axes),
     H.ax(ia)= opt.Axes(ic);
-    axis_getQuitely(H.ax(ia));
+    axis_getQuietly(H.ax(ia));
   else
-    H.ax(ia)= axis_getQuitely('position', gridutil_getAxisPos(mnt, ic));
+    H.ax(ia)= axis_getQuietly('position', gridutil_getAxisPos(mnt, ic));
   end
   cchan = plot_channel(epo, mnt.clab{ic}, opt_channel, opt_plot{:}, ...
                           'YLim', yLim(ch2group(ia),:), ...
@@ -413,7 +397,7 @@ if ~strcmp(opt.TitleDir, 'none'),
 end
 
 if ~isempty(opt.ShiftAxesUp) && opt.ShiftAxesUp~=0,
-  axis_shiftUp(opt.ShiftAxesUp);
+  gridutil_shiftAxesUp(opt.ShiftAxesUp);
 end
 
 if opt.HeadMode,
@@ -430,7 +414,3 @@ end
 if nargout==0,
   clear H;
 end
-
-% if fig_Visible
-%   jvm_restoreFig(jvm);
-% end

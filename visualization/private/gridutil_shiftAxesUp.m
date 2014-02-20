@@ -1,5 +1,6 @@
-function axis_shiftUp(up, hc)
-%axis_shiftUp(<up=0.1, hc>)
+function gridutil_shiftAxesUp(up, hc)
+%GRIDUTIL_SHIFTAXESUP - Shifts up all axes in HC (default: all axes in the
+% current figure) by a factor of UP (default: 10%)
 
 if ~exist('up','var') || isempty(up), up=0.1; end
 if ~exist('hc','var'), hc= get(gcf, 'children'); end
