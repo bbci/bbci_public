@@ -59,7 +59,7 @@ data= bbci_apply_uni(bbci);
 log_format= '%fs | M(%u) | %fs | [%f] | %s';
 [time, marker_desc, marker_time, cfy, control]= ...
     textread(data.log.filename, log_format, ...
-             'delimiter','','commentstyle','shell');
+             'commentstyle','shell');
 
 % validate makers that evoked calculation of control signals
 isequal(marker_desc, mrk.event.desc(1:length(marker_desc)))

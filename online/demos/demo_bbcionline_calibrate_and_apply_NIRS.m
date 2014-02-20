@@ -38,7 +38,7 @@ data= bbci_apply_uni(bbci);
 % analyse the logged feedback
 log_format= '%fs | [%f] | {cl_output=%f}';
 [time, cfy, ctrl]= textread(data.log.filename, log_format, ...
-                            'delimiter','','commentstyle','shell');
+                            'commentstyle','shell');
 
 cnt_cfy= struct('fs', 1/mean(diff(time)), 'x',cfy, ...
                 'clab', {{sprintf('cfy %s vs %s', calib.result.classes{:})}});

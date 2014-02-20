@@ -43,7 +43,7 @@ data= bbci_apply(bbci);
 
 log_format= '%fs | {cl_output=%f}';
 [time, cfy]= textread(data.log.filename, log_format, ...
-                      'delimiter','','commentstyle','shell');
+                      'commentstyle','shell');
 
 cnt_cfy= struct('fs',1/mean(diff(time)), 'x',cfy, ...
                 'clab', {{sprintf('cfy %s vs %s', calib.result.classes{:})}});

@@ -76,7 +76,7 @@ data= bbci_apply(bbci);
 %% analyze the outputs
 log_format= '%fs | CTRL%d | {cl_output=%f}';
 [time, cfy_no, cfy]= textread(data.log.filename, log_format, ...
-                              'delimiter','','commentstyle','shell');
+                              'commentstyle','shell');
 idx_EEG= find(cfy_no==1);
 idx_NIRS= find(cfy_no==2);
 
