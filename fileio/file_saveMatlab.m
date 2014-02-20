@@ -61,8 +61,8 @@ props = {'Path',             BTB.MatDir   'CHAR'
          'ResolutionList'   [1 0.5 0.1]   '!DOUBLE[-]'
          'Accuracy'          10e-10       '!DOUBLE[1]'
          'AddChannels'       0            '!BOOL'
-         'Vars'              {}           'CELL'
-         'SaveParam'         {'-v7'}      'CHAR|CELL{CHAR}'
+         'Vars'              {}           'CHAR|CELL{CHAR}'
+         'SaveParam'         {'-v7'}      'CELL'
         };
 
 misc_checkType(dat,'STRUCT(x fs clab)');
