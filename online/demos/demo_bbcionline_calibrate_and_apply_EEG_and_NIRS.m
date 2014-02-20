@@ -76,7 +76,7 @@ data= bbci_apply(bbci);
 %% analyze the outputs
 log_format= '%fs | CTRL%d | {cl_output=%f}';
 [time, cfy_no, cfy]= textread(data.log.filename, log_format, ...
-                              'delimiter','','commentstyle','shell');
+                              'commentstyle','shell');
 idx_EEG= find(cfy_no==1);
 idx_NIRS= find(cfy_no==2);
 
@@ -84,13 +84,13 @@ mrk_cfy= calib_eeg.mrk;
 cnt_cfy_EEG= struct('fs', 1/mean(diff(time(idx_EEG))), ...
                     'x',  cfy(idx_EEG), 'clab',{{'cfy-EEG'}});
 epo_cfy_EEG= proc_segmentation(cnt_cfy_EEG, mrk_cfy, [-5000 15000]);
-fig_set(1, 'Name','EEG classifier output', 'clf',1);
+fig_set(1, 'Name','EEG classifier output', 'Clf',1);
 plot_channel(epo_cfy_EEG);
 
 cnt_cfy_NIRS= struct('fs', 1/mean(diff(time(idx_NIRS))), ...
                      'x',  cfy(idx_NIRS), 'clab',{{'cfy-NIRS'}});
 epo_cfy_NIRS= proc_segmentation(cnt_cfy_NIRS, mrk_cfy, [-5000 15000]);
-fig_set(2, 'Name','NIRS classifier output', 'clf',1);
+fig_set(2, 'Name','NIRS classifier output', 'Clf',1);
 plot_channel(epo_cfy_NIRS);
 
 BTB= BTB_memo;

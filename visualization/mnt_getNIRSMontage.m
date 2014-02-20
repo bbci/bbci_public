@@ -1,19 +1,22 @@
 function mnt = mnt_getNIRSMontage(varargin)
-%MNT_GETNIRSMONTAGE - get montage with NIRS channel positions for a given set
-%         of sources and detectors. NIRS channels are placed half-way 
-%         between a source and a detector on a spherical head model.
+%MNT_GETNIRSMONTAGE - Get montage with NIRS channel positions
+%
+%Description:
+% get montage with NIRS channel positions for a given set of sources and
+% detectors. NIRS channels are placed half-way between a source and a
+% detector on a spherical head model.
 %
 %Synopsis:
-%   MNT = nirs_getMontage(CLABSOURCE,CLABDETECTOR,<OPT>)
-%         If you give channels labels of the source and detectors (should
-%         correspond to EEG channel labels), montages for source and
-%         detectors are produced, as well as montages for the
-%         source-detector combinations.
+% MNT = nirs_getMontage(CLABSOURCE,CLABDETECTOR,<OPT>)
+%       If you give channels labels of the source and detectors (should
+%       correspond to EEG channel labels), montages for source and
+%       detectors are produced, as well as montages for the
+%       source-detector combinations.
 %
-%   MNT = nirs_getMontage(MNT,<OPT>)
-%         You can provide a montage struct wherein source and detector 
-%         montages are already given in .source and .detector fields.
-%         In this case, only the source-detector combinations are determined.
+% MNT = nirs_getMontage(MNT,<OPT>)
+%       You can provide a montage struct wherein source and detector 
+%       montages are already given in .source and .detector fields.
+%       In this case, only the source-detector combinations are determined.
 %
 %Input
 % OPT: struct or property/value list of optional properties:
@@ -40,12 +43,10 @@ function mnt = mnt_getNIRSMontage(varargin)
 %  .detector    - struct with montage for the detectors
 %
 %See also: setElectrodeMontage, nirs_reduceMontage
-%
 
 % matthias.treder@tu-berlin.de 2011
 % Markus Wenzel 2013 (adapted it to the new toolbox)
 % Jan Mehnert February 2014 (ready for public BBCI toolbox) (jan@mehnert.org)
-
 
 props= {'ClabPolicy'	'label'             'CHAR'
         'Projection'	'euclidean'         'CHAR'     
@@ -78,7 +79,6 @@ if ~exist('mnt','var')
   mnt.source = mnt_setElectrodePositions(clabSource, 'PositionFcn', opt.PositionFcn);
   mnt.detector = mnt_setElectrodePositions(clabDetector, 'PositionFcn', opt.PositionFcn);
 end
-
              
 if any(isnan(mnt.source.pos_3d(:))) || any(isnan(mnt.detector.pos_3d(:)))
   warning(['Some source/detector positions are NaN. Note that the NIRS channels '...

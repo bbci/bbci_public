@@ -1,6 +1,6 @@
 function H= plot_scalpOutline(mnt, varargin)
-%PLOT_SCALPOUTLINE - schematic sketch of the scalp (head, nose, DrawEars) and
-% the electrode positions including labels
+%PLOT_SCALPOUTLINE - schematic sketch of the scalp (head, nose, DrawEars)
+% and the electrode positions including labels
 %
 %Synopsis:
 % H= PLOT_SCALPOUTLINE(MNT, <OPT>)
@@ -53,7 +53,7 @@ props = {
          'Offset',                  [0 0],           'DOUBLE[2]';
          'Reference',               0,               'BOOL';
          'ReferenceProps',          {'FontSize',8,'FontWeight','bold','BackgroundColor',[.8 .8 .8],'HorizontalAlignment','center','Margin',2},  'STRUCT|CELL';
-};
+        };
 
 if nargin==0,
   H= props; return

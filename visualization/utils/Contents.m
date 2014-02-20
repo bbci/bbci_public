@@ -18,24 +18,3 @@
 % online/calibration/bbci_calibrate_ERPSpeller.m and
 % online/calibration/bbci_calibrate_csp.m,
 % remove?
-%
-% axis_getEffectivePosition: only used in plotutil_colorbarAside, made
-% private!
-%
-% axis_getColorbarHandle: only used in visutil_addColormap and
-% visutil_acmAdaptCLim, made private!
-%
-% removed unused axis_shiftRight, axis_shiftDown, axis_shiftLeft,
-% axis_shiftCenter, axis_xTickLabel, mntutil_shrinkChannels
-%
-% fig_setBackgroundAxis: only used once by plot_scalpEvolutionPlusChannel,
-% replace?
-%
-% fig_set: ???
-%
-% removed almost redundant fig_toolsoff
-%
-% gridutil_addScale, gridutil_getAxisPos, jvm_*, mntutil_posExt55:
-% moved to visualization/private
-%
-%

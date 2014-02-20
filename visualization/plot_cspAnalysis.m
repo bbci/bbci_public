@@ -33,7 +33,6 @@ props= {'ScalePos',      'none',                         'CHAR';
         'MarkPatterns',  [],                             'DOUBLE|CHAR';
         'MarkStyle',     {'LineWidth',3},                'PROPLIST';
         'RowLayout',     0,                              'BOOL';
-%         'AxesLayout',    {[0 0.02 .05], [0.01 0.03 0.01]}, 'CELL';
         'ColorOrder',    [],                             'DOUBLE[- 3]';
         'CspClab',       [],                             'CELL{CHAR}';
         'NComps',        [],                             'DOUBLE'};

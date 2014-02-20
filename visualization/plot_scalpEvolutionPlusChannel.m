@@ -133,7 +133,7 @@ subplot_Offset= 0;
 if opt.PlotChannel && ~isempty(clab),
   if ~isempty(opt.SubplotChannel),
     H.ax_erp= opt.SubplotChannel;
-    axis_getQuitely(H.ax_erp);
+    axis_getQuietly(H.ax_erp);
   else
     if opt.ChannelAtBottom,
       H.ax_erp= subplotxl(1+nClasses, 1, 1+nClasses, ...
@@ -197,7 +197,7 @@ for cc= 1:nClasses,
       continue;
     end
     if ~isempty(opt.Subplot),
-      axis_getQuitely(opt.Subplot(cc, ii));
+      axis_getQuietly(opt.Subplot(cc, ii));
     else
       subplotxl(nClasses+opt.PlotChannel, nIvals, ...
                 ii+(cc-1+subplot_Offset)*nIvals, ...
