@@ -9,6 +9,10 @@ rmpath(genpath(fullfile(BBCI_DIR, '.git')));
 BBCI_PRIVATE_DIR= fullfile(fileparts(BBCI_DIR), 'bbci_private');
 
 BTB= opt_proplistToStruct(varargin{:});
+
+% now IoLib can be set, because it is in BBCI_DIR
+BTB.Acq.IoLib= which('inpout32.dll');
+
 if ~isfield(BTB, 'TypeChecking'),
   BTB.TypeChecking= 1;
 end
