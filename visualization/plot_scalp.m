@@ -223,7 +223,7 @@ yg= yg+opt.Offset(2);
 if strcmp(opt.Renderer,'pColor')
   H.patch= pColor(xg, yg, zg);
 else
-  [~,H.patch]= contourf(xg, yg, zg, opt.ContourfLevels,'LineStyle','none');
+  [dummy,H.patch]= contourf(xg, yg, zg, opt.ContourfLevels,'LineStyle','none');
   % *** Hack to enforce cdatamappig = scaled in Colorbarv6.m by introducing
   % a useless patch object
   hold on
