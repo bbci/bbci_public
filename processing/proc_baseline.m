@@ -26,8 +26,8 @@ function dat= proc_baseline(dat, ival, varargin)
 %  [cnt, mrk]= file_readBV(some_file);   %load EEG-data in BV-format
 %  mrk= mrk_defineClasses(mrk, {1, 2; 'target','nontarget'}); 
 %  epo= proc_segmentation(cnt, mrk, [-200 800], 'CLab', {'Fz','Cz','Pz'});
-%  epo = proc_basline(epo, [-150 0]);
-%  epo = proc_basline(epo, 100, 'beginning'); %results in th same as proc_basline(epo, [-200 -100]), due to the segmentation
+%  epo = proc_baseline(epo, [-150 0]);
+%  epo = proc_baseline(epo, 100, 'beginning'); %results in th same as proc_basline(epo, [-200 -100]), due to the segmentation
 %
 % SEE proc_medianBaseline
 
