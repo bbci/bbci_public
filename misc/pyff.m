@@ -17,8 +17,8 @@ function res = pyff(command, varargin)
 % the following (optional) fields/properties:
 %  .Dir      - pyff source directory (default for win: D:\svn\pyff\src;
 %              default for unix: ~/svn/pyff/src)
-%  .Parport     - port number for parallel port. Default is dec2hex(IO_ADDR),
-%              if BTB.IOAddr exists, otherwise [].
+%  .Parport     - port number for parallel port. Default is dec2hex(BTB.IoAddr),
+%              if BTB.IoAddr exists, otherwise [].
 %  .A        - additional feedback directory (default [])
 %  .Gui      - if 1, pyff gui is started along with the feedback controller (default 0)
 %  .L        - loglevel (default 'debug')
@@ -86,20 +86,20 @@ global BTB
 global acquire_func general_port_fields
 persistent ACQ_STARTED
 
-props = {'Os',                    'win',            '!CHAR(win unix)';
-         'PyffDir'                BTB.PyffDir      'CHAR';
-         'ReplaceHtmlEntities',   1,                '!BOOL';
-         'Parport',               dec2hex(BTB.IOAddr),     'CHAR';
-         'A',                     [],               'CHAR';
-         'Gui',                   0,                'BOOL';
-         'L',                     'debug',          'CHAR';
-         'TodayDir',              BTB.Tp.Dir,      'CHAR';
-         'VpCode',                BTB.Tp.Code,     'CHAR';
-         'Basename',              '',               'CHAR';
-         'OutputProtocol',        [],               'CHAR';
-         'Host',                 'localhost',       'CHAR';
-         'Port',                  12345,            'INT';
-         'Impedances'             1                 'BOOL';
+props = {'Os',                    'win',                  '!CHAR(win unix)';
+         'PyffDir'                BTB.PyffDir             'CHAR';
+         'ReplaceHtmlEntities',   1,                      '!BOOL';
+         'Parport',               dec2hex(BTB.Acq.IoAddr),'CHAR';
+         'A',                     [],                     'CHAR';
+         'Gui',                   0,                      'BOOL';
+         'L',                     'debug',                'CHAR';
+         'TodayDir',              BTB.Tp.Dir,             'CHAR';
+         'VpCode',                BTB.Tp.Code,            'CHAR';
+         'Basename',              '',                     'CHAR';
+         'OutputProtocol',        [],                     'CHAR';
+         'Host',                 'localhost',             'CHAR';
+         'Port',                  12345,                  'INT';
+         'Impedances'             1                       'BOOL';
 
 };
 
