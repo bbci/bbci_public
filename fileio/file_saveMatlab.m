@@ -11,7 +11,7 @@ function file_saveMatlab(file, dat, mrk, mnt, varargin)
 %   MNT:    STRUCT  electrode montage structure
 %
 %   OPT: PROPLIST - Structure or property/value list of optional properties:
-%   'Path' - CHAR: Path to save the file. Default is the global variable BTB.MatDir
+%   'Folder' - CHAR: Path to save the file. Default is the global variable BTB.MatDir
 %                  unless FILE is an absolute path in which case it is ''.
 %   'Channelwise' - BOOL: If true, signals are saved channelwise. This is an advantage
 %                  for big files, because it allows to load selected
@@ -54,15 +54,15 @@ function file_saveMatlab(file, dat, mrk, mnt, varargin)
 
 global BTB
 
-props = {'Path',             BTB.MatDir   'CHAR'
-         'Channelwise',      1            '!BOOL'
+props = {'Folder'            BTB.MatDir   'CHAR'
+         'Channelwise'       1            '!BOOL'
          'Format'            'auto'       '!CHAR(double float int16 auto)'
          'Resolution'        'auto'       '!CHAR(auto)|!DOUBLE[1]|!DOUBLE[-]'
          'ResolutionList'   [1 0.5 0.1]   '!DOUBLE[-]'
          'Accuracy'          10e-10       '!DOUBLE[1]'
          'AddChannels'       0            '!BOOL'
-         'Vars'              {}           'CELL'
-         'SaveParam'         {'-v7'}      'CHAR|CELL{CHAR}'
+         'Vars'              {}           'CHAR|CELL{CHAR}'
+         'SaveParam'         {'-v7'}      'CELL'
         };
 
 misc_checkType(dat,'STRUCT(x fs clab)');
@@ -76,19 +76,19 @@ if ischar(opt.Vars),
   opt.Vars= {opt.Vars};
 end
 if fileutil_isAbsolutePath(file),
-  opt.Path = '';
+  opt.Folder = '';
 end
 
 nChans= length(dat.clab);
-fullname= [opt.Path filesep file];
+fullname= fullfile(opt.Folder, file);
 if opt.AddChannels && ~exist([fullname '.mat'], 'file')
-  warning('File does not exist: ignoring option ''add_channels''.');
+  warning('File does not exist: ignoring option ''AddChannels''.');
   opt.AddChannels= 0;
 end
 
 if opt.AddChannels,
   if ~opt.Channelwise,
-    warning('add_channels requested: forcing channelwise mode');
+    warning('AddChannels requested: forcing channelwise mode');
     opt.Channelwise= 1;
   end
   nfo_old= file_loadMatlab(fullname, 'Vars','nfo');

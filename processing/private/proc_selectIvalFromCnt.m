@@ -23,4 +23,6 @@ if isinf(ival_sa(2)),
 end
 
 cnt.x= cnt.x(ival_sa(1):ival_sa(2),:);
+idx_in_ival= find(mrk.time>ival(1) & mrk.time<=ival(2));
 mrk.time= mrk.time - ival(1);
+mrk= mrk_selectEvents(mrk, idx_in_ival);

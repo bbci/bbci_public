@@ -22,8 +22,7 @@ end
 data.log= bbci_log_open(BC.log);
 
 % Log info about calibration files and BBCI settings
-folder= fileparts(data.filename); 
-bbci_log_write(data, '#Calibration files from folder <%s>:', folder);
+bbci_log_write(data, '#Calibration files from folder <%s>:', BC.folder);
 file_counter= 1;
 for k= 1:length(data.fileinfo),
   for f= 1:length(data.fileinfo{k}),

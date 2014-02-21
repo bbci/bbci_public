@@ -81,7 +81,7 @@ if isdefault.state,
 end
 
 if opt.verbose,
-  fprintf('waiting for marker %s\n', toString(opt.stopmarkers));
+  fprintf('waiting for marker %s\n', util_toString(opt.stopmarkers));
 end
 
 stopmarker = 0;

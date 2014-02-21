@@ -1,18 +1,20 @@
-function H= axis_redrawFrame(ax, varargin)
+function H= axis_redrawFrame(ax, lw)
 %AXIS_REDRAWFRAME - Redraws the frames of axes. Can be useful when patch
 % objects have been drawn, which sometimes overlay the original frame.
+%
+%Synposis:
+% H= axis_redrawFrame(AX, LW)
+%
+%Input:
+% AX: vector of axis handles
+% LW: line width of frame to be redrawn
+%
+%Output:
+% H: handle to redrawn frame
 
-props = {'VPos',            0,          '!DOUBLE';
-         'LineWidth',       1,          '!DOUBLE'
-         };
-
-if nargin==0
-  H= props; return
+if nargin==1
+  lw = 1;
 end
-
-opt= opt_proplistToStruct(varargin{:});
-[opt, isdefault]= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
 
 misc_checkTypeIfExists('ax','!GRAPHICS');
 
@@ -38,8 +40,7 @@ for ii= 1:length(ax),
   idx= find(ismember(location, draw_loc,'legacy'));
   hold_state= get(ax(ii), 'NextPlot');
   set(ax(ii), 'NextPlot','add');
-  H= plot(XX(:,idx), YY(:,idx), 'LineWidth',opt.LineWidth);
-%  set(ax(ii), 'NextPlot','replace');
+  H= plot(XX(:,idx), YY(:,idx), 'LineWidth',lw);
   set(ax(ii), 'NextPlot',hold_state);
   set(H, 'handleVisibility','off');
   hx= H(find(ismember(location(idx), {'top','bottom'},'legacy')));
@@ -62,9 +63,7 @@ for ii= 1:length(ax),
       set(hy, 'Color',col);
     end
   end
-%  legend;  %% restore legend
 end
 
-%if old_ax~=ax(end),  %% if this was not checked the legend would disappear
-  visutil_backaxes(old_ax);
-%end
+visutil_backaxes(old_ax);
+

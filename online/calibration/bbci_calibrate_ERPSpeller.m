@@ -34,7 +34,7 @@ default_grd= sprintf(['scale,FC3,FC1,FCz,FC2,FC4,legend\n' ...
                  
 props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
         'disp_ival'     [-200 800]                     '!DOUBLE[1 2]'
-        'clab'          '*'                            'CHAR|CELL{CHAR}'
+        'clab'          {'not','E*'}                   'CHAR|CELL{CHAR}'
         'cfy_clab'      {'not','E*','Fp*','A*'}        'CHAR|CELL{CHAR}'
         'cfy_ival'                    'auto'           'CHAR(auto)|DOUBLE[- 2]'
         'cfy_ival_pick_peak'          [100 700]        'DOUBLE[1 2]'
@@ -152,22 +152,19 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
     if opt.reject_channels,
       bbci_log_write(data, 'Rejected channels: <%s>', str_vec2str(rClab));
       BC_result.rejected_clab= rClab;
+      if iscell(BC_result.rejected_clab),   %% that means rejected_clab is not NaN
+          cidx= find(ismember(BC_result.clab, BC_result.rejected_clab));
+          BC_result.clab(cidx)= [];
+      end
     end
   else
     % Avoid confusion with old figure from previous run
     fig_closeIfExists(5);
   end
-  if iscell(BC_result.rejected_clab),   %% that means rejected_clab is not NaN
-    cidx= find(ismember(BC_result.clab, BC_result.rejected_clab));
-    BC_result.clab(cidx)= [];
-  end
 else
   result_flds= {'rejected_trials', 'rejected_clab', 'clab'};
   BC_result= struct_copyFields(BC_result, previous, result_flds);
 end
-cidx= find(ismember(BC_result.cfy_clab, BC_result.rejected_clab));
-BC_result.cfy_clab(cidx)= [];
-
 
 %% --- Segmentation and baselining ---
 %

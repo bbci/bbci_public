@@ -1,9 +1,11 @@
 function mnt = mnt_restrictNIRSMontage(mnt,varargin)
-%MNT_RESTRICTNIRSMONTAGE - restricts the NIRS montage by selecting (a)
-%       specified NIRS channels and/or (b) sources or detectors and 
-%       keeping only the corresponding NIRS channels AND/OR (c) keeping only 
-%       informative NIRS channels (ie channels corresponding to a relatively 
-%       small source-detector distance).
+%MNT_RESTRICTNIRSMONTAGE - restrict a NIRS montage to a subset of channels
+%
+%Descpription:
+% Restricts the NIRS montage by selecting (a) specified NIRS channels
+% and/or (b) sources or detectors and keeping only the corresponding NIRS
+% channels and/or (c) keeping only informative NIRS channels (i.e. channels
+% corresponding to a relatively small source-detector distance).
 %
 %Synopsis:
 % MNT = mnt_restrictNIRSMontage(MNT, CHANS, <OPT>)
@@ -36,8 +38,8 @@ function mnt = mnt_restrictNIRSMontage(mnt,varargin)
 %Output:
 % MNT: updated montage
 %
-%Note: Use proc_selectChannels to reduce the NIRS data (cnt,dat,epo) 
-% according to the new montage.
+%Note: Use proc_selectChannels to reduce the NIRS data (cnt, dat, epo) 
+%      according to the new montage.
 %
 %See also: mnt_restrictMontage
 
@@ -50,7 +52,8 @@ props={ 'Chans'         {}      'CHAR|CELL{CHAR}'
         'Detector'      {}      'CHAR|CELL{CHAR}'
         'RemoveOptodes' 1       'BOOL'
         'HeadRadius'    10      'DOUBLE'
-        'Dist'          3.5     'DOUBLE'};
+        'Dist'          3.5     'DOUBLE'
+       };
                  
 if nargin==0,
     mnt= props; return
@@ -73,7 +76,6 @@ end
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 misc_checkType(mnt, 'STRUCT');
-
 
 if ischar(opt.Source)
   opt.Source = {opt.Source};

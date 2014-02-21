@@ -58,7 +58,7 @@ function [H, Ctour]= plot_scalp(mnt, w, varargin)
 %
 %Output:
 % H:     handle to several graphical objects
-% Ctour: Struct of contour information
+% Ctour: struct of contour information
 %
 %See also plot_scalpPatterns, plot_scalpEvolution.
 
@@ -190,7 +190,7 @@ if opt.Extrapolation,
 else
   if strcmp(opt.Interpolation, 'v4'),
     % get the convex hull from linear Interpolation
-    [dmy,dmy,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
+    [~,~,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
     imaskout= isnan(zconv(:));
     [xg,yg,zg]= griddata(xe, ye, w, xx, yy, opt.Interpolation);
     zg(imaskout)= NaN;
@@ -262,10 +262,7 @@ if ~isequal(opt.Contour,0),
   if length(opt.Contour)>1,
     ctick= opt.Contour;
     v= ctick;
-%    v= v(min(find(v>min(H.CLim))):max(find(v<max(H.CLim))));
   else
-%    mi= min(tight_caxis);
-%    ma= max(tight_caxis);
     mi= min(H.CLim);
     ma= max(H.CLim);
     switch(opt.ContourPolicy),
@@ -329,7 +326,6 @@ else
   if opt.TicksAtContourLevels && opt.Contour,
     if strcmpi(opt.ScalePos, 'vert'),
       set(H.cb, 'yLim',H.CLim, 'yTick', ctick);
-%      ylabel(opt.YUnit);
       if opt.ShrinkColorbar>0,
         cbpos= get(H.cb, 'Position');
         cbpos(2)= cbpos(2) + cbpos(4)*opt.ShrinkColorbar/2;
@@ -338,7 +334,6 @@ else
       end
     else
       set(H.cb, 'xLim',H.CLim, 'xTick', ctick);
-%      xlabel(opt.YUnit);
       if opt.ShrinkColorbar>0,
         cbpos= get(H.cb, 'Position');
         cbpos(1)= cbpos(1) + cbpos(1)*opt.ShrinkColorbar/2;
@@ -369,6 +364,3 @@ if nargout>=2,
                 'values',v, 'matrix',c);
 end
 
-% if fig_Visible
-%   jvm_restoreFig(jvm);
-% end

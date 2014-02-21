@@ -54,8 +54,8 @@ props= {'ChannelAtBottom', 0,                 'BOOL';
         'ShrinkColorbar',  0,                 'DOUBLE';
         'Subplot',         [],                'DOUBLE';
         'SubplotChannel',  [],                'DOUBLE';
-        'XUnit',           '[ms]',            'CHAR';
-        'YUnit',           '[\muV]',          'CHAR';
+        'XUnit',           'ms',            'CHAR';
+        'YUnit',           '\muV',          'CHAR';
 };
 
 props_scalpPattern= plot_scalpPattern;
@@ -77,18 +77,17 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props, props_scalpPattern, props_channel);
 
-opt_scalpPattern= opt_substruct(opt, props_scalpPattern(:,1));
-opt_channel= opt_substruct(opt, props_channel(:,1));
-
 if isfield(erp, 'xUnit'),
   [opt,isdefault]= opt_overrideIfDefault(opt, isdefault, ...
                                          'XUnit', erp.xUnit);
 end
-
 if isfield(erp, 'yUnit'),
   [opt,isdefault]= opt_overrideIfDefault(opt, isdefault, ...
                                          'YUnit', erp.yUnit);
 end
+
+opt_scalpPattern= opt_substruct(opt, props_scalpPattern(:,1));
+opt_channel= opt_substruct(opt, props_channel(:,1));
 
 if isfield(opt, 'ColorOrder'),
   if isequal(opt.ColorOrder,'rainbow'),
@@ -134,7 +133,7 @@ subplot_Offset= 0;
 if opt.PlotChannel && ~isempty(clab),
   if ~isempty(opt.SubplotChannel),
     H.ax_erp= opt.SubplotChannel;
-    axis_getQuitely(H.ax_erp);
+    axis_getQuietly(H.ax_erp);
   else
     if opt.ChannelAtBottom,
       H.ax_erp= subplotxl(1+nClasses, 1, 1+nClasses, ...
@@ -198,7 +197,7 @@ for cc= 1:nClasses,
       continue;
     end
     if ~isempty(opt.Subplot),
-      axis_getQuitely(opt.Subplot(cc, ii));
+      axis_getQuietly(opt.Subplot(cc, ii));
     else
       subplotxl(nClasses+opt.PlotChannel, nIvals, ...
                 ii+(cc-1+subplot_Offset)*nIvals, ...

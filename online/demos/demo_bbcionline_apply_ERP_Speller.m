@@ -8,9 +8,13 @@
 %  simulated online mode, and the results of classification are read from
 %  the log file. These are compared with a standard offline classification
 %  analysis from the data itself (i.e., without simulating online operation).
+%
+%  You need to run demo_convert_ERPSpeller first (one time only).
 
+BTB_memo= BTB;
+BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
 
-eeg_file= fullfile(BTB.DataDir, 'demoMat', 'VPiac_10_10_13', ...
+eeg_file= fullfile('VPiac_10_10_13', ...
                    'calibration_CenterSpellerMVEP_VPiac');
 [cnt, mrk]= file_loadMatlab(eeg_file, 'vars',{'cnt','mrk'});
 
@@ -55,7 +59,7 @@ data= bbci_apply_uni(bbci);
 log_format= '%fs | M(%u) | %fs | [%f] | %s';
 [time, marker_desc, marker_time, cfy, control]= ...
     textread(data.log.filename, log_format, ...
-             'delimiter','','commentstyle','shell');
+             'commentstyle','shell');
 
 % validate makers that evoked calculation of control signals
 isequal(marker_desc, mrk.event.desc(1:length(marker_desc)))
@@ -74,3 +78,5 @@ isctrl= cellfun(@(x)(length(x)>2), control);
 control_str= sprintf('%s\n', control{find(isctrl)});
 [var_name, var_value]= strread(control_str, '{%s%f}', 'delimiter','=');
 var_value'
+
+BTB= BTB_memo;

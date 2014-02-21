@@ -36,7 +36,7 @@ end
 k= 0;
 for ih= hsp,
   k= k+1;
-  axis_getQuitely(ih);  %% this lets the legend vanish behind the axis
+  axis_getQuietly(ih);  %% this lets the legend vanish behind the axis
   yPatch= get(ih, 'yLim');
   H.line(:,k)= line(ival([1 2; 1 2]), yPatch([1 1; 2 2]), ...
                   'Color',0.5*markCol, 'LineWidth',0.3);
@@ -51,7 +51,7 @@ for ih= hsp,
 end
 set(H.line, 'UserData','ival line');
 set(H.patch, 'EdgeColor','none', 'UserData','ival patch');
-axis_getQuitely(old_ax);
+axis_getQuietly(old_ax);
 if isfield(get(old_ax,'UserData'),'hleg') & ...
       ~isnan(getfield(get(old_ax,'UserData'), 'hleg')),
   legend;

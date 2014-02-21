@@ -95,7 +95,10 @@ for ii = 1:prod(sz(1:end-1))
     end
 end
 
-fv_aucval.x= reshape(fv_aucval.x, sz(1:end-1));
+if length(sz) > 2 
+    fv_aucval.x= reshape(fv_aucval.x, sz(1:end-1));
+end
+
 fv_aucval.x = (fv_aucval.x-0.5)*2;
 if opt.Stats
   fv_aucval.se = 2*repmat(sqrt((0.25 + (sum(sum(fv.y'))-2)*(1/12))./prod(sum(fv.y'))), sz(1:end-1));

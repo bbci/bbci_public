@@ -50,5 +50,5 @@ H= plot_scalpEvolutionPlusChannel(erd, mnt, clab, ival_scalps, ...
                                   'ColorOrder',colOrder);
 grid_addBars(erd_r);
 
-fig_set(4, 'shrink',[1 2/3]);
+fig_set(4, 'Resize',[1 2/3]);
 plot_scalpEvolutionPlusChannel(erd_r, mnt, clab, ival_scalps, defopt_scalp_r);

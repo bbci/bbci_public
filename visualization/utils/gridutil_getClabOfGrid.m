@@ -2,7 +2,7 @@ function clab= gridutil_getClabOfGrid(mnt)
 %GETCLABOFGRID - Channel names of channels Visible in the grid of a montage
 %
 %Synopsis:
-% clab= gridutil_getClabOfGrid(mnt)
+% CLAB= gridutil_getClabOfGrid(MNT)
 
 if isfield(mnt, 'box'),
   idx= find(~isnan(mnt.box(1,:)));
