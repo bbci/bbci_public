@@ -137,20 +137,22 @@ if DFS.starting,
           'pause_msg'   'pause'   'CHAR'
           'geometry'    [0 0 800 600]   '!DOUBLE[4]'
          };
-  
-  [opt, isdefault]= opt_setDefaults(opt, props, 1);
+  props_fbset= {'trigger_fcn'     []   'FUNC'
+                'trigger_param'   {}   'CELL'};
+  props_all= opt_catProps(props, props_fbset);
+  [opt, isdefault]= opt_setDefaults(opt, props_all, 2);
   
   if ~ismember(opt.timeout_policy,{'hitiflateral','reject'}) ...
-        & isdefault.show_rejected,
+        && isdefault.show_rejected,
     [opt, isdefault]= opt_overrideIfDefault(opt, isdefault, ...
                                                'show_rejected', 0);
   end
-  if opt.rate_control & ~strcmpi(opt.timeout_policy,'hitiflateral'),
+  if opt.rate_control && ~strcmpi(opt.timeout_policy,'hitiflateral'),
     DFS.center_visible= 0;
   else
     DFS.center_visible= 1;
   end
-  if ~opt.cursor_on & strcmp(opt.response_at, 'cursor'),
+  if ~opt.cursor_on && strcmp(opt.response_at, 'cursor'),
     opt.response_at= 'center';
   end
   data_feedback.opt= opt;
@@ -286,7 +288,7 @@ if DFS.no==3,  %% wait before cursor movement starts
 end
 
 if DFS.no==4,  %% in position control, cursor becomes active in center area
-  if opt.rate_control | abs(DFS.x)<opt.center_size,
+  if opt.rate_control || abs(DFS.x)<opt.center_size,
     DFE= fbset(DFE, 60);
     if opt.cursor_on,
       DFE= fbset(DFE, DFS.H.fixation, 'Visible','off');
@@ -393,7 +395,7 @@ if DFS.no==5,  %% move cursor until target was hit or time-out
       DFE= fbset(DFE, DFS.H.points(1), 'String',['hit: ' int2str(nHits)]);
       DFE= fbset(DFE, DFS.H.points(2), 'String',['miss: ' int2str(nMisses)]);
       DFE= fbset(DFE, DFS.H.rejected_counter, 'String',['rej: ' int2str(DFS.rejected)]);
-      if ishit==1 & ~opt.touch_terminates_trial,
+      if ishit==1 && ~opt.touch_terminates_trial,
         ii= DFS.selected;
         if abs(DFS.x) > abs(DFS.punch(ii)),  %% beaten the punchline?
           DFS.punch(ii)= DFS.x;
@@ -481,7 +483,7 @@ if DFS.no==6,  %% wait before next trial starts (or game is over)
         DFE= fbset(DFE, DFS.H.cue, 'Visible','off');
         DFE= fbset(DFE, 255);
         DFS.no= -1;
-    elseif opt.break_every>0 & DFS.trial>0 & mod(DFS.trial,opt.break_every)==0,
+    elseif opt.break_every>0 && DFS.trial>0 && mod(DFS.trial,opt.break_every)==0,
       DFS.timer= 0;
       DFS.no= 7;
     else
