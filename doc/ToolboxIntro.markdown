@@ -4,9 +4,6 @@
 
 ---
 
-***under construction***
-
----
 
 To follow this tutorial, you need to have the BBCI Matlab toolbox
 installed [ToolboxSetup](ToolboxSetup.html) and know about its data structures
@@ -95,12 +92,12 @@ plot_scalp(mnt, cnt.x(200,[1:30 35:64]), 'WClab',cnt.clab([1:60]))
 ```
 % data structure defining the markers (trigger events in the signals)
 vmrk
-vmrk.desc(1:100)
+vmrk.event.desc(1:100)
 classDef= {31:46, 11:26; 'target', 'nontarget'};
 mrk= mrk_defineClasses(vmrk, classDef);
 mrk.y(:,1:40)
 % row 1 of mrk.y defines membership to class 1, and row 2 to class 2
-mrk.desc(1:40)
+mrk.event.desc(1:40)
 sum(mrk.y,2)
 it= find(mrk.y(1,:));
 it(1:10)
@@ -112,14 +109,14 @@ it(1:10)
 ```
 epo= proc_segmentation(cnt, mrk, [-200 800])
 epo
-iCz= util_chanind(epo, 'Cz')
+iCz= util_chanind(epo, 'Cz') %fint the index of channel Cz
 plot(epo.t, epo.x(:,iCz,1))
 xlabel('time  [ms]');
 ylabel('potential @Cz  [\muV]');
 plot(epo.t, epo.x(:,iCz,2))
-plot(epo.t, epo.x(:,iCz,it(1)))
+plot(epo.t, epo.x(:,iCz,it(1))) %Plot the EEG trace of an evoked potential
 plot(epo.t, epo.x(:,iCz,it(2)))
-plot(epo.t, mean(epo.x(:,iCz,it),3))
+plot(epo.t, mean(epo.x(:,iCz,it),3)) %Plot the ERP of channel Cz
 in= find(mrk.y(2,:));
 hold on
 plot(epo.t, mean(epo.x(:,iCz,in),3), 'k')
@@ -137,6 +134,9 @@ grd= sprintf(['scale,_,F5,F3,Fz,F4,F6,_,legend\n' ...
               'P7,P5,P3,P1,Pz,P2,P4,P6,P8\n' ...
               'PO9,PO7,PO3,O1,Oz,O2,PO4,PO8,PO10']);
 mnt= mnt_setGrid(mnt, grd);
+% One can also use template grids with
+mnt= mnt_setGrid(mnt, 'M');
+%
 grid_plot(epo, mnt, defopt_erps);
 % baseline drifts:
 clf; plot(cnt.x(1:1000,32))
@@ -177,7 +177,7 @@ ff= fv;
 clear loss
 for ii= 1:size(fv.x,1),
   ff.x= fv.x(ii,:,:);
-  loss(ii)= xvalidation(ff, 'RLDAshrink', 'XTrials',[1 5], 'LossFcn',@loss_rocArea);
+  loss(ii)= crossvalidation(ff, @train_RLDAshrink, 'sampleFcn', {@sample_KFold, 5}, 'LossFcn',@loss_rocArea);
 end
 
 clf;
@@ -191,7 +191,7 @@ ff= fv;
 clear loss
 for ii= 1:size(fv.x,2),
   ff.x= fv.x(:,ii,:);
-  loss(ii)= xvalidation(ff, 'RLDAshrink', 'XTrials',[1 5], 'LossFcn',@loss_rocArea);
+  loss(ii)= crossvalidation(ff, @train_RLDAshrink, 'sampleFcn', {@sample_KFold, 5}, 'LossFcn',@loss_rocArea);
 end
 acc= 100-100*loss;
 plot_scalp(mnt, acc, 'CLim','range', 'Colormap', cmap_whitered(31));
@@ -201,14 +201,14 @@ plot_scalp(mnt, acc, 'CLim','range', 'Colormap', cmap_whitered(31));
 % -- classification on spatio-temporal features
 ival= [150:50:700; 200:50:750]';
 fv= proc_jumpingMeans(epo, ival);
-xvalidation(fv, 'RLDAshrink', 'XTrials',[1 5], 'LossFcn',@loss_rocArea);
+loss_spatioTemp = crossvalidation(fv, @train_RLDAshrink, 'sampleFcn', {@sample_KFold, 5}, 'LossFcn',@loss_rocArea);
 
 %with interval selection based on heuristics
 %epo_auc= proc_aucValues(epo);
 %ival= select_time_intervals(epo_auc, 'visualize', 1, 'visu_scalps', 1, ...
 %                            'nIvals',5);
 %fv= proc_jumpingMeans(epo, ival);
-%xvalidation(fv, 'RLDAshrink', 'XTrials',[1 5], 'LossFcn',@loss_rocArea);
+%loss_spatioTemp = crossvalidation(fv, @train_RLDAshrink, 'sampleFcn', {@sample_KFold, 5}, 'LossFcn',@loss_rocArea);
 
 % For faster performance, you can switch off type-checking and the 
 % history for validation.
