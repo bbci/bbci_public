@@ -2,7 +2,6 @@ function make_bbci_acquire_bv(debug, nouzz)
 
 clear functions
 
-% params = {'enobio_api\Enobio3GAPI.lib'};
 params = {'WS2_32.lib'};
 params = ['bbci_acquire_tmsi.cpp' params];
 params = ['-g' params]
