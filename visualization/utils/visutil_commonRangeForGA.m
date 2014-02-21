@@ -1,20 +1,24 @@
 function range= visutil_commonRangeForGA(erp, varargin)
 %VISUTIL_COMMONRANGEFORGA - Determine plotting range for grand average ERPs
-%for each condition separately
 %
 %Synposis:
 % RANGE= visutil_commonRangeForGA(ERP, <OPT>)
 %
 %Input:
-% ERP: cell of size [N x C] containing ERPs of N subjects and C conditions
+% ERP: cell of size [N x C] containing ERPs of N subjects and C conditions,
+%      plotting ranges are determined for each condition separately
 % OPT: struct or property/value list of optional properties:
 %  .CLabERP, CLabScalp - channels to be considered for ERP/scalp plots,
 %                        default: '*' (all channels)
-%  .IvalERP, IvalScalp - intervals for ERP/scalp plots to be considered,
-%                        default: [] (none)
+%  .IvalERP, IvalScalp - interval for ERP/scalp plots to be considered,
+%                        default: [] (whole ERP)
 %  .SymERP, SymScalp   - make ERP/scalp range symmetric,
 %                        default: false/true
-%  .NiceRangeERP       - 
+%
+%Output:
+% RANGE: struct containing the two fields:
+%  .erp   - plotting range for single channel ERPs
+%  .scalp - plotting range for scalp maps
 
 props= {'CLabERP'         '*'    'CELL{CHAR}|CHAR';
         'CLabScalp'       '*'    'CELL{CHAR}|CHAR';
