@@ -190,7 +190,7 @@ if opt.Extrapolation,
 else
   if strcmp(opt.Interpolation, 'v4'),
     % get the convex hull from linear Interpolation
-    [~,~,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
+    [dummy1,dummy2,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
     imaskout= isnan(zconv(:));
     [xg,yg,zg]= griddata(xe, ye, w, xx, yy, opt.Interpolation);
     zg(imaskout)= NaN;
