@@ -86,7 +86,7 @@ fbset= @bbci_fbutil_set;
 
 if DFS.starting,
   DFS.starting= 0;
-  props= {'countdown'   7000   'INT'
+  props= {'countdown'   3000   'INT'
           'classes'   {'left','right'}  'CELL'
           'trigger_classes_list'   {}   'CELL'
           'duration'   3000   'INT'
