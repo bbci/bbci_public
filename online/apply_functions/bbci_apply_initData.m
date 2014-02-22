@@ -128,14 +128,12 @@ data.adaptation= repmat({struct('log',ada_log)}, [1 length(bbci.adaptation)]);
 
 header_str= sprintf('# Classifier logfile: %s', data.log.filename);
 for k= 1:length(bbci.feedback),
-  if ~isequal(bbci.feedback(k).log.output,0),
-    bbci.feedback(k)= bbci_log_addHeaderLine(bbci.feedback(k), header_str);
-    fb_log= bbci_log_open(bbci.feedback(k).log);
-%    fb_log.time_fmt= bbci.log.time_fmt;
-    data.feedback(k).log= fb_log;
-    str= sprintf('#fcn = @%s', func2str(bbci.feedback(k).fcn));
-    bbci_log_write(data.feedback(k), str);
-  end
+  bbci.feedback(k)= bbci_log_addHeaderLine(bbci.feedback(k), header_str);
+  fb_log= bbci_log_open(bbci.feedback(k).log);
+%  fb_log.time_fmt= bbci.log.time_fmt;
+  data.feedback(k).log= fb_log;
+  str= sprintf('#fcn = @%s', func2str(bbci.feedback(k).fcn));
+  bbci_log_write(data.feedback(k), str);
 end
 
 %% Initialize adaptation
