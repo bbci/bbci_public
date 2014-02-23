@@ -132,8 +132,10 @@ for k= 1:length(bbci.feedback),
   fb_log= bbci_log_open(bbci.feedback(k).log);
 %  fb_log.time_fmt= bbci.log.time_fmt;
   data.feedback(k).log= fb_log;
-  str= sprintf('#fcn = @%s', func2str(bbci.feedback(k).fcn));
-  bbci_log_write(data.feedback(k), str);
+  if ~isempty(bbci.feedback(k).fcn),
+    str= sprintf('#fcn = @%s', func2str(bbci.feedback(k).fcn));
+    bbci_log_write(data.feedback(k), str);
+  end
 end
 
 %% Initialize adaptation
