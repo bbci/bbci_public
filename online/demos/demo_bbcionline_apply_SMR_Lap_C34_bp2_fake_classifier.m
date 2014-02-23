@@ -24,7 +24,6 @@ C.w= randn(size(A,2)*2, 1);  % 2 log-bandpower feature per channel
 bbci= struct;
 bbci.source.acquire_fcn= @bbci_acquire_offline;
 bbci.source.acquire_param= {cnt, mrk.orig};
-bbci.source.marker_mapping_fcn= @bbciutil_markerMappingSposRneg;
 
 bbci.signal.clab= clab;
 bbci.signal.proc= {{@online_linearDerivation, A},
