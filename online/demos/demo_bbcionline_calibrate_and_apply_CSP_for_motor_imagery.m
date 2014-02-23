@@ -9,7 +9,7 @@
 
 BC= [];
 BC.fcn= @bbci_calibrate_csp;
-BC.folder= fullfile(BTB.DataDir, 'demoRaw')
+BC.folder= fullfile(BTB.DataDir, 'demoRaw');
 BC.file= fullfile('VPkg_08_08_07', ...
                   'calibration_motorimageryVPkg');
 BC.marker_fcn= @mrk_defineClasses;
