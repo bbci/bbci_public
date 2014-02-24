@@ -28,6 +28,7 @@ end
 this_call= marker.current_time;
 ival= [last_call this_call];
 quit_markers= bbci_apply_queryMarker(marker, ival, bbci.quit_condition.marker);
+
 quit_cond1= ~isempty(quit_markers);
 if quit_cond1,
   str= '#Quit marker [%s] received: stopping.';
@@ -41,4 +42,4 @@ if quit_cond2,
   bbci_log_write(log_fid, str, bbci.quit_condition.running_time);
 end
 
-run= ~quit_cond1 && ~quit_cond2;
+run= ~(quit_cond1 || quit_cond2);
