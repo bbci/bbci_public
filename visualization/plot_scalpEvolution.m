@@ -11,8 +11,7 @@ function H= plot_scalpEvolution(erp, mnt, ival, varargin)
 % versions there might be different options for Color scaling.)
 %
 %Input:
-% ERP: struct of epoched EEG data. For convenience used Classwise
-%      averaged data, e.g., the result of proc_average.
+% ERP: struct of epoched EEG data.
 % MNT: struct defining an electrode montage
 % IVAL: [nIvals x 2]-sized array of interval, which are marked in the
 %       ERP plot and for which scalp topographies are drawn.

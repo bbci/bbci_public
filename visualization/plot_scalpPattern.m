@@ -5,8 +5,7 @@ function [H, Ctour]= plot_scalpPattern(erp, mnt, ival, varargin)
 % H= plot_scalpPattern(ERP, MNT, IVAL, <OPTS>)
 %
 %Input:
-% ERP: struct of epoched EEG data. For convenience used Classwise
-%        averaged data, e.g., the result of proc_average.
+% ERP: struct of epoched EEG data.
 % MNT: struct defining an electrode montage
 % IVAL: time interval for which scalp topography is to be plotted.
 % OPTS: struct or property/value list of optional fields/properties:
@@ -34,7 +33,7 @@ if nargin==0,
 end
 
 opt= opt_proplistToStruct(varargin{:});
-[opt isdefault]= opt_setDefaults(opt, props);
+[opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props, props_scalp);
 
 opt_scalp= opt_substruct(opt, props_scalp(:,1));
