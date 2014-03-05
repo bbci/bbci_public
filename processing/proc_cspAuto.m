@@ -24,7 +24,7 @@ function [dat, varargout]= proc_cspAuto(dat, varargin)
 %  .covPolicy - 'normal', 'average' (default) or manually defined cov matrices
 %      of size [nchans, nchans, 2] . 'average' calculates the average of the 
 %      single-trial covariance matrices.
-%  .score - 'eigenvalues', 'medianvar' (default), 'roc', 'fisher' to
+%  .score - 'eigenvalues', 'medianvar' (default) or 'auc' to
 %       determine the components by the respective score
 %
 %Returns:
