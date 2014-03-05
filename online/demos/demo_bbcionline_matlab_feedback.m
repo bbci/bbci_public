@@ -13,7 +13,7 @@ C.w= randn(length(clab), 1);
 
 bbci= struct;
 bbci.source.acquire_fcn= @bbci_acquire_randomSignals;
-bbci.source.acquire_param= {'clab',clab, 'realtime', 0.5};
+bbci.source.acquire_param= {'clab',clab, 'realtime', 2};
 bbci.feature.proc= {@proc_variance, @proc_logarithm};
 bbci.feature.ival= [-500 0];
 bbci.classifier.C= C;
@@ -28,6 +28,7 @@ bbci.feedback.opt= ...
 bbci.feedback.log.output= 'file';
 bbci.feedback.log.folder= BTB.TmpDir;
 
+% ?how is this supposed to stop?
 data= bbci_apply_uni(bbci);
 
 pause(1); close;

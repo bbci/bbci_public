@@ -1,17 +1,12 @@
-
-eeg_file= fullfile(BTB.DataDir, 'demoMat', 'VPkg_08_08_07', 'imag_arrowVPkg');
+eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
+                   'VPkg_08_08_07', 'calibration_motorimageryVPkg');
 
 %% Load data
 [cnt, mrk, mnt] = file_loadMatlab(eeg_file);
 
-%% Electrode Montage
-grd= sprintf(['scale,_,F3,Fz,F4,_,legend\n' ...
-              'FC5,FC3,FC1,FCz,FC2,FC4,FC6\n' ...
-              'C5,C3,C1,Cz,C2,C4,C6\n' ...
-              'CP5,CP3,CP1,CPz,CP2,CP4,CP6']);
-mnt= mnt_setGrid(mnt, grd);
+%% Choose Electrode Montage
+mnt= mnt_setGrid(mnt, 'M');
 
-colOrder= [245 159 0; 0 150 200]/255;
 clab= {'C3','C4'};
 classes = {'left','right'};
 ival_erd= [-500 6000];
@@ -40,17 +35,16 @@ erd_lar_r= proc_rSquareSigned(erd_lar);
 erd_r= proc_rSquareSigned(erd);
 
 fig_set(1)
-H= grid_plot(erd, mnt, defopt_erps, 'colorOrder',colOrder);
+H= grid_plot(erd, mnt, defopt_erps);
 grid_addBars(erd_r, 'HScale',H.scale);
 fig_set(2)
-H= grid_plot(erd_lar, mnt, defopt_erps, 'colorOrder',colOrder);
+H= grid_plot(erd_lar, mnt, defopt_erps);
 grid_addBars(erd_lar_r, 'HScale',H.scale);
 
 fig_set(3);
 H= plot_scalpEvolutionPlusChannel(erd, mnt, clab, ival_scalps, ...
                                   defopt_scalp_erp, ...
-                                  'ExtrapolateToMean', 1, ...
-                                  'ColorOrder',colOrder);
+                                  'ExtrapolateToMean', 1);
 grid_addBars(erd_r);
 
 fig_set(4, 'Resize',[1 2/3]);

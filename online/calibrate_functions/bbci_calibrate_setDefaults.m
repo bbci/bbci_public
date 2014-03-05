@@ -26,8 +26,8 @@ end
 bbci= opt_setDefaults(bbci, {'calibrate'   struct   'STRUCT'});
 
 props= {'folder'          BTB.Tp.Dir                   'CHAR'
-        'file'            ''                           'CELL|CHAR'
-        'read_fcn'        @file_readBV                 'FUNC'
+        'file'            ''                           '!CELL|!CHAR'
+        'read_fcn'        @file_readBV                 '!FUNC'
         'read_param'      {}                           'CELL'
         'marker_fcn'      []                           'FUNC'
         'marker_param'    {}                           'CELL'

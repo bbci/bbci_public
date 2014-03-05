@@ -170,7 +170,7 @@ if ~isempty(opt.Constraint),
   end
   epo_r.x= X_memo;
   if opt.Sort,
-    [~,si]= sort(ival(:,1));
+    [dummy,si]= sort(ival(:,1));
     ival= ival(si,:);
   end
   if opt.Visualize,

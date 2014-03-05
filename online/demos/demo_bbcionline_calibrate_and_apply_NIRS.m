@@ -1,11 +1,11 @@
 BC= [];
 BC.fcn= @bbci_calibrate_tinyNIRS;
+BC.folder=  fullfile(BTB.DataDir, 'demoMat');
+BC.file= fullfile('VPean_10_07_26', 'NIRS', 'real_movementVPean');
 BC.read_fcn= @file_loadNIRSMatlab;
 BC.read_param= {'Signal','oxy'};
 BC.marker_fcn= @mrk_defineClasses;
 BC.marker_param= {{1, 2; 'left', 'right'}};
-BC.folder=  fullfile(BTB.DataDir, 'demoMat');
-BC.file= fullfile('VPean_10_07_26', 'NIRS', 'real_movementVPean');
 
 % define a tmp folder
 BC.log.folder= BTB.TmpDir;

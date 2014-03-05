@@ -3,7 +3,7 @@
 %
 %PROC_AVERAGE - Classwise calculated averages
 %PROC_FLATEN - reduce dimensionality of a data struct by stacking
-%PROC_LORARITHM - computes the natural logarithm
+%PROC_LOGARITHM - computes the natural logarithm
 %PROC_NORMALIZE - normalize to e.g. unit variance,
 %PROC_VARIANCE - computes the variance in equally spaced intervals
 %

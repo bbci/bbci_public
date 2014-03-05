@@ -7,11 +7,9 @@
 %   a specific acquire function has to be specified) and starts the fun.
 
 
-BTB_memo= BTB;
-BTB.RawDir= fullfile(BTB.DataDir, 'demoRaw');
-
 BC= [];
 BC.fcn= @bbci_calibrate_csp;
+BC.folder= fullfile(BTB.DataDir, 'demoRaw');
 BC.file= fullfile('VPkg_08_08_07', ...
                   'calibration_motorimageryVPkg');
 BC.marker_fcn= @mrk_defineClasses;
@@ -50,5 +48,3 @@ cnt_cfy= struct('fs',1/mean(diff(time)), 'x',cfy, ...
 epo_cfy= proc_segmentation(cnt_cfy, calib.mrk, [0 5000]);
 fig_set(1, 'Name','classifier output', 'Clf',1);
 plot_channel(epo_cfy);
-
-BTB= BTB_memo;

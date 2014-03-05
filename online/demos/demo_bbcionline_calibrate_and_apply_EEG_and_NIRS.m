@@ -1,10 +1,7 @@
-BTB_memo= BTB;
-BTB.RawDir= fullfile(BTB.DataDir, 'demoRaw');
-BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
-
 %% first do the calibration for the NIRS:
 BC= [];
 BC.fcn= @bbci_calibrate_tinyNIRS;
+BC.folder= fullfile(BTB.DataDir, 'demoMat');
 BC.read_fcn=@file_loadNIRSMatlab;
 BC.read_param= {'Signal','oxy'};
 BC.file= fullfile('VPean_10_07_26', 'NIRS', 'real_movementVPean');
@@ -19,6 +16,7 @@ bbci_nirs= struct('calibrate', BC);
 %% now do the calibration for the EEG data:
 BC= [];
 BC.fcn= @bbci_calibrate_tinyCsp;
+BC.folder= fullfile(BTB.DataDir, 'demoRaw');
 BC.file= fullfile('VPean_10_07_26', 'real_movementVPean');
 BC.read_fcn= @file_readBV;
 BC.read_param= {'fs',100};
@@ -92,8 +90,6 @@ cnt_cfy_NIRS= struct('fs', 1/mean(diff(time(idx_NIRS))), ...
 epo_cfy_NIRS= proc_segmentation(cnt_cfy_NIRS, mrk_cfy, [-5000 15000]);
 fig_set(2, 'Name','NIRS classifier output', 'Clf',1);
 plot_channel(epo_cfy_NIRS);
-
-BTB= BTB_memo;
 
 
 % Note 1: This is just a demo. Here, the same data was used for training

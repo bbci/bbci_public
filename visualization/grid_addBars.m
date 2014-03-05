@@ -68,7 +68,7 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-if ~ismatrix(fv.x),
+if ndims(fv.x)>2
   error('only one Class allowed');
 end
 

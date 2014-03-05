@@ -12,8 +12,7 @@ function H= plot_scalpEvolutionPlusChannel(erp, mnt, clab, ival, varargin)
 % there might be different options for Color scaling.)
 %
 %Input:
-% ERP: struct of epoched EEG data. For convenience used Classwise
-%      averaged data, e.g., the result of proc_average.
+% ERP: struct of epoched EEG data.
 % MNT: struct defining an electrode montage
 % CLAB: label of the channel(s) which are to be displayed in the
 %       ERP plot.

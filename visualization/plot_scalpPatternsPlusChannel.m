@@ -5,8 +5,7 @@ function H= plot_scalpPatternsPlusChannel(erp, mnt, clab, ival, varargin)
 % H= plot_scalpPatternsPlusChannel(ERP, MNT, CLAB, IVAL, <OPTS>)
 %
 %Input:
-% ERP:  struct of epoched EEG data. For convenience used Classwise
-%       averaged data, e.g., the result of proc_average.
+% ERP:  struct of epoched EEG data
 % MNT:  struct defining an electrode montage
 % CLAB: label of the channel(s) which are to be displayed in the
 %        ERP plot.

@@ -11,7 +11,12 @@ BBCI_PRIVATE_DIR= fullfile(fileparts(BBCI_DIR), 'bbci_private');
 BTB= opt_proplistToStruct(varargin{:});
 
 % now IoLib can be set, because it is in BBCI_DIR
-BTB.Acq.IoLib= which('inpout32.dll');
+switch computer
+  case 'PCWIN'
+    BTB.Acq.IoLib= which('inpout32.dll');
+  case 'PCWIN64'
+    BTB.Acq.IoLib= which('inpout64.dll');
+end
 
 if ~isfield(BTB, 'TypeChecking'),
   BTB.TypeChecking= 1;

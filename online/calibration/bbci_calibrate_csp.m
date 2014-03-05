@@ -156,7 +156,7 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
   BC_result.rejected_trials= NaN;
   BC_result.rejected_clab= NaN;
   if opt.reject_artifacts || opt.reject_channels,
-    fig_state= fig_set(3, 'Hide',1, 'Name','Artifact rejection');
+    fig_state= fig_set(5, 'Hide',1, 'Name','Artifact rejection');
     [mk_clean , rClab, rTrials]= ...
         reject_varEventsAndChannels(data.cnt, mrk_all, opt.check_ival, ...
                                     'DoMultipass', 1, ...
@@ -317,7 +317,7 @@ clear erd erd_rsq;
 
 %% -- ERD/ERS --
 name= sprintf('ERD-ERS for [%g %g] Hz', opt.band);
-fig_state= fig_set(figno_offset + 2, 'Hide',1, 'Name',name);
+fig_state= fig_set(figno_offset+2, 'Hide',1, 'Name',name);
 erd= proc_selectChannels(cnt_flt, requ_clab);
 if opt.visu_laplace,
   erd= proc_laplacian(erd,'RequireCompleteNeighborhood', opt.laplace_require_neighborhood);

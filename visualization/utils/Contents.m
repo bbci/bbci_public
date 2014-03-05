@@ -10,11 +10,3 @@
 %MNTUTIL_* - Helping functions for handling montages
 %PLOTUTIL_* - Helping functions for plot_channel
 %VISUTIL_* - Various helping functions
-
-
-%%% TO-DO / CHANGES %%%
-%
-% fig_publish, fig_closeIfExists: extremely simple, only used in
-% online/calibration/bbci_calibrate_ERPSpeller.m and
-% online/calibration/bbci_calibrate_csp.m,
-% remove?

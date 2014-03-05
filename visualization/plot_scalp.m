@@ -190,7 +190,7 @@ if opt.Extrapolation,
 else
   if strcmp(opt.Interpolation, 'v4'),
     % get the convex hull from linear Interpolation
-    [~,~,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
+    [dummy1,dummy2,zconv]= griddata(xe, ye, w, xx, yy, 'linear');
     imaskout= isnan(zconv(:));
     [xg,yg,zg]= griddata(xe, ye, w, xx, yy, opt.Interpolation);
     zg(imaskout)= NaN;
@@ -223,7 +223,7 @@ yg= yg+opt.Offset(2);
 if strcmp(opt.Renderer,'pColor')
   H.patch= pColor(xg, yg, zg);
 else
-  [~,H.patch]= contourf(xg, yg, zg, opt.ContourfLevels,'LineStyle','none');
+  [dummy,H.patch]= contourf(xg, yg, zg, opt.ContourfLevels,'LineStyle','none');
   % *** Hack to enforce cdatamappig = scaled in Colorbarv6.m by introducing
   % a useless patch object
   hold on

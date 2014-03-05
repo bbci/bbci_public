@@ -99,7 +99,7 @@ if opt.VisuScalps,
         end
     end
     % Sort intervals
-    [~,si]= sort(ival(:,1));
+    [dummy,si]= sort(ival(:,1));
     ival= ival(si,:);
     
     for ii= 1:size(ival,1),
