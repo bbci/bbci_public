@@ -29,7 +29,7 @@ function [varargout] = file_readBV(file, varargin)
 %           opt.Filt must be a struct with fields 'b' and 'a' (as used for
 %           the Matlab function filter).
 %           Note that using opt.Filt may slow down loading considerably.
-%   'SubsampleFcn': Function that is used for subsampling after filtering, 
+%   'SubsamplePolicy': Function that is used for subsampling after filtering, 
 %           specified as as string or a vector.
 %           Default 'subsampleByMean'. Other 'subsampleByLag'
 %           If you specify a vector it has to be the same size as lag.
@@ -91,18 +91,19 @@ end
 %% start file_readBV
 global BTB
 
-props= {'CLab'              ''      'CHAR|CELL{CHAR}'
-        'Fs'                'raw'   'CHAR|DOUBLE'
-        'Start'             0       'DOUBLE[1]'
-        'MaxLen'            inf     'DOUBLE[1]'
-        'Prec'              0       'DOUBLE[1]'
-        'Ival'              []      'DOUBLE[2]'
-        'IvalSa'            []      'DOUBLE[2]'
-        'SubsampleFcn'      'subsampleByMean'  'CHAR'
-        'Filt'              []      'STRUCT(a b)'
-        'LinearDerivation'  []      'STRUCT'
-        'TargetFormat'      'bbci'  'CHAR'
-        'Verbose'           1       'BOOL'};
+props= {'CLab'               ''       'CHAR|CELL{CHAR}'
+        'Fs'                 'raw'    'CHAR|DOUBLE'
+        'Start'              0        'DOUBLE[1]'
+        'MaxLen'             inf      'DOUBLE[1]'
+        'Prec'               0        'DOUBLE[1]'
+        'Ival'               []       'DOUBLE[2]'
+        'IvalSa'             []       'DOUBLE[2]'
+        'SubsamplePolicy'    'mean'   'CHAR(mean lag)|DOUBLE'
+        'Filt'               []       'STRUCT(a b)'
+        'LinearDerivation'   []       'STRUCT'
+        'TargetFormat'       'bbci'   'CHAR'
+        'Verbose'            1        'BOOL'
+       };
 
 props_readBVmarkers= file_readBVmarkers;
 props_readBVheader= file_readBVheader;
@@ -332,16 +333,13 @@ for filePos = firstFileToRead:lastFileToRead
   end
   % set the subsample filter 
   lag = hdr{filePos}.fs/opt.Fs;
-  if ischar(opt.SubsampleFcn)
-    if strcmp(opt.SubsampleFcn,'subsampleByMean')
+  switch opt.SubsamplePolicy,
+    case 'mean',
       read_opt.filt_subsample = ones(1,lag)/lag;
-    elseif strcmp(opt.SubsampleFcn,'subsampleByLag')
+    case 'lag',
       read_opt.filt_subsample = [zeros(1,lag-1) 1];
-    else
-      error('opt.SubsampleFcn has to be ''subsampleByMean'' or subsampleByLag');
-    end
-  else
-    read_opt.filt_subsample = opt.SubsampleFcn;
+    otherwise,
+      read_opt.filt_subsample = opt.SubsamplePolicy;
   end
 
   read_hdr = struct('fs',hdr{filePos}.fs, ...
