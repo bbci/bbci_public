@@ -21,9 +21,10 @@ function [dat, varargout]= proc_cspAuto(dat, varargin)
 %      but every class will be represented), 
 %      'matchfilters' (in that case opt.patterns must be a matrix),
 %      'matchpatterns' (not implemented yet)
-%  .covPolicy - 'normal' or 'average' (default). The latter calculates
-%       the average of the single-trial covariance matrices.
-%  .score - 'eigenvalues', 'medianvar' (default), 'roc', 'fisher' to
+%  .covPolicy - 'normal', 'average' (default) or manually defined cov matrices
+%      of size [nchans, nchans, 2] . 'average' calculates the average of the 
+%      single-trial covariance matrices.
+%  .score - 'eigenvalues', 'medianvar' (default) or 'auc' to
 %       determine the components by the respective score
 %
 %Returns:
@@ -46,7 +47,7 @@ function [dat, varargout]= proc_cspAuto(dat, varargin)
 % Author(s): Benjamin Blankertz
 props= { 'patterns'     3           'INT'
          'score'        'medianvar' '!CHAR(eigenvalues medianvar auc)'
-         'covPolicy'    'average'   'CHAR'
+         'covPolicy'    'average'   'CHAR|DOUBLE[- - 2]'
          'scaling'      'none'      'CHAR'
          'normalize'    0           'BOOL'
          'selectPolicy' 'directorscut'  'CHAR'
@@ -77,7 +78,7 @@ end
 
 %% calculate classwise covariance matrices
 if isnumeric(opt.covPolicy),
-  R= opt.covPolicy,
+  R= opt.covPolicy;
   if ~isequal(size(R), [nChans nChans 2]),
     error('precalculated covariance matrices have wrong size');
   end
