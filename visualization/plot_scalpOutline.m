@@ -39,9 +39,9 @@ function H= plot_scalpOutline(mnt, varargin)
 % Author: Benjamin Blankertz, Matthias Treder
 
 props = {
-         'DisplayChannels',         1:length(mnt.clab),'DOUBLE|CELL{CHAR}'
+         'DisplayChannels',         [],              'DOUBLE|CELL{CHAR}'
          'DrawEars',                0,               'BOOL';
-         'H',                       struct('ax',gca),'STRUCT'
+         'H',                       struct('ax',NaN),'STRUCT'
          'LineProperties',          {'Color','k'},   'STRUCT|CELL';
          'ShowLabels',              0,               'BOOL';
          'LabelProperties',         {'FontSize',8},  'STRUCT|CELL';
@@ -63,8 +63,17 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-if opt.ShowLabels, opt= opt_setDefaults(opt,{ 'MarkerProperties', {'Marker','o','MarkerSize',20,'MarkerEdgeColor','k'}});
-else opt= opt_setDefaults(opt,{'MarkerProperties', {'Marker','+','MarkerSize',2,'LineWidth',.2,'MarkerEdgeColor','k'}});
+if isdefault.H,
+    opt.H.ax= gca;
+end
+if isdefault.DisplayChannels
+   opt.DisplayChannels= 1:length(mnt.clab);
+end
+
+if opt.ShowLabels
+    opt.MarkerProperties= {'Marker','o','MarkerSize',20,'MarkerEdgeColor','k'};
+else
+    opt.MarkerProperties= {'Marker','+','MarkerSize',2,'LineWidth',.2,'MarkerEdgeColor','k'};
 end;
              
 % If no other marker was set, set default marker 'o'
