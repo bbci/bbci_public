@@ -103,7 +103,8 @@ props={ 'CLab'          ''              'CHAR|CELL{CHAR}'
         'Extension'     []              'CHAR|CELL{CHAR}'
         'Verbose'       0               'BOOL'
         'RemoveOptodes' 0               'BOOL'
-        'Dist'          5               'DOUBLE'};       
+        'Dist'          5               'DOUBLE'
+        'Connector'     ''             'CHAR'}; % E.g. _ or - between source and detector      
            
 if nargin==0,
     varargout= {props};
