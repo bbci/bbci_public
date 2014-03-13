@@ -39,9 +39,9 @@ function H= plot_scalpOutline(mnt, varargin)
 % Author: Benjamin Blankertz, Matthias Treder
 
 props = {
-         'DisplayChannels',         [],              'DOUBLE|CELL{CHAR}'
+         'DisplayChannels',         1:length(mnt.clab),'DOUBLE|CELL{CHAR}'
          'DrawEars',                0,               'BOOL';
-         'H',                       struct('ax',NaN),'STRUCT'
+         'H',                       struct('ax',gca),'STRUCT'
          'LineProperties',          {'Color','k'},   'STRUCT|CELL';
          'ShowLabels',              0,               'BOOL';
          'LabelProperties',         {'FontSize',8},  'STRUCT|CELL';
@@ -60,12 +60,8 @@ if nargin==0,
 end
 
 opt= opt_proplistToStruct(varargin{:});
-opt= opt_setDefaults(opt, props);
+[opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
-
-if isempty(opt.DisplayChannels)
-    opt= opt_setDefaults(opt, 'DisplayChannels', 1:length(mnt.clab));
-end
 
 if opt.ShowLabels, opt= opt_setDefaults(opt,{ 'MarkerProperties', {'Marker','o','MarkerSize',20,'MarkerEdgeColor','k'}});
 else opt= opt_setDefaults(opt,{'MarkerProperties', {'Marker','+','MarkerSize',2,'LineWidth',.2,'MarkerEdgeColor','k'}});
