@@ -68,17 +68,26 @@ if ndims == 4
 end
 
 epo.x= cat(ndims, epo.x, epo_append.x);
-if isfield(epo, 'p') && isfield(epo_append, 'p') % if epo is r-value
+if isfield(epo, 'p') && isfield(epo_append, 'p') 
   epo.p= cat(ndims, epo.p, epo_append.p);
 end
-if isfield(epo, 'sgnlogp') && isfield(epo_append, 'sgnlogp') % if epo is r-value
+if isfield(epo, 'sgnlogp') && isfield(epo_append, 'sgnlogp') 
   epo.sgnlogp= cat(ndims, epo.sgnlogp, epo_append.sgnlogp);
 end
-if isfield(epo, 'se') && isfield(epo_append, 'se') % if epo is r-value
+if isfield(epo, 'se') && isfield(epo_append, 'se') 
   epo.se= cat(ndims, epo.se, epo_append.se);
 end
-if isfield(epo, 'sigmask') && isfield(epo_append, 'sigmask') % if epo is r-value
+if isfield(epo, 'sigmask') && isfield(epo_append, 'sigmask') 
   epo.sigmask= cat(ndims, epo.sigmask, epo_append.sigmask);
+end
+if isfield(epo, 't') && isfield(epo_append, 't')
+  epo.t= cat(ndims, epo.t, epo_append.t);
+end
+if isfield(epo, 'crit') && isfield(epo_append, 'crit')
+  epo.crit= cat(1, epo.crit, epo_append.crit);
+end
+if isfield(epo, 'df') && isfield(epo_append, 'df')
+  epo.df= cat(1, epo.df, epo_append.df);
 end
 
 epo.y= cat(2, epo.y, zeros(size(epo.y,1),size(epo_append.y,2)));

@@ -51,7 +51,10 @@ function fv= proc_rSquareSigned(fv, varargin)
 %  epo= proc_segmentation(cnt, mrk, [-200 800], 'CLab', {'Fz','Cz','Pz'});
 %  epo_r = proc_rSquareSigned(epo);
 %
-% See also proc_rValues, proc_rSquare
+% See also proc_classmeanDiff, proc_rValues, proc_rSquare
+%
+% 03-03 Benjamin Blankertz
+% 09-2012 stefan.haufe@tu-berlin.de
 
 if nargin==0,
   fv=proc_rValues; return

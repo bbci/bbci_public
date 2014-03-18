@@ -112,7 +112,7 @@ if isempty(clab),
 end
 
 %% Define ga data field
-datadim = unique(cellfun(@util_getDataDimension,erps),'legacy');
+datadim = unique(cellfun(@util_getDataDimension,erps));
 if numel(datadim) > 1
   error('Datasets have different dimensionalities');
 end

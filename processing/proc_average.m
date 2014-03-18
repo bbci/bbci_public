@@ -13,7 +13,7 @@ function out= proc_average(epo, varargin)
 %  .Policy - 'mean' (default), 'nanmean', or 'median'
 %  .Std    - if true, standard deviation is calculated also 
 %  .Stats  - if true, additional statistics are calculated, including the
-%            standard error of the mean, the p-value for the null 
+%            standard error of the mean, the t score, the p-value for the null 
 %            Hypothesis that the mean is zero, and the "signed log p-value"
 %  .Classes - classes of which the average is to be calculated,
 %            names of classes (strings in a cell array), or 'ALL' (default)
@@ -33,17 +33,22 @@ function out= proc_average(epo, varargin)
 %  .N     - vector of epochs per class across which average was calculated
 %  .std   - standard deviation, if requested (opt.Std==1), format as epo.x
 %  .se    - contains the standard error of the mean, if opt.Stats==1
-%  .p     - contains the p value of zero mean null hypothesis, if opt.Stats==1
+%  .tstat     - Student t statistics of the difference, if opt.Stats==1
+%  .df    - degrees of freedom of the t distribution (one sample test)
+%  .p     - p value of null hypothesis that the mean is zero, 
+%           derived from t Statistics using two-sided test, if opt.Stats==1
 %           If opt.Bonferroni==1, the p-value is multiplied by
-%           epo.corrfac
+%           epo.corrfac and cropped at 1.
 %  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
 %           if opt.Bonferroni==1, the p-value is multiplied by
-%           epo.corrfac and then logarithmized
+%           epo.corrfac, cropped, and then logarithmized
 %  .sigmask - binary array indicating significance at alpha level
 %             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
 %  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
 %             if opt.Bonferroni==1
-
+%  .crit    - 'significance' threshold of t Statistics with respect to 
+%             level alpha
+%
 % Benjamin Blankertz
 % 09-2012 stefan.haufe@tu-berlin.de
 
@@ -117,6 +122,7 @@ end
 if opt.Stats,
   out.se = zeros(prod(sz(1:end-1)), nClasses);
   out.p = zeros(prod(sz(1:end-1)), nClasses);
+  out.tstat = zeros(prod(sz(1:end-1)), nClasses);
   out.sgnlogp = zeros(prod(sz(1:end-1)), nClasses);
 end
 out.y= eye(nClasses);
@@ -151,6 +157,11 @@ for ic= 1:nClasses,
       [H out.p(:, ic) ci stats] = ttest(epo.x(:,evInd{ic}), [], [], [], 2);
       out.se(:,ic)= stats.sd/sqrt(out.N(ic));
     end
+    out.tstat(:, ic) = stats.tstat;
+    out.df(ic) = stats.df(1);
+    if ~isempty(opt.Alphalevel)
+      out.crit(ic) = stat_calcTCrit(opt.Alphalevel, stats.df(1));
+    end
   end
 end
 
@@ -160,7 +171,7 @@ if opt.Std,
 end
 
 if opt.Stats,
-%   out.indexedByEpochs = {'p', 'sgnlogp', 'se'};
+  out.tstat= reshape(out.tstat, [sz(1:end-1) nClasses]);
   out.se = reshape(out.se, [sz(1:end-1) nClasses]);
   out.p = reshape(out.p, [sz(1:end-1) nClasses]);
   if opt.Bonferroni
@@ -171,7 +182,6 @@ if opt.Stats,
   if ~isempty(opt.Alphalevel)
     out.alphalevel = opt.Alphalevel;
     out.sigmask = out.p < opt.Alphalevel;
-%     out.indexedByEpochs = {out.indexedByEpochs{:}, 'sigmask'}; 
   end
 end
 
