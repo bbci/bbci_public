@@ -42,10 +42,10 @@ function ga= proc_grandAverage(varargin)
 %               which decreases statistical power of the test.
 %  
 %               Note that for general data, the null-Hypothesis states that
-%               the GA has zero mean. For example, 'r', 'r^2', 'sgn r^2' values
+%               the GA has zero mean. For 'r', 'r^2', 'sgn r^2' values
 %               that implies that there is zero linear correlation between 
-%               feature and class label. For 'auc' scores zero nonparametric
-%               correlation is tested.
+%               feature and class label. For 'auc' scores, this
+%               correlation is tested nonparametrically.
 %
 %               Since 'r', 'r^2', 'sgn r^2' scores are not
 %               Gaussian distributed quantities, appropriate
