@@ -87,11 +87,11 @@ for ii = 1:prod(sz(1:end-1))
     fv_aucval.x(ii) = (stats.ranksum-(min(sum(fv.y'))*(min(sum(fv.y'))+1)/2))/prod(sum(fv.y'));
     if opt.Stats
       fv_aucval.p(ii) = p;
-%       if opt.Bonferroni
-%         fv_aucval.sgnlogp(ii) = -((log(2)+normcdfln(-abs(stats.zval)))./log(10)+abs(log10(fv_aucval.corrfac)))*sign(stats.zval);
-%       else
-%         fv_aucval.sgnlogp(ii) = -((log(2)+normcdfln(-abs(stats.zval)))./log(10))*sign(stats.zval);
-%       end 
+      if opt.Bonferroni
+        fv_aucval.sgnlogp(ii) = -((log(2)+normcdfln(-abs(stats.zval)))./log(10)+abs(log10(fv_aucval.corrfac)))*sign(stats.zval);
+      else
+        fv_aucval.sgnlogp(ii) = -((log(2)+normcdfln(-abs(stats.zval)))./log(10))*sign(stats.zval);
+      end 
     end
 end
 
@@ -103,11 +103,11 @@ fv_aucval.x = (fv_aucval.x-0.5)*2;
 if opt.Stats
   fv_aucval.se = 2*repmat(sqrt((0.25 + (sum(sum(fv.y'))-2)*(1/12))./prod(sum(fv.y'))), sz(1:end-1));
   fv_aucval.p = reshape(fv_aucval.p, sz(1:end-1));
-%   fv_aucval.sgnlogp = reshape(fv_aucval.sgnlogp, sz(1:end-1));
+  fv_aucval.sgnlogp = reshape(fv_aucval.sgnlogp, sz(1:end-1));
   if opt.Bonferroni
     fv_aucval.p = min(fv_aucval.p*fv_aucval.corrfac, 1);
   end  
-  fv_aucval.sgnlogp = -log10(fv_aucval.p).*sign(fv_aucval.x);
+%   fv_aucval.sgnlogp = -log10(fv_aucval.p).*sign(fv_aucval.x);
   if ~isempty(opt.Alphalevel)
     fv_aucval.alphalevel = opt.Alphalevel;
     fv_aucval.sigmask = fv_aucval.p < opt.Alphalevel;

@@ -46,7 +46,7 @@ function out= proc_average(epo, varargin)
 %             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
 %  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
 %             if opt.Bonferroni==1
-%  .crit    - 'significance' threshold of t Statistics with respect to 
+%  .crit    - 'significance' threshold of t statistics with respect to 
 %             level alpha
 %
 % Benjamin Blankertz

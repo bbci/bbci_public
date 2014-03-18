@@ -29,9 +29,16 @@ function ga= proc_grandAverage(varargin)
 %   ShouldBeEqual - fields in the erp structs that should be equal across
 %                   different structs, gives a warning otherwise
 %                   (default {'yUnit'})
-%   Stats       if true, additional statistics are calculated, including the
+%   Stats       If true, additional statistics are calculated, including the
 %               standard error of the GA, the p-value for the null 
-%               Hypothesis, and the "signed log p-value"
+%               Hypothesis, and the "signed log p-value".
+%               If the stats flag is set when calling, e.g., proc_average 
+%               on the subject level, then the variance of the subject-level
+%               statistics is taken into account in order to boost
+%               statistical power. If this is not the case, then a 
+%               two-sided t-test for zero mean of the subject-level
+%               average statistics is conducted. The variance of the 
+%               subject-level statistics is then not taken into account.
 %  
 %               Note that for general data, the null-Hypothesis states that
 %               the GA has zero mean. For certain specific quantities the 
@@ -60,19 +67,21 @@ function ga= proc_grandAverage(varargin)
 %  .se   - contains the standard error of the GA, if opt.Stats==1
 %  .p     - contains the p value of the null hypothesis, if opt.Stats==1
 %           If opt.Bonferroni==1, the p-value is multiplied by
-%           epo.corrfac
+%           epo.corrfac, and cropped to 1
 %  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
 %           if opt.Bonferroni==1, the p-value is multiplied by
-%           epo.corrfac and then logarithmized
+%           epo.corrfac, cropped, and then logarithmized
+%  .tstat   - Student t statistics, if opt.Stats==1, but no standard
+%             errors on the subject level are given
+%  .df      - degrees of freedom of the t distribution (one sample test)
 %  .sigmask - binary array indicating significance at alpha level
 %             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
 %  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
 %             if opt.Bonferroni==1
+%  .crit    - 'significance' threshold of t statistics with respect to 
+%             level alpha
 %
 % 09-2012 stefan.haufe@tu-berlin.de
-
-% TODO: if opt.Stats == 1, but epo{:}.se is not provided, perform a simple
-% t-test across subjects
 
 props = {   'Average'               'arithmetic'                '!CHAR(Nweighted INVVARweighted arithmetic)';
             'MustBeEqual'           {'fs','y','className'}      'CHAR|CELL{CHAR}';
@@ -128,11 +137,14 @@ if strcmp(opt.Average, 'Nweighted') && ~isfield(erps{1}, 'N')
 end
 
 if opt.Stats && ~isfield(erps{1}, 'se')
-   warning('No standard errors given for statistical analysis.') 
+   warning('No subject-level standard errors given for grand-average statistical analysis. Performing a simple t-test.') 
    opt.Stats = 0;
+   simpleStats = 1;
+else
+   simpleStats = 0;
 end
 
-ga= rmfield(erps{1},intersect(fieldnames(erps{1}),{'x', 'std'},'legacy'));
+ga= rmfield(erps{1},intersect(fieldnames(erps{1}),{'x', 'std', 'tstat', 'crit', 'df'},'legacy'));
 must_be_equal= intersect(opt.MustBeEqual, fieldnames(ga),'legacy');
 should_be_equal= intersect(opt.ShouldBeEqual, fieldnames(ga),'legacy');
 
@@ -211,10 +223,13 @@ end
 
 
 ga.x = zeros([F*T*C E]);
-ga.se = zeros([F*T*C E]);
+if opt.Stats
+  ga.se = zeros([F*T*C E]);
+end
 for cc= 1:E,  %% for each class
   sW= 0;
   swV = 0;
+  tdata = zeros([F*T*C K]);
   for vp= 1:K,  %% average across subjects
     % TODO: sort out NaNs
     switch opt.Average
@@ -229,11 +244,22 @@ for cc= 1:E,  %% for each class
     ga.x(:, cc)= ga.x(:, cc) + W.*erps{vp}.x(:, cc); 
     if opt.Stats
       swV = swV + W.^2.*erps{vp}.se(:, cc).^2;
+    else
+      if simpleStats
+        tdata(:, vp) = W.*erps{vp}.x(:, cc);
+      end
     end
   end
   ga.x(:, cc)= ga.x(:, cc)./sW;
   if opt.Stats
     ga.se(:, cc) = sqrt(swV)./sW;
+  else
+    if simpleStats
+      [H ga.p(:, cc) ci stats] = ttest(tdata, [], [], [], 2);
+      ga.tstat(:, cc) = stats.tstat;
+      ga.se(:,cc)= stats.sd/sqrt(K);
+      ga.df = stats.df(1);
+    end
   end
 end
 
@@ -250,6 +276,14 @@ end
   
 if opt.Stats
   ga.p = reshape(2*stat_normal_cdf(-abs(ga.x(:)), zeros(size(ga.x(:))), ga.se(:)), size(ga.x));
+end
+
+if simpleStats
+  ga.p = reshape(ga.p, size(ga.x));
+  ga.tstat = reshape(ga.tstat, size(ga.x));
+end
+
+if opt.Stats || simpleStats
   if opt.Bonferroni
     ga.corrfac = F*T*C*E;
     ga.p = min(ga.p*ga.corrfac, 1);
@@ -257,9 +291,13 @@ if opt.Stats
   else
     ga.sgnlogp = -reshape(((log(2)+normcdfln(-abs(ga.x(:)./ga.se(:))))./log(10)), size(ga.x)).*sign(ga.x);
   end  
+%   ga.sgnlogp = -log10(ga.p).*sign(ga.x);
   if ~isempty(opt.Alphalevel)
     ga.alphalevel = opt.Alphalevel;
     ga.sigmask = ga.p < opt.Alphalevel;
+    if simpleStats
+      ga.crit = stat_calcTCrit(opt.Alphalevel, ga.df);
+    end
   end
 end
 
