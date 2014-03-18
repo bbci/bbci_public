@@ -36,16 +36,15 @@ function ga= proc_grandAverage(varargin)
 %               on the subject level, then the variance of the subject-level
 %               statistics is taken into account in order to boost
 %               statistical power. If this is not the case, then a 
-%               two-sided t-test for zero mean of the subject-level
+%               two-sided one-sample t-test for zero mean of the subject-level
 %               average statistics is conducted. The variance of the 
-%               subject-level statistics is then not taken into account.
+%               subject-level statistics is then not taken into account,
+%               which decreases statistical power of the test.
 %  
 %               Note that for general data, the null-Hypothesis states that
-%               the GA has zero mean. For certain specific quantities the 
-%               null hypothesis may however be different. For example, the 
-%               null hypothesis for 'r', 'r^2', 'sgn r^2' values states that 
-%               there is zero linear correlation between feature and class
-%               label. For 'auc' scores zero nonlinear (nonparametric)
+%               the GA has zero mean. For example, 'r', 'r^2', 'sgn r^2' values
+%               that implies that there is zero linear correlation between 
+%               feature and class label. For 'auc' scores zero nonparametric
 %               correlation is tested.
 %
 %               Since 'r', 'r^2', 'sgn r^2' scores are not
