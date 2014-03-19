@@ -6,16 +6,16 @@ function fv= proc_rSquare(fv, varargin)
 %
 %Returns:
 % FV_RVAL - data structure of squared biserial correlation coefficients 
-%  .x     - squared biserial correlation between each featur and the class label
-%  .se    - contains the standard error of atanh(r), if opt.Stats==1
-%  .p     - contains the p value of null hypothesis that there is zero
+%  .x     - squared biserial correlation between each feature and the class label
+%  .se    - standard error of atanh(r), if opt.Stats==1
+%  .p     - p value of null hypothesis that there is zero
 %           correlation between feature and class-label, if opt.Stats==1
 %  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
 %             if opt.Bonferroni==1, the p-value is multiplied by
 %             fv_rval.corrfac
 %  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
 %           if opt.Bonferroni==1, the p-value is multiplied by
-%           fv_rval.corrfac and then logarithmized
+%           fv_rval.corrfac, cropped, and then logarithmized
 %  .sigmask - binary array indicating significance at alpha level
 %             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
 %  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
@@ -43,9 +43,11 @@ function fv= proc_rSquare(fv, varargin)
 % of how much variance of the joint distribution can be explained by
 % class membership.
 %
-% See also proc_rValues, proc_rSquareSigned
-
+% See also proc_classmeanDiff, proc_rValues, proc_rSquareSigned
+%
 % 03-03 Benjamin Blankertz
+% 09-2012 stefan.haufe@tu-berlin.de
+
 if nargin==0,
   fv=proc_rValues; return
 end

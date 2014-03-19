@@ -9,15 +9,15 @@ function fv_rval= proc_rValues(fv, varargin)
 %
 %Returns:
 % FV_RVAL - data structure of r values 
-%  .x     - biserial correlation between each featur and the class label
-%  .se    - contains the standard error of atanh(r), if opt.Stats==1
-%  .p     - contains the p value of null hypothesis that there is zero
+%  .x     - biserial correlation between each feature and the class label
+%  .se    - standard error of atanh(r), if opt.Stats==1
+%  .p     - p value of null hypothesis that there is zero
 %           correlation between feature and class-label, if opt.Stats==1
 %           If opt.Bonferroni==1, the p-value is multiplied by
-%           fv_rval.corrfac
+%           fv_rval.corrfac, and cropped to 1.
 %  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
 %           if opt.Bonferroni==1, the p-value is multiplied by
-%           fv_rval.corrfac and then logarithmized
+%           fv_rval.corrfac, cropped, and then logarithmized
 %  .sigmask - binary array indicating significance at alpha level
 %             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
 %  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
@@ -52,9 +52,9 @@ function fv_rval= proc_rValues(fv, varargin)
 %  epo= proc_segmentation(cnt, mrk, [-200 800], 'CLab', {'Fz','Cz','Pz'});
 %  epo_r = proc_rValues(epo);
 %
-%See also:  proc_tTest, proc_rSquare, proc_rSquareSigned
-
-% Benjamin Blankertz
+%See also:  proc_classmeanDiff, proc_rSquare, proc_rSquareSigned
+%
+% 03-03 Benjamin Blankertz
 % 09-2012 stefan.haufe@tu-berlin.de
 
 props= {'TolerateNans',      0,      'BOOL|DOUBLE'
@@ -120,8 +120,7 @@ rval= reshape(rval, [sz(1:end-1) 1]);
 fv_rval= fv;
 fv_rval.x= rval;
 
-if opt.Stats
-%   fv_rval.indexedByEpochs = {'p', 'sgnlogp', 'se'}; 
+if opt.Stats 
   iV= reshape(iV, [sz(1:end-1) 1]);
   fv_rval.se = 1./sqrt(iV);
   fv_rval.p = reshape(2*stat_normal_cdf(-abs(atanh(fv_rval.x(:))), zeros(size(fv_rval.x(:))), fv_rval.se(:)), size(fv_rval.x));
@@ -131,11 +130,11 @@ if opt.Stats
     fv_rval.sgnlogp = -reshape(((log(2)+normcdfln(-abs(atanh(fv_rval.x(:)).*sqrt(iV(:)))))./log(10))+abs(log10(fv_rval.corrfac)), size(fv_rval.x)).*sign(fv_rval.x);
   else
     fv_rval.sgnlogp = -reshape(((log(2)+normcdfln(-abs(atanh(fv_rval.x(:)).*sqrt(iV(:)))))./log(10)), size(fv_rval.x)).*sign(fv_rval.x);
-  end  
+  end
+%   fv_rval.sgnlogp = -log10(fv_rval.p).*sign(atanh(fv_rval.x));
   if ~isempty(opt.Alphalevel)
     fv_rval.alphalevel = opt.Alphalevel;
     fv_rval.sigmask = fv_rval.p < opt.Alphalevel;
-%     fv_rval.indexedByEpochs = {fv_rval.indexedByEpochs{:}, 'sigmask'}; 
   end
 end
 

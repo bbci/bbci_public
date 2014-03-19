@@ -60,15 +60,20 @@ if nargin==0,
 end
 
 opt= opt_proplistToStruct(varargin{:});
-opt= opt_setDefaults(opt, props);
+[opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-if isempty(opt.DisplayChannels)
-    opt= opt_setDefaults(opt, 'DisplayChannels', 1:length(mnt.clab));
+if isdefault.H,
+    opt.H.ax= gca;
+end
+if isdefault.DisplayChannels
+   opt.DisplayChannels= 1:length(mnt.clab);
 end
 
-if opt.ShowLabels, opt= opt_setDefaults(opt,{ 'MarkerProperties', {'Marker','o','MarkerSize',20,'MarkerEdgeColor','k'}});
-else opt= opt_setDefaults(opt,{'MarkerProperties', {'Marker','+','MarkerSize',2,'LineWidth',.2,'MarkerEdgeColor','k'}});
+if opt.ShowLabels
+    opt.MarkerProperties= {'Marker','o','MarkerSize',20,'MarkerEdgeColor','k'};
+else
+    opt.MarkerProperties= {'Marker','+','MarkerSize',2,'LineWidth',.2,'MarkerEdgeColor','k'};
 end;
              
 % If no other marker was set, set default marker 'o'

@@ -11,23 +11,27 @@ function fv_diff=proc_classmeanDiff(fv, varargin)
 % FV_DIFF - data structure of class mean differences
 %  .x     - difference of the class means for each feature and class
 %           combination
-%  .se    - contains the standard error of the difference, if opt.Stats==1
-%  .p     - contains the p value of null hypothesis that the difference 
-%           is zero, if opt.Stats==1
+%  .se    - standard error of the difference, if opt.Stats==1
+%  .tstat - Student t statistics of the difference, if opt.Stats==1
+%  .df    - degrees of freedom of the t distribution (two sample test)
+%  .p     - p value of null hypothesis that the difference is zero, 
+%           derived from t Statistics using two-sided test, if opt.Stats==1
 %           If opt.Bonferroni==1, the p-value is multiplied by
-%           fv_diff.corrfac
-%  .sgnlogp - contains the signed log10 p-value, if opt.Stats==1
-%           if opt.Bonferroni==1, the p-value is multiplied by
-%           fv_diff.corrfac and then logarithmized
+%           fv_diff.corrfac and cropped at 1.
+%  .sgnlogp - signed log10 p-value, if opt.Stats==1
+%           If opt.Bonferroni==1, the p-value is multiplied by
+%           fv_diff.corrfac, cropped, and then logarithmized.
 %  .sigmask - binary array indicating significance at alpha level
 %             opt.Alphalevel, if opt.Stats==1 and opt.Alphalevel > 0
+%  .crit    - 'significance' threshold of t Statistics with respect to 
+%             level alpha
 %  .corrfac - Bonferroni correction factor (number of simultaneous tests), 
 %             if opt.Bonferroni==1
 %
 %Properties:
 % 'Stats' - if true, additional statistics are calculated, including the
-%           standard error of the difference, the p-value for the null 
-%           Hypothesis that the difference is zero, 
+%           standard error of the difference, the t score, the p-value 
+%           for the null Hypothesis that the difference is zero, 
 %           and the "signed log p-value"
 % 'Bonferroni' - if true, Bonferroni corrected is used to adjust p-values
 %                and their logarithms
@@ -54,8 +58,8 @@ if nargin==0,
 end
 
 misc_checkType(fv, 'STRUCT(x y)'); 
-if nargin==2
-  opt.Classes = varargin{:};
+if nargin==2 && isnumeric(varargin{2})
+  opt.Classes = varargin{2};
 else
   opt= opt_proplistToStruct(varargin{:});
 end
@@ -78,13 +82,13 @@ elseif nClasses>2,
   for ic= 1:length(combs),
     ep= proc_selectClasses(fv, combs(ic,:));
     if ic==1,
-      fv_diff= proc_classmeanDiff(ep,alpha);   
+      fv_diff= proc_classmeanDiff(ep, varargin);   
       ndims = length(size(ep.x));
       if ndims > 3
         fv_diff.ndims = ndims;
       end
     else
-      fv_diff= proc_appendEpochs(fv_diff, proc_classmeanDiff(ep,alpha));
+      fv_diff= proc_appendEpochs(fv_diff, proc_classmeanDiff(ep, varargin));
     end
   end
 %   util_warning(state);
@@ -104,10 +108,11 @@ fv_diff = rmfield(fv, dont_copy);
 
 fv_diff.x = reshape(mean(fv.x(:,c1),2)-mean(fv.x(:,c2),2), sz(1:end-1));
 if opt.Stats 
-%   fv_diff.indexedByEpochs = {'p', 'sgnlogp', 'se'};
   [h, p, ci, stats] = ttest2(fv.x(:,c1)', fv.x(:,c2)', [], [], 'equal');
   fv_diff.se = reshape(sqrt(stats.sd.^2/N1 + stats.sd.^2/N2), sz(1:end-1));  
   fv_diff.p = reshape(p, sz(1:end-1));
+  fv_diff.tstat = reshape(stats.tstat, sz(1:end-1));
+  fv_diff.df = stats.df(1);
   if opt.Bonferroni
     fv_diff.corrfac = prod(sz(1:end-1));
     fv_diff.p = min(fv_diff.p*fv_diff.corrfac, 1);
@@ -116,10 +121,11 @@ if opt.Stats
   if ~isempty(opt.Alphalevel)
     fv_diff.alphalevel = opt.Alphalevel;
     fv_diff.sigmask = fv_diff.p < opt.Alphalevel;
-%     fv_diff.indexedByEpochs = {fv_diff.indexedByEpochs{:}, 'sigmask'}; 
+    fv_diff.crit = stat_calcTCrit(opt.Alphalevel, stats.df(1));
   end
 end
 
 fv_diff.y= 1;
 fv_diff.className= {sprintf('%s - %s', fv.className{1:2})};
-fv_diff.indexedByEpochs = {}; 
+fv_diff.indexedByEpochs = {};
+
