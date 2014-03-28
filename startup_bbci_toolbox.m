@@ -15,7 +15,7 @@ switch computer
   case 'PCWIN'
     BTB.Acq.IoLib= which('inpout32.dll');
   case 'PCWIN64'
-    BTB.Acq.IoLib= which('inpout64.dll');
+    BTB.Acq.IoLib= which('inpoutx64.dll');
 end
 
 if ~isfield(BTB, 'TypeChecking'),
