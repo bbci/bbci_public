@@ -35,6 +35,7 @@ props= {'Fn'              1            '!INT'
         'ToolsOff'        1            '!BOOL'
         'Clf'             0            '!BOOL'
         'Resize'          [1 1]        '!DOUBLE[2]'
+        'Square'          0            '!BOOL'
         'GridSize'        [2 2]        '!DOUBLE[2]'
         'Props'           {}           'PROPLIST'
         'ShiftUpwards'    1            '!BOOL'
@@ -85,6 +86,14 @@ if opt.ShiftUpwards && fig_size(2)~=fig_size_orig(2),
 end
 drawnow;
 set(opt.Fn, 'Position', [fig_pos fig_size]);
+if opt.Square,
+  oldUnits= get(gcf, 'Units');
+  set(gcf, 'Units','Points');
+  pos= get(gcf, 'Position');
+  pos([3 4])= min(pos([3 4]));
+  set(gcf, 'Position',pos);
+  set(gcf, 'Units',oldUnits);
+end
 
 if ~isdefault.Name,
   set(opt.Fn, 'Name',opt.Name);
