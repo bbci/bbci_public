@@ -15,7 +15,7 @@ function desc= stimutil_readDescription(file,varargin)
 global BTB
 
 
-props= {'Dir'       [BTB.Acq.Dir 'BTB/acquisition/data/task_descriptions/']   'CHAR|CELL{CHAR}'
+props= {'Dir'       fullfile(BTB.PrivateDir, 'acquisition','data','task_descriptions') 'CHAR|CELL{CHAR}'
         'Suffix'	'.txt'                                          'CHAR|DOUBLE'};
         
 if nargin==0,
@@ -27,4 +27,4 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-desc= textread([opt.dir filesep file opt.suffix],'%s','delimiter','\n');
+desc= textread([opt.Dir filesep file opt.Suffix],'%s','delimiter','\n');
