@@ -208,7 +208,7 @@ DWORD WINAPI threadObtain( LPVOID lpParam )
 				chData newData;
 				  for(int i=0;i<g_numCh;i++)
 						newData.channels[i] = Fval[i];
-				  newData.timeStamp = g_CurCount++;
+				  newData.timeStamp = g_CurCount=getUnixTimeStamp();
 
 					  gDataQueue.push(newData);
 	
@@ -302,7 +302,15 @@ void initTMSI() {
 	
 		if(!NrOfDevices) {
 			mexPrintf("0 devices found. Have you connected any devices?");
-			fpLibraryExit( g_Handle );
+				if(g_Handle) {
+					fpClose(g_Handle);
+					Sleep(1000);
+				}
+				if(g_LibHandle) {
+					FreeLibrary(g_LibHandle);
+					g_LibHandle = NULL;
+				}
+
 			return;
 		}
 
@@ -379,7 +387,7 @@ DWORD WINAPI threadMarkerServer( LPVOID lpParam )
 	char curMarker[256];
 	FILETIME* ft = new FILETIME;
 	SYSTEMTIME* st = new SYSTEMTIME;
-	while(1) 	{			
+//	while(1) 	{			
 		markerPassiveSocket = socket(AF_INET,		
 									SOCK_DGRAM,   	
 									0);		
@@ -417,11 +425,13 @@ DWORD WINAPI threadMarkerServer( LPVOID lpParam )
 			// mData.timeStamp = (unsigned long long) getUnixTimeStamp();
 			//unsigned long long* recvTS = ((unsigned long long*) (&curMarker[248])); 
 			//mexPrintf("%lld",*recvTS);
-			mData.timeStamp = getUnixTimeStamp(); 
+			 
 			bool isDone=false;
-			unsigned long long lastTime = mData.timeStamp;
 			
+
 			unsigned long long startTime = getUnixTimeStamp();
+			mData.timeStamp = getUnixTimeStamp();
+			unsigned long long lastTime = mData.timeStamp;
 			while(!isDone)
 			{
 				WaitForSingleObject(ghMutexCount, INFINITE );
@@ -443,7 +453,7 @@ DWORD WINAPI threadMarkerServer( LPVOID lpParam )
 		}
 		//closesocket(markerActiveSocket);
 		closesocket(markerPassiveSocket);
-	}
+//	}
 	return 0;
 }
 
@@ -502,7 +512,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 				quitTMSI();
 			}
 			
-				//mexPrintf("BLAAAAAAAAAA");
 				gMarkerQueue = queue<markerData>();
 				gDataQueue = queue<chData>();	
 				mxArray* numChannels = mxGetField(prhs[1], 0,FIELD_Channels);
@@ -562,7 +571,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 				gDataQueue.pop();
 			}
 			
-			g_CurCount=0;
+			//g_CurCount=0;
 			gMarkerQueue = queue<markerData>();
 			
 			ReleaseMutex( ghMutexData);
@@ -751,6 +760,7 @@ void quitTMSI() {
 		ReleaseMutex( ghMutexData);
 		
 		if(g_Handle) {
+			fpStop(g_Handle);
 			fpClose(g_Handle);
 			Sleep(1000);
 		}
