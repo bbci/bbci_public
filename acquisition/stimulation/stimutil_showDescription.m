@@ -43,7 +43,7 @@ props= {'Clf'               0                               'BOOL'
         'DescPos'          [0.5 0.5]                       'DOUBLE[2]'
         'DescBoxgap'        0.05                           'DOUBLE[1]'
         'Delete'            1                               'BOOL'       
-        'Position'          BTB.Tp.Geometry                       'DOUBLE[4]'
+        'Position'          BTB.Acq.Geometry                       'DOUBLE[4]'
         'Waitfor'           'R*'                            'DOUBLE|CHAR'
         'WaitforMsg'       'Press <ENTER> to continue: '   'CHAR'
         'Frame'             1                               '!BOOL'};

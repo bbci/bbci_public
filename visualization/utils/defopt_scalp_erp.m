@@ -17,8 +17,8 @@ props= {'Shading'                 'flat'
         'ContourPolicy'           'strict'
         'ContourLineprop'         {'LineWidth' 0.3}
         'MarkMarkerProperties'    {'MarkerSize' 6, 'LineWidth' 1}
-%        'GlobalCLim'              1
-%        'LegendPos'               'NorthWest'
+        'GlobalCLim'              1
+        'LegendPos'               'NorthWest'
 };
 
 opt= opt_proplistToStruct(varargin{:});

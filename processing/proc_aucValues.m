@@ -107,6 +107,7 @@ if opt.Stats
   if opt.Bonferroni
     fv_aucval.p = min(fv_aucval.p*fv_aucval.corrfac, 1);
   end  
+%   fv_aucval.sgnlogp = -log10(fv_aucval.p).*sign(fv_aucval.x);
   if ~isempty(opt.Alphalevel)
     fv_aucval.alphalevel = opt.Alphalevel;
     fv_aucval.sigmask = fv_aucval.p < opt.Alphalevel;

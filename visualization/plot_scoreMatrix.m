@@ -25,12 +25,13 @@ function H= plot_scoreMatrix(epo_r, ival, varargin)
 %
 %See also plot_scalpEvolution, plot_scalpPatternsPlusChannel
 
-props= {'Mnt'              struct                                 'STRUCT'
-        'Colormap'         cmap_posneg(51),                       'CHAR|DOUBLE[- 3]'
-        'MarkClab'         {'Fz','FCz','Cz','CPz','Pz','Oz'}      'CELL{CHAR}'
-        'XUnit'            'ms'                                   'CHAR'
-        'Title'            ''                                     'CHAR'
-        'TitleSpec'        {}                                     'PROPLIST'
+props= {'Mnt'         struct                               'STRUCT'
+        'CLab'        '*'                                  'CHAR|CELL{CHAR}'
+        'Colormap'    cmap_posneg(51),                     'CHAR|DOUBLE[- 3]'
+        'MarkClab'    {'Fz','FCz','Cz','CPz','Pz','Oz'}    'CHAR|CELL{CHAR}'
+        'XUnit'       'ms'                                 'CHAR'
+        'Title'       ''                                   'CHAR'
+        'TitleSpec'   {}                                   'PROPLIST'
        };
 
 if nargin==0,
@@ -46,10 +47,13 @@ opt= opt_proplistToStruct(varargin{:});
     opt_overrideIfDefault(opt, isdefault, ...
                           'Mnt', mnt_setElectrodePositions(epo_r.clab));
 
-if isempty(ival), opt.VisuScalps = 0;
-else              opt.VisuScalps = 1;
+if isempty(ival),
+  opt.VisuScalps = 0;
+else
+  opt.VisuScalps = 1;
 end
 
+epo_r= proc_selectChannels(epo_r, opt.CLab);
 % order channels for visualization:
 %  scalp channels first, ordered from frontal to occipital (as returned
 %  by function scalpChannels),

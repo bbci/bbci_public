@@ -374,7 +374,7 @@ DWORD WINAPI threadMarkerServer( LPVOID lpParam )
 	char curMarker[256];
 	FILETIME* ft = new FILETIME;
 	SYSTEMTIME* st = new SYSTEMTIME;
-	while(1) 	{			
+			
 		markerPassiveSocket = socket(AF_INET,		
 									SOCK_DGRAM,   	
 									0);		
@@ -435,7 +435,7 @@ DWORD WINAPI threadMarkerServer( LPVOID lpParam )
 			gMarkerQueue.push(mData);
 			ReleaseMutex(ghMutexMarkers);
 			}
-		}
+		
 		//closesocket(markerActiveSocket);
 		closesocket(markerPassiveSocket);
 	}
