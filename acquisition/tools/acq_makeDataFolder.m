@@ -78,7 +78,7 @@ end;
 BTB.Tp.Dir= [BTB.RawDir BTB.Tp.Code '_' today_str filesep];
 
 if ~exist(BTB.Tp.Dir, 'dir'),
-  mkdir_rec(BTB.Tp.Dir);
+  mkdir(BTB.Tp.Dir);
 end
 
 fprintf('EEG data will be saved in <%s>.\n', BTB.Tp.Dir);
