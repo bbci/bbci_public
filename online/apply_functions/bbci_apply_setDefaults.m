@@ -131,8 +131,8 @@ for ic= 1:length(bbci.control),
                'signals only from one source.']);
       end
       ivals= cat(1, bbci.feature(feat_list).ival);
-      props= {'marker'     []                'DOUBLE|CELL{CHAR}'
-              'overrun'    max(ivals(:,2))   '!DOUBLE[1]'};
+      props= {'marker'     []                     'DOUBLE|CELL{CHAR}'
+              'overrun'    max([0; ivals(:,2)])   '!DOUBLE[1]'};
       bbci.control(ic).condition= ...
           opt_setDefaults('bbci.control(ic).condition', props);
     else
