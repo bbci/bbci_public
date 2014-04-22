@@ -25,8 +25,8 @@ if isequal(control_signal, 'init'),
       addpath(fullfile(BTB.PrivateDir, 'import/tcp_udp_ip'))
     end
     pnet('closeall');
-    data_feedback.socke= pnet('udpsocket', 1111); 
-    pnet(data_feedback.socke, 'udpconnect', 'localhost', 9100');
+    data_feedback.opt.socke= pnet('udpsocket', 1111); 
+    pnet(data_feedback.opt.socke, 'udpconnect', 'localhost', 9100');
    case 'pyff',
 %    send_udp_xml('init', bbci_feedback.host, bbci_feedback.port);
 	pyff_sendUdp('init',  bbci_feedback.host, bbci_feedback.port);
@@ -48,10 +48,11 @@ end
 if isequal(control_signal, 'close'),
   switch(bbci_feedback.receiver),
    case 'udp',
-    if ~isempty(data_feedback.socke),  
-      pnet(data_feedback.socke, 'close');
-      data_feedback.socke= [];
-    end
+		 pnet('closeall');
+%    if ~isempty(data_feedback.opt.socke),  
+%      pnet(data_feedback.opt.socke, 'close');
+%      data_feedback.opt.socke= [];
+%    end
    case 'pyff',
 %    We do not close this channel, as it is probably still required to
 %    send signals to Pyff.
@@ -67,8 +68,10 @@ switch(bbci_feedback.receiver),
  case '',
   % do nothing
  case 'udp',
-  pnet(data_feedback.socke, 'write', msg); 
-  pnet(data_feedback.socke, 'writepacket');
+  if ~isempty(control_signal),
+    pnet(data_feedback.opt.socke, 'write', control_signal{:}); 
+    pnet(data_feedback.opt.socke, 'writepacket');
+	end
  case 'pyff',
    if ~isempty(control_signal),
      pyff_sendUdp(control_signal{:});

@@ -35,6 +35,7 @@ using std::string;
 #include "TmsiSDK.h" 
 
 #define NUM_CHAN 34
+#define FREQ 1000
 /*
 	GLOBAL VARIABLES
 */
@@ -67,7 +68,9 @@ int  datenPuffer[Ns*N]={0};
 static const char* FIELD_IP = "hostIP";
 static const char* FIELD_MAC = "hostMAC";
 static const char* FIELD_Channels = "numChan";
-static const char* FIELD_Freq = "freq";
+static const char* FIELD_Freq = "fs";
+static const char* FIELD_Ref = "commonAverageRef";
+static const char* FIELD_Policy = "subsamplePolicy";
 
 
 struct chData
@@ -94,6 +97,10 @@ static HANDLE  hServerThread;
 static HANDLE  hObtainThread;
 static unsigned long long g_CurCount=0;
 static unsigned int g_numCh=8;
+static unsigned int g_Ref=1;
+static unsigned int g_PolicyMean=1;
+
+static double g_Fs=FREQ;
 static bool bTerminate=false;
 
 static POPEN fpOpen;
@@ -230,8 +237,19 @@ DWORD WINAPI threadObtain( LPVOID lpParam )
 char **DeviceList = NULL;
 int NrOfDevices=0;
 
+void errorExit() {
+			if(g_Handle) {
+				fpLibraryExit( g_Handle );
+				Sleep(1000);
+			}
+			if(g_LibHandle) {
+				FreeLibrary(g_LibHandle);
+				g_LibHandle = NULL;
+			}
+}
+
 // initialize tmsi
-void initTMSI() {
+int initTMSI() {
 	TCHAR LibraryName[255] = _T("\\TmsiSDK.dll");
 	TCHAR Path[	MAX_PATH ];
 	int ErrorCode=0;
@@ -242,7 +260,7 @@ void initTMSI() {
 
 	if(!g_LibHandle) {
 		mexPrintf("ERROR. Cannot load DLL. Are the tmsi drivers installed?");
-		return;
+		return 1;
 	}
 	
 	fpOpen				= (POPEN)			GetProcAddress(g_LibHandle,"Open");
@@ -288,80 +306,92 @@ void initTMSI() {
 
 	if(!fpGetRecordingConfiguration) {
 		mexPrintf("Failed to load functions from dll");
-		return;
+		return 1;
 	}
 	
 	g_Handle = fpLibraryInit( TMSiConnectionWifi, &ErrorCode );
 	
 	if(ErrorCode) {
 		mexPrintf("Failed to initialize the library with Library Init. Errorcode = %d", ErrorCode); 
-		return; 
+		return 1; 
 	}
 
 	DeviceList = fpGetDeviceList( g_Handle, &NrOfDevices);
 	
-		if(!NrOfDevices) {
-			mexPrintf("0 devices found. Have you connected any devices?");
-				if(g_Handle) {
-					fpClose(g_Handle);
-					Sleep(1000);
-				}
-				if(g_LibHandle) {
-					FreeLibrary(g_LibHandle);
-					g_LibHandle = NULL;
-				}
+	if(!NrOfDevices) {
+		errorExit();
+		mexErrMsgTxt("0 devices found. Have you connected any devices?");
+		return 1;
+	}
 
-			return;
-		}
-
-		char FrontEndName[MAX_FRONTENDNAME_LENGTH];
+	char FrontEndName[MAX_FRONTENDNAME_LENGTH];
 		
-		psf = NULL;
-		FRONTENDINFO FrontEndInfo;
-		int Status;
-		char *DeviceLocator = DeviceList[0];
-		Status = fpOpen(g_Handle,DeviceLocator);
-		if(!Status) {
-			mexPrintf("Could not Open");
-		}
-		Status = fpGetFrontEndInfo(g_Handle,&FrontEndInfo);
-		psf = fpGetSignalFormat(g_Handle,FrontEndName);
+	psf = NULL;
+	FRONTENDINFO FrontEndInfo;
+	int Status;
+	char *DeviceLocator = DeviceList[0];
+	Status = fpOpen(g_Handle,DeviceLocator);
+	
+	if(!Status) {
+			
+		errorExit();
+		mexErrMsgTxt("Could not Open");
+		return 1;
+	}
+	Status = fpGetFrontEndInfo(g_Handle,&FrontEndInfo);
+	psf = fpGetSignalFormat(g_Handle,FrontEndName);
 //		for(int i=0;i<34;i++)
 //			mexPrintf("Offset ch %d, %f, %f",i,psf[i].UnitGain,psf[i].UnitOffSet);
 			
-		if(!psf) {
-			ErrorCode = fpGetErrorCode(g_Handle);
-			mexPrintf("Error getting Signal Format, error code = %d", ErrorCode);
-			return;
-		}
 		
-		g_NumberOfChannels = psf->Elements;
-		g_BytesPerSample = g_NumberOfChannels * sizeof(long);
+	if(!psf) {
 		
-		g_SampleRateInMilliHz = 1000 * 1000;
-		g_SignalBufferSizeInSamples = g_SampleRateInMilliHz/1000;
-		g_SampleRateInHz = g_SampleRateInMilliHz/1000;
+		errorExit();
+		ErrorCode = fpGetErrorCode(g_Handle);
+		mexErrMsgTxt("Error getting Signal Format");
+		return 1;
+	}
 		
-		if(fpSetSignalBuffer(g_Handle, &g_SampleRateInMilliHz,&g_SignalBufferSizeInSamples) != TRUE) 
+	g_NumberOfChannels = psf->Elements;
+	g_BytesPerSample = g_NumberOfChannels * sizeof(long);
+		
+	g_SampleRateInMilliHz = FREQ * 1000;
+	g_SignalBufferSizeInSamples = g_SampleRateInMilliHz/1000;
+	g_SampleRateInHz = g_SampleRateInMilliHz/1000;
+		
+	if(fpSetSignalBuffer(g_Handle, &g_SampleRateInMilliHz,&g_SignalBufferSizeInSamples) != TRUE) 
+	{
+		errorExit();
+		mexErrMsgTxt("Error Setting Signal Buffer");
+		return 1;
+	}
+	
+	unsigned int SignalStrength, NrOfCRCErrors, NrOfSampleBlocks;
+		
+	Status = fpGetConnectionProperties(g_Handle, &SignalStrength,&NrOfCRCErrors, &NrOfSampleBlocks);
+	if(!Status) {
+		errorExit();
+		mexErrMsgTxt("Error acquiring Connection Properties");
+		return 1;
+	}
+		
+	g_startTime =  getUnixTimeStamp(); 
+	g_CurCount = g_startTime;
+	
+	if(g_Ref) {
+		int res = fpSetRefCalculation(g_Handle,1);
+		mexPrintf("Acitvating Reference Calculation\n");
+	}
+	else {
+		fpSetRefCalculation(g_Handle,0);
+		mexPrintf("Reference Calculation Turned Off\n");
+	}
+	
+	if(!fpStart(g_Handle))
 		{
-			mexPrintf("Error Setting Signal Buffer");
-			return;
-		}
-		unsigned int SignalStrength, NrOfCRCErrors, NrOfSampleBlocks;
-		
-		Status = fpGetConnectionProperties(g_Handle, &SignalStrength,&NrOfCRCErrors, &NrOfSampleBlocks);
-		if(!Status) {
-			mexPrintf("Error acquiring Connection Properties");
-			return;
-		}
-		
-		g_startTime =  getUnixTimeStamp(); 
-		g_CurCount = g_startTime;
-		fpSetRefCalculation(g_Handle,1);
-		if(!fpStart(g_Handle))
-		{
-			mexPrintf("Error starting recording");
-			return;
+			errorExit();
+			mexErrMsgTxt("Error starting recording");
+			return 1;
 		}
 		DWORD dummy;
 					  hObtainThread = CreateThread( 
@@ -371,7 +401,9 @@ void initTMSI() {
 						NULL,          // argument to thread function 
 						0,                      // use default creation flags 
 						&dummy);   // returns the thread identifier 
-		g_bIsConnected = true;				
+		g_bIsConnected = true;
+
+		return 0;
 }
 
 //
@@ -432,18 +464,18 @@ DWORD WINAPI threadMarkerServer( LPVOID lpParam )
 			unsigned long long startTime = getUnixTimeStamp();
 			mData.timeStamp = getUnixTimeStamp();
 			unsigned long long lastTime = mData.timeStamp;
-			while(!isDone)
-			{
+//			while(!isDone)
+//			{
 				WaitForSingleObject(ghMutexCount, INFINITE );
 					
-				if(lastTime<=(g_CurCount))
+				if(g_CurCount<=lastTime)
 				{
-					isDone=true;
+				//	isDone=true;
 					mData.timeStamp=g_CurCount;
 					//mexPrintf("\nlastTime:%lld CurCount:%lld\n",lastTime,g_CurCount);
 				}
 				ReleaseMutex( ghMutexCount);
-			}
+//			}
 			unsigned long long endTime = getUnixTimeStamp();
 			unsigned long long timeNeeded = endTime - startTime;
 			
@@ -511,15 +543,59 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 				mexPrintf("ALREADY CONNECTED. CLOSING PREVIOUS CONNECTION");
 				quitTMSI();
 			}
-			
+			mexPrintf("STARTING\n");
+			g_PolicyMean=1;
 				gMarkerQueue = queue<markerData>();
 				gDataQueue = queue<chData>();	
+				g_numCh=8;
 				mxArray* numChannels = mxGetField(prhs[1], 0,FIELD_Channels);
 				if(numChannels)
+				{
+					double* t= (double*)mxGetData(numChannels);
+					g_numCh = *t;
+				}
+				mxArray* ref = mxGetField(prhs[1], 0,FIELD_Ref);
+				g_Ref=1;
+				
+				if(ref)
+				{
+					double* t= (double*)mxGetData(ref);
+					g_Ref = *t;
+				}
+				g_Fs=FREQ;
+				mxArray* fs = mxGetField(prhs[1], 0,FIELD_Freq);
+				if(fs) 
+				{
+					double* t= (double*)mxGetData(fs);
+					g_Fs = *t;	
+				}
+				
+				mxArray* policy = mxGetField(prhs[1], 0,FIELD_Policy);
+				
+				g_PolicyMean = 1;
+				
+				if(policy) 
+				{
+					int pollen = (mxGetM(policy) * mxGetN(policy)) + 1;
+					char* polbuff = new char[pollen+1];
+					mxGetString(policy, polbuff, pollen);
+					
+					if(!strcmpi("subsamplebylag",polbuff)) 
 					{
-						double* t= (double*)mxGetData(numChannels);
-						g_numCh = *t;
+						mexPrintf("SUBSAMPLING BY LAG\n");
+						g_PolicyMean = 0;
 					}
+					else 
+					{
+						mexPrintf("SUBSAMPLING BY MEAN\n");
+					}
+				}
+				else 
+				{
+						mexPrintf("SUBSAMPLING BY MEAN\n");
+				}
+				
+
 				ghMutexData = CreateMutex(NULL,              // default security attributes
 										  FALSE,             // initially not owned
 										  NULL);             // unnamed mutex
@@ -533,24 +609,27 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 				mxArray* OUT_STATE;
 				OUT_STATE = mxDuplicateArray(prhs[1]);
 				plhs[0] = OUT_STATE;
-				DWORD dummy;
-						  hServerThread = CreateThread( 
-							NULL,                   // default security attributes
-							0,                      // use default stack size  
-							threadMarkerServer,       // thread function name
-							NULL,          // argument to thread function 
-							0,                      // use default creation flags 
-							&dummy);   // returns the thread identifier 
-							
 				
-				initTMSI();
+				if(!initTMSI())
+				{
+					DWORD dummy;
+					hServerThread = CreateThread( 
+									NULL,                   // default security attributes
+									0,                      // use default stack size  
+									threadMarkerServer,       // thread function name
+									NULL,          // argument to thread function 
+									0,                      // use default creation flags 
+									&dummy);   // returns the thread identifier 
+								
+				}
+				
 			
 		}
 		else if((!strcmp(cPi,"quit"))||(!strcmp(cPi,"close"))) {	
 			quitTMSI();
 		}
 		else {
-			mexErrMsgTxt("bbci_acquire_en: invalid string in first parameter. Did you mean init?");
+			mexErrMsgTxt("bbci_acquire_tmsi: invalid string in first parameter. Did you mean init?");
 		}
 	}
 	
@@ -593,10 +672,30 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 			int preCount=gDataQueue.size();
 			ReleaseMutex( ghMutexData);
 			
-			if(preCount>0)
+			
+			g_Fs=FREQ;
+			mxArray* fs = mxGetField(prhs[0], 0,FIELD_Freq);
+			if(fs) 
 			{
+				double* t= (double*)mxGetData(fs);
+				g_Fs = *t;	
+			}
+			
+			int factor=1;
+			if(g_Fs<FREQ) {
+				
+				if(FREQ%((int)g_Fs)!=0)
+					mexErrMsgTxt("Base Frequency not dividable by state.fs");
+				else
+					factor=(int)(FREQ/((int)g_Fs));
+			}
+			
+			if(preCount>factor-1)
+			{
+				
 				WaitForSingleObject(ghMutexMarkers, INFINITE );
 				WaitForSingleObject(ghMutexData, INFINITE );
+				
 				int count_markers = gMarkerQueue.size();
 				double* output2 = new double[count_markers];
 				char** output3 = new char*[count_markers];
@@ -613,7 +712,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 					//mexmexPrintf("%s\n",output3[i]);
 				}
 
-				int count = gDataQueue.size();
+				int count = gDataQueue.size()/factor;
 				
 				double* output = new double[count*g_numCh];
 
@@ -623,37 +722,74 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 				
 				for(int i=0;i<count;i++) {
-					chData newData = gDataQueue.front();
+					
+
+					chData newData;
+					for(int j=0;j<g_numCh;j++)
+						newData.channels[j] = 0;
+					
+					newData.timeStamp = gDataQueue.front().timeStamp;
+
+					if(g_PolicyMean) 
+					{
+						for(int j=0; j<factor;j++) {
+							chData temp = gDataQueue.front();
+							for(int k=0; k<g_numCh; k++)
+								newData.channels[k] += temp.channels[k]/factor;
+							gDataQueue.pop();
+						}
+						
+					}
+					else 
+					{
+						chData temp = gDataQueue.front();
+						
+						for(int j=0; j<g_numCh; j++) 
+						{
+							newData.channels[j] = temp.channels[j];
+						}
+
+						for(int j=0; j<factor;j++) 
+							gDataQueue.pop();
+
+					}
 					
 					for(int j=0;j<g_numCh;j++)
 					{
-//						if(!newData.channels[j])
-//							mexPrintf("\nZERO CH: %d", j);
-						//output[j*count+i] = (newData.channels[j]/1000.0l); 
 						output[j*count+i] = (newData.channels[j]); 
-					
 					}
+
+
+						
+
 					dataTime[i] = (unsigned long long)newData.timeStamp;
-					gDataQueue.pop();
 				}
 				
 				
 				
 				unsigned long long startTime = dataTime[0];
-				for(int i=0;i<count_markers;i++)
-				{
-					// mexmexPrintf("\nStart time:%lld\n",startTime);
-					unsigned long long diff = allMarkers[i].timeStamp - startTime;
-					
-//					fprintf(g_Fp, "%lld\n",diff);
-					if(startTime>allMarkers[i].timeStamp)
-					{	
-					diff = 0;
-					}
-
-					output2[i] = diff;
-				}
 				
+				if(g_PolicyMean) 
+				{
+					for(int i=0;i<count_markers;i++)
+					{
+						// mexmexPrintf("\nStart time:%lld\n",startTime);
+						unsigned long long diff = (allMarkers[i].timeStamp - startTime)*FREQ/1000;
+						
+	//					fprintf(g_Fp, "%lld\n",diff);
+						if(startTime>allMarkers[i].timeStamp)
+						{	
+							diff = 0;
+						}
+						if(allMarkers[i].timeStamp > dataTime[count-1])
+							diff = dataTime[count-1];
+						
+						diff=diff/factor;
+						if(diff > (count-1))
+							diff = count - 1;
+						output2[i] = diff;
+					}
+				}
 				plhs[0] = mxCreateDoubleMatrix(count,g_numCh,mxREAL);
 				double  *start_of_output;
 				start_of_output = (double *)mxGetPr(plhs[0]);
@@ -702,7 +838,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 				delete[] output3;
 				ReleaseMutex( ghMutexMarkers);
 				ReleaseMutex( ghMutexData);
-				Sleep(3);
+				Sleep(1);
 			}
 			else
 			{
@@ -730,9 +866,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 void quitTMSI() {
 	if(g_bIsConnected) {
-		g_bIsConnected = false;
-		g_numCh = 8;
-		
 		//TerminateThread(hServerThread,0);
 		sockaddr_in si_other;
 		SOCKET s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -754,6 +887,11 @@ void quitTMSI() {
 			
 		WaitForSingleObject(ghMutexData, INFINITE );
 		WaitForSingleObject(ghMutexMarkers, INFINITE );
+		
+		g_bIsConnected = false;
+		g_numCh = 8;
+		g_PolicyMean=1;
+		
 		gDataQueue = queue<chData>();
 		gMarkerQueue = queue<markerData>();
 		ReleaseMutex( ghMutexMarkers);
