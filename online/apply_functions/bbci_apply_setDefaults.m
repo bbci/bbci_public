@@ -173,6 +173,8 @@ for k= 1:length(bbci.feedback),
             'trigger_fcn'     @trigger_matlabSoft   'FUNC'
             'trigger_param'   {}                    'CELL'
            };
+   otherwise,
+		props= {};
   end
   bbci.feedback(k).opt= opt_setDefaults(bbci.feedback(k).opt, props);
 end
