@@ -35,12 +35,14 @@ default_grd= sprintf(['scale,FC3,FC1,FCz,FC2,FC4,legend\n' ...
 props= {'ref_ival'      [-200 0]                       '!DOUBLE[1 2]'
         'disp_ival'     [-200 800]                     '!DOUBLE[1 2]'
         'clab'          {'not','E*'}                   'CHAR|CELL{CHAR}'
+				'clab_rereference'            ''               'CHAR|CELL{CHAR}'
         'cfy_clab'      {'not','E*','Fp*','A*'}        'CHAR|CELL{CHAR}'
         'cfy_ival'                    'auto'           'CHAR(auto)|DOUBLE[- 2]'
         'cfy_ival_pick_peak'          [100 700]        'DOUBLE[1 2]'
         'band'                        []               'DOUBLE[1 2]|DOUBLE[1]'
         'control_per_stimulus'        0                'BOOL'
         'model'             @train_RLDAshrink          'FUNC|CELL'
+				'whitening'                   0                'BOOL'
         'nSequences'                  5                'INT'
         'nClasses'                    0                'INT'
         'cue_markers'       [11:16,21:26,31:36,41:46]  '!DOUBLE[1 -]'
@@ -98,6 +100,9 @@ else
   previous= struct;
 end
 
+if ~isempty(opt.clab_rereference),
+	[data.cnt, A_reref]= proc_commonAverageReference(data.cnt, opt.clab_rereference, '*');
+end
 if ~isempty(opt.band),
   [filt_b,filt_a]= cheby2(5, 20, opt.band/data.cnt.fs*2);
   data.cnt = proc_filt(data.cnt, filt_b, filt_a);
@@ -257,10 +262,27 @@ BC_result.nSequences= opt.nSequences; %% Future extension: select by simulation
 
 bbci.signal.clab= BC_result.cfy_clab;
 
+cnt_processed = proc_selectChannels(data.cnt,bbci.signal.clab)
+
+if opt.whitening,	
+	C= cov(cnt_processed.x);
+	[V,D]= eig(C);
+	A_whitening= V*diag(1./sqrt(diag(D)))*V;
+  cnt_processed= proc_linearDerivation(cnt_processed, A_whitening);	 
+	bbci.signal.proc= {{@online_linearDerivation, A_whitening}};
+	else
+	bbci.signal.proc= {};
+end
+
+if ~isempty(opt.clab_rereference)
+	bbci.signal.proc=  cat(2, bbci.signal.proc,{{@online_linearDerivation, A_reref}})
+end
+
+
 if ~isempty(opt.band)  %set filter if required!
   online_fs= data.cnt.fs;   %extract sampling rate from bbci-strukt 
   [filt_b,filt_a]= cheby2(5, 20, opt.band/online_fs*2);
-  bbci.signal.proc= {{@online_filt, filt_b, filt_a}};
+  bbci.signal.proc= cat(2, bbci.signal.proc, {{@online_filt, filt_b, filt_a}});
 end
 
 if isempty(opt.ref_ival),     % no baselining
@@ -286,8 +308,7 @@ if ~isfield(bbci, 'quit_condition') || ~isfield(bbci.quit_condition, 'marker'),
   bbci.quit_condition.marker = 255;
 end
 
-fv= proc_segmentation(data.cnt, BC_result.mrk, bbci.feature.ival, ...
-                       'clab',bbci.signal.clab);
+fv= proc_segmentation(cnt_processed, BC_result.mrk, bbci.feature.ival);
 fv= bbci_calibrate_evalFeature(fv, bbci.feature);
 
 bbci.classifier.C= trainClassifier(fv, opt.model);
