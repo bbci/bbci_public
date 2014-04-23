@@ -1,4 +1,4 @@
-function dat= proc_commonAverageReference(dat, refChans, rerefChans)
+function [dat, A]= proc_commonAverageReference(dat, refChans, rerefChans)
 %PROC_COMMONAVERAGEREFERENCE - rereferencing to a common reference
 %
 %Synopsis:
@@ -38,7 +38,12 @@ car= mean(dat.x(:,rc,:), 2);
 %car= repmat(car, [1 length(rrc) 1]);
 %dat.x(:,rrc,:)= dat.x(:,rrc,:) - car;
 
-for cc= rrc,
-  dat.x(:,cc,:)= dat.x(:,cc,:) - car;
-  dat.clab{cc}= [dat.clab{cc} ' car'];
-end
+%for cc= rrc,
+%  dat.x(:,cc,:)= dat.x(:,cc,:) - car;
+%  dat.clab{cc}= [dat.clab{cc} ' car'];
+%end
+
+nChans= size(dat.x,2);
+A= eye(nChans, nChans);
+A(rc,rrc)= A(rc,rrc) - 1/length(rc);
+dat= proc_linearDerivation(dat, A, 'CLab','copy', 'Appendix',' car');
