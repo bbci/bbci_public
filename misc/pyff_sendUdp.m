@@ -36,7 +36,7 @@ persistent socke
 if nargin==3 & isequal(varargin{1},'init'),
   hostname= varargin{2};
   port= varargin{3};
-%   path(path, [BCI_DIR 'import/tcp_udp_ip']);
+  
   socke= pnet('udpsocket', 1111);  %% what is this port number?
   if socke==-1,
     error('udp communication failed');
