@@ -38,7 +38,7 @@ if nargin==0,
 end
 
 opt= opt_proplistToStruct(varargin{:});
-[opt, isdefault]= opt_setDefaults(opt, props, 1);
+[opt, isdefault]= opt_setDefaults(opt, props, 0);
 
 if fileutil_isAbsolutePath(file),
   fullName= file;
