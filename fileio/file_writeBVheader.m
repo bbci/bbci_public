@@ -28,6 +28,8 @@ props= {'Folder'       BTB.TmpDir   'CHAR'
         'DataPoints'   []           'CHAR|DOUBLE'
         'MarkerFile'   ''           'CHAR'
         'Impedances'   []           'DOUBLE[-]'
+				'Internal'		 []           'DOUBLE[-]'
+				'CheckImpedances'		 []     'DOUBLE[-]'								
         'Fs'           []           '!DOUBLE[1]'
         'CLab'         ''           '!CELL(CHAR)'
         'Scale'        'auto'       'CHAR|DOUBLE[-]'
@@ -62,6 +64,11 @@ end
 
 if ~ischar(opt.DataPoints),  % not sure, why DataPoints is a string
   opt.DataPoints= sprintf('%d', opt.DataPoints);
+end
+
+if ~exist(fileparts(fullName), 'dir')
+	mkdir(fileparts(fullName));
+	fprintf(['Folder not found. Generated ' fileparts(fullName)])
 end
 
 fid= fopen([fullName '.vhdr'], 'w','b');

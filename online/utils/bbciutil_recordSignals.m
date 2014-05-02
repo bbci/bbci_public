@@ -32,7 +32,7 @@ if ischar(varargin{1}),
     end
     
     % Write an empty marker file
-    file_writeBVmarkers(filename);
+    file_writeBVmarkers(filename, struct('time',[], 'y',[], 'event',struct), opt_hdr);
     state.fid_mrk= fopen([filename '.vmrk'], 'A');
 
     % and add the marker 'segment start'
