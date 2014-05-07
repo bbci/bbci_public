@@ -102,6 +102,7 @@ end
 
 if ~isempty(opt.clab_rereference),
 	[data.cnt, A_reref]= proc_commonAverageReference(data.cnt, opt.clab_rereference, '*');
+	A_reref(:,	sum(A_reref==0,1) == size(A_reref,1)) = []; %removes the zero-channels		
 end
 if ~isempty(opt.band),
   [filt_b,filt_a]= cheby2(5, 20, opt.band/data.cnt.fs*2);
@@ -262,20 +263,21 @@ BC_result.nSequences= opt.nSequences; %% Future extension: select by simulation
 
 bbci.signal.clab= BC_result.cfy_clab;
 
-cnt_processed = proc_selectChannels(data.cnt,bbci.signal.clab)
+cnt_processed = proc_selectChannels(data.cnt,bbci.signal.clab);
 
-if opt.whitening,	
-	C= cov(cnt_processed.x);
-	[V,D]= eig(C);
-	A_whitening= V*diag(1./sqrt(diag(D)))*V;
-  cnt_processed= proc_linearDerivation(cnt_processed, A_whitening);	 
-	bbci.signal.proc= {{@online_linearDerivation, A_whitening}};
+if ~isempty(opt.clab_rereference),	
+	cnt_processed = proc_linearDerivation(cnt_processed, A_reref);	 
+	bbci.signal.proc=  {{@online_linearDerivation, A_reref}};
 	else
 	bbci.signal.proc= {};
 end
 
-if ~isempty(opt.clab_rereference)
-	bbci.signal.proc=  cat(2, bbci.signal.proc,{{@online_linearDerivation, A_reref}})
+if opt.whitening
+	C= cov(cnt_processed.x);
+	[V,D]= eig(C);
+	A_whitening= V*diag(1./sqrt(diag(D)))*V;
+  cnt_processed= proc_linearDerivation(cnt_processed, A_whitening);	 
+	bbci.signal.proc= cat(2, bbci.signal.proc, {{@online_linearDerivation, A_whitening}});
 end
 
 
