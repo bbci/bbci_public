@@ -89,7 +89,7 @@ switch computer
   BTB.Acq.IoLib= which('inpoutx64.dll');
 end
 
-if isempty(BTB.Acq.TrigerParam) && ...
+if isempty(BTB.Acq.TriggerParam) && ...
     isequal(BTB.Acq.TriggerFcn, @bbci_trigger_parport),
   BTB.Acq.TriggerParam= {BTB.Acq.IoLib, BTB.Acq.IoAddr};
 end
