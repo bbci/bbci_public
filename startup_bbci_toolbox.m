@@ -10,14 +10,6 @@ BBCI_PRIVATE_DIR= fullfile(fileparts(BBCI_DIR), 'bbci_private');
 
 BTB= opt_proplistToStruct(varargin{:});
 
-% now IoLib can be set, because it is in BBCI_DIR
-switch computer
-  case 'PCWIN'
-    BTB.Acq.IoLib= which('inpout32.dll');
-  case 'PCWIN64'
-    BTB.Acq.IoLib= which('inpoutx64.dll');
-end
-
 if ~isfield(BTB, 'TypeChecking'),
   BTB.TypeChecking= 1;
 end
@@ -81,13 +73,26 @@ props= {'Dir'    BTB.TmpDir  'CHAR'
 BTB.Tp= opt_setDefaults(BTB.Tp, props);
 
 % Information about data acquistion
-props= {'Prefix'          'a'          'CHAR'
-        'StartLetter'     'a'          'CHAR'
-        'Dir'             BTB.TmpDir   'CHAR'
-        'Geometry'        []           'DOUBLE[1 4]'
-        'IoAddr'          []           'INT'
-        'IoLib'           ''           'CHAR'
+props= {'Prefix'          'a'                     'CHAR'
+        'StartLetter'     'a'                     'CHAR'
+        'Dir'             BTB.TmpDir              'CHAR'
+        'Geometry'        []                      'DOUBLE[1 4]'
+        'TriggerFcn'      @bbci_trigger_parport   'FCN'
+        'TriggerParam'    {}                      'CELL'
        };
 BTB.Acq= opt_setDefaults(BTB.Acq, props);
+
+switch computer
+ case 'PCWIN'
+  BTB.Acq.IoLib= which('inpout32.dll');
+ case 'PCWIN64'
+  BTB.Acq.IoLib= which('inpoutx64.dll');
+end
+
+if isempty(BTB.Acq.TrigerParam) && ...
+    isequal(BTB.Acq.TriggerFcn, @bbci_trigger_parport),
+  BTB.Acq.TriggerParam= {BTB.Acq.IoLib, BTB.Acq.IoAddr};
+end
+
 
 evalin('base', 'global BTB');
