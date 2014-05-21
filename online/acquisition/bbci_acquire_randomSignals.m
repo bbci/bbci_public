@@ -62,11 +62,11 @@ if isequal(varargin{1}, 'init'),
     state.realtime= inf;
   end
   state.start_time= tic;
+  %  switch(state.marker_mode),
+  %   case 'pyff_udp',
+  %    state.socket= open_udp_socket();
+  %  end
   output= {state};
-  switch(state.marker_mode),
-   case 'pyff_udp',
-    state.socket= open_udp_socket();
-  end
 elseif isequal(varargin{1}, 'close'),
   if length(varargin)>1,
     state= varargin{2};
