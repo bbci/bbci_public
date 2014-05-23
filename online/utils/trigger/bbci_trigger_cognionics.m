@@ -9,6 +9,7 @@ if isnumeric(value),
   end
 
   fwrite(sp, value, 'uint8');
+  %fwrite(sp, 0, 'uint8');  % check whether this works. otherwise: timer
   return;
 end
 

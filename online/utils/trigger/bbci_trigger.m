@@ -21,7 +21,7 @@ function bbci_trigger(varargin)
 if nargin>1 && isstruct(varargin{1}),
   bbci= varargin{1};
   bbci.trigger.fcn(varargin{2}, bbci.trigger.param{:});
-else
+elseif nargin==1,
   global BTB
-  BTB.Acq.TriggerFcn(value, BTB.Acq.TriggerParam{:});
+  BTB.Acq.TriggerFcn(varargin{1}, BTB.Acq.TriggerParam{:});
 end
