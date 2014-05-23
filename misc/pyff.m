@@ -17,8 +17,8 @@ function res = pyff(command, varargin)
 % the following (optional) fields/properties:
 %  .Dir      - pyff source directory (default for win: D:\svn\pyff\src;
 %              default for unix: ~/svn/pyff/src)
-%  .Parport     - port number for parallel port. Default is dec2hex(BTB.IoAddr),
-%              if BTB.IoAddr exists, otherwise [].
+%  .Parport     - port number for parallel port. Default is dec2hex(BTB.Acq.IoAddr),
+%              if BTB.Acq.IoAddr exists, otherwise [].
 %  .A        - additional feedback directory (default [])
 %  .Gui      - if 1, pyff gui is started along with the feedback controller (default 0)
 %  .L        - loglevel (default 'debug')
