@@ -6,13 +6,13 @@ if isnumeric(value),
   if isempty(sp),
     sp= serial('COM16', 'BaudRate',57600);
     fopen(sp);
-	end
-
-	% hack to circumvent error in the cognionics system
-	if value>=255,
-		value= 247;
-		fprintf('[%s:] replaced trigger with 247.\n', mfilename);
-	end
+  end
+  
+  % hack to circumvent error in the cognionics system
+  if value>=255,
+    value= 246;
+    fprintf('[%s:] replaced trigger with %d.\n', mfilename, value);
+  end
   fwrite(sp, value, 'uint8');
   %fwrite(sp, 0, 'uint8');  % check whether this works. otherwise: timer
   return;
