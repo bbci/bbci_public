@@ -8,14 +8,14 @@ function desc= stimutil_readDescription(file,varargin)
 %
 %Arguments:
 %  OPT: struct or property/value list of optional properties
-%   'dir': directory of the thext file
-%   'suffix': suffix of the text file (default .txt)
+%   'Folder': directory of the thext file
+%   'Suffix': suffix of the text file (default .txt)
 %
 
 global BTB
 
 
-props= {'Dir'       fullfile(BTB.PrivateDir, 'acquisition','data','task_descriptions') 'CHAR|CELL{CHAR}'
+props= {'Folder'  fullfile(BTB.PrivateDir, 'acquisition','data','task_descriptions') 'CHAR|CELL{CHAR}'
         'Suffix'	'.txt'                                          'CHAR|DOUBLE'};
         
 if nargin==0,
@@ -27,4 +27,10 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-desc= textread([opt.Dir filesep file opt.Suffix],'%s','delimiter','\n');
+if fileutil_isAbsolutePath(file),
+	filename= [file opt.Suffix];
+else
+	filename= fullfile(opt.Folder, [file opt.Suffix]);
+end
+
+desc= textread(filename,'%s','delimiter','\n');

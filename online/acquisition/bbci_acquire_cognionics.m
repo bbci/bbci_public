@@ -40,7 +40,7 @@ if isequal(varargin{1}, 'init'),
   props= {'fs'            250            '!DOUBLE[1]'
           'clab'          default_clab   'CELL{CHAR}'
           'blocksize'     40             '!DOUBLE[1]'
-          'port'          'COM15'        '!CHAR'
+          'port'          'COM11'        '!CHAR'
           'timeout'       3              '!DOUBLE[1]'
           'filtHd'        []             'STRUCT'
           'verbose'       true           '!BOOL'
@@ -57,6 +57,7 @@ if isequal(varargin{1}, 'init'),
     filt2.b= [0.8 0.8]
     filt2.a= [1 0.6]
     state.filtHd= procutil_catFilters(filt1, filt2);
+		state.filtHd= [];
   end
   state.nChans= length(state.clab);
   state.nBytesPerPacket= 2+3*state.nChans+4;
@@ -146,13 +147,14 @@ else
     state.packetNo= chunk(idx(1)+1)-1;
   end
   packet_counter= [state.packetNo; chunk(idx+1)];
-  %  fprintf('buffer: #%d, packets: %s\n', state.packetNo, ...
-  %    str_vec2str(packet_counter(2:end)));
+%  fprintf('buffer: #%d, packets: %s\n', state.packetNo, ...
+%          str_vec2str(packet_counter(2:end)));
+  packet_counter= mod(packet_counter,128);
   unwarp_correction= 128 * (floor(state.packetNo/128) + ...
                             [0; cumsum(diff(packet_counter)<0)]);
   packet_counter= packet_counter + unwarp_correction;
   state.packetNo= packet_counter(end);
-  %fprintf('packets unwrapped: %s\n', str_vec2str(packet_counter));
+%  fprintf('packets unwrapped: %s\n', str_vec2str(packet_counter));
   
   % Obtain signals from data packets
   np= length(idx);
