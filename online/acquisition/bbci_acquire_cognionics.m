@@ -57,7 +57,7 @@ if isequal(varargin{1}, 'init'),
     filt2.b= [0.8 0.8]
     filt2.a= [1 0.6]
     state.filtHd= procutil_catFilters(filt1, filt2);
-		state.filtHd= [];
+    state.filtHd.PersistentMemory= true;
   end
   state.nChans= length(state.clab);
   state.nBytesPerPacket= 2+3*state.nChans+4;
