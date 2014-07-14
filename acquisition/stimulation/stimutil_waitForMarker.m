@@ -25,7 +25,7 @@ function marker = stimutil_waitForMarker(varargin)
 % 07-2007 Benjamin Blankertz
 % 06-2012 Javier Pascual - update, new acquire_fcn used
 
-props = {   'stopmarkers'   [250, 255]          'DOUBLE[2]'
+props = {   'stopmarkers'   [250, 255]          'DOUBLE[-]'
             'bv_host'       'localhost'         'CHAR' 
             'bv_bbciclose'  0                   'BOOL'
             'acquire_fcn'   @bbci_acquire_bv    'FUNC'

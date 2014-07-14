@@ -2,30 +2,33 @@ function subject_code = acq_getSubjectCode(varargin)
 %GET_SUBJECT_CODE - Gets a new subject code
 % 
 %Synopsis:
-% folder= get_subject_code(OPT);
+% TPCODE= acq_getSubjectCode(<OPT>);
 %
 %Arguments:
 % OPT: struct or property/value list of optinal properties:
+%    'CodePrefix'    [CHAR], default 'VP
+%    'PrefixLetter'  [CHAR], default BTB.Acq.Prefix
+%    'StartLetter'   [CHAR], default BTB.Acq.StartLetter
 %
 %Returns:
-% subject_code
+% TPCODE
 %
 %Example:
-% getSubjectCode('code_prefix', 'subject_')
+% TPCode= acq_getSubjectCode('CodePrefix', 'S_')
 % 06-12 Javier Pascual. From code from acq_makeDataFolder
 
 
 global BTB
 
-props = {   'CodePrefix'       'VP'    'CHAR'
-            'PrefixLetter'     'a'     'CHAR'
-            'LetterStart'      'a'     'CHAR'
-            'LogDir'           0       'BOOL'};
+props= {'CodePrefix'     'VP'                  'CHAR'
+        'PrefixLetter'   BTB.Acq.Prefix        'CHAR'
+        'LetterStart'    BTB.Acq.StartLetter   'CHAR'
+       };
 
-if nargin==0,
-    subject_code = props; 
-    return;
-end;
+%if nargin==0,
+%  subject_code = props; 
+%  return;
+%end;
   
 %% Get the date
 today_vec= clock;
