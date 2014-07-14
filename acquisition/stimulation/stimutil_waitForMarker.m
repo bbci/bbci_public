@@ -1,8 +1,8 @@
-function marker = stimutil_waitForMarker(bbci)
+function marker = stimutil_waitForMarker(bbci, quit_marker)
 %STIMUTIL_WAITFORMARKER - Wait until specified marker is received
 %
 %Synopsis:
-% stimutil_waitForMarker(BBCI)
+% stimutil_waitForMarker(BBCI, QUIT_MARKER)
 % 
 %Arguments:
 % BBCI: struct as in bbci_apply. Here, only bbci.source and
@@ -14,7 +14,12 @@ if nargin==0,
 	return;
 end
 
-misc_checkType(bbci, 'STRUCT(source)');
+misc_checkType(bbci, 'STRUCT');
+misc_checkTypeIfExists('quit_marker', 'INT');
+
+if nargin>1,
+  bbci.quit_condition.marker= quit_marker;
+end
 
 bbci= bbci_apply_setDefaults(bbci);
 bbci.source.record_signals= 0;

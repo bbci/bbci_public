@@ -23,7 +23,7 @@ function out= bvr_startrecording(filebase, varargin)
 
 global BTB
 
-props= {'Impedances'    1   'BOOL'
+props= {'Impedances'    0   'BOOL'
         'AppendTpCode'  1   'BOOL'
        };
 
@@ -38,7 +38,7 @@ opt= opt_proplistToStruct(varargin{:});
 opt_checkProplist(opt, props);
 
                 
-%% in case recording is still running, stop it
+% in case recording is still running, stop it
 bvr_sendcommand('stoprecording');
 
 if opt.AppendTpCode,
@@ -46,11 +46,10 @@ if opt.AppendTpCode,
 end
 
 num= 1;
-file= [BTB.Tp.Dir '\' filebase];
-[file '.eeg']
+file= fullfile(BTB.Tp.Dir, filebase);
 while exist([file '.eeg'], 'file'),
   num= num + 1;
-  file= sprintf('%s%s%02d', BTB.Tp.Dir, filebase, num);
+  file= fullfile(BTB.Tp.Dir, sprintf('%s%02d', filebase, num));
 end
 
 if opt.Impedances,

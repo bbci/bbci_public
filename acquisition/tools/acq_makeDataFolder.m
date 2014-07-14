@@ -87,9 +87,9 @@ if opt.Interactive,
 else
   choice= 2;
 end
-BTB.Tp.Dir= FolderList{choice};
-is= find(BTB.Tp.Dir=='_', 1, 'first');
-BTB.Tp.Code= BTB.Tp.Dir(1:is-1);
+BTB.Tp.Dir= fullfile(BTB.RawDir, FolderList{choice});
+is= find(FolderList{choice}=='_', 1, 'first');
+BTB.Tp.Code= FolderList{choice}(1:is-1);
 
 if ~exist(BTB.Tp.Dir, 'dir'),
   mkdir(BTB.Tp.Dir);
