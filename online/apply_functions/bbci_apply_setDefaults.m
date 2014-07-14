@@ -1,4 +1,4 @@
-function bbci= bbci_apply_setDefaults(bbci)
+function bbci= bbci_apply_setDefaults(bbci, STRICT)
 %BBCI_APPLY_SETDEFAULTS - Set default values in bbci structure for bbci_apply
 %
 %Synopsis:
@@ -21,7 +21,9 @@ global BTB
 if nargin==0,
   bbci= [];
 end
-
+if nargin<2,
+  STRICT= false;
+end
 
 props= {'calibrate'       struct   'STRUCT'
         'source'          struct   'STRUCT'
@@ -88,11 +90,14 @@ bbci.signal= bbciutil_transformProc2FcnParam(bbci.signal);
 
 
 props= {'signal'         1      '!INT[1]'
-        'ival'           []     '!DOUBLE[2]'
+        'ival'           []     'DOUBLE[2]'
         'proc'           {}     'CELL'
         'fcn'            []     'FUNC|CELL{FUNC}'
         'param'          {}     'CELL'
        };
+if STRICT,
+  props{2,3}= '!DOUBLE[2]';
+end
 bbci.feature= opt_overwriteVoids(bbci.feature, 'signal', props);
 bbci.feature= opt_setDefaults('bbci.feature', props);
 opt_checkExclusiveProps('bbci.feature', {'proc','fcn'; 'proc','param'});

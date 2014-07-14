@@ -30,8 +30,12 @@ function bbci_apply_close(bbci, data)
 
 % 03-2011 Benjamin Blankertz
 
-
-if nargin==1,
+if nargin==0,
+  bbci= bbci_apply_setDefaults([]);
+elseif ~isfield(bbci, 'source'),
+  bbci= bbci_apply_setDefaults(bbci);
+end
+if nargin<=1,
 % DATA not provided, try closing anyway (works for most)
   for k= 1:length(bbci.source),
     bbci.source(k).acquire_fcn('close');
