@@ -77,7 +77,7 @@ props= {'CLab'              ''      'CHAR|CELL{CHAR}'
         'Prec'              0       'DOUBLE[1]'
         'Ival'              []      'DOUBLE[2]'
         'IvalSa'            []      'DOUBLE[2]'
-        'SubsampleFcn'      'subsampleByMean'  'CHAR'
+        'SubsampleFcn'      @proc_subsampleByMean  'FUNC'
         'Channelwise'       0       'BOOL'
         'Filt'              []      'STRUCT(a b)'
         'LinearDerivation'  []      'STRUCT'
@@ -93,8 +93,8 @@ if nargin==0,
   return
 end
 
-opt= opt_proplistToStruct(varargin{:});
-[opt, isdefault]= opt_setDefaults(opt, props);
+opt_orig= opt_proplistToStruct(varargin{:});
+[opt, isdefault]= opt_setDefaults(opt_orig, props);
 opt_checkProplist(opt, all_props);
 
 misc_checkType(file, 'CHAR|CELL{CHAR}');
@@ -181,24 +181,20 @@ uChans= length(chInd);
 
 
 if ~isempty(opt.Filt),
-  opt_tmp= rmfield(opt_orig, 'filt');       %% this is very unsch�n
-  opt_tmp= setfield(opt_tmp, 'fs','raw');
-  opt_tmp= setfield(opt_tmp, 'subsample_fcn','subsampleByLag');
-  opt_tmp= setfield(opt_tmp, 'verbose',0);
-  opt_tmp= setfield(opt_tmp, 'linear_derivation',[]);
+  opt_tmp= rmfield(opt_orig, 'Filt');     %% this is very unschön
+  opt_tmp= setfield(opt_tmp, 'Fs','raw');
+  opt_tmp= setfield(opt_tmp, 'SubsampleFcn', @proc_subsampleByLag); % ??
+  opt_tmp= setfield(opt_tmp, 'Verbose',0);
+  opt_tmp= setfield(opt_tmp, 'LinearDerivation',[]);
   tic;
   for cc= 1:uChans,
-    if cc==1 & nargout>1,
-      [cnt_sc, mrk]= file_loadBV(file, opt_tmp, 'clab',cnt.clab{cc});
+    if cc==1 && nargout>1,
+      [cnt_sc, mrk]= file_loadBV(file, opt_tmp, 'Clab',cnt.clab{cc});
     else
-      cnt_sc= file_loadBV(file, opt_tmp, 'clab',cnt.clab{cc});
+      cnt_sc= file_loadBV(file, opt_tmp, 'Clab',cnt.clab{cc});
     end
-    if opt.FiltType == 1,
-        cnt_sc= proc_filt(cnt_sc, opt.Filt.b, opt.Filt.a);
-    elseif opt.FiltType == 2,
-        cnt_sc= proc_filtfilt(cnt_sc, opt.Filt.b, opt.Filt.a);
-    end
-    cnt_sc= feval(['proc_' opt.subsample_fcn], cnt_sc, lag);
+    cnt_sc= proc_filt(cnt_sc, opt.Filt.b, opt.Filt.a);
+    cnt_sc= opt.SubsampleFcn(cnt_sc, lag);
     if cc==1,
       cnt.x= zeros(size(cnt_sc.x,1), uChans);
       cnt.title= cnt_sc.title;

@@ -34,6 +34,7 @@ props= {'calibrate'       struct   'STRUCT'
         'log'             struct   'STRUCT'
         'adaptation'      struct   'STRUCT'
         'quit_condition'  struct   'STRUCT'
+				'trigger_fcn'     []       'FUNC'
        };
 bbci= opt_setDefaults('bbci', props);
 

@@ -1,10 +1,13 @@
 function bbci_trigger_cognionics(value, varargin)
 
-persistent sp
+persistent sp port
 
 if isnumeric(value),
   if isempty(sp),
-    sp= serial('COM16', 'BaudRate',57600);
+		if isempty(port),
+			port= 'COM16';
+		end
+    sp= serial(port, 'BaudRate',57600);
     fopen(sp);
   end
   
@@ -14,14 +17,17 @@ if isnumeric(value),
     fprintf('[%s:] replaced trigger with %d.\n', mfilename, value);
   end
   fwrite(sp, value, 'uint8');
-  %fwrite(sp, 0, 'uint8');  % check whether this works. otherwise: timer
+  fwrite(sp, 0, 'uint8');
   return;
 end
 
 if ischar(value),
   switch(value),
     case 'init',
-      sp= serial('COM16', 'BaudRate',57600);
+			if ~isempty(varargin),
+				port= varargin{1};
+			end
+      sp= serial(port, 'BaudRate',57600);
       fopen(sp);
     case 'close',
       fclose(sp);
