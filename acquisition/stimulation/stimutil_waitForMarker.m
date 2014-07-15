@@ -2,22 +2,28 @@ function marker = stimutil_waitForMarker(bbci, quit_marker)
 %STIMUTIL_WAITFORMARKER - Wait until specified marker is received
 %
 %Synopsis:
-% stimutil_waitForMarker(BBCI, QUIT_MARKER)
+% stimutil_waitForMarker(BBCI, <QUIT_MARKER>)
+% stimutil_waitForMarker(QUIT_MARKER)
 % 
 %Arguments:
 % BBCI: struct as in bbci_apply. Here, only bbci.source and
 %    bbci.quit_condition.marker matter
+% QUIT_MARKER: DOUBLE[1 nMarkers], These will override 
+%    bbci.quit_condition.marker
+%
+%If no BBCI structure is specified, the default bbci.source is assumed
+%which is (currently) BrainVision.
 
-
-if nargin==0,
-	marker= {'XXX', [], 'int'};
-	return;
+if nargin==1,
+  if isnumeric(bbci),
+    quit_marker= bbci;
+    bbci= [];
+  end
 end
-
-misc_checkType(bbci, 'STRUCT');
+misc_checkTypeifExists('bbci', 'STRUCT');
 misc_checkTypeIfExists('quit_marker', 'INT');
 
-if nargin>1,
+if exists('quit_marker', 'var'),
   bbci.quit_condition.marker= quit_marker;
 end
 
