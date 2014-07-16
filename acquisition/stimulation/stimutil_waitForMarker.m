@@ -23,7 +23,7 @@ end
 misc_checkTypeifExists('bbci', 'STRUCT');
 misc_checkTypeIfExists('quit_marker', 'INT');
 
-if exists('quit_marker', 'var'),
+if exist('quit_marker', 'var'),
   bbci.quit_condition.marker= quit_marker;
 end
 

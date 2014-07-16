@@ -24,7 +24,7 @@ function [packet, state]= bbci_control_ERPSpellerBinary(cfy_out, state, event, o
 
 this_cue= opt.mrk2feedback_fcn(event.desc);
 packet= [cfy_out this_cue];
-%fprintf('[BBCI CONTROL]: send-clout: %g\n', cfy_out);
+fprintf('[BBCI CONTROL]: send-clout: %g  (cue: %d)\n', cfy_out, this_cue);
 
 %% The rest of this function is not required. It is only used to generate
 %  the output of the selected class, to verify that the Pyff feedback is
@@ -34,6 +34,7 @@ if nargin<3 || isempty(opt.nSequences),
 end
 
 if isempty(state),
+	fprintf('[BBCI CONTROL BINARY]: #classes= %d, #sequences= %d\n', opt.nClasses, opt.nSequences);
   state.counter= zeros(1, opt.nClasses);
   state.output= zeros(1, opt.nClasses);
 end

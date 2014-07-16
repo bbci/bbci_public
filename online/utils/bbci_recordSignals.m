@@ -25,6 +25,7 @@ props= {'record_signals'    1               'BOOL',
         'record_basename'   filename        'CHAR',
         'record_param'      default_param   'PROPLIST'};
 bbci.source= opt_setDefaults(bbci.source, props);
+bbci.source.record_basename= filename;
 
 fprintf('Recording started.\n');
 

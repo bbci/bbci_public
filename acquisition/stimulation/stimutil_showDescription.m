@@ -48,10 +48,11 @@ props= {'Clf'               0                               'BOOL'
         'WaitforMsg'       'Press <ENTER> to continue: '   'CHAR'
         'Frame'             1                               '!BOOL'};
 
-props_marker= stimutil_waitForMarker;
+%props_marker= stimutil_waitForMarker;
 
 if nargin==0,
-  HANDLE = opt_catProps(props,props_marker);
+%  HANDLE = opt_catProps(props,props_marker);
+  HANDLE = props;
   return
 end
 
@@ -59,7 +60,7 @@ opt= opt_proplistToStruct(varargin{:});
 opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-opt_marker= opt_substruct(opt, props_marker(:,1));
+%opt_marker= opt_substruct(opt, props_marker(:,1));
 
 if isequal(opt.Waitfor, 0),
   opt.Delete= 0;
@@ -172,7 +173,7 @@ if ~isempty(opt.Waitfor),
     pause;
     fprintf('\n');
   else
-    stimutil_waitForMarker(opt_marker, 'stopmarkers',opt.Waitfor);
+    stimutil_waitForMarker(opt.Waitfor);
   end
 end
 
