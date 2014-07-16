@@ -39,7 +39,8 @@ if isempty(BTB.Acq.StartLetter),
 end
 
 
-props = {'MultipleFolders'	0	'BOOL'};
+props = {'MultipleFolders'	0   'BOOL'
+         'Interactive'      1   'BOOL'};
 
 % if nargin==0,
 %   varargout{1} = opt_catProps(props, acq_getSubjectCode); 
@@ -53,29 +54,42 @@ opt_checkProplist(opt, props);
 %% Check whether a directory exists that is to be used
 dd= dir([BTB.RawDir 'VP???_' today_str '*']);
 
-if ~opt.MultipleFolders && length(dd)>0,
-  warning('multiple folder of today exist, but opt.MultipleFolder is set to false -> generating a new participant code.');
-  BTB.Tp.Code= '';
-else
-  k= 0;
-  while isempty(BTB.Tp.Code) && k<length(dd),
-    k= k+1;
-    de= dir([BTB.RawDir dd(k).name '\*.eeg']);
-    if ~opt.MultipleFolders || isempty(de),
-      is= find(dd(k).name=='_', 1, 'first');
-      BTB.Tp.Code= dd(k).name(1:is-1);
-      fprintf('!!Using existing directory <%s>!!\n', dd(k).name);
-		end
+FolderList{1}= strcat('Temp_', today_str);
+Comment{1}= 'for testing purpose';
+NewCode= acq_getSubjectCode;
+FolderList{2}= strcat(NewCode, '_', today_str);
+Comment{2}= 'to be generated as new folder';
+for k= 1:length(dd),
+  FolderList{2+k}= dd(k).name;
+  de= dir([BTB.RawDir dd(k).name '\*']);
+  deeg= dir([BTB.RawDir dd(k).name '\*.eeg']);
+  if length(de)<=2,
+    Comment{2+k}= 'empty folder';
+  elseif isempty(deeg),
+    Comment{2+k}= 'folder without *.eeg files';
+  else
+    Comment{2+k}= 'folder with *.eeg files';
   end
 end
 
-% if BTB.Tp.Code is empty, we generate a new one
-if(isempty(BTB.Tp.Code)),
-    BTB.Tp.Code= acq_getSubjectCode('PrefixLetter', BTB.Acq.Prefix, ...
-                                     'LetterStart', BTB.Acq.StartLetter);
-end;
-
-BTB.Tp.Dir= [BTB.RawDir BTB.Tp.Code '_' today_str filesep];
+if opt.Interactive,
+  for k= 1:length(FolderList),
+    fprintf('(%d) %s  (%s)\n', k, FolderList{k}, Comment{k});
+  end
+  choice= 0;
+  while choice<1 || choice>length(FolderList),
+    msg= sprintf(' -> Input your choice (1-%d): ', length(FolderList));
+    choice= input(msg);
+    if isempty(choice),
+      choice= 1;
+    end
+  end
+else
+  choice= 2;
+end
+BTB.Tp.Dir= fullfile(BTB.RawDir, FolderList{choice});
+is= find(FolderList{choice}=='_', 1, 'first');
+BTB.Tp.Code= FolderList{choice}(1:is-1);
 
 if ~exist(BTB.Tp.Dir, 'dir'),
   mkdir(BTB.Tp.Dir);
