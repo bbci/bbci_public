@@ -177,7 +177,10 @@ else
   state.lastMrkDesc= mrkDesc(end);
   mrkTime= 1/state.fs * iNonvoid;
   if state.verbose && ~isempty(iNonvoid),
-    fprintf('Markers: %s\n', str_vec2str(mrkDesc(iNonvoid)));
+    fprintf('[ACQ-COG] Markers: %s\n', str_vec2str(mrkDesc(iNonvoid)));
+%     for m= 1:length(iNonvoid),
+%       fprintf('[ACQ-COG] %6.3f: %s\n', mrkTime(m), mrkDesc(iNonvoid(m)));
+%		 end
   end
   
   % Interpolate lost packets

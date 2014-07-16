@@ -10,7 +10,7 @@ newx= zeros(np, state.nChans);
 newx(mapping,:)= cntx;
 
 % Interpolate missing packets linearly
-dpc= diff(mapping);
+dpc= diff(mapping(:))';
 for k= find(dpc>1),
   iSupport= mapping([k k+1]);
   iFillin= iSupport(1)+1:iSupport(2)-1;
