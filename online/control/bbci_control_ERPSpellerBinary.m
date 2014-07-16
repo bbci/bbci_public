@@ -44,8 +44,14 @@ state.output(this_cue)= state.output(this_cue) + cfy_out;
 if sum(state.counter) >= opt.nClasses*opt.nSequences,
   idx= find(state.counter>0);  % avoid divide by zero
   state.output(idx)= state.output(idx) ./ state.counter(idx);
-  [max_score, selected_class]= min(state.output);
-  fprintf('[BBCI CONTROL]: Selected class: %d\n', selected_class);
+  [so,si]= sort(state.output);
+%  [max_score, selected_class]= min(state.output);
+  fprintf('[BBCI CONTROL]: Selected class: %d (%.2f)\n', si(1), so(1));
+  fprintf('[BBCI CONTROL]:   ---  Competitors: ');
+  for k= 2:opt.nClasses,
+     fprintf('%d: %.2f | ', si(k), so(k));
+  end
+  fprintf('\n');
   state.counter(:)= 0;
   state.output(:)= 0;
 end

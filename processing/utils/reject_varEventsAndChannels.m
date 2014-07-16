@@ -94,9 +94,9 @@ end
 
 
 %% first-pass channels: remove channels with variance droppping to zero
-%%  criterium: variance<1 in more than 5% of trials
+%%  criterium: variance<0.5 in more than 10% of trials
 if opt.DoSilentChans,
-  rClab= find(mean(V<1,2) > .05);
+  rClab= find(mean(V<0.5,2) > .1);
 
   V(rClab,:)= [];
   chGood(rClab)= [];
