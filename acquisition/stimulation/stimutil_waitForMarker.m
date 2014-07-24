@@ -20,7 +20,7 @@ if nargin==1,
     bbci= [];
   end
 end
-misc_checkTypeifExists('bbci', 'STRUCT');
+misc_checkTypeIfExists('bbci', 'STRUCT');
 misc_checkTypeIfExists('quit_marker', 'INT');
 
 if exist('quit_marker', 'var'),
