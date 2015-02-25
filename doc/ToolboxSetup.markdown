@@ -30,14 +30,12 @@ If you want to run the demos of the toolbox you also need to download the demo d
 
 ### Getting the lastest snapshot of the BBCI Toolbox
 
-Download this [archieve](http://doc.ml.tu-berlin.de/bbci/ToolboxData/BBCIToolboxSnapshot.zip) and unzip it at an approriate place.
+Download this [archive](https://github.com/bbci/bbci_public/archive/master.zip) and unzip it at an approriate place.
 
 
 ### Checking out the GIT repository of the BBCI Toolbox
 
-The GIT repository is available under the following link:
-
-> http://repo.ml.tu-berlin.de/git/bbci/public
+The GIT repository is available at github: https://github.com/bbci/bbci_public
 
 
 #### Linux
@@ -45,13 +43,13 @@ The GIT repository is available under the following link:
 ```Bash
   mkdir ~/git
   cd ~/git
-  git clone http://repo.ml.tu-berlin.de/git/bbci/public bbci_public
+  git clone https://github.com/bbci/bbci_public bbci_public
 ```
 
 If you plan to work with our Open Source Framework Pyff for Stimulus Presentation or Feedbacks, you need to get the Pyff repository separately:
 
 ```Bash
-  git clone git://github.com/venthur/pyff
+  git clone git://github.com/bbci/pyff
 ```
 
 
@@ -63,7 +61,7 @@ Then type in
 ```Bash
 mkdir ~/git
 cd ~/git
-git clone http://repo.ml.tu-berlin.de/git/bbci/public bbci_public 
+git clone https://github.com/bbci/bbci_public bbci_public
 ```
 
 #### Windows
@@ -77,7 +75,7 @@ Installing Git for Windows will add git-related options to the context menu of t
 After installing Git for Windows, open the folder in which you would like to store the BBCI Toolbox. In this folder, right-click to open the context menu and choose the option 'Git Bash'. A terminal window (bash) will open. In the terminal window type
 
 ```Bash
-  git clone http://repo.ml.tu-berlin.de/git/bbci/public
+  git clone https://github.com/bbci/bbci_public
 ```
 
 Alternatively, you can use the GUI provided by Git for Windows to clone the repository. The GUI appears when you choose Git GUI from the context menu.
