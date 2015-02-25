@@ -16,7 +16,7 @@ like time intervals and weights of the classifier are stored in that
 structure. Before going into details, here is the (simplified) general
 structure in pseudo code:
 
-```
+```Matlab
 while run:
    acquire data
    apply preprocessing and store continuous signals into a buffer
