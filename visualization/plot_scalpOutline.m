@@ -38,21 +38,20 @@ function H= plot_scalpOutline(mnt, varargin)
 
 % Author: Benjamin Blankertz, Matthias Treder
 
-props = {
-         'DisplayChannels',         [],              'DOUBLE|CELL{CHAR}'
-         'DrawEars',                0,               'BOOL';
-         'H',                       struct('ax',NaN),'STRUCT'
-         'LineProperties',          {'Color','k'},   'STRUCT|CELL';
-         'ShowLabels',              0,               'BOOL';
-         'LabelProperties',         {'FontSize',8},  'STRUCT|CELL';
-         'MinorLabelProperties',    {'FontSize',6},  'STRUCT|CELL';
-         'MarkChannels',            [],              'DOUBLE|CELL{CHAR}';
-         'MarkLabelProperties',     {'FontSize',12,'FontWeight','bold'},    'STRUCT|CELL';
-         'MarkMarkerProperties',    {'LineWidth',3, 'MarkerSize',22},       'STRUCT|CELL';
-         'MarkerProperties',        {'Marker','+','MarkerSize',2,'LineWidth',.2,'MarkerEdgeColor','k'}, 'STRUCT|CELL';
-         'Offset',                  [0 0],           'DOUBLE[2]';
-         'Reference',               0,               'BOOL';
-         'ReferenceProps',          {'FontSize',8,'FontWeight','bold','BackgroundColor',[.8 .8 .8],'HorizontalAlignment','center','Margin',2},  'STRUCT|CELL';
+props = {'DisplayChannels'        []               'DOUBLE|CELL{CHAR}'
+         'DrawEars'               0                'BOOL';
+         'H'                      struct('ax',NaN) 'STRUCT'
+         'LineProperties'         {'LineWidth',3}  'STRUCT|CELL';
+         'ShowLabels'             0                'BOOL';
+         'LabelProperties'        {'FontSize',8}   'STRUCT|CELL';
+         'MinorLabelProperties'   {'FontSize',6}   'STRUCT|CELL';
+         'MarkChannels'           []               'DOUBLE|CELL{CHAR}';
+         'MarkLabelProperties'    {'FontSize',12,'FontWeight','bold'},    'STRUCT|CELL';
+         'MarkMarkerProperties'   {'LineWidth',3,'MarkerSize',22}       'STRUCT|CELL';
+         'MarkerProperties'       {'Marker','+','MarkerSize',2,'LineWidth',.2,'MarkerEdgeColor','k'} 'STRUCT|CELL';
+         'Offset'                 [0 0]            'DOUBLE[2]';
+         'Reference'              0                'BOOL';
+         'ReferenceProps'         {'FontSize',8,'FontWeight','bold','BackgroundColor',[.8 .8 .8],'HorizontalAlignment','center','Margin',2}   'STRUCT|CELL';
         };
 
 if nargin==0,
@@ -63,19 +62,17 @@ opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-if isdefault.H,
+if isdefault.H || ~isfield(opt.H, 'ax'),
     opt.H.ax= gca;
 end
 if isdefault.DisplayChannels
    opt.DisplayChannels= 1:length(mnt.clab);
 end
 
-if opt.ShowLabels
+if opt.ShowLabels && isdefault.MarkerProperties,
     opt.MarkerProperties= {'Marker','o','MarkerSize',20,'MarkerEdgeColor','k'};
-else
-    opt.MarkerProperties= {'Marker','+','MarkerSize',2,'LineWidth',.2,'MarkerEdgeColor','k'};
-end;
-             
+end
+
 % If no other marker was set, set default marker 'o'
 if ~any(strcmpi('Marker',opt.MarkerProperties)),
     opt.MarkerProperties = {opt.MarkerProperties{:},'Marker','o'};
@@ -111,8 +108,8 @@ ye= mnt.y(opt.DisplayChannels)+opt.Offset(2);
 T= linspace(0, 2*pi, 360);
 xx= cos(T);
 yy= sin(T);
-H.head= plot(xx+opt.Offset(1), yy+opt.Offset(2), opt.LineProperties{:});
 hold on;
+H.head= plot(xx+opt.Offset(1), yy+opt.Offset(2), opt.LineProperties{:});
 
 % Plot DrawEars
 if opt.DrawEars
@@ -166,8 +163,7 @@ opt.MarkChannels= util_chanind(mnt.clab(opt.DisplayChannels), opt.MarkChannels);
 % Plot markers
 H.label_markers = [];
 for k=1:numel(xe)
-    H.label_markers(k)= plot(xe(k), ye(k),'LineStyle','none',opt.MarkerProperties{:});
-    hold on
+    H.label_markers(k)= plot(xe(k), ye(k), 'LineStyle','none', opt.MarkerProperties{:});
 end
 % Mark marked markers
 if ~isempty(opt.MarkChannels)
@@ -195,8 +191,8 @@ axis('xy', 'tight', 'equal', 'tight');
 % relax XLim, YLim:
 xLim= get(H.ax, 'XLim');
 yLim= get(H.ax, 'YLim');
-set(H.ax, 'XLim',xLim+[-1 1]*0.03*diff(xLim), ...
-      'YLim',yLim+[-1 1]*0.03*diff(yLim));
+set(H.ax, 'XLim',xLim+[-1 1]*0.01*diff(xLim), ...
+          'YLim',yLim+[-1 1]*0.01*diff(yLim));
 
 % Set back old figure units
 set(gcf,'units',oldUnit);
