@@ -21,25 +21,30 @@ function H= plot_scalpLoading(mnt, w, varargin)
 %Output:
 % H:     handle to several graphical objects
 
-props = {'ShowLabels',          1,          'BOOL';
-         'ScalePos',            'vert',     'CHAR';
-         'FontSize',            8,          'DOUBLE';
-         'MinorFontSize',       6,          'DOUBLE';
-         'TextColor',           'k',        'CHAR|DOUBLE[3]';
-         'CLim',                'sym',      'CHAR(sym range 0tomax)|DOUBLE[2]';
-         'DrawNose',            1,          'BOOL';
-         'LineWidth',           2,          'DOUBLE';
-         'LineColor',           'k',        'CHAR';
-         'Radius',              0.074,      'DOUBLE'};
+props = {'ShowLabels',          1,          'BOOL'
+         'ScalePos',            'vert',     'CHAR'
+         'UsePatches'           false       'BOOL'
+         'FontSize',            8,          'DOUBLE'
+         'MinorFontSize',       6,          'DOUBLE'
+         'TextColor',           'k',        'CHAR|DOUBLE[3]'
+         'CLim',                'sym',      'CHAR(sym range 0tomax)|DOUBLE[2]'
+         'LineWidth',           2,          'DOUBLE'
+         'LineColor',           'k',        'CHAR'
+         'Radius',              0.074,      'DOUBLE'
+         'NApprox',             18,         'INT'};
+
+props_scalpOutline = plot_scalpOutline;
 
 if nargin==0,
-  H= props; return
+  H= opt_catProps(props, props_scalpOutline); return
 end
 
 opt= opt_proplistToStruct(varargin{:});
-opt= opt_setDefaults(opt, props);
-opt_checkProplist(opt, props);
+[opt, isdefault]= opt_setDefaults(opt, props);
+opt_checkProplist(opt, props, props_scalpOutline);
 
+opt_scalpOutline= opt_substruct(opt, props_scalpOutline(:,1));
+ 
 tight_caxis= [min(w) max(w)];
 if isequal(opt.CLim, 'sym'),
   zgMax= max(abs(tight_caxis));
@@ -65,48 +70,40 @@ end
 xe= mnt.x(DisplayChannels);
 ye= mnt.y(DisplayChannels);
 
-% Head
-H.ax= gca;
-T= linspace(0, 2*pi, 360);
-xx= cos(T);
-yy= sin(T);
-H.head= plot(xx, yy, 'k');
-hold on;
+if opt.UsePatches,
+  T= linspace(0, 2*pi, opt.NApprox);
+  disc_x= opt.Radius*cos(T); 
+  disc_y= opt.Radius*sin(T);
 
-% Electrodes
-T= linspace(0, 2*pi, 18);
-disc_x= opt.Radius*cos(T); 
-disc_y= opt.Radius*sin(T);
-
-for ic= 1:length(DisplayChannels),
-  patch(xe(ic)+disc_x, ye(ic)+disc_y, w(ic));
-  h= line(xe(ic)+disc_x, ye(ic)+disc_y);
-  set(h, 'Color',opt.LineColor, 'LineWidth',opt.LineWidth);
-end
-caxis(opt.CLim);
-
-
-% Nose
-if opt.DrawNose,
-  nose= [1 1.1 1];
-  nosi= [86 90 94]+1;
-  H.nose= plot(nose.*xx(nosi), nose.*yy(nosi), 'k');
-end
-
-% Labels
-if opt.ShowLabels,
-  labs= {mnt.clab{DisplayChannels}};
-  H.label_text= text(xe, ye, labs);
-  set(H.label_text, 'horizontalAlignment','center', ...
-         'FontSize',opt.FontSize, 'Color',opt.TextColor);
-  strLen= cellfun(@length,labs);
-  iLong= find(strLen>3);
-  set(H.label_text(iLong), 'FontSize',opt.MinorFontSize);
+  for ic= 1:length(DisplayChannels),
+    H.patch(ic)= patch(xe(ic)+disc_x, ye(ic)+disc_y, w(ic));
+  end
+  set(H.patch, 'EdgeColor',opt.LineColor, 'LineWidth',opt.LineWidth);
+  H= plot_scalpOutline(mnt, opt_scalpOutline, 'H',H, ...
+                       'DisplayChannels',DisplayChannels);
+  delete(H.label_markers);
+else
+  opt_scalpOutline.MarkerProperties= ...
+      {'Marker','o', 'MarkerSize',32/0.1*opt.Radius, ...
+       'MarkerEdgeColor','k', 'LineWidth',2};
+  H= plot_scalpOutline(mnt, opt_scalpOutline, ...
+                       'DisplayChannels',DisplayChannels);
+  cmap= colormap;
+  nColors= size(cmap,1);
+  CLim= get(H.ax, 'CLim');
+  ci= round( nColors * (w-CLim(1))/diff(CLim) );
+  ci= min(max(ci, 1), nColors);
+  for chan= 1:length(DisplayChannels),
+    set(H.label_markers(chan), 'MarkerFaceColor',cmap(ci(chan),:));
+  end
 end
 
-hold off;
-set(H.ax, 'xTick', [], 'yTick', []);
-axis('xy', 'tight', 'equal', 'tight', 'off');
+if strcmp(opt.ScalePos, 'none'),
+  H.cb= [];
+else
+  H.cb= colorbar(opt.ScalePos);
+end
+axis('off');
 
 if nargout==0,
   clear H;

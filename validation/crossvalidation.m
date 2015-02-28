@@ -1,4 +1,4 @@
-function [loss, lossSem]= crossvalidation(fv, classy, varargin)
+function [loss, lossSem, cfy_out]= crossvalidation(fv, classy, varargin)
 %CROSSVALIDATION - Perform cross-validation
 %
 %Synopsis:
@@ -71,6 +71,11 @@ applyFcn= misc_getApplyFunc(classy);
 
 xv_loss= zeros(length(divTr), 1);
 xv_lossTr= zeros(length(divTr), 1);
+nOutDim= size(fv.y,1);
+if nOutDim==2,
+  nOutDim= 1;
+end
+cfy_out= NaN*zeros(nOutDim, length(divTe), size(fv.x,2));
 for rr= 1:length(divTr),
   nFolds= length(divTr{rr});
   fold_loss= zeros(nFolds, 1);
@@ -93,6 +98,7 @@ for rr= 1:length(divTr),
     end
     xsz= size(fvTe.x);
     out= applyFcn(C, reshape(fvTe.x, [prod(xsz(1:end-1)) xsz(end)]));
+    cfy_out(:,rr,idxTe)= out;
     fold_loss(ff)= mean(lossFcn(fvTe.y, out, lossPar{:}));
     outTr= applyFcn(C, reshape(fvTr.x, fvsz));
     fold_lossTr(ff)= mean(lossFcn(fvTr.y, outTr, lossPar{:}));
@@ -100,7 +106,9 @@ for rr= 1:length(divTr),
   xv_loss(rr)= mean(fold_loss);
   xv_lossTr(rr)= mean(fold_lossTr);
 end
-
+if nOutDim==1,
+  cfy_out= reshape(cfy_out, [length(divTe), size(fv.x,2)]);
+end
 loss= mean(xv_loss);
 lossSem= std(xv_loss)/sqrt(length(xv_loss));
 lossTr= mean(xv_lossTr);
