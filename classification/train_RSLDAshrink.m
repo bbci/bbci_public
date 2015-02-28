@@ -80,7 +80,7 @@ function C = train_RSLDAshrink(xTr, yTr, sublab, varargin)
 % figure, imagesc(C_RSLDA.regularization_profile{2})
 %   
 %See also:
-%   APPLY_SEPARATINGHYPERPLANE, CLSUTIL_SHRINKAGE, TRAIN_RLDA
+%   APPLY_SEPARATINGHYPERPLANE, CLSUTIL_MEANMTS, CLSUTIL_SHRINKAGE, TRAIN_RLDAshrink
 %   TRAIN_LDA
 
 % 02-2015 Johannes Hoehne
