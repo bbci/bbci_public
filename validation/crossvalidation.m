@@ -107,7 +107,7 @@ for rr= 1:length(divTr),
   xv_lossTr(rr)= mean(fold_lossTr);
 end
 if nOutDim==1,
-  cfy_out= reshape(cfy_out, [length(divTe), size(fv.x,2)]);
+  cfy_out= reshape(cfy_out, [length(divTe), size(fv.y,2)]);
 end
 loss= mean(xv_loss);
 lossSem= std(xv_loss)/sqrt(length(xv_loss));
