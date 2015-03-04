@@ -84,9 +84,12 @@ function C = train_RSLDAshrink(xTr, yTr, sublab, varargin)
 %   TRAIN_LDA
 
 % 02-2015 Johannes Hoehne
-
+if size(yTr,1)==1, yTr= [yTr<0; yTr>0]; end
+yTr = logical(yTr);
+nClasses= size(yTr,1);
 props= {'Whitening'        1                             'BOOL'
         'ReturnRegularizationProfile'  1                 'BOOL'
+	    'Prior'            ones(nClasses, 1)/nClasses    'DOUBLE[- 1]'
        };
    
 % get props list of the subfunction
@@ -102,11 +105,16 @@ opt= opt_proplistToStruct(varargin{:});
 opt_checkProplist(opt, props, props_shrinkage);
 
 % preprocessing of input
-if size(yTr,1)==1, yTr= [yTr<0; yTr>0]; end
 yTr = logical(yTr);
 if size(sublab,2)==1 && size(sublab,1)>1
     sublab = sublab'; %sublab is expected to be a row-vector of  
 end
+
+% empirical class priors as an option, if nan (I leave 1/nClasses as default)
+if isnan(opt.Prior)
+  opt.Prior = sum(yTr, 2)/sum(sum(yTr));
+end
+
 C = {};
 
 %start func
@@ -137,70 +145,44 @@ M = nan(size(xTr)); %saves the classwise-shrinked means
 for my_sublab = C.sublab_unique
     kk = kk+1;
     
-    %% estimate means
-    % TARGETS aka: class 1
-    shrink_dat = {}; %initialize shrindat container
-    shrink_dat.X = {Xwhite(:,((sublab == my_sublab) & yTr(1,:)))' };
-    
-    %there might be sublabels without target stimuli -> skip them as sublabel
-    sublab_missing = []; 
-    for sublab_this = setdiff(C.sublab_unique, my_sublab)
-        if sum((((sublab == sublab_this)) & yTr(1,:)))>0
-            shrink_dat.X{end+1} = Xwhite(:,(((sublab == sublab_this)) & yTr(1,:)))';
-        else
-            sublab_missing(end+1) = sublab_this; %(only important for special cases)
+    for ix_c = 1:nClasses %for each class
+        %% estimate class means    
+        shrink_dat = {}; %initialize shrindat container
+        shrink_dat.X = {Xwhite(:,((sublab == my_sublab) & yTr(ix_c,:)))' };
+
+        %there might be sublabels without epoch in calss ix_c -> skip them as sublabel
+        sublab_missing = []; 
+        for sublab_this = setdiff(C.sublab_unique, my_sublab)
+            if sum((((sublab == sublab_this)) & yTr(ix_c,:)))>0
+                shrink_dat.X{end+1} = Xwhite(:,(((sublab == sublab_this)) & yTr(ix_c,:)))';
+            else
+                sublab_missing(end+1) = sublab_this; %(only important for special cases)
+            end
         end
-    end
     
-    %PERFORM MULTI-TARGET SHINKAGE FOR CLASS 1
-    % sublab=k & T   sublab~=k & T
-    [M1est, gamma1] = clsutil_meanMTS(shrink_dat, 'convex', 1, 'variablewise', 0, 'conservative', 1);
-    
-    % (only important for special cases) deal with the arrangement of missing subclass labels 
-    for xx = sublab_missing %put missing subclasses as zeros in gamma to maintain the correct size
-        if xx>=length(gamma1)+1, gamma1 = [gamma1; 0]; %the last one was missing
-        else  gamma1 = [gamma1(1:xx-1); 0; gamma1(xx:end)]; %another one was missing
-        end
-    end    
-    
-    % NON-TARGETS aka: class 2
-    shrink_dat = {}; %initialize shrindat container
-    shrink_dat.X = {Xwhite(:,((sublab == my_sublab) & yTr(2,:)))' };
+        %PERFORM MULTI-TARGET SHINKAGE FOR CLASS 1
+        % sublab=k & T   sublab~=k & T
+        [Mest(ix_c,:), gamma_tmp] = clsutil_meanMTS(shrink_dat, 'convex', 1, 'variablewise', 0, 'conservative', 1);
+
+        % (only important for special cases) deal with the arrangement of missing subclass labels 
+        for xx = sublab_missing %put missing subclasses as zeros in gamma to maintain the correct size
+            if xx>=length(gamma_tmp)+1, gamma_tmp = [gamma_tmp; 0]; %the last one was missing
+            else  gamma_tmp = [gamma_tmp(1:xx-1); 0; gamma_tmp(xx:end)]; %another one was missing
+            end
+        end  
+        gamma(ix_c,:) = gamma_tmp;
         
-    sublab_missing = []; %there might be sublabels without nontarget stimuli -> skip them as sublabel    
-    for sublab_this = setdiff(C.sublab_unique, my_sublab) %for each unique subclass
-        if sum((((sublab == sublab_this)) & yTr(2,:)))>0
-            shrink_dat.X{end+1} = Xwhite(:,(((sublab == sublab_this)) & yTr(2,:)))';
-        else sublab_missing(end+1) = sublab_this; % (only important for special cases)
-        end            
-    end
-    
-    
-    %PERFORM MULTI-TARGET SHINKAGE FOR CLASS 2
-    % sublab=k & NT   sublab~=k & NT
-    [M2est, gamma2] = clsutil_meanMTS(shrink_dat, 'convex', 1, 'variablewise', 0, 'conservative', 1);
-    
-    % (only important for special cases) deal with the arrangement of missing subclass labels 
-    for xx = sublab_missing %put missing subclasses as zeros in gamma to maintain the correct size
-        if xx>=length(gamma2)+1, gamma2 = [gamma2; 0]; %the last one was missing
-        else  gamma2 = [gamma2(1:xx-1); 0; gamma2(xx:end)]; %another one was missing
-        end
-    end   
+        %transform the Means back into feature space
+        Mest_origSpace(ix_c,:) = A_white2feat' * Mest(ix_c,:)';
         
-    %transform the Means back into feature space
-    M1est = A_white2feat' * M1est;
-    M2est = A_white2feat' * M2est;
-    
-    % for each datapoint, save the dcorresponding subclass mean
-    % --> build up Mean-template M with Target and NonTarget template 
-    M(:, find(yTr(1,:) & sublab == my_sublab)) = repmat(M1est, 1, length(find(yTr(1,:) & sublab == my_sublab)));
-    M(:, find(yTr(2,:) & sublab == my_sublab)) = repmat(M2est, 1, length(find(yTr(2,:) & sublab == my_sublab)));    
-    
-    %save the mean estimators as we need them later to compute the cls
-    list_M1{kk} = M1est;
-    list_M2{kk} = M2est;
-    
-    C.regularization_list(:,kk) =  [gamma1', gamma2']';
+        % for each datapoint, save the dcorresponding subclass mean
+        % --> build up Mean-template M with Target and NonTarget template 
+        M(:, find(yTr(ix_c,:) & sublab == my_sublab)) = repmat(Mest_origSpace(ix_c,:)', 1, length(find(yTr(ix_c,:) & sublab == my_sublab)));
+        
+        %save the mean estimators as we need them later to compute the cls
+        list_M{kk}(ix_c,:) = Mest_origSpace(ix_c,:);
+    end        
+    C.regularization_list(:,kk) =  gamma(:);
 end
 
 
@@ -213,13 +195,15 @@ C_invcov = pinv(Cest);
 kk = 0;
 for my_sublab = C.sublab_unique
     kk = kk+1;
-    % get the Target and NonTartget Means for each subclass
-    M1est = list_M1{kk};
-    M2est = list_M2{kk};      
-    
-    C.pattern(:,kk) = M2est - M1est;
-    C.subC{kk} = comp_reg_cls2(C_invcov, M1est, M2est);
-    
+    if nClasses>2
+        C.subC{kk} =   comp_reg_cls(C_invcov, list_M{kk}', opt.Prior) ;   
+    else
+        % get the Target and NonTartget Means for each subclass
+        M1est = list_M{kk}(1,:)';
+        M2est = list_M{kk}(2,:)';                
+        C.pattern(:,kk) = M2est - M1est;
+        C.subC{kk} = comp_reg_cls2(C_invcov, M1est, M2est);
+    end
     if ~isfinite(C.subC{kk}.b)
         error('sth went wrong')
     end
@@ -235,8 +219,8 @@ if opt.ReturnRegularizationProfile
 %                    (1-l1-l2)  l        l
 %                      l3   (1-l3-l4)    l4
 %                      l5       l6    (1-l5-l6)
-    for i_class = 1:2 %for both classes       
-        nPara = size(C.regularization_list,1)/2;
+    for i_class = 1:nClasses %for both classes       
+        nPara = size(C.regularization_list,1)/nClasses;
         dat = C.regularization_list((i_class-1)*nPara+1 : (i_class)*nPara,:)';
         A = zeros(size(dat,1));
         A(logical(eye(size(A)))) = 1-sum(dat,2);
@@ -257,3 +241,9 @@ C.w= C_invcov*(M2 - M1);
 C.b= -0.5*C.w'*(M2 + M1);
 end
 
+
+function C = comp_reg_cls(C_invcov, C_mean, Prior)
+C = [];
+C.w= C_invcov*C_mean;
+C.b= -0.5*sum(C_mean.*C.w,1)' + log(Prior);
+end

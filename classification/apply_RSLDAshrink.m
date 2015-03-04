@@ -27,7 +27,7 @@ else
     in_data.sublab = sublab;
 end
 
-out = nan(1, length(in_data.sublab));
+out = nan(size(C.subC{1}.w,2), length(in_data.sublab));
 
 % subclass-wise processing: apply corresp. subclass cls for each data
 % point
@@ -36,7 +36,7 @@ for my_sublab = C.sublab_unique
     kk = kk+1;
 	ix_ = in_data.sublab == my_sublab;
     x = in_data.x(:,ix_);
-    out(ix_) = apply_separatingHyperplane(C.subC{kk}, x);
+    out(:,ix_) = apply_separatingHyperplane(C.subC{kk}, x);
 end
 
 %check if there is a NaN... If so, there had been a data point with a
