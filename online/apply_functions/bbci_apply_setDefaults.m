@@ -147,7 +147,8 @@ for ic= 1:length(bbci.control),
         error(['If bbci.control.condition is nonempty, it must either ' ...
                'have a field ''marker'', or ''interval''.']);
       end
-      misc_checkType('bbci.control(ic).condition.interval', '!DOUBLE[1]');
+      misc_checkType(bbci.control(ic).condition.interval, '!DOUBLE[1]', ...
+                     'bbci.control(ic).condition.interval');
       if any(max(cat(1, bbci.feature(feat_list).ival)) > 0),
         error('bbci.feature.ival extends to future data');
       end
