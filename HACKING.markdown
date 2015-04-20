@@ -39,15 +39,15 @@ on your computer.
   3. Open a terminal.
   4. Type `git clone`, and paste the URL you copied in step 2 and press Enter:
 
-```
-git clone git@github.com:YOUR-USERNAME/bbci_toolbox.git
-Cloning into 'bbci_public'...
-remote: Counting objects: 5262, done.
-remote: Total 5262 (delta 0), reused 0 (delta 0), pack-reused 5262
-Receiving objects: 100% (5262/5262), 3.28 MiB | 700.00 KiB/s, done.
-Resolving deltas: 100% (3646/3646), done.
-Checking connectivity... done.
-```
+    ```
+    git clone git@github.com:YOUR-USERNAME/bbci_toolbox.git
+    Cloning into 'bbci_public'...
+    remote: Counting objects: 5262, done.
+    remote: Total 5262 (delta 0), reused 0 (delta 0), pack-reused 5262
+    Receiving objects: 100% (5262/5262), 3.28 MiB | 700.00 KiB/s, done.
+    Resolving deltas: 100% (3646/3646), done.
+    Checking connectivity... done.
+    ```
 
 Now, you have a local copy of your fork of the toolbox repository!
 
@@ -60,30 +60,30 @@ original, or *upstream*, repository into the local clone of your fork.
   4. Type `git remote -v` and press Enter. You'll see the current configured
      repositry for your fork:
 
-```
-git remove -v
-origin	git@github.com:YOUR_USERNAME/bbci_public.git (fetch)
-origin	git@github.com:YOUR_USERNAME/bbci_public.git (push)
-```
+    ```
+    git remove -v
+    origin	git@github.com:YOUR_USERNAME/bbci_public.git (fetch)
+    origin	git@github.com:YOUR_USERNAME/bbci_public.git (push)
+    ```
 
   5. Type `git remote add upstream`, and then paste the URL you copied in Step 2
      and press Enter:
 
-```
-git remote add upstream git@github.com/bbci/bbci_public.git
-```
+    ```
+    git remote add upstream git@github.com/bbci/bbci_public.git
+    ```
 
   6. To verify the new upstream repository, type again `git remote -v`. You
      should see the URL for your fork as `origin` and the original repository as
      `upstream`.
 
-```
-git remote -v
-origin    git@github.com:YOUR_USERNAME/bbci_public.git (fetch)
-origin    git@github.com:YOUR_USERNAME/bbci_public.git (push)
-upstream  git@github.com:bbci/bbci_public.git (fetch)
-upstream  git@github.com:bbci/bbci_public.git (push)
-```
+    ```
+    git remote -v
+    origin    git@github.com:YOUR_USERNAME/bbci_public.git (fetch)
+    origin    git@github.com:YOUR_USERNAME/bbci_public.git (push)
+    upstream  git@github.com:bbci/bbci_public.git (fetch)
+    upstream  git@github.com:bbci/bbci_public.git (push)
+    ```
 
 
 ## Working on a feature branch
