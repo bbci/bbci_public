@@ -1,13 +1,33 @@
+# Contributing Code to the Toolbox
+
+
+## tl;dr
+
+The very short summary (tl;dr = too long, didn't read) describing how to
+contribute code to the toolbox is:
+
+  * Fork the toolbox repository
+  * Clone your fork
+  * Create a feature branch to add a feature or fix a bug
+  * Push the feature branch to your fork
+  * Create a pull request
+
+A detailed explanation follows below.
+
+
 ## General Workflow
 
 Instead of committing directly to the project's repository, you *create your own
 private fork* of the project. Forking a repository allows you to freely
 experiment with changes without affecting the original project.
 
-[BRANCH]
+In order to fix a bug or creating a new feature, it is best to create a new
+*feature branch* for each bugfix or new feature. Those branches can be pushed to
+your fork and merged back into the original toolbox repository independently.
 
 When you're happy with your changes, you can propose to get the changes merged
-back into the original project by creating a *pull request*.
+back into the original project by creating a *pull request* for the feature
+branch.
 
 
 ## Forking the Project
