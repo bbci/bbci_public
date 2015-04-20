@@ -83,7 +83,7 @@ original, or *upstream*, repository into the local clone of your fork.
     ```
 
 
-## Working on a feature branch
+## Working on a Feature Branch
 
 Let's assume you want to fix a bug or write a new feature. Instead of working
 directly on the `master` branch of the repository, it is often preferable to
@@ -95,11 +95,52 @@ everything is ready. Let's create a new branch for our feature, called
 git checkout -b myfeature
 ```
 
-## Updating the code
+You've now created a branch `myfeature` and git automatically switched to that
+branch for you. In this branch, you can now make changes and commits as usually:
 
 ```
-git pull
+# edit files foo and bar
+git add foo bar
+git commit
+# create file baz
+git add baz
+git commit
+# ...
 ```
+
+You can also switch back and forth between branches:
+
+```
+git checkout master
+# you are now in the master branch
+
+git checkout myfeature
+# you're back in the feature branch
+```
+
+## Creating a Pull Request
+
+So far you have added a new feature or fixed a bug in a *feature branch* of your
+local clone of your fork of the original toolbox repository. You now want these
+changed to be merged into the original repository.
+
+  1. Push your feature branch into *your* GitHub repository:
+
+    ```
+    git checkout myfeature
+    git push origin myfeature
+    ```
+
+  2. Navigate to your GitHub repository and switch to the `myfeature` branch by
+     selecting it from the dropdown box above the file listing.
+
+  3. Click **Pull Request** above the file listing, fill out the form, and
+     finish by clicking **Create Pull Request**
+
+You've now created a pull request. That pull request appears in the original,
+upstream repository where the maintainers can comment on your pull request,
+request some more changes, reject or accept your pull request.
+
 
 [bbci_public]: https://github.com/bbci/bbci_public
 [join_github]: https://github.com/join
