@@ -3,7 +3,7 @@
 
 ## tl;dr
 
-The very short summary (tl;dr = too long, didn't read) describing how to
+The very short summary (tl;dr = too long; didn't read) describing how to
 contribute code to the toolbox is:
 
   * Fork the toolbox repository
