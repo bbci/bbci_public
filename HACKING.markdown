@@ -51,7 +51,7 @@ Now, you have a local copy of your fork of the toolbox repository!
 In the next steps we configure git so it allows you to pull changes from the
 original, or *upstream*, repository into the local clone of your fork.
 
-  1. On GitHub, navigate to the [original BBCI toolbox page][bbci_toolbox]
+  1. On GitHub, navigate to the [original BBCI toolbox page][bbci_public]
   2. In the right sidebar, copy that *clone URL* of the repository.
   3. Open a terminal and change into the directory of your local clone.
   4. Type `git remote -v` and press Enter. You'll see the current configured
