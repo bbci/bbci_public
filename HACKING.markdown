@@ -22,9 +22,6 @@ That's it! Now you have a *fork* of the original project repository. You are
 free to add files, modify files, or even delete the repository without affecting
 the original project.
 
-  [bbci_public]: https://github.com/bbci/bbci_public
-  [join_github]: https://github.com/join
-
 
 ## Keep Your Fork Synced
 
@@ -103,4 +100,8 @@ git checkout -b myfeature
 ```
 git pull
 ```
+
+[bbci_public]: https://github.com/bbci/bbci_public
+[join_github]: https://github.com/join
+
 
