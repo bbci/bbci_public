@@ -51,28 +51,28 @@ Now, you have a local copy of your fork of the toolbox repository!
 In the next steps we configure git so it allows you to pull changes from the
 original, or *upstream*, repository into the local clone of your fork.
 
-  1. On GitHub, navigate to the [original BBCI toolbox page][bbci_public]
-  2. In the right sidebar, copy that *clone URL* of the repository.
-  3. Open a terminal and change into the directory of your local clone.
-  4. Type `git remote -v` and press Enter. You'll see the current configured
+  5. On GitHub, navigate to the [original BBCI toolbox page][bbci_public]
+  6. In the right sidebar, copy that *clone URL* of the repository.
+  7. Open a terminal and change into the directory of your local clone.
+  8. Type `git remote -v` and press Enter. You'll see the current configured
      repositry for your fork:
 
     ```
     git remove -v
-    origin	git@github.com:YOUR_USERNAME/bbci_public.git (fetch)
-    origin	git@github.com:YOUR_USERNAME/bbci_public.git (push)
+    origin    git@github.com:YOUR_USERNAME/bbci_public.git (fetch)
+    origin    git@github.com:YOUR_USERNAME/bbci_public.git (push)
     ```
 
-  5. Type `git remote add upstream`, and then paste the URL you copied in Step 2
+  9. Type `git remote add upstream`, and then paste the URL you copied in Step 7
      and press Enter:
 
     ```
     git remote add upstream git@github.com/bbci/bbci_public.git
     ```
 
-  6. To verify the new upstream repository, type again `git remote -v`. You
-     should see the URL for your fork as `origin` and the original repository as
-     `upstream`.
+  10. To verify the new upstream repository, type again `git remote -v`. You
+      should see the URL for your fork as `origin` and the original repository
+      as `upstream`.
 
     ```
     git remote -v
