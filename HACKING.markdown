@@ -30,7 +30,7 @@ back into the original project by creating a *pull request* for the feature
 branch.
 
 
-## Forking the Project
+## Forking the Toolbox Repository
 
 We assume you already have a GitHub account. If you don't have a GitHub account,
 please [create an account][join_github] now, it's free.
@@ -38,12 +38,12 @@ please [create an account][join_github] now, it's free.
 1. Goto the [toolbox repository page on github][bbci_public]
 2. In the top-right corner of the page, click **Fork**.
 
-That's it! Now you have a *fork* of the original project repository. You are
+That's it! Now you have a *fork* of the original toolbox repository. You are
 free to add files, modify files, or even delete the repository without affecting
 the original project.
 
 
-## Keep Your Fork Synced
+## Cloning Your Fork
 
 Right now, you have a fork of the toolbox repository, but you don't have any
 files of that repository on your computer. Let's create a *clone* of your fork
@@ -65,15 +65,22 @@ on your computer.
    Checking connectivity... done.
    ```
 
-   Now, you have a local copy of your fork of the toolbox repository!
+   Now, you have a local copy of your fork of the toolbox repository! You can
+   add, modify, and delete files, make commits and push changes to your fork,
+   without affecting the original toolbox repository.
 
-   In the next steps we configure git so it allows you to pull changes from the
-   original, or *upstream*, repository into the local clone of your fork.
 
-5. On GitHub, navigate to the [original BBCI toolbox page][bbci_public]
-6. In the right sidebar, copy that *clone URL* of the repository.
-7. Open a terminal and change into the directory of your local clone.
-8. Type `git remote -v` and press Enter. You'll see the current configured
+## Keep Your Fork Synced
+
+Right now, your fork and your clone are an island, disconnected from the
+original toolbox repository. In the next steps we configure git so it allows you
+to pull changes from the original, or *upstream*, repository into the local
+clone of your fork.
+
+1. On GitHub, navigate to the [original BBCI toolbox page][bbci_public]
+2. In the right sidebar, copy that *clone URL* of the repository.
+3. Open a terminal and change into the directory of your local clone.
+4. Type `git remote -v` and press Enter. You'll see the current configured
    repository for your fork:
 
    ```sh
@@ -82,25 +89,51 @@ on your computer.
    origin    git@github.com:YOUR_USERNAME/bbci_public.git (push)
    ```
 
-9. Type `git remote add upstream`, and then paste the URL you copied in Step 7
+5. Type `git remote add upstream`, and then paste the URL you copied in Step 7
    and press Enter:
 
    ```sh
    $ git remote add upstream git@github.com/bbci/bbci_public.git
    ```
 
-10. To verify the new upstream repository, type again `git remote -v`. You
-    should see the URL for your fork as `origin` and the original repository as
-    `upstream`.
+6. To verify the new upstream repository, type again `git remote -v`. You
+   should see the URL for your fork as `origin` and the original repository as
+   `upstream`.
 
-    ```sh
-    $ git remote -v
-    origin    git@github.com:YOUR_USERNAME/bbci_public.git (fetch)
-    origin    git@github.com:YOUR_USERNAME/bbci_public.git (push)
-    upstream  git@github.com:bbci/bbci_public.git (fetch)
-    upstream  git@github.com:bbci/bbci_public.git (push)
-    ```
+   ```sh
+   $ git remote -v
+   origin    git@github.com:YOUR_USERNAME/bbci_public.git (fetch)
+   origin    git@github.com:YOUR_USERNAME/bbci_public.git (push)
+   upstream  git@github.com:bbci/bbci_public.git (fetch)
+   upstream  git@github.com:bbci/bbci_public.git (push)
+   ```
 
+## Pulling Changes From Upstream
+
+In order to actually update your fork with the new commits from the upstream
+repository, you need to pull in upstreams changes. Usually it's recommended to
+use your `master` branch to follow upstreams `master` branch. All your commits
+should go into separate branches.
+
+1. Checkout the `master` branch of your repository:
+
+   ```sh
+   $ git checkout master
+   ```
+
+2. Pull in the changes from upstream's `master` branch:
+
+   ```sh
+   $ git pull origin master
+   ```
+
+   Your local `master` branch is updated with the latest changes from upstream.
+
+3. To push your local `master` to the `master` branch of your fork:
+
+   ```sh
+   $ git push
+   ```
 
 ## Working on a Feature Branch
 
