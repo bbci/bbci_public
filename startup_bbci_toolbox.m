@@ -57,14 +57,6 @@ if exist(BTB.PrivateDir, 'dir'),
   end
 end
 
-if isdefault.TmpDir
-  BTB.TmpDir= fullfile(BTB.DataDir, 'tmp');
-  if ~exist(BTB.TmpDir, 'dir'),
-    fprintf('!! Default TEMP dir not existing at\n  %s\n', BTB.TmpDir);
-    fprintf('!! Setting TEMP dir to ''''\n');
-    BTB.TmpDir= '';
-  end
-end
 
 % Information about the test person (Tp)
 props= {'Dir'    BTB.TmpDir  'CHAR'
@@ -99,5 +91,6 @@ else
   BTB.Acq.TriggerFcn= @bbci_trigger_print;
 end
 
+% basti was here.
 
 evalin('base', 'global BTB');
