@@ -2,11 +2,6 @@ function startup_bbci_toolbox(varargin)
 
 global BTB
 
-% Find directory of the BBCI Toolbox and path it to the path
-BBCI_DIR= fileparts(which(mfilename));
-addpath(genpath(BBCI_DIR));
-rmpath(genpath(fullfile(BBCI_DIR, '.git')));
-BBCI_PRIVATE_DIR= fullfile(fileparts(BBCI_DIR), 'bbci_private');
 
 BTB= opt_proplistToStruct(varargin{:});
 
@@ -32,20 +27,6 @@ if ~exist(PYFF_DIR, 'dir'),
   PYFF_DIR= '';
 end
 
-props= {'Dir'            BBCI_DIR          'CHAR';
-        'DataDir'        ''                'CHAR';
-        'RawDir'         BBCI_RAW_DIR      'CHAR';
-        'MatDir'         BBCI_MAT_DIR      'CHAR';
-        'PrivateDir'     BBCI_PRIVATE_DIR  'CHAR';
-        'TmpDir'         ''                'CHAR';
-        'PyffDir'        PYFF_DIR          'CHAR';
-        'FigDir'         ''                'CHAR';
-        'Tp'             struct            'STRUCT';
-        'Acq'            struct            'STRUCT';
-        'History'        1                 '!BOOL';
-        'TypeChecking'   1                 '!BOOL'
-       };
-[BTB, isdefault]= opt_setDefaults(BTB, props);
 
 if exist(BTB.PrivateDir, 'dir'),
   private_folders_to_add= {'utils', 'startup'};
@@ -88,6 +69,8 @@ switch computer
  case 'PCWIN64'
   BTB.Acq.IoLib= which('inpoutx64.dll');
 end
+
+% basti was here
 
 if isfield(BTB.Acq, 'IoLib') && isfield(BTB.Acq, 'IoAddr'),
   if isempty(BTB.Acq.TriggerParam) && ...
