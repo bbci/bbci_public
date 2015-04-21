@@ -55,8 +55,8 @@ on your computer.
 3. Open a terminal.
 4. Type `git clone`, and paste the URL you copied in step 2 and press Enter:
 
-   ```
-   git clone git@github.com:YOUR-USERNAME/bbci_toolbox.git
+   ```sh
+   $ git clone git@github.com:YOUR-USERNAME/bbci_toolbox.git
    Cloning into 'bbci_public'...
    remote: Counting objects: 5262, done.
    remote: Total 5262 (delta 0), reused 0 (delta 0), pack-reused 5262
@@ -76,8 +76,8 @@ on your computer.
 8. Type `git remote -v` and press Enter. You'll see the current configured
    repository for your fork:
 
-   ```
-   git remove -v
+   ```sh
+   $ git remove -v
    origin    git@github.com:YOUR_USERNAME/bbci_public.git (fetch)
    origin    git@github.com:YOUR_USERNAME/bbci_public.git (push)
    ```
@@ -85,16 +85,16 @@ on your computer.
 9. Type `git remote add upstream`, and then paste the URL you copied in Step 7
    and press Enter:
 
-   ```
-   git remote add upstream git@github.com/bbci/bbci_public.git
+   ```sh
+   $ git remote add upstream git@github.com/bbci/bbci_public.git
    ```
 
 10. To verify the new upstream repository, type again `git remote -v`. You
     should see the URL for your fork as `origin` and the original repository as
     `upstream`.
 
-    ```
-    git remote -v
+    ```sh
+    $ git remote -v
     origin    git@github.com:YOUR_USERNAME/bbci_public.git (fetch)
     origin    git@github.com:YOUR_USERNAME/bbci_public.git (push)
     upstream  git@github.com:bbci/bbci_public.git (fetch)
@@ -110,30 +110,30 @@ make changes in a separate branch and merge that branch back into `master` once
 everything is ready. Let's create a new branch for our feature, called
 `myfeature`:
 
-```
-git checkout -b myfeature
+```sh
+$ git checkout -b myfeature
 ```
 
 You've now created a branch `myfeature` and git automatically switched to that
 branch for you. In this branch, you can now make changes and commits as usually:
 
-```
+```sh
 # edit files foo and bar
-git add foo bar
-git commit
+$ git add foo bar
+$ git commit
 # create file baz
-git add baz
-git commit
+$ git add baz
+$ git commit
 # ...
 ```
 
 You can also switch back and forth between branches:
 
-```
-git checkout master
+```sh
+$ git checkout master
 # you are now in the master branch
 
-git checkout myfeature
+$ git checkout myfeature
 # you're back in the feature branch
 ```
 
@@ -145,9 +145,9 @@ changed to be merged into the original repository.
 
 1. Push your feature branch into *your* GitHub repository:
 
-   ```
-   git checkout myfeature
-   git push origin myfeature
+   ```sh
+   $ git checkout myfeature
+   $ git push origin myfeature
    ```
 2. Navigate to your GitHub repository and switch to the `myfeature` branch by
    selecting it from the dropdown box above the file listing.
