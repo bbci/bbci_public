@@ -24,7 +24,7 @@ file, e.g.,
     bbci= load([cfy_dir 'kickstart_vitalbci_season2_C3CzC4_8-15_15-35']);
 
 The details of the struct `bbci` are explained
-[here](ToolboxOnlineBbciApplyStructure.html).
+[here](ToolboxOnlineBbciApplyStructure.markdown).
 But also with a pretrained `bbci` classifier, still some
 fields might need to be specified, e.g., from which hardware device
 signals are acquired.
@@ -47,7 +47,7 @@ But by defining
 and internal function is used for recording the signals, which can
 therefore be used for any neuroimaging hardware (for which a
 `bbci_acquire_*` function exists, see
-[here](ToolboxOnlineBbciImplementingAcquisition.html)).
+[here](ToolboxOnlineBbciImplementingAcquisition.markdown)).
 
 Also, a pretrained classifier might be used with different kinds of
 feedback, that can be specified.
@@ -81,7 +81,7 @@ loading the calibration data, and calls for the actual calibration a
 specified subfunction. The is a repertoire of these specified
 calibration functions, but for new types of online experiments, new
 functions need to be implemented, see
-[here](ToolboxOnlineBbciImplementingCalibration.html).
+[here](ToolboxOnlineBbciImplementingCalibration.markdown).
 
 What kind of calibration is performed, and what data files are used for
 calibration is specified in the substruct `bbci.calibrate`,
@@ -111,7 +111,7 @@ those calibration-specific parameters is given in the help of each
 specific calibartion subfunction. (In this case of CSP-based
 calibration, you would get it with `help bbci_calibrate_csp`).
 
-See [here](ToolboxOnlineForEndUsers.html)
+See [here](ToolboxOnlineForEndUsers.markdown)
 for more detailed information about how to use the calibration procedure
 interactively.
 
@@ -262,7 +262,7 @@ But the requirements can be more demanding and complex:
 
 ![_bbci_apply example application_](_static/ToolboxOnlineTutorial_002.png)
 
-For a definition of the `bbci` structure that would correspond to such a classifier see [here](ToolboxOnlineBbciExampleSuperSpeller.html).
+For a definition of the `bbci` structure that would correspond to such a classifier see [here](ToolboxOnlineBbciExampleSuperSpeller.markdown).
 
 The general version of the function, `bbci_apply` can accomplish all that, but still is not so much more complex:
 

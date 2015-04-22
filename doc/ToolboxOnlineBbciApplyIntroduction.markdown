@@ -151,7 +151,7 @@ script `bbci_calibrate` from calibration data. See also the demos in
 `online/demos/` where some examples for `bbci` structures are
 defined from the scratch. The data structures are explained in more
 detail in `bbci_apply_structures.m` and
-[here](ToolboxOnlineBbciApplyStructure.html).
+[here](ToolboxOnlineBbciApplyStructure.markdown).
 
 
 
@@ -266,10 +266,10 @@ Since features may be used by different classifiers, the function tries to avoid
 
 For a definition of the `bbci`structure that would correspond
 to such a classifier see
-[here](ToolboxOnlineBbciExampleSuperSpeller.html).
+[here](ToolboxOnlineBbciExampleSuperSpeller.markdown).
 
 The details of the struct `bbci` are explained
-[here](ToolboxOnlineBbciApplyStructure.html).
+[here](ToolboxOnlineBbciApplyStructure.markdown).
 
 ### The final version of `bbci_apply.m`
 

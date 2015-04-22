@@ -12,26 +12,26 @@
 
 ## Table Of Contents   <a id="TableOfContents"></a>
 
-* [ToolboxRequirements](ToolboxRequirements.html)
-* [ToolboxSetup](ToolboxSetup.html) - *Installation, configuration and starting the toolbox* 
-* [ToolboxData](ToolboxData.html) - *Basic data structures in the toolbox*
-* [ToolboxIntro](ToolboxIntro.html) - *A gentle introduction to the toolbox* **TODO: Johannes**
-* [ToolboxContents](ToolboxContents.html) - *Overview of the contents of the toolbox* **TODO: all update**
-* [ToolboxPracticalExamples](ToolboxPracticalExamples.html) - *Of investigating ERPs, and Spectral Analysis*  **TODO: Sven**
-<!-- * [ToolboxFileio](ToolboxFileio.html) - *Functions for reading and writing EEG data* -->
-* [ToolboxOnline](ToolboxOnline.html) - *All about the online system*
+* [ToolboxRequirements](ToolboxRequirements.markdown)
+* [ToolboxSetup](ToolboxSetup.markdown) - *Installation, configuration and starting the toolbox* 
+* [ToolboxData](ToolboxData.markdown) - *Basic data structures in the toolbox*
+* [ToolboxIntro](ToolboxIntro.markdown) - *A gentle introduction to the toolbox* **TODO: Johannes**
+* [ToolboxContents](ToolboxContents.markdown) - *Overview of the contents of the toolbox* **TODO: all update**
+* [ToolboxPracticalExamples](ToolboxPracticalExamples.markdown) - *Of investigating ERPs, and Spectral Analysis*  **TODO: Sven**
+<!-- * [ToolboxFileio](ToolboxFileio.markdown) - *Functions for reading and writing EEG data* -->
+* [ToolboxOnline](ToolboxOnline.markdown) - *All about the online system*
 * Function reference: **TODO: Basti please add the link here!**
 
 
 ### Advanced or Specific Topics _(probably not up-to-date yet)_
 
-<!-- * [ToolboxAutomation](ToolboxAutomation.html) - *Automatic analysis of a set of experiments, and generation of PDFs (includes calculation of Grand Average ERPs)* -->
-<!-- * [ToolboxTimeFrequency](ToolboxTimeFrequency.html) - *Time-frequency analysis using wavelets and short-time Fourier transform* -->
+<!-- * [ToolboxAutomation](ToolboxAutomation.markdown) - *Automatic analysis of a set of experiments, and generation of PDFs (includes calculation of Grand Average ERPs)* -->
+<!-- * [ToolboxTimeFrequency](ToolboxTimeFrequency.markdown) - *Time-frequency analysis using wavelets and short-time Fourier transform* -->
 
 ### Statistics & Math
 
-* [ToolboxStatisticsTtest](ToolboxStatisticsTtest.html)  - *T-test*  **TODO: Update!**
-* [ToolboxStatisticalAnova](ToolboxStatisticalAnova.html)  - *Analysis of variance* (ANOVA)  **TODO: Update!**
+* [ToolboxStatisticsTtest](ToolboxStatisticsTtest.markdown)  - *T-test*  **TODO: Update!**
+* [ToolboxStatisticalAnova](ToolboxStatisticalAnova.markdown)  - *Analysis of variance* (ANOVA)  **TODO: Update!**
 
 
 ## License   <a id="License"></a>
@@ -74,5 +74,5 @@ the ["bbci-toolbox" google group](https://groups.google.com/group/bbci-toolbox).
 ## Miscellaneous   <a id="Misc"></a>
 
 * [Introduction to Matlab](http://ocw.mit.edu/resources/res-18-002-introduction-to-matlab-spring-2008/)
-* [Git Info](git.html)
-* [Markdown help](markdown.html)
+* [Git Info](git.markdown)
+* [Markdown help](markdown.markdown)

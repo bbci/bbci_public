@@ -6,8 +6,8 @@
 
 
 To follow this tutorial, you need to have the BBCI Matlab toolbox
-installed [ToolboxSetup](ToolboxSetup.html) and know about its data structures
-[ToolboxData](ToolboxData.html).
+installed [ToolboxSetup](ToolboxSetup.markdown) and know about its data structures
+[ToolboxData](ToolboxData.markdown).
 
 Here, you will be animated, to explore the data structures, do some
 initial analysis (e.g. plotting ERPs) manually (i.e., without using the
