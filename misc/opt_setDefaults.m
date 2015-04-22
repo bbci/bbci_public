@@ -2,31 +2,31 @@ function [opt, isdefault]= opt_setDefaults(opt, props, check)
 %OPT_SETDEFAULTS - Set default values according to a property spec list
 %
 %Synopsis:
-%  [OPT, ISDEFAULT]= opt_setDefaults(OPT, PROPSPEC)
-%  [OPT, ISDEFAULT]= opt_setDefaults(OPT, PROPSPEC, CHECK)
+%  [OPT, ISDEFAULT]= opt_setDefaults(OPT, PROPS)
+%  [OPT, ISDEFAULT]= opt_setDefaults(OPT, PROPS, CHECK)
 %
 %Arguments:
 %  OPT:      STRUCT of optional properties
-%  PROPSPEC: PROPSPECLIST - Property specification list, i.e., CELL of size
+%  PROPS: PROPSLIST - Property specification list, i.e., CELL of size
 %      [N 2] or [N 3], with the first column all being strings.
 %  CHECK:    BOOL - Evokes type checking according to the third column of
-%      PROPSPEC
+%      PROPS
 %
 %Returns:
 %  OPT: STRUCT with added properties from the property specification list
-%          PROPSPEC
+%          PROPS
 %  ISDEFAULT: STRUCT with the same fields as OPT. Each field has a
-%          boolean value indicating whether the default value from PROPSPEC
+%          boolean value indicating whether the default value from PROPS
 %          was taken (i.e., that property was not a field of the input OPT).
 %
 %Description:
-%  PROPSPEC is a property specification list that defines default values
+%  PROPS is a property specification list that defines default values
 %  for a list of properties. The struct OPT is filled with all missing
-%  properties from PROPSPEC, but existing fields of OPT are not overwritten
+%  properties from PROPS, but existing fields of OPT are not overwritten
 %  by the respective default values.
 %  The function makes a case-insensitive match of field of OPT to the
 %  property names in PROPLIST. In the case of a match, the variant of
-%  PROPSPEC is used.
+%  PROPS is used.
 %
 %See also opt_checkProplist, opt_proplistToStruct.
 %
