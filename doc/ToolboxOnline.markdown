@@ -1,10 +1,6 @@
----
-
 # Documentation of the BBCI Online System
 
----
-
-### Contents
+## Contents
 
 -   **Introduction to the BBCI Online System**
     -   [ToolboxOnlineForEndUsers](ToolboxOnlineForEndUsers.markdown) - _Introduction to the BBCI Online System: a user's perspective_

@@ -1,25 +1,20 @@
----
-
 # A Gentle Introduction to the BBCI Toolbox for Offline Analysis
 
----
-
-
-To follow this tutorial, you need to have the BBCI Matlab toolbox
-installed [ToolboxSetup](ToolboxSetup.markdown) and know about its data structures
+To follow this tutorial, you need to have the BBCI Matlab toolbox installed
+[ToolboxSetup](ToolboxSetup.markdown) and know about its data structures
 [ToolboxData](ToolboxData.markdown).
 
-Here, you will be animated, to explore the data structures, do some
-initial analysis (e.g. plotting ERPs) manually (i.e., without using the
-toolbox functions), and then see how it can be done with the toolbox.
-Some the manual analysis serves the following purpose: Many of the
-toolbox function are in principle simple, but the code sometimes gets
-quite complicated, because it should be very general. The manual
-analysis demonstrates this simplicity. So don't be afraid of the toolbox
+Here, you will be animated, to explore the data structures, do some initial
+analysis (e.g. plotting ERPs) manually (i.e., without using the toolbox
+functions), and then see how it can be done with the toolbox. Some the manual
+analysis serves the following purpose: Many of the toolbox function are in
+principle simple, but the code sometimes gets quite complicated, because it
+should be very general. The manual analysis demonstrates this simplicity. So
+don't be afraid of the toolbox
 - it's no magic.
 
-This is a hands-on tutorial. It only makes sense, if you have it
-side-by-side with a running matlab where you execute all the code.
+This is a hands-on tutorial. It only makes sense, if you have it side-by-side
+with a running matlab where you execute all the code.
 
 ### Table of Contents
 
@@ -30,11 +25,11 @@ side-by-side with a running matlab where you execute all the code.
 - [scalp maps](#ScalpTopographies) - _Plotting scalp topographies and selecting suitable time intervals_
 - [classification](#ErpClassification) - _Extracting features from ERP data and classification_
 
----
 
 ## Exploring the data structure `cnt`  <a id="Cnt"></a>
 
-A first look at the data structure `cnt` which holds the continuous (un-segmented) EEG signals.
+A first look at the data structure `cnt` which holds the continuous
+(un-segmented) EEG signals.
 
 ```matlab
 file= 'VPibv_10_11_02/calibration_CenterSpellerMVEP_VPibv';
@@ -398,7 +393,9 @@ plot_channel(auc_cfy);
 
 ---
 
-This is the old version of the introduction. It refers to the old toolbox. But it has additional to the code some comments that could be transfered to the new introduction.
+This is the old version of the introduction. It refers to the old toolbox. But
+it has additional to the code some comments that could be transfered to the new
+introduction.
 
 ---
 
@@ -441,8 +438,8 @@ plot(cnt.x(1:5*cnt.fs,15))
 % displays the first 5s of channel nr. 15
 ```
 
-Next, we have a look at the structure mnt, which defines the electrode
-montage (and also a grid layout, but that will come later).
+Next, we have a look at the structure mnt, which defines the electrode montage
+(and also a grid layout, but that will come later).
 
 ```matlab
 mnt
@@ -465,13 +462,12 @@ scalpPlot(mnt, cnt.x(cnt.fs,:))
 for t=1000+[1:cnt.fs], scalpPlot(mnt, cnt.x(t,:)); title(int2str(t)); drawnow; end
 ```
 
-To make sense of the data, we need to know what happened when. This is
-stored in the marker data structure `mrk`{.backtick}. Markers (triggers)
-are stored into the EEG signals by the program that controls the
-stimulus presentation (or BCI feedback). Furthermore, markers can
-triggered by a response of the participant (like button presses), or by
-other sensors (visual sensors that register the flashing of an object on
-a display).
+To make sense of the data, we need to know what happened when. This is stored in
+the marker data structure `mrk`{.backtick}. Markers (triggers) are stored into
+the EEG signals by the program that controls the stimulus presentation (or BCI
+feedback). Furthermore, markers can triggered by a response of the participant
+(like button presses), or by other sensors (visual sensors that register the
+flashing of an object on a display).
 
 ```matlab
 mrk
@@ -539,8 +535,7 @@ epo_r= proc_r_square_signed(epo);
 grid_addBars(epo_r, 'h_scale',H.scale);
 ```
 
-The ERP analysis can be made more robust by filtering and artifact
-rejection:
+The ERP analysis can be made more robust by filtering and artifact rejection:
 
 ```matlab
 % high-pass filtering to reduce drifts
