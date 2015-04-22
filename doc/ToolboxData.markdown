@@ -1,8 +1,4 @@
----
-
 # Basic Data Structures of the BBCI Toolbox
-
----
 
 ## Table of Contents
 
@@ -11,9 +7,7 @@
 - [`epo`](#Epo) - _Segmented signals (epochs)_
 - [`mnt`](#Mnt) - _Montage structure defining the electrode layout for scalp and grid plots_
 
----
-
-### `cnt` - Continuous signals  <a id="Cnt"></a>
+## `cnt` - Continuous signals  <a id="Cnt"></a>
 
 The structure holding continuous (i.e., not epoched) EEG signals is denoted by `cnt`.
 
@@ -30,11 +24,11 @@ The structure holding continuous (i.e., not epoched) EEG signals is denoted by `
 ----------    ------------                                   --- --- ---
 
 
-### `mrk` - Event markers   <a id="Mrk"></a>
+## `mrk` - Event markers   <a id="Mrk"></a>
 
-The structure holding marker (or event) information is denoted by `mrk`.
-Using this structure you can segment continuous EEG signals into epochs
-by the function `proc_segmentation`.
+The structure holding marker (or event) information is denoted by `mrk`. Using
+this structure you can segment continuous EEG signals into epochs by the
+function `proc_segmentation`.
 
 ----------   ------------                                     --- --- ---
 **`mrk`**    **is a structure with the following fields:**
@@ -55,15 +49,16 @@ by the function `proc_segmentation`.
              can work properly on those variables.
 ----------   ------------                                     --- --- ---
 
-This structure can optionally have more fields, with are transfered to the `epo` structure, when creating epochs. See also the note in the description of the `epo` structure and the help of the function `proc_segmentation`.
+This structure can optionally have more fields, with are transfered to the `epo`
+structure, when creating epochs. See also the note in the description of the
+`epo` structure and the help of the function `proc_segmentation`.
 
 
-### `epo` - Segmented signals  <a id="Epo"></a>
+## `epo` - Segmented signals  <a id="Epo"></a>
 
-The structure holding epoched EEG signals (i.e., a series of short-time
-windows of equal length) is denoted by `epo`. (This structure is not
-resticted to time domain signals, although it is suggested by some
-notions, e.g. the field `.t`).
+The structure holding epoched EEG signals (i.e., a series of short-time windows
+of equal length) is denoted by `epo`. (This structure is not resticted to time
+domain signals, although it is suggested by some notions, e.g. the field `.t`).
 
 ----------   ------------                                     --- --- ---
 **`epo`**    **is a structure with the following fields:**
@@ -99,10 +94,11 @@ notions, e.g. the field `.t`).
 ----------   ------------                                     --- --- ---
 
 
-### `mnt` - The electrode montage   <a id="Mnt"></a>
+## `mnt` - The electrode montage   <a id="Mnt"></a>
 
-The electrode montage structure, denoted by `mnt`, holds the information
-of the spatial arrangement of the electrodes on the scalp (for plotting scalp topographies) and the arrangement of subplot axes for multi-channel plots.
+The electrode montage structure, denoted by `mnt`, holds the information of the
+spatial arrangement of the electrodes on the scalp (for plotting scalp
+topographies) and the arrangement of subplot axes for multi-channel plots.
 
 ----------      ------------                                     --- --- ---
 **`mnt`**       **is a structure with the following fields:**
