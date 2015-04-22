@@ -94,12 +94,12 @@ try
     urlwrite(this_zipfile, tmp_file);
 %     (2) unzip (OS-dependent)
     if isunix
-        system(['unzip ' tmp_file ' -d ' ext_folder])
+        system(['unzip ' tmp_file ' -d ' ext_folder]);
     else
         unzip(fullfile([ext_folder '/temp_download.zip']), ext_folder);
     end
 %     (3) delete zip
-    delete(fullfile([ext_folder '/temp_download.zip'])) %delete temporary download file
+    delete(fullfile([ext_folder '/temp_download.zip'])); %delete temporary download file
     success = 1;
 end
 
