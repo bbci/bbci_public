@@ -124,7 +124,7 @@ should go into separate branches.
 2. Pull in the changes from upstream's `master` branch:
 
    ```sh
-   $ git pull origin master
+   $ git pull upstream master
    ```
 
    Your local `master` branch is updated with the latest changes from upstream.
