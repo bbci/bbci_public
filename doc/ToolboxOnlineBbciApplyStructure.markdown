@@ -1,26 +1,23 @@
----
-
 # A Detailed Description of the Data Structes in BBCI Online
-
----
 
 In `bbyi_apply` there are two central structures.
 
-1.  The `bbci` structure specifies WHAT should be done and HOW: data
-    acquisition, processing, feature extraction, classification,
-    determining the control signal, and calling the application. It is
-    the input to `bbci_apply`.
-2.  The `data` structure is used to store the acquired signals, and
-    various steps of processed data, as well as some state information.
-    It is the working variable of `bbci_apply`.
+1. The `bbci` structure specifies WHAT should be done and HOW: data
+   acquisition, processing, feature extraction, classification, determining the
+   control signal, and calling the application. It is the input to `bbci_apply`.
+2. The `data` structure is used to store the acquired signals, and various steps
+   of processed data, as well as some state information. It is the working
+   variable of `bbci_apply`.
 
 You can also type  
+
+```matlab
 > `help bbci_apply_structures`  
+```
 to get this information about the two data structure `bbci` and `data`.
 
 
 ## Structure BBCI
-
 
 The defaults are set in `bbci_apply_setDefaults`.
 
@@ -60,7 +57,8 @@ Defines how the acquired markers are stored. struct with fields:
 
 ### `bbci.feature`
 
-Defines extraction of features from continuous signals. struct array  with fields:
+Defines extraction of features from continuous signals. struct array  with
+fields:
 
 | Field     	| Description                                                                                     	|
 |-----------	|-------------------------------------------------------------------------------------------------	|
