@@ -9,7 +9,9 @@
 The core of the BBCI online system is the function
 `bbci_apply`.
 
-    bbci_apply(bbci);
+```matlab
+bbci_apply(bbci);
+```
 
 All information that is necessary for data acquisition and processing as
 well as feeding the feedback application is stored in the struct
@@ -20,8 +22,10 @@ training data using a specified procedure. But `bbci` can
 also be obtained from any self-made script, or loaded from a pretrained
 file, e.g.,
 
-    cfy_dir= [EEG_RAW_DIR 'subject_independent_classifiers/vitalbci_season2/'];
-    bbci= load([cfy_dir 'kickstart_vitalbci_season2_C3CzC4_8-15_15-35']);
+```matlab
+cfy_dir= [EEG_RAW_DIR 'subject_independent_classifiers/vitalbci_season2/'];
+bbci= load([cfy_dir 'kickstart_vitalbci_season2_C3CzC4_8-15_15-35']);
+```
 
 The details of the struct `bbci` are explained
 [here](ToolboxOnlineBbciApplyStructure.markdown).
@@ -29,20 +33,26 @@ But also with a pretrained `bbci` classifier, still some
 fields might need to be specified, e.g., from which hardware device
 signals are acquired.
 
-    bbci.source.acquire_fcn= @bbci_acquire_bv;
-    bbci.source.acquire_param= {struct('fs', 100)};
+```matlab
+bbci.source.acquire_fcn= @bbci_acquire_bv;
+bbci.source.acquire_param= {struct('fs', 100)};
+```
 
 Side remark: it is also possible to specify that the EEG signals are
 automatically recorded:
 
-    bbci.source.record_signals= 1;
-    bbci.source.record_basename= 'imag_fbarrow_kickstart';
+```matalb
+bbci.source.record_signals= 1;
+bbci.source.record_basename= 'imag_fbarrow_kickstart';
+```
 
 In this case, the BrainVision Recorder would be called to record the
 signals (due to the setting of `bbci.source.acquire_fcn`).
 But by defining
 
-    bbci.source.record_param= {'internal',1};
+```matlab
+bbci.source.record_param= {'internal',1};
+```
 
 and internal function is used for recording the signals, which can
 therefore be used for any neuroimaging hardware (for which a
@@ -52,14 +62,18 @@ therefore be used for any neuroimaging hardware (for which a
 Also, a pretrained classifier might be used with different kinds of
 feedback, that can be specified.
 
-    bbci.feedback.receiver= 'matlab';
-    bbci.feedback.fcn= @bbci_feedback_cursor_training;
-    bbci.feedback.opt= struct('trials_per_run', 40);
+```matlab
+bbci.feedback.receiver= 'matlab';
+bbci.feedback.fcn= @bbci_feedback_cursor_training;
+bbci.feedback.opt= struct('trials_per_run', 40);
+```
 
 Furthermore, it might be useful to redefine some parameters of the
 signal processing chain:
 
-    bbci.feature.ival= [-300 0];
+```matlab
+bbci.feature.ival= [-300 0];
+```
 
 But these were already examples that will become really clear only
 later, when the details of `bbci_apply` are explained. It was
@@ -90,7 +104,7 @@ and the calibration-specific parameters can be defined in
 analysis for motor imagery control can, e.g., be calibrated in the
 following way:
 
-```
+```matlab
 bbci= [];
 bbci.calibrate.fcn= @bbci_calibrate_csp;
 bbci.calibrate.folder= EEG_RAW_DIR;
@@ -129,7 +143,7 @@ each time a new data packet is received. Then the classifier is applied
 to the feature vector and the resulting output is send via udp to the
 feedback application.
 
-```
+```matlab
 fs= 100;
 [filt_b, filt_a]= butter(5, [10 14]/fs*2);
 state_acquire= ACQUIRE_FCN('init', 'fs',fs);
@@ -153,7 +167,7 @@ Acquired marker positions are relative within the acquired data packet.
 They are transformed into global marker positions by adding the number
 of previously acquired samples.
 
-```
+```matlab
 state_acquire= ACQUIRE_FCN('init', 'fs',100);
 while run,
   [cnt_new, mrk_new]= ACQUIRE_FCN(state_acquire);
@@ -175,7 +189,7 @@ targets vs. nontargets. Here, a reference of -200 to 0 msec is used and
 5 time intervals to extract ERP features. Those time intervals range up
 to 800 msec post stimulus.
 
-```
+```matlab
 fs= 100;
 ival_ref= [-200 0];
 ival_cfy= [100 150; 150 200; 200 250; 250 400; 400 800];
@@ -220,7 +234,7 @@ Concept:
 
 First realisation:
 
-```
+```matlab
 bbci= bbci_apply_setDefaults(bbci);
 [data, bbci]= bbci_apply_initData(bbci);
 
@@ -266,7 +280,7 @@ For a definition of the `bbci` structure that would correspond to such a classif
 
 The general version of the function, `bbci_apply` can accomplish all that, but still is not so much more complex:
 
-```
+```matlab
 bbci= bbci_apply_setDefaults(bbci);
 [data, bbci]= bbci_apply_initData(bbci);
 

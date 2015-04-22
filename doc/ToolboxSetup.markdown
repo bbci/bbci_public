@@ -40,17 +40,17 @@ The GIT repository is available at github: https://github.com/bbci/bbci_public
 
 #### Linux
 
-```Bash
-  mkdir ~/git
-  cd ~/git
-  git clone https://github.com/bbci/bbci_public bbci_public
+```bash
+mkdir ~/git
+cd ~/git
+git clone https://github.com/bbci/bbci_public bbci_public
 ```
 
 If you plan to work with our Open Source Framework Pyff for Stimulus
 Presentation or Feedbacks, you need to get the Pyff repository separately:
 
-```Bash
-  git clone git://github.com/bbci/pyff
+```bash
+git clone git://github.com/bbci/pyff
 ```
 
 
@@ -59,7 +59,7 @@ Presentation or Feedbacks, you need to get the Pyff repository separately:
 Open the terminal. If you cannot find the terminal either go to your Desktop or
 open Finder. Then click on Go -> Utilities. Then type in
 
-```Bash
+```bash
 mkdir ~/git
 cd ~/git
 git clone https://github.com/bbci/bbci_public bbci_public
@@ -80,8 +80,8 @@ store the BBCI Toolbox. In this folder, right-click to open the context menu and
 choose the option 'Git Bash'. A terminal window (bash) will open. In the
 terminal window type
 
-```Bash
-  git clone https://github.com/bbci/bbci_public
+```bash
+git clone https://github.com/bbci/bbci_public
 ```
 
 Alternatively, you can use the GUI provided by Git for Windows to clone the
@@ -114,17 +114,17 @@ you should have herein the subfolders `demoRaw` and `demoMat` from above.
 Moreover, it is convenient to have a subfolder `tmp` in the data directory. Then
 you can startup the BBCI Toolbox like this:
 
-```Matlab
-  >> cd(MyToolboxDir);
-  >> startup_public_bbci('DataDir', MyDataDir);
+```matlab
+>> cd(MyToolboxDir);
+>> startup_public_bbci('DataDir', MyDataDir);
 ```
 
 If you want to define a different folder for temporary files, you can do it like
 this (to define `/tmp/` as temporary folder:
 
-```Matlab
-  >> cd(MyToolboxDir);
-  >> startup_public_bbci('DataDir', MyDataDir, 'TmpDir','/tmp/');
+```matlab
+>> cd(MyToolboxDir);
+>> startup_public_bbci('DataDir', MyDataDir, 'TmpDir','/tmp/');
 ```
 
 There are more options in `startup_public_bbci`, that should described here.
@@ -134,8 +134,8 @@ To enable all the demos of the toolbox (which are in the folders `demos` and
 `online/demos`, you need to run the convert-demos first (only one time - the
 converted data is saved in a subfolder of your `demoMat`, see above):
 
-```Matlab
-  >> demo_convert_ERPSpeller
-  >> demo_convert_MotorImagery
-  >> demo_convert_NIRSData.
+```matlab
+>> demo_convert_ERPSpeller
+>> demo_convert_MotorImagery
+>> demo_convert_NIRSData.
 ```

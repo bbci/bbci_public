@@ -29,7 +29,7 @@ stimulus markers.
 
 The following script illustrates how to do the conversion.
 
-```
+```matlab
 BTB_memo= BTB;
 BTB.RawDir= fullfile(BTB.DataDir, 'demoRaw');
 BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
@@ -91,7 +91,7 @@ BTB= BTB_memo;
 This script shows the analysis of Event-Related Potentials. 
 We will work data that has been converted to Matlab format as outlined in the practical example above.
 
-```
+```matlab
 BTB_memo= BTB;
 BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
 file= fullfile('VPiac_10_10_13', ...
@@ -170,7 +170,7 @@ BTB= BTB_memo;
 
 In this example script we show how to conduct a Grand Average ERP analysis across several subjects. 
 
-```
+```matlab
 files = {
     fullfile('VPibv_10_11_02','calibration_CenterSpellerMVEP_VPibv')
     fullfile('VPibq_10_09_24','calibration_CenterSpellerMVEP_VPibq')
@@ -281,7 +281,7 @@ This script shows how to perform spectral analysis of data related to events
 in which self-paced finger tapping was performed and analyse the spectra around 
 tapping events (i.e. keyboard hits). 
 
-```
+```matlab
 eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
     'demo_Pavel_01_11_23', 'selfpaced2sPavel');
 
@@ -367,7 +367,7 @@ grid_addBars(spec_r);
 
 ## Analysis of event-related modulations of brain rythms (ERD/ERS)   <a id="ErdAnalysis"></a>
 
-```
+```matlab
 
 eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
     'demo_Pavel_01_11_23', 'selfpaced2sPavel');
@@ -430,7 +430,7 @@ plot_scalpEvolutionPlusChannel(erd_r, mnt, clab, ival_scalps, defopt_scalp_r);
 
 This example shows how to identify taks-related difference in NIRS data.
 
-```
+```matlab
 BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
 filename= fullfile('VPean_10_07_26', 'NIRS', 'real_movementVPean');
 
