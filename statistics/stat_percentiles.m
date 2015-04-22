@@ -28,7 +28,6 @@ function y = stat_percentiles(x,p)
 % 
 
 % Author(s), Copyright: Anton Schwaighofer, May 2005
-% $Id: percentiles.m,v 1.4 2006/08/30 14:21:27 neuro_toolbox Exp $
 
 error(nargchk(2, 2, nargin));
 misc_checkType(x,'!DOUBLE[- -]');

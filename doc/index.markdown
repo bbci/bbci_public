@@ -68,7 +68,7 @@ Comments and bug reports are welcome. Please email to: `bbcitoolbox@neuro.tu-ber
 ## Mailing List
 
 We have a mailing list for questions and help regarding the toolbox. Please join
-the ["bbci-tooblox" google group](https://groups.google.com/group/bbci-toolbox).
+the ["bbci-toolbox" google group](https://groups.google.com/group/bbci-toolbox).
 
 
 ## Miscellaneous   <a id="Misc"></a>

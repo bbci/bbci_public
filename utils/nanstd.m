@@ -31,7 +31,6 @@ function y = nanstd(x, flag, dim)
 % 
 
 % Author(s): Anton Schwaighofer, Feb 2005
-% $Id: nanstd.m,v 1.1 2005/02/15 11:55:59 neuro_toolbox Exp $
 
 if nargin<3,
   % Operate along the first non-singleton dimension
