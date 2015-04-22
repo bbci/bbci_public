@@ -36,7 +36,7 @@ props= {'calibrate'       struct   'STRUCT'
         'log'             struct   'STRUCT'
         'adaptation'      struct   'STRUCT'
         'quit_condition'  struct   'STRUCT'
-				'trigger_fcn'     []       'FUNC'
+	'trigger'         struct   'STRUCT'
        };
 bbci= opt_setDefaults('bbci', props);
 
@@ -142,11 +142,13 @@ for ic= 1:length(bbci.control),
       bbci.control(ic).condition= ...
           opt_setDefaults('bbci.control(ic).condition', props);
     else
+      bbci.control(ic).condition.marker= [];
       if ~isfield(bbci.control(ic).condition, 'interval'),
         error(['If bbci.control.condition is nonempty, it must either ' ...
                'have a field ''marker'', or ''interval''.']);
       end
-      misc_checkType('bbci.control(ic).condition.interval', '!DOUBLE[1]');
+      misc_checkType(bbci.control(ic).condition.interval, '!DOUBLE[1]', ...
+                     'bbci.control(ic).condition.interval');
       if any(max(cat(1, bbci.feature(feat_list).ival)) > 0),
         error('bbci.feature.ival extends to future data');
       end
@@ -281,3 +283,8 @@ props= {'running_time'    inf    '!DOUBLE[1]'
         'marker'          []     'INT|CELL{CHAR}'
        };
 bbci.quit_condition= opt_setDefaults('bbci.quit_condition', props);
+
+
+props= {'fcn'     @bbci_trigger_print   '!FUNC'
+        'param'   {}                    'CELL'};
+bbci.trigger= opt_setDefaults('bbci.trigger', props);

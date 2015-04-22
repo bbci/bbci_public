@@ -67,7 +67,7 @@ if nargin==0,
 end
 
 misc_checkType(cnt, 'STRUCT(x clab fs)');
-misc_checkType(cnt.x, 'DOUBLE[- -]', 'cnt.x');
+misc_checkType(cnt.x, 'DOUBLE[- -]|DOUBLE[- - -]', 'cnt.x');
 misc_checkType(cnt.clab, 'CELL{CHAR}', 'cnt.clab');
 misc_checkType(cnt.fs, 'DOUBLE[1]', 'cnt.fs');
 misc_checkType(mrk, 'DOUBLE[-]|STRUCT(time)');

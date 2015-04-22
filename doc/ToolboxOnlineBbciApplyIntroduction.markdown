@@ -47,7 +47,7 @@ online processing procedure would look in specific cases
 Signals are band-pass filtered (10-14 Hz) and log-variance is calculated from the last 500ms each time a new data packet is received. Then the classifier is applied to the feature vector and the resulting output is send via udp to the
 feedback application.
 
-```
+```Matlab
 fs= 100;
 [filt_b, filt_a]= butter(5, [10 14]/fs*2);
 state_acquire= ACQUIRE_FCN('init', 'fs',fs);
@@ -68,7 +68,7 @@ end
 **Second case: LRP classification.**
 Upon keypress ('R 1'=left, 'R 2'=right) the system predicts whether it was performed with the left or right hand. Acquired marker positions are relative within the acquired data packet. They are transformed into global marker positions by adding the number of previously acquired samples.
 
-```
+```Matlab
 state_acquire= ACQUIRE_FCN('init', 'fs',100);
 while run,
   [cnt_new, mrk_new]= ACQUIRE_FCN(state_acquire);
@@ -88,7 +88,7 @@ end
 **Third case: ERP classification:** 
 The ERP response after cues are classified into targets vs. nontargets. Here, a reference of -200 to 0 msec is used and 5 time intervals to extract ERP features. Those time intervals range up to 800 msec post stimulus.
 
-```
+```Matlab
 fs= 100;
 ival_ref= [-200 0];
 ival_cfy= [100 150; 150 200; 200 250; 250 400; 400 800];
@@ -192,7 +192,7 @@ Field of Data  Purpose
 
 A simple version of `bbci_apply.m` would look like this:
 
-```
+```Matlab
 bbci= bbci_apply_setDefaults(bbci);
 data= bbci_apply_initData(bbci);
 run= true;
@@ -273,7 +273,7 @@ The details of the struct `bbci` are explained
 
 ### The final version of `bbci_apply.m`
 
-```
+```Matlab
 bbci= bbci_apply_setDefaults(bbci);
 [data, bbci]= bbci_apply_initData(bbci);
 
