@@ -2,7 +2,11 @@ eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
                    'VPkg_08_08_07', 'calibration_motorimageryVPkg');
 
 %% Load data
-[cnt, mrk, mnt] = file_loadMatlab(eeg_file);
+try
+  [cnt, mrk, mnt] = file_loadMatlab(eeg_file);
+catch
+  error('You need to run ''demo_convert_ERPSpeller'' first');
+end
 
 %% Choose Electrode Montage
 mnt= mnt_setGrid(mnt, 'M');
