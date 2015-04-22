@@ -47,6 +47,11 @@ props= {'Dir'            BBCI_DIR          'CHAR';
        };
 [BTB, isdefault]= opt_setDefaults(BTB, props);
 
+% import dependencies if not done yet
+bbci_import_dependencies()
+addpath(genpath(BBCI_DIR));
+rmpath(genpath(fullfile(BBCI_DIR, '.git')));
+
 if exist(BTB.PrivateDir, 'dir'),
   private_folders_to_add= {'utils', 'startup'};
   for kk= 1:length(private_folders_to_add),
@@ -98,6 +103,7 @@ else
   fprintf('Parport not installed. Triggers will just be printed.\n');
   BTB.Acq.TriggerFcn= @bbci_trigger_print;
 end
+
 
 
 evalin('base', 'global BTB');
