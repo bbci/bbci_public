@@ -118,6 +118,7 @@ end
 if isempty(clab),
   error('intersection of channels is empty');
 end
+clab = erps{1}.clab(ismember(erps{1}.clab, clab)); %take channel-order of the first epo as reference!
 
 %% Define ga data field
 datadim = unique(cellfun(@util_getDataDimension,erps));
