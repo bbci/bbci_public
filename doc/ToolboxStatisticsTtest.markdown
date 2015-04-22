@@ -32,8 +32,8 @@ t-test
 * Reaction times are *not* Gaussian-distributed. They have a skewed long-tail
   distribution. Therefore the *arithmetic mean* is not a good estimator of the
   mean. Use either the *geometric mean* (`geomean()` in Matlab) or calculate the
-  reciprocal of reaction time, `speed = 1/RT`{.backtick}, which gives a more
-  symmetric distribution and allows for the calculation of the arithmetic mean.
+  reciprocal of reaction time, `speed = 1/RT`, which gives a more symmetric
+  distribution and allows for the calculation of the arithmetic mean.
 * If a test does not yield a significant result (i.e., *p* \> α), this does *not
   necessarily* mean that the distributions are the same. Measurements might not
   be accurate enough (when the difference between the distributions is subtle)
@@ -42,9 +42,8 @@ t-test
 
 ## Further reading
 
-* [Statistical hypothesis
-  testing](http://en.wikipedia.org/wiki/Statistical_hypothesis_testing)
-    - general introduction
+* [Statistical hypothesis testing](http://en.wikipedia.org/wiki/Statistical_hypothesis_testing)
+  - general introduction
 * [Wikipage on t-test](http://en.wikipedia.org/wiki/Student%27s_t-test)
 * Cohen, Barry. (1996)  Explaining psychological statistics. Belmont, CA, US:
   Thomson Brooks/Cole Publishing Co..
