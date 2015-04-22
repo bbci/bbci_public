@@ -1,22 +1,17 @@
----
-
 # BBCI Online System - Introduction to `bbci_apply`
 
----
+## The General Scheme
 
-### The General Scheme
+The matlab function `bbci_apply.m` is used for the following loop: acquire data
+from a neuroimaging source (EEG, NIRS), apply preprocessing and extract
+features, apply a classifier and transform the output into a control signal
+which is sent to an application. The input to `bbci_apply.m` is a structure that
+specifies the preprocessing, feature extraction and classification. All
+parameters, like time intervals and weights of the classifier are stored in that
+structure. Before going into details, here is the (simplified) general structure
+in pseudo code:
 
-The matlab function `bbci_apply.m` is used for the following
-loop: acquire data from a neuroimaging source (EEG, NIRS), apply
-preprocessing and extract features, apply a classifier and transform the
-output into a control signal which is sent to an application. The input
-to `bbci_apply.m` is a structure that specifies the
-preprocessing, feature extraction and classification. All parameters,
-like time intervals and weights of the classifier are stored in that
-structure. Before going into details, here is the (simplified) general
-structure in pseudo code:
-
-```
+```matlab
 while run:
    acquire data
    apply preprocessing and store continuous signals into a buffer
@@ -38,16 +33,18 @@ This corresponds to the following figure:
 application](_static/ToolboxOnlineBbciApplyIntroduction_002.png)
 
 
-### An example instant of a specific online processing
+## An example instant of a specific online processing
 
-For a more tangible introduction, here is are two examples of how the
-online processing procedure would look in specific cases
+For a more tangible introduction, here is are two examples of how the online
+processing procedure would look in specific cases
 
-**First case: Continuous cursor control with motor imagery.** 
-Signals are band-pass filtered (10-14 Hz) and log-variance is calculated from the last 500ms each time a new data packet is received. Then the classifier is applied to the feature vector and the resulting output is send via udp to the
-feedback application.
+**First case: Continuous cursor control with motor imagery.** Signals are
+band-pass filtered (10-14 Hz) and log-variance is calculated from the last 500ms
+each time a new data packet is received. Then the classifier is applied to the
+feature vector and the resulting output is send via udp to the feedback
+application.
 
-```Matlab
+```matlab
 fs= 100;
 [filt_b, filt_a]= butter(5, [10 14]/fs*2);
 state_acquire= ACQUIRE_FCN('init', 'fs',fs);
@@ -65,10 +62,13 @@ while etime(clock, t_start) < 10*60,
 end
 ```
 
-**Second case: LRP classification.**
-Upon keypress ('R 1'=left, 'R 2'=right) the system predicts whether it was performed with the left or right hand. Acquired marker positions are relative within the acquired data packet. They are transformed into global marker positions by adding the number of previously acquired samples.
+**Second case: LRP classification.** Upon keypress ('R 1'=left, 'R 2'=right) the
+system predicts whether it was performed with the left or right hand. Acquired
+marker positions are relative within the acquired data packet. They are
+transformed into global marker positions by adding the number of previously
+acquired samples.
 
-```Matlab
+```matlab
 state_acquire= ACQUIRE_FCN('init', 'fs',100);
 while run,
   [cnt_new, mrk_new]= ACQUIRE_FCN(state_acquire);
@@ -85,10 +85,12 @@ while run,
 end
 ```
 
-**Third case: ERP classification:** 
-The ERP response after cues are classified into targets vs. nontargets. Here, a reference of -200 to 0 msec is used and 5 time intervals to extract ERP features. Those time intervals range up to 800 msec post stimulus.
+**Third case: ERP classification:** The ERP response after cues are classified
+into targets vs. nontargets. Here, a reference of -200 to 0 msec is used and 5
+time intervals to extract ERP features. Those time intervals range up to 800
+msec post stimulus.
 
-```Matlab
+```matlab
 fs= 100;
 ival_ref= [-200 0];
 ival_cfy= [100 150; 150 200; 200 250; 250 400; 400 800];
@@ -115,44 +117,37 @@ while run,
 end
 ```
 
-Of course, we do not want to write a new `bbci_apply` for
-each type of processing, so we need a general framework. The procedure
-of preprocessing and classification is specified beforehand, and the
-required parameters are determined from calibration data, and everything
-is store in a variable that is called `bbci`. (Furthermore,
-for the real `bbci_apply` we would not like to have
+Of course, we do not want to write a new `bbci_apply` for each type of
+processing, so we need a general framework. The procedure of preprocessing and
+classification is specified beforehand, and the required parameters are
+determined from calibration data, and everything is store in a variable that is
+called `bbci`. (Furthermore, for the real `bbci_apply` we would not like to have
 `cnt` grow forever, but use a ring buffer of say 10s.)
 
 
-### The Data Flow
+## The Data Flow
 
-The function `bbci_apply` for online operation is structured
-in modules: `source`, `signal`, `feature`, `classifier`, `control`,
-`feedback`. The names correspond to both, one link in the
-chain of processing steps, and format in which data is temporarily
-stored. In the function `bbci_apply`, the processing chain is
-specified in a struct `bbci`, and data is temporarily stored
-in the struct `data`. The following figure illustrates the
-data formats, and the processing steps that transform the data from one
-link to the next:
+The function `bbci_apply` for online operation is structured in modules:
+`source`, `signal`, `feature`, `classifier`, `control`, `feedback`. The names
+correspond to both, one link in the chain of processing steps, and format in
+which data is temporarily stored. In the function `bbci_apply`, the processing
+chain is specified in a struct `bbci`, and data is temporarily stored in the
+struct `data`. The following figure illustrates the data formats, and the
+processing steps that transform the data from one link to the next:
 
-![bbci\_apply example
-application](_static/ToolboxOnlineBbciApplyIntroduction_003.png)
+![bbci\_apply example application](_static/ToolboxOnlineBbciApplyIntroduction_003.png)
 
 
-### The variable `bbci`
+## The variable `bbci`
 
-The processing/classification etc is specified in the variable
-`bbci`. This is the input to the function `bbci_apply.m` and it is
-static. (It is just modified in the very beginning of `bbci_apply.m`
-by the function `bbci_apply_setDefaults` to fill missing fields with
-default values.) The variable `bbci` is typically generated by the
-script `bbci_calibrate` from calibration data. See also the demos in
-`online/demos/` where some examples for `bbci` structures are
-defined from the scratch. The data structures are explained in more
-detail in `bbci_apply_structures.m` and
-[here](ToolboxOnlineBbciApplyStructure.html).
-
+The processing/classification etc is specified in the variable `bbci`. This is
+the input to the function `bbci_apply.m` and it is static. (It is just modified
+in the very beginning of `bbci_apply.m` by the function `bbci_apply_setDefaults`
+to fill missing fields with default values.) The variable `bbci` is typically
+generated by the script `bbci_calibrate` from calibration data. See also the
+demos in `online/demos/` where some examples for `bbci` structures are defined
+from the scratch. The data structures are explained in more detail in
+`bbci_apply_structures.m` and [here](ToolboxOnlineBbciApplyStructure.markdown).
 
 
 Field            Description
@@ -168,13 +163,11 @@ Field            Description
 .log             specifies what information should be logged and how (screen or file)
 .quit_condition  specifies under which condition bbci_apply should stop
 
-### The variable `data`
+## The variable `data`
 
-The variable `data` is an internal variable of
-`bbci_apply.m` which stores all intermediate information.
-There is a strong correspondence between the fields of `bbci`
-and the fields of `data`.
-
+The variable `data` is an internal variable of `bbci_apply.m` which stores all
+intermediate information. There is a strong correspondence between the fields of
+`bbci` and the fields of `data`.
 
 
 Field of Data  Purpose
@@ -188,11 +181,11 @@ Field of Data  Purpose
 .log           id and name of the log file (if logging is on)
 
 
-### A simplified `bbci_apply.m`
+## A simplified `bbci_apply.m`
 
 A simple version of `bbci_apply.m` would look like this:
 
-```Matlab
+```matlab
 bbci= bbci_apply_setDefaults(bbci);
 data= bbci_apply_initData(bbci);
 run= true;
@@ -213,67 +206,66 @@ while run,
 end
 ```
 
-The segmentation of continuous data into epochs is specified in two
-different fields of `bbci`. The subfield `condition` of `control` defines under which condition the control is determined (and send to the application). This may either happen for each block of acquired data (i.e., unconditioned)
-as for continuous cursor control, or depending on the occurrence of
-specified markers as for ERP-based feedbacks. In the first case the last
-acquired sample is the reference time, and in the latter case the
-timepoint of the marker is the reference time. The subfield
-`ival` of `feature` specifies the time interval
+The segmentation of continuous data into epochs is specified in two different
+fields of `bbci`. The subfield `condition` of `control` defines under which
+condition the control is determined (and send to the application). This may
+either happen for each block of acquired data (i.e., unconditioned) as for
+continuous cursor control, or depending on the occurrence of specified markers
+as for ERP-based feedbacks. In the first case the last acquired sample is the
+reference time, and in the latter case the timepoint of the marker is the
+reference time. The subfield `ival` of `feature` specifies the time interval
 relative to that reference time, for which the epoch is cut out from the
 continuous signals.
 
 That's in principle all - simple and clear. Also the subfunctions
-`bbci_apply_*.m` which are called are rather simple. So,
-don't be afraid of `bbci_apply.m`.
+`bbci_apply_*.m` which are called are rather simple. So, don't be afraid of
+`bbci_apply.m`.
 
 
-### Requirements for having it a bit more general
+## Requirements for having it a bit more general
 
-Granted it has to be a bit more complex in order to be general, but also
-the final version of `bbci_apply.m` is not much more
-complicated. The idea of having a more general structure is the
-following. We might like to acquire data from different sources
-simultaneously, e.g., EEG and NIRS or EEG and Eye Tracker. Further more
-we might use different features, like LRP and ERD for motor tasks. And
-we might need to generate different kinds of control signals, e.g., P300
+Granted it has to be a bit more complex in order to be general, but also the
+final version of `bbci_apply.m` is not much more complicated. The idea of having
+a more general structure is the following. We might like to acquire data from
+different sources simultaneously, e.g., EEG and NIRS or EEG and Eye Tracker.
+Further more we might use different features, like LRP and ERD for motor tasks.
+And we might need to generate different kinds of control signals, e.g., P300
 detection and *error potential* detection.
 
-In order to make the requirements for a more complex online scenario
-clear, here is a figure of a conceivable application. It is a
-attention-based speller (exploiting attention specific modulations of
-ERPs and ERDs) which has an automatic rejection of false selections
-based on the error potential, and which adapts to the current state of
-vigilance.
+In order to make the requirements for a more complex online scenario clear, here
+is a figure of a conceivable application. It is a attention-based speller
+(exploiting attention specific modulations of ERPs and ERDs) which has an
+automatic rejection of false selections based on the error potential, and which
+adapts to the current state of vigilance.
 
-![bbci\_apply example
-application](_static/ToolboxOnlineBbciApplyIntroduction.png)
+![bbci\_apply example application](_static/ToolboxOnlineBbciApplyIntroduction.png)
 
-### Consequences for the data structures
+## Consequences for the data structures
 
 The following fields of `bbci` may be struct **arrays**:
 
-> **`source`**: there may be different sources from which signals are acquired  
+**`source`**: there may be different sources from which signals are acquired  
 **`signal`**: each signal may have input only from one source, since sources may have different sampling rates  
 **`feature`**: each feature may have input only from one `signal`  
 **`classifier`**:  each classifier may have input from several features; features (as column vectors) are concatenated  
 **`control`**: each control may have input from several classifiers; classifier outputs (as column vectors) are concatenated  
 **`feedback`**: each feedback may have input from several controls
 
-Accordingly, also the following fields of data are arrays:
-`source`, `signal`, `feature`, `classifier`, `control`. All those fields are struct arrays. 
-Since features may be used by different classifiers, the function tries to avoid recalculation.
+Accordingly, also the following fields of data are arrays: `source`, `signal`,
+`feature`, `classifier`, `control`. All those fields are struct arrays. Since
+features may be used by different classifiers, the function tries to avoid
+recalculation.
 
-For a definition of the `bbci`structure that would correspond
-to such a classifier see
-[here](ToolboxOnlineBbciExampleSuperSpeller.html).
+For a definition of the `bbci`structure that would correspond to such a
+classifier see [here](ToolboxOnlineBbciExampleSuperSpeller.markdown).
 
 The details of the struct `bbci` are explained
-[here](ToolboxOnlineBbciApplyStructure.html).
+[here](ToolboxOnlineBbciApplyStructure.markdown).
 
-### The final version of `bbci_apply.m`
 
-```Matlab
+## The final version of `bbci_apply.m`
+
+```matlab
 bbci= bbci_apply_setDefaults(bbci);
 [data, bbci]= bbci_apply_initData(bbci);
 

@@ -1,8 +1,6 @@
-Example 'Super Speller'
------------------------
+# Example 'Super Speller'
 
-
-~~~~ {#CA-d2e0cb6c91552f5103927932a62b74ca88566efb dir="ltr" lang="en"}
+```matlab
 % This is just an example, how to define a more complex processing scheme.
 % It relates to the 'super speller' example in the WIKI documentation.
 
@@ -90,4 +88,4 @@ bbci.control(2).condition.marker= [100:160];
 bbci.control(3).classifier= 3;
 
 bbci.quit_condition.marker= 255;
-~~~~
+```
