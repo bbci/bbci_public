@@ -1,5 +1,4 @@
-Example 'Super Speller'
------------------------
+# Example 'Super Speller'
 
 ```matlab
 % This is just an example, how to define a more complex processing scheme.
