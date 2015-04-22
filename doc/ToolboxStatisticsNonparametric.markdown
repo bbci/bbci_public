@@ -47,7 +47,7 @@ Non-parametric tests
 
 ### Background
 
-![\<!\>](ToolboxStatisticsNonparametric_files/attention.png "<!>")
+![\<!\>](_static/attention.png "<!>")
 Building site
 
 In contast to parametric tests, **nonparametric tests** do not assume a

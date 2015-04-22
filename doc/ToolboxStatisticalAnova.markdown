@@ -14,7 +14,7 @@ distribution:
 -   The sample data have a normal distribution
 -   Homogenity of variance: data variance is equal in all groups
 
-![{i}](ToolboxStatisticalAnova_files/icon-info.png "{i}")
+![{i}](_static/icon-info.png "{i}")
 Repeated-measures ANOVA (RM-ANOVA) vs conventional/independent ANOVA
 
 -   In an *independent design*, all levels of all factors are different
@@ -26,7 +26,7 @@ Repeated-measures ANOVA (RM-ANOVA) vs conventional/independent ANOVA
 -   A design with both repeated and independent factors is called *mixed
     design* and you can implement it yourself using `anovan`{.backtick}.
 
-![{i}](ToolboxStatisticalAnova_files/icon-info.png "{i}") Extra
+![{i}](_static/icon-info.png "{i}") Extra
 assumption of RM ANOVA
 
 -   Sphericity: Difference scores between levels have equal variance for
@@ -106,7 +106,7 @@ The result is also displayed in a pop-up figure where `Prob>F` gives the
 ![ANOVA
 results](_static/ToolboxStatisticalAnova_003.png)
 
-![\<!\>](ToolboxStatisticalAnova_files/attention.png "<!>") An easy way
+![\<!\>](_static/attention.png "<!>") An easy way
 to extract ERP amplitudes and latencies is the BBCI function
 `erp_components`.
 

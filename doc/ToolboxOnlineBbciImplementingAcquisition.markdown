@@ -1,4 +1,4 @@
-A Guide for Implementing new Acquisition Functions
+﻿A Guide for Implementing new Acquisition Functions
 --------------------------------------------------
 
 The implementation of new acquisition functions is only necessary if new
@@ -33,10 +33,10 @@ information is stored in the variable `state` (STRUCT), that
 is used in subsequent calls to get the data. Required fields of the
 variable `state` are
 
-Field       Description
------------ ------------
-state.clab  CELL of CHAR holding the channel labels
-state.fs    DOUBLE holding the sampling rate
+| Field        | Description                             |
+|--------------|-----------------------------------------|
+| `state.clab` | CELL of CHAR holding the channel labels |
+| `state.fs`   | DOUBLE holding the sampling rate        |
 
 Optional parameters can be specified as further arguments in the
 initialization. There are no strict rules for these parameters.
@@ -53,11 +53,11 @@ to the acquisition hardware was closed (externally), the field
 state.running has to be set to 0. The acquired
 data is returned in the first three output arguments.
 
-Field    Description
--------- ----------------
-CNTX     DOUBLE [Time Channels] signals
-MRKTIME  DOUBLE [1 nMarkers] position [msec] within data block. A marker occurrence within the first sample would give MRKTIME= 1/STATE.fs.
-MRKDESC  CELL {1 nMarkers} descriptors like 'S 52', **OR** DOUBLE [1 nMarkers] numeric representation of markers
+| Field     | Description                                                                                                                        |
+|-----------|------------------------------------------------------------------------------------------------------------------------------------|
+| `CNTX`    | DOUBLE [Time Channels] signals                                                                                                     |
+| `MRKTIME` | DOUBLE [1 nMarkers] position [msec] within data block. A marker occurrence within the first sample would give MRKTIME= 1/STATE.fs. |
+| `MRKDESC` | CELL {1 nMarkers} descriptors like 'S 52', **OR** DOUBLE [1 nMarkers] numeric representation of markers                            |
 
 Whether a *symbolic* or a *numeric* representation of markers is used,
 is a matter of taste. If possible, the numeric representation is to be
