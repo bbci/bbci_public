@@ -64,6 +64,7 @@ III. Defining whether and how information should be logged
 
 
 `.log`
+
 | Field                | Description                        |
 |----------------------|------------------------------------|
 | `.output`            | CHAR, default 'screen&file'        |
@@ -75,6 +76,7 @@ III. Defining whether and how information should be logged
 IV. Defining what and how calibration data should be saved
 
 `.save`
+
 | Field           | Description                                                                                                                                   |
 |-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | `.file`         | CHAR, default 'bbci_classifier'                                                                                                               |

@@ -91,10 +91,10 @@ friend. Note: this function returns the markers in the original sampling rate.
 In contrast, `readMarkerTable` returns markers by default resampled to 100 Hz.
 
 
-| Field               	| Description                                                                                             	|
-|---------------------	|---------------------------------------------------------------------------------------------------------	|
-| `file`              	| is the name of the header file (without the extension .vmrk). The same applies as for `readGenericEEG`. 	|
-| `outputStructArray` 	|                                                                                                         	|
+| Field               | Description                                                                                             |
+|---------------------|---------------------------------------------------------------------------------------------------------|
+| `.file`             | is the name of the header file (without the extension .vmrk). The same applies as for `readGenericEEG`. |
+| `outputStructArray` | specifies the output format, default 1. If false the output is a struct of arrays, not a struct array.  |
 
 
 Output:

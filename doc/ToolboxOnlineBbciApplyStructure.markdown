@@ -94,33 +94,34 @@ the control signal. struct array with fields:
 | `.condition`  	| defines the events which evokes the calculation of a control signal: [] means evaluate control signal for each data packet that was acquired 	|
 
 
-| Field       	| Description                                                                                                                                  	|
-|-------------	|----------------------------------------------------------------------------------------------------------------------------------------------	|
-| `.marker`   	| CELL of STRINGs (??or rather [vector of DOUBLE]??) specifying the markers that evoke the calculation of a control signal (if interval)       	|
-| `.interval` 	| [DOUBLEin msec] (does this option make sense?)                                                                                               	|
-|             	| [DOUBLE in msec] after .marker this amount of signals must,-,have been required (such that epochs of all required -,feature can be obtained) 	|
+| Field       | Description                                                                                                                                    |
+|-------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| `.marker`   | CELL of STRINGs (??or rather [vector of DOUBLE]??) specifying the markers that evoke the calculation of a control signal (if interval)         |
+| `.interval` | [DOUBLE in msec]                                                                                                                               |
+| `.overrun`  | [DOUBLE in msec] after `.marker` this amount of signals must,-,have been required (such that epochs of all required -,feature can be obtained) |
    
 
 ### `bbci.feedback`
 
 Defines where and how the control signal is sent. struct array with fields:
 
-| Field       	| Description                                                                                                    	|
-|-------------	|----------------------------------------------------------------------------------------------------------------	|
-| `.control`  	| [vector of DOUBLE, default 1] specifies which control signals (see above) are send to the feedback application 	|
-| `.receiver` 	|                                                                                                                	|
+| Field       | Description                                                                                                    |
+|-------------|----------------------------------------------------------------------------------------------------------------|
+| `.control`  | [vector of DOUBLE, default 1] specifies which control signals (see above) are send to the feedback application |
+| `.receiver` | 'matlab', 'pyff', 'screen', or 'tobi-c'`                                                                       |
+|             |                                                                                                                |
 
 
 ### `bbci.adaptation`
 
 Specifies whether, what and how adaptation should be done. struct with fields
 
-| Field     	| Description                                           	|
-|-----------	|-------------------------------------------------------	|
-| `.active` 	| BOOL whether adaptation is switched on                	|
-| `.fcn`    	| FUNHANDLE adaptation function.                        	|
-| `.param`  	| CELL parameters that are passed to the adaptation.fcn 	|
-| `.log`    	|                                                       	|
+| Field     | Description                                                                                 |
+|-----------|---------------------------------------------------------------------------------------------|
+| `.active` | BOOL whether adaptation is switched on                                                      |
+| `.fcn`    | FUNHANDLE adaptation function.                                                              |
+| `.param`  | CELL parameters that are passed to the adaptation.fcn                                       |
+| `.log`    | see `bbci.log`. This field specifies, whether information about adaptation should be logged |
 
 
 
@@ -128,10 +129,10 @@ Specifies whether, what and how adaptation should be done. struct with fields
 
 Defines the condition when bbcu_apply should quit. struct with fields
     
-| Field           	| Description                  	|
-|-----------------	|------------------------------	|
-| `.running_time` 	| [DOUBLE in sec, default inf] 	|
-| `.marker`       	|                              	|
+| Field           | Description                           |
+|-----------------|---------------------------------------|
+| `.running_time` | [DOUBLE in sec, default inf]          |
+| `.marker`       | [CHAR or CELL ARRAY of CHAR, default] |
 
 
 ### `bbci.log`
