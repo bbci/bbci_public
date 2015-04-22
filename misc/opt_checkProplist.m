@@ -2,11 +2,11 @@ function opt_checkProplist(opt, props, varargin)
 %OPT_CHECKPROPLIST - Check a property/value struct according to specifications
 %
 %Synopsis:
-%  opt_checkProplist(OPT, PROPS, <PROPSPEC2, ...>)
+%  opt_checkProplist(OPT, PROPSPEC, <PROPSPEC2, ...>)
 %
 %Arguments:
 %  OPT:      STRUCT of optional properties
-%  PROPS: PROPSPECLIST - Property specification list, i.e., CELL of size
+%  PROPSPEC: PROPSPECLIST - Property specification list, i.e., CELL of size
 %      [N 2] or [N 3], with the first column all being strings.
 %
 %Returns:
@@ -14,9 +14,9 @@ function opt_checkProplist(opt, props, varargin)
 %
 %Description:
 %  This function checks whether all fields of OPT occur in the list of
-%  property names of PROPS and throws an error otherwise. This check
+%  property names of PROPSPEC and throws an error otherwise. This check
 %  is case-insensitive.
-%  If PROPS contains a third column of (type definitions), the values
+%  If PROPSPEC contains a third column of (type definitions), the values
 %  in OPT are checked to match them, see opt_checkTypes.
 %
 %  Type checking can be switched off (and on again) by the function
