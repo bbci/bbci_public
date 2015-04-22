@@ -84,7 +84,7 @@ clone of your fork.
    repository for your fork:
 
    ```sh
-   $ git remove -v
+   $ git remote -v
    origin    git@github.com:YOUR_USERNAME/bbci_public.git (fetch)
    origin    git@github.com:YOUR_USERNAME/bbci_public.git (push)
    ```
