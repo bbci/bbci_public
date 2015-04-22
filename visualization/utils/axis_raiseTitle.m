@@ -10,8 +10,6 @@ function axis_raiseTitle(ax, rel)
 %  REL_RAISE: Specifies how much the title is to be raise. The measure is
 %             relative to the height of the axis.
 
-% blanker@first.fhg.de, 01/2005
-
 if nargin==1,
   rel= ax;
   ax= gca;

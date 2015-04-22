@@ -34,8 +34,6 @@ function image_localColormap(C, cmap, varargin)
 % subplot(1,2,1); imagesc(toeplitz(1:10));
 % subplot(1,2,2); image_localColormap(toeplitz(1:4), summer(10));
 
-% blanker@first.fhg.de, 01/2005
-
 props = {'CLim',        'auto',         'CHAR|DOUBLE[2]';
          'EdgeColor',   'none',         'CHAR';
          'Optimize',    'rows',         'CHAR'};

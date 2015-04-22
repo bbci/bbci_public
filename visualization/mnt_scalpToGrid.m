@@ -28,8 +28,6 @@ function mnt= mnt_scalpToGrid(mnt, varargin)
 %See also setDisplayMontage, projectElectrodePositions, grid_plot,
 % mnt_restrictMontage
 
-% blanker@first.fhg.de 01/2005
-
 props = {'AxisSize',            [],             'DOUBLE';
          'Clab',                [],             'CELL{CHAR}';
          'Oversize',            1.2,            'DOUBLE[1-2]';
