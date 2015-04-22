@@ -1,13 +1,7 @@
 # Documentation: Setting up and Starting the Toolbox
 
 
-* [Getting the BBCI Toolbox](#GettingToolbox)
-* [Getting the demo datasets](#GettingData)
-* [Starting the toolbox in Matlab](#StartUp)
-
----
-
-## Getting the BBCI Toolbox   <a id="GettingToolbox"></a>
+## Getting the BBCI Toolbox
 
 There are two ways to get the BBCI Toolbox:
 
@@ -88,7 +82,7 @@ Alternatively, you can use the GUI provided by Git for Windows to clone the
 repository. The GUI appears when you choose Git GUI from the context menu.
 
 
-## Getting data for the demos   <a id="GettingData"></a>
+## Getting data for the demos
 
 There are files in raw data format (as stored by the EEG recording software,
 Brain Vision Recorder in this case), and files that have been converted to
@@ -103,7 +97,7 @@ created in your data folder.
 * [dataMat](http://doc.ml.tu-berlin.de/bbci/ToolboxData/demoMat.zip)
 
 
-## Starting the Toolbox   <a id="StartUp"></a>
+## Starting the Toolbox
 
 Let us assume the Matlab variable `MyToolboxDir` holds the path to the BBCI
 Toolbox. That could be `'d:\git\bbci_public'` under Windows and
