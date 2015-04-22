@@ -43,6 +43,7 @@ function [H, xx, xw]= plot_barWithAntenna(y, y_sem, varargin)
 % delete(H.bar);
 
 % Benjamin Blankertz
+% Modified Laura Acqualagna 04.15: Adjusted for handling new graphcs of Matlab versions later than 8.4 
 
 [nGroups, nCol]= size(y);
 cmap_default= cmap_bluewhite(nCol, 'MinVal',0.15);
@@ -93,10 +94,16 @@ end
 
 hold on;
 for c= 1:nCol,
- set(H.bar(c), 'FaceColor',opt.ColOrder(c,:));
+ if verLessThan('matlab', '8.4') % old Matlab versions before 2014b
  xdata= get(get(H.bar(c),'Children'),'XData');
  xw= xdata(3,1)-xdata(1,1);
  xtmp= mean(xdata);
+ else
+ set(H.bar(c), 'FaceColor',opt.ColOrder(c,:));
+ xtmp =  H.bar(c).XData + [H.bar(c).XOffset];
+ xw=H.bar(c).BarWidth/(length(H.bar)*2-1); % BarWidth refers to the overall width of the group. 
+ %To get width of single bar, divide BarWidth for number of bars + number of spaces between bars.
+ end
  if nGroups==1,  %% work-around for case nGroups=1
    xtmp= xtmp(1);
  end
@@ -129,9 +136,14 @@ for c= 1:nCol,
   case 'none',
    H.antenna(:,c)= NaN;
  end
- if ~any(isnan(H.antenna(:,c))),
-   ci= 1+mod(c-1, size(opt.AntennaColor,1));
-   set(H.antenna(:,c), 'Color',opt.AntennaColor(ci,:));
+ if verLessThan('matlab', '8.4')
+     if ~any(isnan(H.antenna(:,c))), 
+       ci= 1+mod(c-1, size(opt.AntennaColor,1));
+       set(H.antenna(:,c), 'Color',opt.AntennaColor(ci,:));
+     end
+ else %in the new version the previous check cannot be done in one line, if condition has been removed
+       ci= 1+mod(c-1, size(opt.AntennaColor,1));
+       set(H.antenna(:,c), 'Color',opt.AntennaColor(ci,:));
  end
 end
 
@@ -142,9 +154,13 @@ switch(opt.AntennaType),
  case 'oo',
   set(H.antenna, 'Marker','o', 'MarkerSize',8, 'MarkerFaceColor','w');
 end
-if ~any(isnan(H.antenna(:,c))),
-  set(H.antenna, 'LineWidth',4, opt.AntennaSpec{:});
-end
+ if verLessThan('matlab', '8.4')
+     if ~any(isnan(H.antenna(:,c))),
+      set(H.antenna, 'LineWidth',4, opt.AntennaSpec{:});
+     end
+ else
+     set(H.antenna, 'LineWidth',4, opt.AntennaSpec{:});
+ end
 set(gca, 'YGrid','on', 'TickLength',[0 0]);
 
 if opt.DrawMarker,
