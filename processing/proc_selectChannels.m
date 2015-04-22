@@ -22,7 +22,7 @@ dat = misc_history(dat);
 if isnumeric(varargin{1})
   chans= varargin{1};
 else
-  chans= sort(util_chanind(dat.clab, varargin{:})); % sort to preserve original order in clab
+  chans= util_chanind(dat.clab, varargin{:}); 
 end
 if nargout>1,
   W= eye(length(dat.clab));
