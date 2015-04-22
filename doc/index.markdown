@@ -53,4 +53,3 @@ the ["bbci-toolbox" google group](https://groups.google.com/group/bbci-toolbox).
 
 * [Introduction to Matlab](http://ocw.mit.edu/resources/res-18-002-introduction-to-matlab-spring-2008/)
 * [Git Info](git.markdown)
-* [Markdown help](markdown.markdown)
