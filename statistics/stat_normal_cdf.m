@@ -31,7 +31,6 @@ function y = normal_cdf(x,mu,sigma)
 % 
 
 % Author(s), Copyright: Anton Schwaighofer, Jun 2005
-% $Id: normal_cdf.m,v 1.1 2005/06/30 17:20:47 neuro_toolbox Exp $
 
 if nargin<3,
   sigma = [];

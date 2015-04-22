@@ -30,7 +30,6 @@ function y = nansum(x,dim)
 % 
 
 % Author(s): Anton Schwaighofer, Feb 2005
-% $Id: nansum.m,v 1.2 2005/05/23 11:34:35 neuro_toolbox Exp $
 
 if nargin<2,
   % Operate along the first non-singleton dimension
