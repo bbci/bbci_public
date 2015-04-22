@@ -35,7 +35,7 @@ function [dat, W, A, lambda]= proc_ssd(dat, freqs, varargin)
 % This is a function for the extraction of neuronal oscillations 
 % with optimized signal-to-noise ratio. The algorithm maximizes 
 % the power at the center frequency (signal of interest) while simultaneously suppressing it
-% at the flanking frequency bins (considered noise). 
+% at the flanking frequency bins (noise band). 
 % 
 % Example for FREQS:
 % Let us consider that we want to extract oscillations in the 10-12 Hz
