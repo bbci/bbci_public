@@ -1,6 +1,6 @@
 function [goodcomp, info] = proc_MARA(cnt_ica,clab,A)
 % Usage:
-%   [goodcomp, out] = find_good_components(cnt_ica,clab,A)
+%   [goodcomp, info] = proc_MARA(cnt_ica,clab,A)
 %
 %  IN   cnt_ica     - data structure of independent components 
 %                       cnt_ica.x - [nTimePoint x nComponents]
@@ -16,9 +16,18 @@ function [goodcomp, info] = proc_MARA(cnt_ica,clab,A)
 %                            P(artifact | out) (assumption normal distribution)
 %               info.fv_te : feature values for each tested component
 %
+% The classifier is based on the following publiction: 
+%
+% Irene Winkler, Stefan Haufe and Michael Tangermann. Automatic Classification of 
+% Artifactual ICA-Components for Artifact Removal in EEG Signals. 
+% Behavioral and Brain Functions, 7:30, 2011.
+%
+% For more information, see: http://www.user.tu-berlin.de/irene.winkler/artifacts/
+%
 % THIS FUNCTION REQUIRES CLASSIFIER .MAT FILES TO BE INCLUDED IN THE PATH. 
 % The data files  <fv_training_MARA.mat>  and  <inv_matrix_icbm152.mat> are
-% needed. These can be obtained from http://www.user.tu-berlin.de/irene.winkler/artifacts/
+% needed. These can be obtained from 
+% http://www.user.tu-berlin.de/irene.winkler/artifacts/MARAtrdata.zip
 
 %%%%%%%%%%%%%%%%%%%%
 %%  Calculate features 
@@ -207,6 +216,8 @@ function [M100, idx_clab_desired] = get_M100(clab_desired)
 % OUT M100 
 %     idx_clab_desired
 % M100 is the matrix such that  feature = norm(M100*ica_pattern(idx_clab_desired), 'fro')
+%
+% Stefan Haufe
 
 lambda = 100;
 
@@ -264,22 +275,8 @@ function W = sloreta_invweights(LL)
 %   W: [3*N 3*N] block-diagonal matrix of weights
 %
 % Stefan Haufe, 2007, 2008
-%
-%
-% License
-%
-%   This program is free software: you can redistribute it and/or modify
-%   it under the terms of the GNU General Public License as published by
-%   the Free Software Foundation, either version 3 of the License, or
-%   (at your option) any later version.
-%
-%   This program is distributed in the hope that it will be useful,
-%   but WITHOUT ANY WARRANTY; without even the implied warranty of
-%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%   GNU General Public License for more details.
-%
-%   You should have received a copy of the GNU General Public License
-%   along with this program.  If not, see http://www.gnu.org/licenses/.
+
+
 
 [M N NDUM]=size(LL);
 L=reshape(permute(LL, [1 3 2]), M, N*NDUM);

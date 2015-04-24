@@ -1,10 +1,9 @@
 % This demo shows the working steps for artefact reduction using MARA. 
 % It requires 
-%    - the function <fastica.m>  in the path  
-%           (from http://research.ics.aalto.fi/ica/fastica/code/dlcode.shtml)
+%    - the function <fastica.m>  
 %    - the data fiels which contain the classifier, 
 %       <fv_training_MARA.mat>  and  <inv_matrix_icbm152.mat>
-%     These can be obtained from http://www.user.tu-berlin.de/irene.winkler/artifacts/
+%       http://www.user.tu-berlin.de/irene.winkler/artifacts/MARAtrdata.zip
 
 BTB_memo= BTB;
 BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
@@ -25,7 +24,7 @@ high_pass_fs = 1; %at 1 Hz in this example
 cnt = proc_filtfilt(cnt, b, a);
 
 %Do FastICA
-[icasig, A_ica, W_ica] = fastica(cnt.x', 'maxNumIterations', 50);
+[icasig, A_ica, W_ica] = fastica(cnt.x'); % 'maxNumIterations', 50);
 cnt_ica = cnt; cnt_ica.x = cnt.x *W_ica';
 
 %Classify components (artefact vs. neuro) using MARA
@@ -37,7 +36,7 @@ fprintf('Kept %d components \n',length(goodcomp));
 
 %Plot each classified components to check if ICA separation and MARA 
 %classification was successful 
-plot_BSScomponents(cnt_ica, mnt, W_ica, A_ica, goodcomp, info.out_p);
+plot_BSScomponents(cnt_ica, mnt, W_ica, A_ica, 'goodcomp', goodcomp, 'out', info.out_p);
 
 %Remove activity to get (hopefully) cleaner EEG signals: Reconstruct EEG
 %only with the good components in goodcomp
