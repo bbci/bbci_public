@@ -1,25 +1,20 @@
----
-
 # A Gentle Introduction to the BBCI Toolbox for Offline Analysis
 
----
+To follow this tutorial, you need to have the BBCI Matlab toolbox installed
+[ToolboxSetup](ToolboxSetup.markdown) and know about its data structures
+[ToolboxData](ToolboxData.markdown).
 
-
-To follow this tutorial, you need to have the BBCI Matlab toolbox
-installed [ToolboxSetup](ToolboxSetup.html) and know about its data structures
-[ToolboxData](ToolboxData.html).
-
-Here, you will be animated, to explore the data structures, do some
-initial analysis (e.g. plotting ERPs) manually (i.e., without using the
-toolbox functions), and then see how it can be done with the toolbox.
-Some the manual analysis serves the following purpose: Many of the
-toolbox function are in principle simple, but the code sometimes gets
-quite complicated, because it should be very general. The manual
-analysis demonstrates this simplicity. So don't be afraid of the toolbox
+Here, you will be animated, to explore the data structures, do some initial
+analysis (e.g. plotting ERPs) manually (i.e., without using the toolbox
+functions), and then see how it can be done with the toolbox. Some the manual
+analysis serves the following purpose: Many of the toolbox function are in
+principle simple, but the code sometimes gets quite complicated, because it
+should be very general. The manual analysis demonstrates this simplicity. So
+don't be afraid of the toolbox
 - it's no magic.
 
-This is a hands-on tutorial. It only makes sense, if you have it
-side-by-side with a running matlab where you execute all the code.
+This is a hands-on tutorial. It only makes sense, if you have it side-by-side
+with a running matlab where you execute all the code.
 
 ### Table of Contents
 
@@ -30,13 +25,13 @@ side-by-side with a running matlab where you execute all the code.
 - [scalp maps](#ScalpTopographies) - _Plotting scalp topographies and selecting suitable time intervals_
 - [classification](#ErpClassification) - _Extracting features from ERP data and classification_
 
----
 
 ## Exploring the data structure `cnt`  <a id="Cnt"></a>
 
-A first look at the data structure `cnt` which holds the continuous (un-segmented) EEG signals.
+A first look at the data structure `cnt` which holds the continuous
+(un-segmented) EEG signals.
 
-```
+```matlab
 file= 'VPibv_10_11_02/calibration_CenterSpellerMVEP_VPibv';
 [cnt, vmrk]= file_readBV(file, 'Fs',100);
 % -> information in help shows how to define a filter
@@ -63,7 +58,7 @@ cnt.clab(idx)
 
 ## The montage structure `mnt` defining electrode layout   <a id="Mnt"></a>
 
-```
+```matlab
 % data structure defining the electrode layout
 mnt= mnt_setElectrodePositions(cnt.clab)
 mnt.clab
@@ -89,7 +84,7 @@ plot_scalp(mnt, cnt.x(200,[1:30 35:64]), 'WClab',cnt.clab([1:60]))
 
 ## The Marker structure `mrk`   <a id="Mrk"></a>
 
-```
+```matlab
 % data structure defining the markers (trigger events in the signals)
 vmrk
 vmrk.event.desc(1:100)
@@ -106,7 +101,7 @@ it(1:10)
 
 ## Segmentation and plotting of ERPs   <a id="Epo"></a>
 
-```
+```matlab
 epo= proc_segmentation(cnt, mrk, [-200 800])
 epo
 iCz= util_chanind(epo, 'Cz') %fint the index of channel Cz
@@ -149,7 +144,7 @@ grid_addBars(epo_auc, 'HScale',H.scale);
 
 ## Plotting scalp topographies   <a id="ScalpTopographies"></a>
 
-```
+```matlab
 % visualization of scalp topograhies
 plot_scalpEvolutionPlusChannel(epo, mnt, {'Cz','PO7'}, [200:50:500], defopt_scalp_erp);
 figure(2);
@@ -167,7 +162,7 @@ ival= select_time_intervals(epo_auc, 'visualize', 1, 'visu_scalps', 1)
 
 ## Classification of ERP data   <a id="ErpClassification"></a>
 
-```
+```matlab
 % -- classification on spatial features
 ival= [0 1000];
 epo= proc_segmentation(cnt, mrk, [-200 1000]);
@@ -222,7 +217,7 @@ bbci_typechecking(tcstat);
 
 ## Part 2:
 
-```
+```matlab
 file= 'VPibv_10_11_02/calibration_CenterSpellerMVEP_VPibv';
 
 % read header to determine sampling frequency
@@ -307,7 +302,7 @@ ival= procutil_selectTimeIntervals(epo_auc, 'Visualize',1, 'VisuScalps',1, ...
 
 Probably this can be deleted - or put to another place, because this part discusses a quite specific specfic and more advanced type of analysis.
  
-```
+```matlab
 %% -- Continuous application of classifier based on spatial feature
 ival= [380 440];
 fv= proc_jumpingMeans(epo, ival);
@@ -398,11 +393,13 @@ plot_channel(auc_cfy);
 
 ---
 
-This is the old version of the introduction. It refers to the old toolbox. But it has additional to the code some comments that could be transfered to the new introduction.
+This is the old version of the introduction. It refers to the old toolbox. But
+it has additional to the code some comments that could be transfered to the new
+introduction.
 
 ---
 
-```
+```matlab
 file= 'VPibv_10_11_02/CenterSpellerMVEP_VPibv';
 [cnt, mrk, mnt]= eegfile_loadMatlab(file);
 
@@ -441,10 +438,10 @@ plot(cnt.x(1:5*cnt.fs,15))
 % displays the first 5s of channel nr. 15
 ```
 
-Next, we have a look at the structure mnt, which defines the electrode
-montage (and also a grid layout, but that will come later).
+Next, we have a look at the structure mnt, which defines the electrode montage
+(and also a grid layout, but that will come later).
 
-```
+```matlab
 mnt
 % Fields of mnt, most importantly clab, x, y which define the electrode montage.
 mnt.clab
@@ -465,15 +462,14 @@ scalpPlot(mnt, cnt.x(cnt.fs,:))
 for t=1000+[1:cnt.fs], scalpPlot(mnt, cnt.x(t,:)); title(int2str(t)); drawnow; end
 ```
 
-To make sense of the data, we need to know what happened when. This is
-stored in the marker data structure `mrk`{.backtick}. Markers (triggers)
-are stored into the EEG signals by the program that controls the
-stimulus presentation (or BCI feedback). Furthermore, markers can
-triggered by a response of the participant (like button presses), or by
-other sensors (visual sensors that register the flashing of an object on
-a display).
+To make sense of the data, we need to know what happened when. This is stored in
+the marker data structure `mrk`{.backtick}. Markers (triggers) are stored into
+the EEG signals by the program that controls the stimulus presentation (or BCI
+feedback). Furthermore, markers can triggered by a response of the participant
+(like button presses), or by other sensors (visual sensors that register the
+flashing of an object on a display).
 
-```
+```matlab
 mrk
 % The obligatory fields are pos, fs, y, className, and toe. Furthermore, there can a more fields (like in this case)
 % that a specific to the experimental paradigm. These can be ignored for now.
@@ -503,7 +499,7 @@ scalpPlot(mnt, cnt.x(mrk.pos(it(1)),:))
 Having the basic ingredients together, we can start a simple ERP analsis
 - first manually, then with the toolbox functions.
 
-```
+```matlab
 % segmentation of continuous data in 'epochs' based on markers
 epo= cntToEpo(cnt, mrk, [-200 800]);
 epo
@@ -539,10 +535,9 @@ epo_r= proc_r_square_signed(epo);
 grid_addBars(epo_r, 'h_scale',H.scale);
 ```
 
-The ERP analysis can be made more robust by filtering and artifact
-rejection:
+The ERP analysis can be made more robust by filtering and artifact rejection:
 
-```
+```matlab
 % high-pass filtering to reduce drifts
 b= procutil_firlsFilter(0.5, cnt.fs);
 cnt= proc_filtfilt(cnt, b);
@@ -561,7 +556,7 @@ crit_maxmin= 70;
 
 Now we can plot some topographies and select time intervals:
 
-```
+```matlab
 % visualization of scalp topograhies
 fig_set(1);
 scalpEvolutionPlusChannel(epo, mnt, {'Cz','PO7'}, [150:50:450], defopt_scalp_erp2);

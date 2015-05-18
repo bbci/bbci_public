@@ -93,7 +93,7 @@ clone of your fork.
    and press Enter:
 
    ```sh
-   $ git remote add upstream git@github.com/bbci/bbci_public.git
+   $ git remote add upstream git@github.com:bbci/bbci_public.git
    ```
 
 6. To verify the new upstream repository, type again `git remote -v`. You

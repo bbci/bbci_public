@@ -1,12 +1,7 @@
----
-
 # Some Practical Examples of how to use the BBCI Toolbox
 
----
-
-Here we show example scripts of how to apply the BBCI Toolbox for typical offline analysis scenarios. 
-
----
+Here we show example scripts of how to apply the BBCI Toolbox for typical
+offline analysis scenarios. 
 
 ### Table of Contents
 
@@ -22,14 +17,14 @@ Here we show example scripts of how to apply the BBCI Toolbox for typical offlin
 
 ## Conversion of EEG data from BrainVision format to Matlab  <a id="Convert"></a>
 
-Sometimes it is convinient to convert the raw data files to Matlab format 
-and do some preprocessing before performing different kinds of analysis. 
-An example of such preprocessing can be re-referencing or the (re-)combination of 
-stimulus markers.
+Sometimes it is convinient to convert the raw data files to Matlab format and do
+some preprocessing before performing different kinds of analysis. An example of
+such preprocessing can be re-referencing or the (re-)combination of stimulus
+markers.
 
 The following script illustrates how to do the conversion.
 
-```
+```matlab
 BTB_memo= BTB;
 BTB.RawDir= fullfile(BTB.DataDir, 'demoRaw');
 BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
@@ -88,10 +83,11 @@ BTB= BTB_memo;
 
 ## Analysis of Event-Related Potentials (ERPs)   <a id="ErpAnalysis"></a>
 
-This script shows the analysis of Event-Related Potentials. 
-We will work data that has been converted to Matlab format as outlined in the practical example above.
+This script shows the analysis of Event-Related Potentials. We will work data
+that has been converted to Matlab format as outlined in the practical example
+above.
 
-```
+```matlab
 BTB_memo= BTB;
 BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
 file= fullfile('VPiac_10_10_13', ...
@@ -168,9 +164,10 @@ BTB= BTB_memo;
 
 ## Grand Average ERP Analysis   <a id="GrandAverageErp"></a>
 
-In this example script we show how to conduct a Grand Average ERP analysis across several subjects. 
+In this example script we show how to conduct a Grand Average ERP analysis
+across several subjects. 
 
-```
+```matlab
 files = {
     fullfile('VPibv_10_11_02','calibration_CenterSpellerMVEP_VPibv')
     fullfile('VPibq_10_09_24','calibration_CenterSpellerMVEP_VPibq')
@@ -276,12 +273,12 @@ plot_scalpEvolutionPlusChannel(epo_diff, mnt, clab, ival_scalps, defopt_scalp_r)
 
 ## Event-Related Spectral Analysis   <a id="SpectralAnalysis"></a>
 
-This script shows how to perform spectral analysis of data related to events 
-(e.g. stimulus triggers or response markers). Here we use data from an experiment
-in which self-paced finger tapping was performed and analyse the spectra around 
-tapping events (i.e. keyboard hits). 
+This script shows how to perform spectral analysis of data related to events
+(e.g. stimulus triggers or response markers). Here we use data from an
+experiment in which self-paced finger tapping was performed and analyse the
+spectra around tapping events (i.e. keyboard hits). 
 
-```
+```matlab
 eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
     'demo_Pavel_01_11_23', 'selfpaced2sPavel');
 
@@ -367,7 +364,7 @@ grid_addBars(spec_r);
 
 ## Analysis of event-related modulations of brain rythms (ERD/ERS)   <a id="ErdAnalysis"></a>
 
-```
+```matlab
 
 eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
     'demo_Pavel_01_11_23', 'selfpaced2sPavel');
@@ -430,7 +427,7 @@ plot_scalpEvolutionPlusChannel(erd_r, mnt, clab, ival_scalps, defopt_scalp_r);
 
 This example shows how to identify taks-related difference in NIRS data.
 
-```
+```matlab
 BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
 filename= fullfile('VPean_10_07_26', 'NIRS', 'real_movementVPean');
 

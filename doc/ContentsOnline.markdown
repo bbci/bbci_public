@@ -1,14 +1,17 @@
----
 
 # Contents of the _online_ folder
 
----
+**This directory contains the files that are required to calibrate a BBCI
+processing model, to save it, and to apply it to continuously incoming data.**
 
-**This directory contains the files that are required to calibrate a BBCI processing model, to save it, and to apply it to continuously incoming data.**
+The parent folder contains the basic functions for online processing. It has
+several subfolders. Most of the functions therein are for internal use and
+should not be called directly. However, for an advanced use of the online
+processing, knowledge about functions in some subfolders is required for setting
+up the system, see below.
 
-The parent folder contains the basic functions for online processing. It has several subfolders. Most of the functions therein are for internal use and should not be called directly. However, for an advanced use of the online processing, knowledge about functions in some subfolders is required for setting up the system, see below.
-
-Detailed information about the functions can be found in the help files of the Matlab functions and in the function reference **[Basti, add link]**.
+Detailed information about the functions can be found in the help files of the
+Matlab functions and in the function reference **[Basti, add link]**.
 
 * [online](#Online) - _Parent folder with basic functions_
 * [acquisition](#Acquisition) - _Functions for acquiring signals_
@@ -23,7 +26,6 @@ Detailed information about the functions can be found in the help files of the M
 * [logging](#Logging) - _Internal_
 * [utils](#Utils) - _Internal_
 
----
 
 ## Functions in the _online_ folder   <a id="Online"></a>
 
@@ -42,10 +44,10 @@ BBCI_CALIBRATE_STRUCTURES - Help file describing the data structures
 
 ## Subfolder _acquisition_   <a id="Acquisition"></a>
 
-This folder contains the so-called ACQUIRE functions for bbci_apply.
-These functions acquire small bolcks of signals (and maybe event markers
-from a specific measurement device, and provide it for online processing.
-If no new data is available, they return an empty structure.
+This folder contains the so-called ACQUIRE functions for bbci_apply. These
+functions acquire small bolcks of signals (and maybe event markers from a
+specific measurement device, and provide it for online processing. If no new
+data is available, they return an empty structure.
 
 These functions have the following format:
 
@@ -73,7 +75,8 @@ Output:
   MRKDESC - CELL {1 nMarkers} descriptors like 'S 52'
 ```
 
-#### List of ACQUIRE functions (prefix `bbci_acquire_` is left out)
+## List of ACQUIRE functions (prefix `bbci_acquire_` is left out)
+
 * `bv`:      Acquire data from BV Recorder (option 'Remote Data Access' must be enabled in the BV Recorder settings!)
 * `nirx`:    Acquire data from a NIRx system
 * `offline`: Simulate online acquisition by returning small chunks of signals from an initially given data file.
@@ -87,7 +90,12 @@ No description available yet.
 
 ## Subfolder _calibration_   <a id="Calibration"></a>
 
-This folder contains the so-called CALIBRATE functions, to be called by `bbci_calibrate`. These functions receive as input the calibration data and the BBCI structure, which holds specific parameters for the calibration procedure in the field `BBCI.calibrate`. The output is and updated BBCI structure which has all the necessary information for online operation, i.e., for `bbci_apply`, see `bbci_apply_strctures`.
+This folder contains the so-called CALIBRATE functions, to be called by
+`bbci_calibrate`. These functions receive as input the calibration data and the
+BBCI structure, which holds specific parameters for the calibration procedure in
+the field `BBCI.calibrate`. The output is and updated BBCI structure which has
+all the necessary information for online operation, i.e., for `bbci_apply`, see
+`bbci_apply_strctures`.
 
 The CALIBRATE functions have the following format:
 
@@ -122,18 +130,32 @@ Output:
 
 To get a description on the structures `BBCI` and `DATA`, type `help bbci_calibrate_structures`.
 
-#### Conventions (for programmers for new calibration functions):
-The CALIBRATE functions should *only* read the (sub)field `bbci.calibrate.settings`. However, this field should *not* be modified. (It is debateble, whether default values for unspecified parameters should be filled in.) Selection of values for parameters which are unspecified by the user (or specified as 'auto') should *not* be stored in `bbci.calibrate.settings`, but in data.result under the save field name.
+## Conventions (for programmers for new calibration functions):
 
-#### List of CALIBRATE functions (prefix `bbci_calibrate_` is left out)
-- `ERP_Speller`: Setup for the online system to perform classification for an ERP Speller in the stardard format.
-- `csp`: Setup for classifying SMR Modulations with CSP filters and log band-power features
-- `csp_plus_lap`: Additionally to optimized CSP filters some Laplacian channels are selected and used for classification. These are meant to be reselected during supervised adaptation with `bbci_adaptation_csp_plus_lap`.
+The CALIBRATE functions should *only* read the (sub)field
+`bbci.calibrate.settings`. However, this field should *not* be modified. (It is
+debateble, whether default values for unspecified parameters should be filled
+in.) Selection of values for parameters which are unspecified by the user (or
+specified as 'auto') should *not* be stored in `bbci.calibrate.settings`, but in
+data.result under the save field name.
+
+## List of CALIBRATE functions (prefix `bbci_calibrate_` is left out)
+
+- `ERP_Speller`: Setup for the online system to perform classification for an
+  ERP Speller in the stardard format.
+- `csp`: Setup for classifying SMR Modulations with CSP filters and log
+  band-power features
+- `csp_plus_lap`: Additionally to optimized CSP filters some Laplacian channels
+  are selected and used for classification. These are meant to be reselected
+  during supervised adaptation with `bbci_adaptation_csp_plus_lap`.
 
 
 ## Subfolder _control_   <a id="Control"></a>
 
-This folder contains the so-called CONTROL functions for bbci_apply. These functions transform the classifier output into the control signal (PACKET), that will be sent to the application via UDP. The PACKET is formatted as a variable/value list in a CELL.
+This folder contains the so-called CONTROL functions for bbci_apply. These
+functions transform the classifier output into the control signal (PACKET), that
+will be sent to the application via UDP. The PACKET is formatted as a
+variable/value list in a CELL.
 
 These functions have the following format:
 
@@ -159,7 +181,8 @@ These functions have the following format:
    STATE: Updated internal state variable
 ```
 
-#### List of CONTROL functions (prefix `bbci_control_` is left out):
+## List of CONTROL functions (prefix `bbci_control_` is left out):
+
 * `ERP_Speller`: ERP-based Hex-o-Spell, one output for each complete sequence
 * `ERP_Speller_binary`: ERP-based Hex-o-Spell, one output for each stimulus
 
@@ -197,7 +220,8 @@ No description available yet.
 
 ## Subfolder _calibration_functions_   <a id="CalibrationFunctions"></a>
 
-**Internal:** This directory contains functions that are used in `bbci_calibrate`.
+**Internal:** This directory contains functions that are used in
+`bbci_calibrate`.
 
 ```
   BBCI_CALIBRATE_SETDEFAULTS - Set default values in bbci structure for bbci_calibrate

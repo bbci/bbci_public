@@ -1,96 +1,98 @@
----
-
 # BBCI Online Tutorial 
-
----
 
 ### A First Glance at the Functioning of BBCI_APPLY
 
-The core of the BBCI online system is the function
-`bbci_apply`.
+The core of the BBCI online system is the function `bbci_apply`.
 
-    bbci_apply(bbci);
+```matlab
+bbci_apply(bbci);
+```
 
-All information that is necessary for data acquisition and processing as
-well as feeding the feedback application is stored in the struct
-`bbci`. In principle, you can use any way you like to setup
-the `bbci` variable. In a moment, we will see the default way
-via `bbci_calibrate` to setup `bbci` from given
-training data using a specified procedure. But `bbci` can
-also be obtained from any self-made script, or loaded from a pretrained
-file, e.g.,
+All information that is necessary for data acquisition and processing as well as
+feeding the feedback application is stored in the struct `bbci`. In principle,
+you can use any way you like to setup the `bbci` variable. In a moment, we will
+see the default way via `bbci_calibrate` to setup `bbci` from given training
+data using a specified procedure. But `bbci` can also be obtained from any
+self-made script, or loaded from a pretrained file, e.g.,
 
-    cfy_dir= [EEG_RAW_DIR 'subject_independent_classifiers/vitalbci_season2/'];
-    bbci= load([cfy_dir 'kickstart_vitalbci_season2_C3CzC4_8-15_15-35']);
+```matlab
+cfy_dir= [EEG_RAW_DIR 'subject_independent_classifiers/vitalbci_season2/'];
+bbci= load([cfy_dir 'kickstart_vitalbci_season2_C3CzC4_8-15_15-35']);
+```
 
 The details of the struct `bbci` are explained
-[here](ToolboxOnlineBbciApplyStructure.html).
-But also with a pretrained `bbci` classifier, still some
-fields might need to be specified, e.g., from which hardware device
-signals are acquired.
+[here](ToolboxOnlineBbciApplyStructure.markdown). But also with a pretrained
+`bbci` classifier, still some fields might need to be specified, e.g., from
+which hardware device signals are acquired.
 
-    bbci.source.acquire_fcn= @bbci_acquire_bv;
-    bbci.source.acquire_param= {struct('fs', 100)};
+```matlab
+bbci.source.acquire_fcn= @bbci_acquire_bv;
+bbci.source.acquire_param= {struct('fs', 100)};
+```
 
 Side remark: it is also possible to specify that the EEG signals are
 automatically recorded:
 
-    bbci.source.record_signals= 1;
-    bbci.source.record_basename= 'imag_fbarrow_kickstart';
+```matalb
+bbci.source.record_signals= 1;
+bbci.source.record_basename= 'imag_fbarrow_kickstart';
+```
 
-In this case, the BrainVision Recorder would be called to record the
-signals (due to the setting of `bbci.source.acquire_fcn`).
-But by defining
+In this case, the BrainVision Recorder would be called to record the signals
+(due to the setting of `bbci.source.acquire_fcn`). But by defining
 
-    bbci.source.record_param= {'internal',1};
+```matlab
+bbci.source.record_param= {'internal',1};
+```
 
-and internal function is used for recording the signals, which can
-therefore be used for any neuroimaging hardware (for which a
-`bbci_acquire_*` function exists, see
-[here](ToolboxOnlineBbciImplementingAcquisition.html)).
+and internal function is used for recording the signals, which can therefore be
+used for any neuroimaging hardware (for which a `bbci_acquire_*` function
+exists, see [here](ToolboxOnlineBbciImplementingAcquisition.markdown)).
 
-Also, a pretrained classifier might be used with different kinds of
-feedback, that can be specified.
+Also, a pretrained classifier might be used with different kinds of feedback,
+that can be specified.
 
-    bbci.feedback.receiver= 'matlab';
-    bbci.feedback.fcn= @bbci_feedback_cursor_training;
-    bbci.feedback.opt= struct('trials_per_run', 40);
+```matlab
+bbci.feedback.receiver= 'matlab';
+bbci.feedback.fcn= @bbci_feedback_cursor_training;
+bbci.feedback.opt= struct('trials_per_run', 40);
+```
 
-Furthermore, it might be useful to redefine some parameters of the
-signal processing chain:
+Furthermore, it might be useful to redefine some parameters of the signal
+processing chain:
 
-    bbci.feature.ival= [-300 0];
+```matlab
+bbci.feature.ival= [-300 0];
+```
 
-But these were already examples that will become really clear only
-later, when the details of `bbci_apply` are explained. It was
-meant as a first short overview of how `bbci_apply` will be
-used.
+But these were already examples that will become really clear only later, when
+the details of `bbci_apply` are explained. It was meant as a first short
+overview of how `bbci_apply` will be used.
 
 ### A Glance at the Default BBCI Calibration Procedure
 
-As pointed out above, any procedure can be used to setup the BBCI online
-system, i.e., the variable `bbci`. However, the typical
-calibration procedure to obtain a `bbci` classifier (as we
-will shortly call it) is the use of the function
+As pointed out above, any procedure can be used to setup the BBCI online system,
+i.e., the variable `bbci`. However, the typical calibration procedure to obtain
+a `bbci` classifier (as we will shortly call it) is the use of the function
 `bbci_calibrate`.
 
-    bbci= bbci_calibrate(bbci);
+```matlab
+bbci= bbci_calibrate(bbci);
+```
 
-It is a wrapper function that provides some basic functionality, like
-loading the calibration data, and calls for the actual calibration a
-specified subfunction. The is a repertoire of these specified
-calibration functions, but for new types of online experiments, new
-functions need to be implemented, see
-[here](ToolboxOnlineBbciImplementingCalibration.html).
+It is a wrapper function that provides some basic functionality, like loading
+the calibration data, and calls for the actual calibration a specified
+subfunction. The is a repertoire of these specified calibration functions, but
+for new types of online experiments, new functions need to be implemented, see
+[here](ToolboxOnlineBbciImplementingCalibration.markdown).
 
 What kind of calibration is performed, and what data files are used for
-calibration is specified in the substruct `bbci.calibrate`,
-and the calibration-specific parameters can be defined in
-`bbci.calibrate.settings`. The online system with CSP
-analysis for motor imagery control can, e.g., be calibrated in the
-following way:
+calibration is specified in the substruct `bbci.calibrate`, and the
+calibration-specific parameters can be defined in `bbci.calibrate.settings`. The
+online system with CSP analysis for motor imagery control can, e.g., be
+calibrated in the following way:
 
-```
+```matlab
 bbci= [];
 bbci.calibrate.fcn= @bbci_calibrate_csp;
 bbci.calibrate.folder= EEG_RAW_DIR;
@@ -104,32 +106,30 @@ bbci.calibrate.settings.nPatterns= 2;
 [bbci, data]= bbci_calibrate(bbci);
 ```
 
-There are a lot more calibration-specific parameters, other than
-`nPatterns`, for which default values are chosen, if they are
-not specified in `bbci.calibrate.settings`. A description of
-those calibration-specific parameters is given in the help of each
-specific calibartion subfunction. (In this case of CSP-based
-calibration, you would get it with `help bbci_calibrate_csp`).
+There are a lot more calibration-specific parameters, other than `nPatterns`,
+for which default values are chosen, if they are not specified in
+`bbci.calibrate.settings`. A description of those calibration-specific
+parameters is given in the help of each specific calibartion subfunction. (In
+this case of CSP-based calibration, you would get it with `help
+bbci_calibrate_csp`).
 
-See [here](ToolboxOnlineForEndUsers.html)
-for more detailed information about how to use the calibration procedure
-interactively.
+See [here](ToolboxOnlineForEndUsers.markdown) for more detailed information
+about how to use the calibration procedure interactively.
 
 ### Motivation of the implementation of `bbci_apply`
 
-Before talking about how to write new calibration subfunctions, we have
-to take a closer look at `bbci_apply`.
+Before talking about how to write new calibration subfunctions, we have to take
+a closer look at `bbci_apply`.
 
-Here we show two examples of how the online processing procedures would
-look in specific cases.
+Here we show two examples of how the online processing procedures would look in
+specific cases.
 
 First case: Continuous cursor control with motor imagery. Signals are band-pass
-filtered (10-14 Hz) and log-variance is calculated from the last 500ms
-each time a new data packet is received. Then the classifier is applied
-to the feature vector and the resulting output is send via udp to the
-feedback application.
+filtered (10-14 Hz) and log-variance is calculated from the last 500ms each time
+a new data packet is received. Then the classifier is applied to the feature
+vector and the resulting output is send via udp to the feedback application.
 
-```
+```matlab
 fs= 100;
 [filt_b, filt_a]= butter(5, [10 14]/fs*2);
 state_acquire= ACQUIRE_FCN('init', 'fs',fs);
@@ -148,12 +148,12 @@ end
 ```
 
 Second case: LRP classification. Upon keypress ('R 1'=left, 'R 2'=right) the
-system predicts whether it was performed with the left or right hand.
-Acquired marker positions are relative within the acquired data packet.
-They are transformed into global marker positions by adding the number
-of previously acquired samples.
+system predicts whether it was performed with the left or right hand. Acquired
+marker positions are relative within the acquired data packet. They are
+transformed into global marker positions by adding the number of previously
+acquired samples.
 
-```
+```matlab
 state_acquire= ACQUIRE_FCN('init', 'fs',100);
 while run,
   [cnt_new, mrk_new]= ACQUIRE_FCN(state_acquire);
@@ -171,11 +171,11 @@ end
 ```
 
 Third case: ERP classification: The ERP response after cues are classified into
-targets vs. nontargets. Here, a reference of -200 to 0 msec is used and
-5 time intervals to extract ERP features. Those time intervals range up
-to 800 msec post stimulus.
+targets vs. nontargets. Here, a reference of -200 to 0 msec is used and 5 time
+intervals to extract ERP features. Those time intervals range up to 800 msec
+post stimulus.
 
-```
+```matlab
 fs= 100;
 ival_ref= [-200 0];
 ival_cfy= [100 150; 150 200; 200 250; 250 400; 400 800];
@@ -202,25 +202,23 @@ while run,
 end
 ```
 
-These examples would really work in this simple form. And it is more or
-less what happens in `bbci_apply`. The main difference is
-that `bbci_apply` stores the acquired signals in a ring
-buffer (by default 10s length) and markers in a marker queue (by default
-100 markers long).
+These examples would really work in this simple form. And it is more or less
+what happens in `bbci_apply`. The main difference is that `bbci_apply` stores
+the acquired signals in a ring buffer (by default 10s length) and markers in a
+marker queue (by default 100 markers long).
 
-(Note that the `ACQUIRE_FCN` in the examples is expected to
-return sample position in units 'samples', while
-`bbci_acquireData` returns marker positions in msec.)
+(Note that the `ACQUIRE_FCN` in the examples is expected to return sample
+position in units 'samples', while `bbci_acquireData` returns marker positions
+in msec.)
 
-The implementation of `bbci_apply` just has to put those
-processing chains into a general framework.
+The implementation of `bbci_apply` just has to put those processing chains into
+a general framework.
 
-Concept: 
-![`bbci_apply` _example application_](_static/ToolboxOnlineTutorial.png)
+Concept: ![`bbci_apply` _example application_](_static/ToolboxOnlineTutorial.png)
 
 First realisation:
 
-```
+```matlab
 bbci= bbci_apply_setDefaults(bbci);
 [data, bbci]= bbci_apply_initData(bbci);
 
@@ -256,17 +254,24 @@ end
 bbci_apply_close(bbci, data);
 ```
 
-This version is complete sufficient for most applications. In the toolbox, this functions is called `bbci_apply_uni`. In can be used, when all stages of the processing are unimodal: signals are acquired only from one device (e.g., EEG only, not EEG+NIRS), only one type of features is calculated (e.g., only ERPs and not both, ERPs and spectral modulations), and only one classifier is employed.
+This version is complete sufficient for most applications. In the toolbox, this
+functions is called `bbci_apply_uni`. In can be used, when all stages of the
+processing are unimodal: signals are acquired only from one device (e.g., EEG
+only, not EEG+NIRS), only one type of features is calculated (e.g., only ERPs
+and not both, ERPs and spectral modulations), and only one classifier is
+employed.
 
 But the requirements can be more demanding and complex:
 
 ![_bbci_apply example application_](_static/ToolboxOnlineTutorial_002.png)
 
-For a definition of the `bbci` structure that would correspond to such a classifier see [here](ToolboxOnlineBbciExampleSuperSpeller.html).
+For a definition of the `bbci` structure that would correspond to such a
+classifier see [here](ToolboxOnlineBbciExampleSuperSpeller.markdown).
 
-The general version of the function, `bbci_apply` can accomplish all that, but still is not so much more complex:
+The general version of the function, `bbci_apply` can accomplish all that, but
+still is not so much more complex:
 
-```
+```matlab
 bbci= bbci_apply_setDefaults(bbci);
 [data, bbci]= bbci_apply_initData(bbci);
 
