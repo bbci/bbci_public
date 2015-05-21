@@ -44,7 +44,7 @@ for ih= hsp,
   obj_moveBack(H.line(:,k));
   H.patch(k)= patch(ival([1 2 2 1]), yPatch([1 1 2 2]), markCol);
   obj_moveBack(H.patch(k));
-  plotutil_gridOverPatches;
+  plotutil_gridOverPatches('Axes', gca, 'XGrid', [], 'YGrid', []);
   if ~isnan(getfield(get(ih,'UserData'), 'hleg')), %% restore legend
     legend;
   end
