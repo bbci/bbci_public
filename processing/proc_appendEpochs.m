@@ -92,6 +92,7 @@ end
 if isfield(epo, 'event') && isfield(epo_append, 'event')
     if isfield(epo.event, 'blkno') && isfield(epo_append.event, 'blkno')
         epo.event.blkno= horzcat(epo.event.blkno, epo_append.event.blkno);
+				epo.event.blkno=epo.event.blkno';
     end
 end
 
