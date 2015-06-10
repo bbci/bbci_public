@@ -15,10 +15,10 @@ function clInd= procutil_getClassIndices(className, varargin)
 %
 % OUT  clInd     - class indices
 %
-% class names may include the wildcard '*' as first and/or last
-% symbol. E.g. getClassIndices({'left no-click', 'right click'}, '* click')
-% returns 2.
-% this function is used, e.g., in mrk_selectClasses, mrk_mergeClasses
+% Class names may include regular expressions, see regexpi. This also
+% implies that you might have to escape some characters, such as '^',
+% '(' and ')'.
+% This function is used, e.g., in mrk_selectClasses, mrk_mergeClasses
 
 if nargin==0,
   clInd=[];

@@ -5,7 +5,8 @@ function ind= str_patternMatch(pats, strs)
 % IDX= str_patternMatch(PATS, STRS)
 %
 % IN  PATS - pattern (string) or patterns (cell array of strings)
-%            which may include the wildcard '*'.
+%            which may include the wildcard '*' and other regular
+%            expressions, see regexp.
 %
 %     STRS - cell array of strings (or just a string)
 %
