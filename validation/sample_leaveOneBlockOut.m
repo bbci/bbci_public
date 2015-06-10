@@ -15,7 +15,7 @@ function [divTr, divTe]= sample_leaveOneBlockOut(label, block_idx)
 
 divTr= cell(1, 1);
 divTe= cell(1, 1);
-idx_list= unique(block_idx,'legacy');
+idx_list= unique(block_idx);
 for nn= 1:length(idx_list),
   divTe{1}(nn)= {find(block_idx==idx_list(nn))};
   divTr{1}(nn)= {find(block_idx~=idx_list(nn))};
