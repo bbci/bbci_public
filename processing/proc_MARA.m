@@ -26,13 +26,24 @@ function [goodcomp, info] = proc_MARA(cnt_ica,clab,A)
 %
 % THIS FUNCTION REQUIRES CLASSIFIER .MAT FILES TO BE INCLUDED IN THE PATH. 
 % The data files  <fv_training_MARA.mat>  and  <inv_matrix_icbm152.mat> are
-% needed. These can be obtained from 
-% http://www.user.tu-berlin.de/irene.winkler/artifacts/MARAtrdata.zip
+% needed. These can be  can be downloaded with 
+% bbci_import_dependencies('MARA')
+% or manually from 
+% http://www.user.tu-berlin.de/irene.winkler/artifacts/MARAtrdata.zip into  <BTB.Dir>/external/mara
 
 %%%%%%%%%%%%%%%%%%%%
 %%  Calculate features 
 %%%%%%%%%%%%%%%%%%%%
-load('fv_training_MARA');
+global BTB
+try
+    loadData = load(fullfile(BTB.Dir, 'external', 'mara', 'fv_training_MARA.mat'));
+    fv_tr = loadData.fv_tr; 
+catch
+   error(sprintf(['Could not load dependencies of MARA (File fv_training_MARA.mat) \n', ...
+       'Make sure that you have have successfully downloaded the requested files with \n', ...
+       '> bbci_import_dependencies(''MARA'') \n', ... 
+       'or downloaded them manually into <BTB.Dir>/external/mara']))
+end
 
 % clabs schneiden
 [clab_common i_te i_tr ] = intersect(clab, fv_tr.clab);
@@ -220,8 +231,18 @@ function [M100, idx_clab_desired] = get_M100(clab_desired)
 % Stefan Haufe
 
 lambda = 100;
+global BTB
+try
+    loadData = load(fullfile(BTB.Dir, 'external', 'mara', 'inv_matrix_icbm152.mat'));
+    L = loadData.L; %forward matrix 115 x 2124 x 3
+    clab = loadData.clab; % corresponding channel labels
+catch
+    error(sprintf(['Could not load dependencies of MARA (File inv_matrix_icbm152.mat) \n', ...
+        'Make sure that you have have successfully downloaded the requested files with \n', ...
+        '> bbci_import_dependencies(''MARA'') \n', ... 
+        'Or downloaded them manually into <BTB.Dir>/external/mara']))
+end
 
-load inv_matrix_icbm152.mat; %L (forward matrix 115 x 2124 x 3), clab (channel labels)
 %ICMB 152 atlas
 %Copyright (C) 1993?2004 Louis Collins, McConnell Brain Imaging Centre, 
 %Montreal Neurological Institute, McGill University. Permission to use, copy, 
