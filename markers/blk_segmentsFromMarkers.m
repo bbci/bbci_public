@@ -1,4 +1,4 @@
-function blk = blk_segmentsFromMarkers(mrk, varargin);
+function blk = blk_segmentsFromMarkersNew(mrk, varargin)
 %BLK_SEGMENTSFROMMARKERS - Define segments based on markers
 %
 % usage:
@@ -26,28 +26,37 @@ function blk = blk_segmentsFromMarkers(mrk, varargin);
 
 % GUIDO DORNHEGE; 19/03/2004 (getActivation Areas)
 % Benjamin Blankertz Oct 2007
+% 6-2015 Adapted to new Toolbox (Laura A, Markus W.)
+
 
 opt= opt_proplistToStruct(varargin{:});
-opt= opt_setDefaults(opt, ...
-                  {'start_marker', {'New Segment',''}; ...
-                  'end_marker', ''; ...
-                  'exclude_start_marker', ''; ...
-                  'exclude_end_marker', ''; ...
-                  'start_first_block', 0; ...
-                  'skip_unfinished', 1});
 
-classDef= {opt.start_marker, ...
-           opt.end_marker, ...
-           opt.exclude_start_marker, ...
-           opt.exclude_end_marker};
+props={'StartMarker'     {'New Segment',''} 'CHAR'
+       'EndMarker'             ''           'CHAR'
+       'ExcludeStartMarker'    ''            'BOOL'
+       'ExcludeEndMarker'      ''             'BOOL'
+       'StartFirstBlock'       0              'BOOL'
+       'SkipUnfinished'        1              'BOOL'};
 
-if ischar(mrk),  %% first argument is the filename
-  [mrk, fs]= file_loadMatlab(mrk, 'vars',{'mrk_orig','fs_orig'});
-  mrk= mrk_arrayOfStructs2structOfArrays(mrk, fs);
-  mrk= mrk_resample(mrk, opt.fs);
+if nargin==0,
+  blk= props; 
+  return
 end
+
+opt= opt_proplistToStruct(varargin{:});
+opt= opt_setDefaults(opt, props);
+opt_checkProplist(opt, props);
+
+misc_checkType(mrk, 'STRUCT(time event)');
+misc_checkType(mrk.event, 'STRUCT(desc)', 'mk.event');
+
+classDef= {opt.StartMarker, ...
+           opt.EndMarker, ...
+           opt.ExcludeStartMarker, ...
+           opt.ExcludeEndMarker};
+
 if isfield(mrk, 'desc'),
-  mrk= mrk_defineClasses(mrk, classDef, 'keepvoidclasses',1);
+  mrk= mrk_defineClasses(mrk, classDef, 'RemoveVoidClasses',0); %maybecomment
 else
   mkk= mrk;
   mkk.className= {'start','end','start of pause','end of pause'};
@@ -62,11 +71,11 @@ else
 end
 
 blk = [];
-if opt.start_first_block>0,
+if opt.StartFirstBlock>0,
   if ~mrk.y(1,1),
     %% first marker is non a start marker: start block at the beginning
     status= 1;
-    mrk_start= opt.start_first_block;
+    mrk_start= opt.StartFirstBlock;
     warning('missing start marker: starting first block as specified');
   end
 else
@@ -77,27 +86,27 @@ for i = 1:size(mrk.y,2);
   switch status
    case 0   % no session started, wait for marker 1
     if mrk.y(1,i),
-      if isempty(opt.end_marker),  %% do not expect end marker
+      if isempty(opt.EndMarker),  %% do not expect end marker
         if ~isnan(mrk_start),
-          blk = cat(1, blk, [mrk_start,mrk.pos(i)]);
+          blk = cat(1, blk, [mrk_start,mrk.time(i)]);
         end
       else
         status = 1;
       end
-      mrk_start = mrk.pos(i);
+      mrk_start = mrk.time(i);
     end
    case 1   % session started, no pause, wait for end or pause start
     if mrk.y(2,i)
-      blk = cat(1,blk,[mrk_start,mrk.pos(i)]);
+      blk = cat(1,blk,[mrk_start,mrk.time(i)]);
       status = 0;
     end
     if mrk.y(3,i)
-      blk = cat(1,blk,[mrk_start,mrk.pos(i)]);
+      blk = cat(1,blk,[mrk_start,mrk.time(i)]);
       status = 2;
     end
    case 2   %paused wait for pause end
     if mrk.y(4,i)
-      mrk_start = mrk.pos(i);
+      mrk_start = mrk.time(i);
       status = 1;
     end
     if mrk.y(2,i)
@@ -107,12 +116,12 @@ for i = 1:size(mrk.y,2);
 end
 
 if status==1,
-  if opt.skip_unfinished,
+  if opt.SkipUnfinished,
     warning('last active phase has no end marker (skipped)');
   else
-    blk = cat(1, blk, [mrk_start,mrk.pos(end)]);
+    blk = cat(1, blk, [mrk_start,mrk.time(end)]);
     warning('last active phase has no end marker (took last marker instead)');
   end
 end
 
-blk= struct('fs',mrk.fs, 'ival',blk');
+blk= struct('ival',blk');
