@@ -26,7 +26,7 @@ ext_folder = fullfile(BTB.Dir, 'external');
 switch lower(lib)
     case '*'
         disp('checking dependencies and downloading external sources if necessary...')
-        all_libs = {'fastica', 'ssd+spoc'};        
+        all_libs = {'fastica', 'ssd+spoc', 'mara'};        
         for kk = 1:length(all_libs)
             %recursive loop ^^
             bbci_import_dependencies(all_libs{kk});
@@ -66,6 +66,27 @@ switch lower(lib)
                     warning(['automatic download and unzip unsuccessful for ' lower(lib) '.'])
                     fprintf(['Likely reason: \n(A) Matlab does not have the permission to write files into the folder. \n(B) no online access.\n\n Possible solution is to start Matlab as root. \n\nFor manual download:\n\n (1) download the zip-file: \n' this_zipfile '\n\n (2) unzip to ''' this_folder '''\n']);
                     
+                end
+            end
+%         else
+%             warning(['folder ' this_folder 'aleady exists. Skipping import of ' lib '. Please delete this folder to refresh the import.'])
+        end
+    case 'mara'
+        this_folder = fullfile(ext_folder, lower(lib));
+           if ~exist(this_folder, 'dir') 
+            %download only if folder is not existing yet
+            try %download and unzip
+                download_success = 0;
+                this_zipfile = 'http://www.user.tu-berlin.de/irene.winkler/artifacts/MARAtrdata.zip';
+                disp(['...Downloading ' lower(lib) ' from http://www.user.tu-berlin.de/irene.winkler/'])
+                download_success = try_download_unzip(this_zipfile, ext_folder);
+                movefile(fullfile(ext_folder, 'MARAtrdata'), this_folder)
+            catch
+                if download_success
+                    error(['renaming did not work, please rename ''MARAtrdata'' to ''' lower(lib) ''' manually.']);
+                else
+                    warning(['automatic download and unzip unsuccessful for ' lower(lib) '.'])
+                    fprintf(['Likely reason: \n(A) Matlab does not have the permission to write files into the folder. \n(B) no online access.\n\n Possible solution is to start Matlab as root. \n\nFor manual download:\n\n (1) download the zip-file: \n' this_zipfile '\n\n (2) unzip to ''' this_folder '''\n']);                    
                 end
             end
 %         else
