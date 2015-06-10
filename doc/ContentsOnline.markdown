@@ -29,17 +29,15 @@ Matlab functions and in the function reference **[Basti, add link]**.
 
 ## Functions in the _online_ folder   <a id="Online"></a>
 
-```
-BBCI_CALIBRATE - Establish a classifier based on calibration data
-BBCI_SAVE - Save BBCI classifier (and all information required for
-            online operation in a file.
-BBCI_APPLY - Apply BBCI classifier to continuously acquired data
-BBCI_APPLY_UNI - Same as `bbci_apply` but for simpler use cases (unimodal data and features and single classifier)
-BBCI_LOAD - Load BBCI classifier
-
-BBCI_APPLY_STRUCTRES - Help file describing the data structures
-BBCI_CALIBRATE_STRUCTURES - Help file describing the data structures
-```
+* `BBCI_CALIBRATE` - Establish a classifier based on calibration data
+* `BBCI_SAVE` - Save BBCI classifier (and all information required for online
+  operation in a file.
+* `BBCI_APPLY` - Apply BBCI classifier to continuously acquired data
+* `BBCI_APPLY_UNI` - Same as `bbci_apply` but for simpler use cases (unimodal
+  data and features and single classifier)
+* `BBCI_LOAD` - Load BBCI classifier
+* `BBCI_APPLY_STRUCTRES` - Help file describing the data structures
+* `BBCI_CALIBRATE_STRUCTURES` - Help file describing the data structures
 
 
 ## Subfolder _acquisition_   <a id="Acquisition"></a>
@@ -201,21 +199,19 @@ No description available yet.
 
 **Internal:** This directory contains functions that are used in `bbci_apply`.
 
-```
-  BBCI_APPLY_SETDEFAULTS - Set default values in bbci structure for bbci_apply
-  BBCI_APPLY_INITDATA - Initialize the data structure of bbci_apply
-  BBCI_APPLY_ACQUIREDATA - Fetch data from acquisition hardware
-  BBCI_APPLY_EVALSIGNAL - Process cont. acquired signals and store in buffer
-  BBCI_APPLY_EVALCONDITION - Evaluate conditions which trigger control signals
-  BBCI_APPLY_QUERYMARKER - Check for acquired markers
-  BBCI_APPLY_EVALFEATURE - Perform feature extration
-  BBCI_APPLY_GETSEGMENT - Retrieve segment of signals from buffer
-  BBCI_APPLY_EVALCLASSIFIER - Apply classifier to feature vector
-  BBCI_APPLY_EVALCONTROL - Evaluate control function to classifier output
-  BBCI_APPLY_SENDCONTROL - Send control signal to application
-  BBCI_APPLY_RESETDATA - Reset the data structure of bbci_apply
-  BBCI_APPLY_EVALQUITCONDITION - Evalutate whether bbci_apply should stop
-```
+* `BBCI_APPLY_SETDEFAULTS` - Set default values in bbci structure for bbci_apply
+* `BBCI_APPLY_INITDATA` - Initialize the data structure of bbci_apply
+* `BBCI_APPLY_ACQUIREDATA` - Fetch data from acquisition hardware
+* `BBCI_APPLY_EVALSIGNAL` - Process cont. acquired signals and store in buffer
+* `BBCI_APPLY_EVALCONDITION` - Evaluate conditions which trigger control signals
+* `BBCI_APPLY_QUERYMARKER` - Check for acquired markers
+* `BBCI_APPLY_EVALFEATURE` - Perform feature extration
+* `BBCI_APPLY_GETSEGMENT` - Retrieve segment of signals from buffer
+* `BBCI_APPLY_EVALCLASSIFIER` - Apply classifier to feature vector
+* `BBCI_APPLY_EVALCONTROL` - Evaluate control function to classifier output
+* `BBCI_APPLY_SENDCONTROL` - Send control signal to application
+* `BBCI_APPLY_RESETDATA` - Reset the data structure of bbci_apply
+* `BBCI_APPLY_EVALQUITCONDITION` - Evalutate whether bbci_apply should stop
 
 
 ## Subfolder _calibration_functions_   <a id="CalibrationFunctions"></a>
@@ -223,13 +219,14 @@ No description available yet.
 **Internal:** This directory contains functions that are used in
 `bbci_calibrate`.
 
-```
-  BBCI_CALIBRATE_SETDEFAULTS - Set default values in bbci structure for bbci_calibrate
-  BBCI_CALIBRATE_SET - Specify calibration-specific parameters, or copy them from the previous run of bbci_calibrate.
-  
+* `BBCI_CALIBRATE_SETDEFAULTS` - Set default values in bbci structure for
+  bbci_calibrate
+* `BBCI_CALIBRATE_SET` - Specify calibration-specific parameters, or copy them
+  from the previous run of bbci_calibrate.
+
 The following function is also useful outside of bbci_calibrate:
-  BBCI_CALIBRATE_EVALFEATURE
-```
+
+* `BBCI_CALIBRATE_EVALFEATURE`
 
 ## Subfolder _logging_   <a id="Logging"></a>
 
