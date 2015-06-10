@@ -1,155 +1,92 @@
-function epo= proc_appendEpochs(epo, epo_append, mrk, mrk_append)
-%PROC_APPENDEPOCHS - appends two or more epochs.
+function epo= proc_appendEpochs(epo1, epo2)
+%PROC_APPENDEPOCHS - appends two or more structs of epoched data.
 %
 %Synopsis:
-% epo= proc_appendEpochs(epo, epo_append, <mrk, mrk_append>)
-% epo= proc_appendEpochs(epo_cell, <mrk_cell>)
+% EPO= proc_appendEpochs(EPO1, EPO2)
+% EPO= proc_appendEpochs(EPOCELL)
 %
 %Arguments:
-% epo             - epoched data or cell array of epochs
-% epo_append      - epoched - data to be appended
-% mrk, mrk_append - (optional) mrk structs needed to sort the data
+% EPOCELL         - cell array of epoched data
+% EPO1, EPO2      - epoched data to be appended
 %
 %Returns:
-% epo             - appended epoched data
+% EPO             - appended epoched data
 %
 %Description:
-% appends the epochs of 'epo_append' to 'epo'
-% if 'epo' is empty 'epo_append' is returned
-% if mrk structures are given, epochs are sorted chronologically
-% does NOT work for jittered epochs!!!
+% Appends the epochs of 'EPO2' to 'EPO1' (or appends all epochs of ERPCELL)
 %
-% SEE  makeEpochs, proc_appendCnt, proc_appendChannels
-epo = misc_history(epo);
+% SEE  proc_segmentation, mrk_mergerMarkers, proc_appendCnt,
+%      proc_appendChannels
 
-misc_checkType(epo, 'STRUCT(x clab)|CELL{STRUCT}'); 
-misc_checkType(epo_append, 'STRUCT(x clab)');
+%epo1 = misc_history(epo1);
 
-if iscell(epo),
-  Cepo= epo;
-  epo= Cepo{1};
-  if nargin>1,
-    Cmrk= mrk;
-    mrk= Cmrk{1};
-    for ii= 2:length(Cepo),
-      [epo, mrk]= proc_appendEpochs(epo, Cepo{ii}, mrk, Cmrk{ii});
-    end
-  else
-    for ii= 2:length(Cepo),
-      epo= proc_appendEpochs(epo, Cepo{ii});
-    end
+misc_checkType(epo1, 'STRUCT(x clab)|CELL{STRUCT}'); 
+misc_checkTypeIfExists('epo2', 'STRUCT(x clab)');
+
+if iscell(epo1),
+  Cepo= epo1;
+  epo1= Cepo{1};
+  for ii= 2:length(Cepo),
+    epo1= proc_appendEpochs(epo1, Cepo{ii});
   end
   return
 end
   
     
-if isempty(epo),
-  epo= epo_append;
+if isempty(epo1),
+  epo= epo2;
+  return;
+elseif isempty(epo2),
+  epo= epo1;
   return;
 end
 
+
 % begin sthf
-if isfield(epo, 'ndims')
-  ndims = max(3, epo.ndims);
+if isfield(epo1, 'ndims')
+  ndim = max(3, epo1.ndims);
 else
-  ndims = max(3, length(size(epo.x)));
+  ndim = max(3, ndims(epo1.x));
 end
 
-if size(epo.x,ndims-2)~=size(epo_append.x,ndims-2),
+if size(epo1.x,ndim-2)~=size(epo2.x,ndim-2),
   error('interval length mismatch');
 end
-if size(epo.x,ndims-1)~=size(epo_append.x,ndims-1),
+if size(epo1.x,ndim-1)~=size(epo2.x,ndim-1),
   error('number of channels mismatch');
 end
-if ndims == 4
-  if size(epo.x,ndims-3)~=size(epo_append.x,ndims-3),
-    error('number of frequencies mismatch');
+if ( ndim == 4 ) && ( size(epo1.x,ndim-3)~=size(epo2.x,ndim-3) ),
+  error('number of frequencies mismatch');
+end
+
+epo= mrkutil_appendEventInfo(epo1, epo2);
+epo.x= cat(ndim, epo1.x, epo2.x);
+
+epo.t= epo1.t;
+
+if isfield(epo1, 't') && isfield(epo2, 't')
+  if ~isequal(epo1.t, epo2.t),
+    warning('time intervals of epochs seem to differ');
   end
 end
 
-epo.x= cat(ndims, epo.x, epo_append.x);
-if isfield(epo, 'p') && isfield(epo_append, 'p') 
-  epo.p= cat(ndims, epo.p, epo_append.p);
-end
-if isfield(epo, 'sgnlogp') && isfield(epo_append, 'sgnlogp') 
-  epo.sgnlogp= cat(ndims, epo.sgnlogp, epo_append.sgnlogp);
-end
-if isfield(epo, 'se') && isfield(epo_append, 'se') 
-  epo.se= cat(ndims, epo.se, epo_append.se);
-end
-if isfield(epo, 'sigmask') && isfield(epo_append, 'sigmask') 
-  epo.sigmask= cat(ndims, epo.sigmask, epo_append.sigmask);
-end
-if isfield(epo, 't') && isfield(epo_append, 't')
-  epo.t= cat(ndims, epo.t, epo_append.t);
-end
-if isfield(epo, 'crit') && isfield(epo_append, 'crit')
-  epo.crit= cat(1, epo.crit, epo_append.crit);
-end
-if isfield(epo, 'df') && isfield(epo_append, 'df')
-  epo.df= cat(1, epo.df, epo_append.df);
-end
 
-epo.y= cat(2, epo.y, zeros(size(epo.y,1),size(epo_append.y,2)));
-fie = {};
-
-if isfield(epo, 'indexedByEpochs') & isfield(epo_append, 'indexedByEpochs'),
-  idxFields= intersect(epo.indexedByEpochs, epo_append.indexedByEpochs,'legacy');
-  for Fld= idxFields,
-    fld= Fld{1};
-    tmp= getfield(epo, fld);
-    sz= size(tmp);
-    fie = {fie{:},fld};
-    eval(sprintf('epo.%s= cat(length(sz), tmp, epo_append.%s);', ...
-                 fld, fld));
-  end
+% The following code should be superflutious in future
+if isfield(epo1, 'p') && isfield(epo2, 'p') 
+  epo.p= cat(ndim, epo1.p, epo2.p);
 end
-
-if sum(strcmp(fie,'jit'))==0 & (isfield(epo, 'jit') | isfield(epo_append, 'jit')),
-  if ~isfield(epo, 'jit'), 
-    epo.jit= zeros(1, size(epo.y,2));
-  end
-  if ~isfield(epo_append, 'jit'), 
-    epo_append.jit= zeros(1, size(epo_append.y,2));
-  end
-  epo.jit= cat(2, epo.jit, epo_append.jit);
+if isfield(epo1, 'sgnlogp') && isfield(epo2, 'sgnlogp') 
+  epo.sgnlogp= cat(ndim, epo1.sgnlogp, epo2.sgnlogp);
 end
-
-if sum(strcmp(fie,'bidx'))==0 & (isfield(epo, 'bidx') | isfield(epo_append, 'bidx')),
-  if ~isfield(epo, 'bidx'), 
-    epo.bidx= 1:size(epo.y,2); 
-  end
-  if ~isfield(epo_append, 'bidx'), 
-    epo_append.bidx= size(epo.y,2)+1:size(epo.y,2)+size(epo_append.y,2); 
-  end
-  epo.bidx= cat(2, epo.bidx, epo_append.bidx);
+if isfield(epo1, 'se') && isfield(epo2, 'se') 
+  epo.se= cat(ndim, epo1.se, epo2.se);
 end
-  
-if isfield(epo, 'className') & isfield(epo_append, 'className'),
-  for i = 1:length(epo_append.className)
-    c = find(strcmp(epo.className,epo_append.className{i}));
-    if isempty(c)  
-      epo.y= cat(1, epo.y, zeros(1,size(epo.y,2)));
-      epo.className=  cat(2, epo.className, {epo_append.className{i}});
-      c= size(epo.y,1);
-    elseif length(c)>1,
-      error('multiple classes have the same name');
-    end
-    epo.y(c,end-size(epo_append.y,2)+1:end) = epo_append.y(i,:);
-  end
+if isfield(epo1, 'sigmask') && isfield(epo2, 'sigmask') 
+  epo.sigmask= cat(ndim, epo1.sigmask, epo2.sigmask);
 end
-
-if exist('mrk_append', 'var'),
-  [si,si]= sort([mrk.pos+epo.t(end) mrk_append.pos+epo_append.t(end)]);
-  if isfield(epo, 'bidx'),
-    error('not implemented');
-  end
-% begin sthf
-  subind ='';
-  for isi = 1:ndims-1
-    subind = [subind ':,'];
-  end
-  epo.x= eval(['epo.x(' subind 'si);']);
-% end sthf  
-  epo.y= epo.y(:,si);
+if isfield(epo1, 'crit') && isfield(epo2, 'crit')
+  epo.crit= cat(1, epo1.crit, epo2.crit);
+end
+if isfield(epo1, 'df') && isfield(epo2, 'df')
+  epo.df= cat(1, epo1.df, epo2.df);
 end
