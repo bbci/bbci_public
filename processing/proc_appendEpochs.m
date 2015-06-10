@@ -59,16 +59,18 @@ if ( ndim == 4 ) && ( size(epo1.x,ndim-3)~=size(epo2.x,ndim-3) ),
   error('number of frequencies mismatch');
 end
 
-epo= mrkutil_appendEventInfo(epo1, epo2);
+epo= mrkutil_appendMarkersExcludingTime(epo1, epo2);
 epo.x= cat(ndim, epo1.x, epo2.x);
 
-epo.t= epo1.t;
-
-if isfield(epo1, 't') && isfield(epo2, 't')
-  if ~isequal(epo1.t, epo2.t),
-    warning('time intervals of epochs seem to differ');
-  end
+if ~struct_areFieldsEqual(epo1, epo2, {'fs','clab', 't'})
+  warning('epochs are inconsistent wrt ''fs'', ''clab'', or ''t''.');
 end
+epo= struct_copyFields(epo, epo1, {'fs','clab','t'});
+
+if isfield(epo1, 'mrk_info') && isfield(epo2, 'mrk_info'),
+  epo.mrk_info= mrkutil_appendEventInfo(epo1.mrk_info, epo2.mrk_info);
+end
+
 
 
 % The following code should be superflutious in future
