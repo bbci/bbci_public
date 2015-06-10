@@ -73,6 +73,12 @@ epo= struct_copyFields(epo, epo1, {'fs','clab','t'});
 if isfield(epo1, 'mrk_info') && isfield(epo2, 'mrk_info'),
   epo.mrk_info= mrkutil_appendEventInfo(epo1.mrk_info, epo2.mrk_info);
 end
+if isfield(epo, 'event') && isfield(epo_append, 'event')
+    if isfield(epo.event, 'blkno') && isfield(epo_append.event, 'blkno')
+        epo.event.blkno= horzcat(epo.event.blkno, epo_append.event.blkno);
+				epo.event.blkno=epo.event.blkno';
+    end
+end
 
 
 
