@@ -10,17 +10,19 @@ function [epo, ev]= proc_selectClasses(epo, cls, varargin)
 % OUT  epo     - epoch structure containing only selected events
 %      ev      - indices of select events
 %
-% this function selects events from a epoch structure that belong
+%Description:
+% This function selects events from a epoch structure that belong
 % to given classes. a typical application is to select from a multi-class
 % experiment a two-class subproblem.
-% class names may include the wildcard '*' as first exclusive-or last
-% symbol, see procutil_getClassIndices.
+% Class names may include regular expressions, see regexpi. This also
+% implies that you might have to escape some characters, see last example.
 %
 % Examples
-%      epo_lr= mrk_selectClasses(epo, {'left', 'right'});
-%      epo_12= mrk_selectClasses(epo, [1 2]);
-%      epo_nl= mrk_selectClasses(epo, {'not', 'left*'});
+%      epo_lr= proc_selectClasses(epo, {'left', 'right'});
+%      epo_12= proc_selectClasses(epo, [1 2]);
+%      epo_nl= proc_selectClasses(epo, {'not', 'left*'});
 %
+%      epo= proc_selectClasses(epo, 'r\^2 \( a , b \)';
 
 % Benjamin Blankertz
 
