@@ -13,10 +13,10 @@ function [varargout]= fileutil_concatMatlab(file_list, varargin)
 %   MNT: electrode montage structure
 %
 % Properties:
-%   are passed to file_loadBV
+%   are passed to file_loadMatlab
 %
 % Description:
-%   This function is called by file_loadBV in case the file name argument
+%   This function is called by file_loadMatlab in case the file name argument
 %   is a cell array of file names. Typically there is no need to call this 
 %   function directly.
 %
@@ -27,20 +27,20 @@ misc_checkType(file_list,'!CHAR|!CELL{CHAR}');
 
 opt= opt_proplistToStruct(varargin{:});
 
-if nargout~=length(opt.vars),
+if nargout~=length(opt.Vars),
   warning('number of output arguments does not match with requested vars');
 end
 
-iDat= find(ismember(opt.vars, {'dat','cnt','epo'},'legacy'));
-iMrk= find(strcmp(opt.vars, 'mrk'));
-%iNoCat= setdiff(1:length(opt.vars), [iDat iMrk]);
-iMrkBV= find(strcmp(opt.vars, 'mrk_orig'));
-iNfo= find(strcmp(opt.vars, 'nfo'));
+iDat= find(ismember(opt.Vars, {'dat','cnt','epo'},'legacy'));
+iMrk= find(strcmp(opt.Vars, 'mrk'));
+%iNoCat= setdiff(1:length(opt.Vars), [iDat iMrk]);
+iMrkBV= find(strcmp(opt.Vars, 'mrk_orig'));
+iNfo= find(strcmp(opt.Vars, 'nfo'));
 if isempty(iNfo),
-  opt.vars= cat(2, opt.vars, {'nfo'});
-  iNfo= length(opt.vars);
+  opt.Vars= cat(2, opt.Vars, {'nfo'});
+  iNfo= length(opt.Vars);
 end
-varargcat= cell(1,length(opt.vars));
+varargcat= cell(1,length(opt.Vars));
 
 if ~iscell(file_list),
   file_list= {file_list};
@@ -60,7 +60,7 @@ for ii= 1:length(file_list),
 %    for kk= iNoCat,  %% check variables that should be constant
 %      if ~isequal(varargout(kk), varargcat(kk)),
 %        warning(sprintf('inconsistency regarding variable <%s>', ...
-%                        opt.vars{kk}));
+%                        opt.Vars{kk}));
 %      end
 %    end
     if ~isempty(iDat),
