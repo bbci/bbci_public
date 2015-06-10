@@ -2,8 +2,8 @@ function [dat, varargout]= proc_cspAuto(dat, varargin)
 %PROC_CSPAUTO - Common Spatial Pattern Analysis with Auto Filter Selection
 %
 %Synopsis:
-% [DAT, CSP_W, CSP_EIG, CSP_A]= proc_cspAuto(DAT, <OPT>);
-% [DAT, CSP_W, CSP_EIG, CSP_A]= proc_cspAuto(DAT, NPATS);
+% [DAT, CSP_W, CSP_A, CSP_EIG]= proc_cspAuto(DAT, <OPT>);
+% [DAT, CSP_W, CSP_A, CSP_EIG]= proc_cspAuto(DAT, NPATS);
 %
 %Arguments:
 % DAT    - data structure of epoched data
@@ -29,9 +29,9 @@ function [dat, varargout]= proc_cspAuto(dat, varargin)
 %
 %Returns:
 % DAT    - updated data structure
-% CSP_W  - CSP projection matrix (filters)
-% CSP_EIG- eigenvalue score of CSP projections (rows in W)
-% CSP_A  - estimated mixing matrix (activation patterns)
+% CSP_W  - CSP projection matrix (spatial filters, in the columns)
+% CSP_A  - estimated mixing matrix (activation patterns, in the columns)
+% CSP_EIG- eigenvalue score of CSP projections 
 %
 %Description:
 % calculate common spatial patterns (CSP).
@@ -220,15 +220,15 @@ dat= proc_linearDerivation(dat, Wp, 'prependix','csp');
 
 %% arrange optional output arguments
 if nargout>1,
-  varargout{1}= Wp;
-  if nargout>2,
-    varargout{2}= la;
-    if nargout>3,
-      A= pinv(W);
-      varargout{3}= A(fi,:);
-      if nargout>4,
-        varargout{4}= fi;
-      end
+    varargout{1}= Wp;
+    if nargout>2,
+        A= pinv(W)'; % return patterns in the columns of A
+        varargout{2}= A(:,fi);
+        if nargout>3,
+            varargout{3}= la;
+            if nargout>4,
+                varargout{4}= fi;
+            end
+        end
     end
-  end
 end

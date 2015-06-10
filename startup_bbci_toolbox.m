@@ -48,7 +48,22 @@ props= {'Dir'            BBCI_DIR          'CHAR';
 [BTB, isdefault]= opt_setDefaults(BTB, props);
 
 % import dependencies if not done yet
-bbci_import_dependencies()
+if ~exist(fullfile(BTB.Dir, 'external', 'auto_import_performed'), 'file')
+    inp = input(sprintf(['\nThis is the first startup of the BBCI toolbox - Wellcome!\n\n', ...
+        'You can now automatically download and import code from other sources.\n', ...
+        'This adds additional functionalities such as ICA and SSD to the BBCI toolbox.\n',...
+        'Following startups won''t ask for automatic imports. Manual imports are\n',...
+        'possible with ""bbci_import_dependencies()"" at any time.\n\n',...
+        'Type <yes> to download all dependencies (approx 10MB): ']), 's');
+    if strcmp(inp, 'yes') || strcmp(inp, 'y')
+        bbci_import_dependencies()
+        % write into file
+        fileID = fopen(fullfile(BTB.Dir, 'external', 'auto_import_performed'),'w');
+        fprintf(fileID,datestr(now()) );
+        fclose(fileID);
+    end
+end
+
 addpath(genpath(BBCI_DIR));
 rmpath(genpath(fullfile(BBCI_DIR, '.git')));
 

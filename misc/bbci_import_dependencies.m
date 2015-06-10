@@ -1,4 +1,4 @@
-function bbci_import_dependencies(lib)
+function download_success = bbci_import_dependencies(lib)
 % IMPORT_IMPORT_DEPENDENCIES(LIB) - imports code from other toolboxes
 %
 % Other toolboxes might be published on copy-left licences such as GPL.
@@ -8,7 +8,7 @@ function bbci_import_dependencies(lib)
 % license. This script downloads the corresponding code and copies it into
 % the folder 'external' and genereates corresponding subfolders.
 %
-% If the subfolder already exists, then it is 
+% If the subfolder already exists, then the import fails with a warning.
 %
 %
 %Usage:
@@ -21,15 +21,17 @@ function bbci_import_dependencies(lib)
 if nargin == 0
     lib = '*';
 end
+fprintf('Trying to import dependencies\n');
 global BTB
 ext_folder = fullfile(BTB.Dir, 'external');
+download_success = 0;
 switch lower(lib)
     case '*'
         disp('checking dependencies and downloading external sources if necessary...')
-        all_libs = {'fastica', 'ssd+spoc'};        
+        all_libs = {'fastica', 'ssd+spoc', 'mara'};        
         for kk = 1:length(all_libs)
             %recursive loop ^^
-            bbci_import_dependencies(all_libs{kk});
+            success = bbci_import_dependencies(all_libs{kk});
         end
     case 'ssd+spoc'        
         this_folder = fullfile(ext_folder, lower(lib));
@@ -37,7 +39,7 @@ switch lower(lib)
             try %download and unzip
                 download_success = 0;
                 this_zipfile = 'https://github.com/svendaehne/matlab_SPoC/archive/master.zip';
-                disp(['...Downloading ' lower(lib) ' from github'])
+                disp(sprintf(['\n\n\n...Downloading ' lower(lib) ' from github']))
                 download_success = try_download_unzip(this_zipfile, ext_folder);
                 movefile(fullfile(ext_folder, 'matlab_SPoC-master'), this_folder)
             catch
@@ -48,6 +50,8 @@ switch lower(lib)
                     fprintf(['Likely reason: \n(A) Matlab does not have the permission to write files into the folder. \n(B) no online access.\n\n Possible solution is to start Matlab as root. \n\nFor manual download:\n\n (1) download the zip-file: \n' this_zipfile '\n\n (2) unzip to ''' this_folder '''\n']);
                 end
             end
+        else
+            warning(['Could not import ' lib ', because the folder external/' lower(lib) 'already existed! Please delete this folder to refresh the import.'])
         end
     case 'fastica'
         this_folder = fullfile(ext_folder, lower(lib));
@@ -56,7 +60,7 @@ switch lower(lib)
             try %download and unzip
                 download_success = 0;
                 this_zipfile = 'http://research.ics.aalto.fi/ica/fastica/code/FastICA_2.5.zip';
-                disp(['...Downloading ' lower(lib) ' from http://research.ics.aalto.fi'])
+                disp(sprintf(['\n\n\n...Downloading ' lower(lib) ' from http://research.ics.aalto.fi']))
                 download_success = try_download_unzip(this_zipfile, ext_folder);
                 movefile(fullfile(ext_folder, 'FastICA_25'), this_folder)
             catch
@@ -68,13 +72,35 @@ switch lower(lib)
                     
                 end
             end
-%         else
-%             warning(['folder ' this_folder 'aleady exists. Skipping import of ' lib '. Please delete this folder to refresh the import.'])
+        else
+            warning(['Could not import ' lib ', because the folder external/' lower(lib) 'already existed! Please delete this folder to refresh the import.'])
+        end
+    case 'mara'
+        this_folder = fullfile(ext_folder, lower(lib));
+           if ~exist(this_folder, 'dir') 
+            %download only if folder is not existing yet
+            try %download and unzip
+                download_success = 0;
+                this_zipfile = 'http://www.user.tu-berlin.de/irene.winkler/artifacts/MARAtrdata.zip';
+                disp(sprintf(['\n\n\n...Downloading ' lower(lib) ' from http://www.user.tu-berlin.de/irene.winkler/']))
+                download_success = try_download_unzip(this_zipfile, ext_folder);
+                movefile(fullfile(ext_folder, 'MARAtrdata'), this_folder)
+            catch
+                if download_success
+                    error(['renaming did not work, please rename ''MARAtrdata'' to ''' lower(lib) ''' manually.']);
+                else
+                    warning(['automatic download and unzip unsuccessful for ' lower(lib) '.'])
+                    fprintf(['Likely reason: \n(A) Matlab does not have the permission to write files into the folder. \n(B) no online access.\n\n Possible solution is to start Matlab as root. \n\nFor manual download:\n\n (1) download the zip-file: \n' this_zipfile '\n\n (2) unzip to ''' this_folder '''\n']);                    
+                end
+            end
+        else
+            warning(['Could not import ' lib ', because the folder external/' lower(lib) 'already existed! Please delete this folder to refresh the import.'])
         end
     otherwise
         error('dependency not specified')
 end
 end
+
 
 
 function success = try_download_unzip(this_zipfile, ext_folder)
@@ -94,7 +120,7 @@ try
     urlwrite(this_zipfile, tmp_file);
 %     (2) unzip (OS-dependent)
     if isunix
-        system(['unzip ' tmp_file ' -d ' ext_folder]);
+        [status,cmdout] = system(['unzip ' tmp_file ' -d ' ext_folder]);
     else
         unzip(fullfile([ext_folder '/temp_download.zip']), ext_folder);
     end

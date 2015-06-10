@@ -14,7 +14,7 @@ function [loss, lossSem, cfy_out]= crossvalidation(fv, classy, varargin)
 %  OPT -    Struct or property/value list of optional properties:
 %   'SampleFcn': Function handle of sampling function, see functions
 %           sample_*, or CELL providing also parameters of the samling
-%           function), default @smaple_KFold
+%           function), default @sample_KFold
 %   'LossFcn': Function handle of loss function, or CELL (+ parameters)
 %   'Proc': Struct with fields 'train' and 'apply'. Each of those is a CELL
 %           specifying a processing chain. See the example
@@ -75,7 +75,7 @@ nOutDim= size(fv.y,1);
 if nOutDim==2,
   nOutDim= 1;
 end
-cfy_out= NaN*zeros(nOutDim, length(divTe), size(fv.x,2));
+cfy_out= NaN*zeros(nOutDim, length(divTe), size(fv.y,2));
 for rr= 1:length(divTr),
   nFolds= length(divTr{rr});
   fold_loss= zeros(nFolds, 1);

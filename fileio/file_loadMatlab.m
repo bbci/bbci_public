@@ -6,7 +6,7 @@ function [varargout]= file_loadMatlab(file, varargin)
 %   [DAT, MRK, MNT]= file_loadMatlab(FILE, <OPT>)
 %
 % Arguments:
-%   FILE:   CHAR    name of data file
+%   FILE:   CHAR|CELL{CHAR}   name of data file or list of files
 %   VARS:   CELL    Variables (cell array of strings) which are to be loaded,
 %                   default {'dat','mrk','mnt'}. The names 'dat', 'cnt' and 'epo'
 %                   are treated equally.
@@ -78,7 +78,7 @@ props = {'Path',            BTB.MatDir       'CHAR';
          'Fs'               []               'DOUBLE[1]';
          };
 
-misc_checkType(file,'!CHAR');
+misc_checkType(file,'!CHAR|!CELL{CHAR}');
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);

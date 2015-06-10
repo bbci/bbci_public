@@ -1,5 +1,5 @@
 eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
-    'demo_Pavel_01_11_23', 'selfpaced2sPavel');
+                   'VPai_01_11_23', 'selfpaced2sVPai');
 
 %% Load data
 [cnt, mrk, mnt] = file_loadMatlab(eeg_file);
@@ -38,12 +38,12 @@ spec_lar_r= proc_rSquareSigned(spec_lar);
 spec_lar_r= proc_selectChannels(spec_lar_r, 'not','E*');
 
 fig_set(1);
-H= grid_plot(spec, mnt, opt_grid_spec,'XUnit', spec.xUnit, 'YUnit', spec.yUnit)
+H= grid_plot(spec, mnt, opt_grid_spec)
 %grid_markIval(band_erd);     % to shade a certain frequency band
 grid_addBars(spec_r, 'HScale',H.scale);
 
 fig_set(2);
-H= grid_plot(spec_lar, mnt, opt_grid_spec, 'XUnit',spec_lar.xUnit,'YUnit',spec_lar.yUnit);
+H= grid_plot(spec_lar, mnt, opt_grid_spec);
 grid_addBars(spec_lar_r, 'HScale',H.scale);
 
 fig_set(3);
