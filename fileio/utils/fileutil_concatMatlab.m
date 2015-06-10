@@ -17,8 +17,8 @@ function [varargout]= fileutil_concatMatlab(file_list, varargin)
 %
 % Description:
 %   This function is called by file_loadMatlab in case the file name argument
-%   is a cell array of file names. Typically there is no need to call this 
-%   function directly.
+%   is a cell array of file names. This function is not intended to be called 
+%   directly.
 %
 % See also: file_loadMatlab
 %
@@ -84,7 +84,7 @@ for ii= 1:length(file_list),
       end
     end
     if ~isempty(iMrk),
-      varargcat{iMrk}.pos= varargcat{iMrk}.pos + sum(T(1:ii-1));
+      varargcat{iMrk}.time= varargcat{iMrk}.time + sum(T(1:ii-1))*1000/ varargcat{iDat}.fs;
       varargout{iMrk}= mrk_mergeMarkers(varargout{iMrk}, varargcat{iMrk});
     end
     if ~isempty(iMrkBV),
@@ -113,7 +113,7 @@ if ~isempty(iDat),
   end
   if length(file_list)>1,
     varargout{iDat}.title= [varargout{iDat}.title ' et al.'];
-    varargout{iDat}.file= strcat(opt.path, file_list);
+    varargout{iDat}.file= strcat(opt.Path, file_list);
   end
 end
 
