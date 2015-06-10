@@ -62,6 +62,9 @@ end
 epo= mrkutil_appendMarkersExcludingTime(epo1, epo2);
 epo.x= cat(ndim, epo1.x, epo2.x);
 
+% We could add functionality to struct_areFieldsEqual to return as second
+% argument, which fields do not match. Then we could give here a more
+% precise warning.
 if ~struct_areFieldsEqual(epo1, epo2, {'fs','clab', 't'})
   warning('epochs are inconsistent wrt ''fs'', ''clab'', or ''t''.');
 end
