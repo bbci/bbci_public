@@ -51,7 +51,7 @@ domain signals, although it is suggested by some notions, e.g. the field `.t`).
 `.className` | class names (`CELL {1 #classes}`)
 `.t`         | time axis (`DOUBLE [1 T]`)
 `.event`     | structure of further information; each field of `epo.event` provides information that is specified for each event, given in arrays that index the events **in their first dimension**. This is required such that functions like `epo_selectEpochs` can work properly on those variables.
-`.mrk_info   | structure for other additional information copied from `mrk`
+`.mrk_info`  | structure for other additional information copied from `mrk`
 `.cnt_info`  | structure for additional information copied from `cnt`
 
 ## `mnt` - The electrode montage   <a id="Mnt"></a>
