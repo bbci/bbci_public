@@ -5,11 +5,8 @@
 %       <fv_training_MARA.mat>  and  <inv_matrix_icbm152.mat>
 %       http://www.user.tu-berlin.de/irene.winkler/artifacts/MARAtrdata.zip
 
-BTB_memo= BTB;
-BTB.MatDir= fullfile(BTB.DataDir, 'demoMat');
-
-file= fullfile('VPiac_10_10_13', ...
-               'calibration_CenterSpellerMVEP_VPiac');
+eeg_file= fullfile(BTB.DataDir, 'demoMat', 'VPiac_10_10_13', ...
+                   'calibration_CenterSpellerMVEP_VPiac');
 
 % Load data
 try
@@ -42,8 +39,3 @@ plot_BSScomponents(cnt_ica, mnt, W_ica, A_ica, 'goodcomp', goodcomp, 'out', info
 %only with the good components in goodcomp
 cnt_clean = cnt; 
 cnt_clean.x =  cnt.x * W_ica(goodcomp, :)' * A_ica(:, goodcomp)';
-
-
-
-
-
