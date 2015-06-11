@@ -57,11 +57,12 @@ if ~exist(fullfile(BTB.Dir, 'external', 'auto_import_performed'), 'file')
         'Type <yes> to download all dependencies (approx 10MB): ']), 's');
     if strcmp(inp, 'yes') || strcmp(inp, 'y')
         bbci_import_dependencies()
-        % write into file
-        fileID = fopen(fullfile(BTB.Dir, 'external', 'auto_import_performed'),'w');
-        fprintf(fileID,datestr(now()) );
-        fclose(fileID);
+       
     end
+     % write into file
+    fileID = fopen(fullfile(BTB.Dir, 'external', 'auto_import_performed'),'w');
+    fprintf(fileID,datestr(now()) );
+    fclose(fileID);
 end
 
 addpath(genpath(BBCI_DIR));
