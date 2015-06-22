@@ -81,7 +81,7 @@ props= { 'NIvals'               5               '!INT[1]';
          'VisuScalps'           0               '!BOOL';
          'OptVisu'              []              'CELL|STRUCT';
          'Title'                ''              'CHAR'
-         'Mnt'                  mnt_setElectrodePositions(epo_r.clab)  'STRUCT';
+         'Mnt'                  struct          'STRUCT';
          'Constraint'           {}              'CELL';
          'IntersampleTiming'    0               '!DOUBLE';
          'Verbose'              1               '!BOOL'};
@@ -97,6 +97,10 @@ misc_checkType(epo_r, 'STRUCT(x)');
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props, props_plot);
+
+[opt, isdefault]= opt_overrideIfDefault(opt, isdefault, ...
+                                        'Mnt', ...
+                                        mnt_setElectrodePositions(epo_r.clab));
 
 if opt.ScalpChannelsOnly,
   scalpchans= intersect(strtok(epo_r.clab), util_scalpChannels);
