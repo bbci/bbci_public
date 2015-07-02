@@ -20,7 +20,8 @@ elseif isempty(mrk2),
 end
 
 mrk= mrkutil_appendEventInfo(mrk1, mrk2);
-mrk.time= cat(1, mrk1.time(:), mrk2.time(:))';
+mrk.time= cat(2, mrk1.time(:)', mrk2.time(:)');
+mrk.y= cat(2, mrk1.y, mrk2.y);
 
 %% Recursion
 if length(varargin)>0,
