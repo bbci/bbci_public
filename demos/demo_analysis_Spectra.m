@@ -42,6 +42,8 @@ H= grid_plot(spec, mnt, opt_grid_spec)
 %grid_markIval(band_erd);     % to shade a certain frequency band
 grid_addBars(spec_r, 'HScale',H.scale);
 
+% spatial filters provide more localized data and are ofter useful
+% in particular in the investigation of brain oscillations
 fig_set(2);
 H= grid_plot(spec_lar, mnt, opt_grid_spec);
 grid_addBars(spec_lar_r, 'HScale',H.scale);
