@@ -1,40 +1,39 @@
 function blk = blk_segmentsFromMarkersNew(mrk, varargin)
 %BLK_SEGMENTSFROMMARKERS - Define segments based on markers
 %
-% usage:
-%    area = blk_segmentsFromMarkers(filename, <opt>)
-%    area = blk_segmentsFromMarkers(mrk, <opt>)
+% Synopsis:
+%   BLK = blk_segmentsFromMarkers(MRK, <OPT>)
 %
-% input:
-%   mrk - BV marker structure (struct of arrays) such as return by
-%          eegfile_readBVmarkers(..., 0) or
-%   filename-  (in this case markers are loaded from that file)
+% Input:
+%   MRK - BV marker structure (struct of arrays) such as return by
+%         file_readBVmarkers(..., 0) or
+%   FILENAME -  (in this case markers are loaded from that file)
 %
-%   opt:
-%    start_marker: Default: {'New Segment'}
-%    end_marker: If end_marker is empty, each segments ends with the
+%   OPT - struct or property/value list of optional fields/properties:
+%    StartMarker: Default: {'New Segment'}
+%    EndMarker: If end_marker is empty, each segments ends with the
 %       beginning of the next one. Default [].
-%    exclude_start_marker: []
-%    include_start_marker: []
-%    fs: resample markers to this sampling rate
+%    ExcludeStartMarker: Start marker of intervals that should be excluded
+%    ExcludeEndMarker: End marker of intervals that should be excluded
+%    StartFirstBlock: Default: false
+%    SkipUnfinished:  Default: true
 %
-% output:
-%   blk      an nx2 array with intervals
+% Output:
+%   BLK - an Nx2 array with each row defining a segment in time ('block')
 %
-% see also:
+% See also:
 %   mrk_evenlyInBlocks
 
-% GUIDO DORNHEGE; 19/03/2004 (getActivation Areas)
 % Benjamin Blankertz Oct 2007
 % 6-2015 Adapted to new Toolbox (Laura A, Markus W.)
 
 
 opt= opt_proplistToStruct(varargin{:});
 
-props={'StartMarker'     {'New Segment',''} 'CHAR'
-       'EndMarker'             ''           'CHAR'
-       'ExcludeStartMarker'    ''            'BOOL'
-       'ExcludeEndMarker'      ''             'BOOL'
+props={'StartMarker'       {'New Segment',''} 'CHAR|CELL{CHAR}'
+       'EndMarker'             ''             'CHAR|CELL{CHAR}'
+       'ExcludeStartMarker'    ''             'CHAR|CELL{CHAR}'
+       'ExcludeEndMarker'      ''             'CHAR|CELL{CHAR}'
        'StartFirstBlock'       0              'BOOL'
        'SkipUnfinished'        1              'BOOL'};
 
@@ -48,14 +47,14 @@ opt= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
 misc_checkType(mrk, 'STRUCT(time event)');
-misc_checkType(mrk.event, 'STRUCT(desc)', 'mk.event');
+misc_checkType(mrk.event, 'STRUCT(desc)', 'mrk.event');
 
 classDef= {opt.StartMarker, ...
            opt.EndMarker, ...
            opt.ExcludeStartMarker, ...
            opt.ExcludeEndMarker};
 
-if isfield(mrk, 'desc'),
+if isfield(mrk.event, 'desc'),
   mrk= mrk_defineClasses(mrk, classDef, 'RemoveVoidClasses',0); %maybecomment
 else
   mkk= mrk;
@@ -119,9 +118,9 @@ if status==1,
   if opt.SkipUnfinished,
     warning('last active phase has no end marker (skipped)');
   else
-    blk = cat(1, blk, [mrk_start,mrk.time(end)]);
+    blk = cat(1, blk, [mrk_start, mrk.time(end)]);
     warning('last active phase has no end marker (took last marker instead)');
   end
 end
 
-blk= struct('ival',blk');
+blk= struct('ival',blk);
