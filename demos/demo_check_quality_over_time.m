@@ -13,7 +13,7 @@ nBlocks= 6;
 
 % define 'nBlocks' intervals ranging from the first to the last marker:
 inter = linspace( mrk.time(1), mrk.time(end), nBlocks+1 );
-blk = struct( 'ival', [inter(1:end-1)' inter(2:end)']' );
+blk = struct( 'ival', [inter(1:end-1)' inter(2:end)'] );
 
 % define marker structure: one marker every second
 mrkblk = mrk_evenlyInBlocks( blk, 1000 );
