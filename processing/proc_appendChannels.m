@@ -37,12 +37,25 @@ if isempty(dat)
     return
 elseif isempty(dat_append)
     return
-elseif isstruct(dat_append)
-%% dat_append is a struct
+else
+  if ~isstruct(dat_append),  %-- dat_append is a vector or matrix
+    if nargin <= 2,
+      error('Provide labels for new channels');
+    end
+    chanName = varargin{1};
+    if ~iscell(chanName),
+      chanName= {chanName};
+    end
+    tmp= dat_append;
+    dat_append= struct;
+    dat_append.x= tmp;
+    dat_append.clab= chanName(:)';
+  end
+  
   if isfield(dat,'t') && iscell(dat.t)
-      data_dim = size(dat.t,2);
+    data_dim = size(dat.t,2);
   else
-      data_dim = 1;
+    data_dim = 1;
   end;
 
   dat.x= cat(data_dim+1, dat.x, dat_append.x);
@@ -60,13 +73,4 @@ elseif isstruct(dat_append)
     end
     dat.V = cat(data_dim+1, dat.V, dat_append.V);
   end
-
-else
-%% dat_append is a vector or matrix
-  if nargin<=2 , error('Provide names for new channels'),end
-  chanName = varargin{1};
-  if ~iscell(chanName); chanName = {chanName}; end
-  dat.x = cat(2,dat.x,dat_append);
-  dat.clab = {dat.clab{:} chanName{:}};
 end
-
