@@ -8,7 +8,13 @@ else
   func= misc_getFuncParam(model);
 end
 
-applyFcnName= ['apply_' func2str(func)];
+trainFcnName= func2str(func);
+if length(trainFcnName)<7 || ~strncmp('train_', trainFcnName, 6),
+  error('names of classifier functions need to be prefixed by ''train_''.');
+end
+
+baseName= trainFcnName(7:end);
+applyFcnName= ['apply_' baseName];
 if exist(applyFcnName, 'file'),
   applyFcn= str2func(applyFcnName);
 else
