@@ -1,8 +1,8 @@
-function C = HLDA(XTr, YTr, nSegments, varargin)
-% HLDA - Hierarchical linear discriminant analysis 
+function C = train_HLDA(XTr, YTr, nSegments, varargin)
+% TRAIN_HLDA - Hierarchical linear discriminant analysis 
 %
 %Synopsis:
-%   C = HLDA(XTr, YTr, nSegments, varargin)
+%   C = train_HLDA(XTr, YTr, nSegments, varargin)
 %
 %Arguments:
 %   XTR: DOUBLE [TxNxM] - Data matrix, with T temporal features, N
@@ -30,7 +30,7 @@ function C = HLDA(XTr, YTr, nSegments, varargin)
 %       'final': STRUCT       - the final top-level LDA classifier
 %       'nChannels': INT      - (optional) the number of channels in the training data
 %Description:
-%   HLDA trains a hierarchical LDA classifier given training data,
+%   train_HLDA trains a hierarchical LDA classifier given training data,
 %   labels and a number of segments. Either LDA (default) or logistic regression 
 %   is used as a top-level classifier.
 %
@@ -41,8 +41,8 @@ function C = HLDA(XTr, YTr, nSegments, varargin)
 %
 %
 %Examples:
-%   HLDA(XTr, YTr, nSegments)
-%   HLDA(XTr, YTr, nSegments, 'Regression', 1, 'nChannels', 64)
+%   train_HLDA(XTr, YTr, nSegments)
+%   train_HLDA(XTr, YTr, nSegments, 'Regression', 1, 'nChannels', 64)
 %   
 %See also:
 %   APPLY_HLDA

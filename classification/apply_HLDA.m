@@ -27,7 +27,7 @@ function out = apply_HLDA(C, X)
 %   apply_HLDA(C, X)
 %   
 %See also:
-%  HLDA 
+% train_HLDA 
 
 % validate argument types
 misc_checkType(C, 'STRUCT(seg final)');
