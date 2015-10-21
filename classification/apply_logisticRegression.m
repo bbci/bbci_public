@@ -23,7 +23,8 @@ function out = apply_logisticRegression(C, X, varargin)
 %   apply_logisticRegression(C, X))
 %   
 %See also:
-%   LOGISTICREGRESSION
+%   TRAIN_LOGISTICREGRESSION
+
 
 props= {'OriginalOutput'      0                             'BOOL'
        };

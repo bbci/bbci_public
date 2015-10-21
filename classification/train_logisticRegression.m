@@ -1,8 +1,8 @@
-function C = logisticRegression(XTr, YTr)
-% LOGISTICREGRESSION - Logistic regresion classifier
+function C = train_logisticRegression(XTr, YTr)
+% TRAIN_LOGISTICREGRESSION - Logistic regresion classifier
 %
 %Synopsis:
-%   C = logisticRegression(XTr, YTr)
+%   C = train_logisticRegression(XTr, YTr)
 %
 %Arguments:
 %   XTR: DOUBLE [NxM] - Data matrix, with N feature dimensions, and M training points/examples. 
@@ -15,13 +15,13 @@ function C = logisticRegression(XTr, YTr)
 %       'b': STRUCT     - coefficients of the classifier
 %
 %Description:
-%   LOGISTICREGRESSION trains a logisctic regression classifier given training data and labels.
+%   TRAIN_LOGISTICREGRESSION trains a logisctic regression classifier given training data and labels.
 %
 
 %
 %
 %Examples:
-%     logisticRegression(XTr, YTr)
+%     train_logisticRegression(XTr, YTr)
 %   
 %See also:
 %   APPLY_LOGISTICREGRESSION
