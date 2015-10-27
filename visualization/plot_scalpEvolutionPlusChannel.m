@@ -86,6 +86,11 @@ if isfield(erp, 'yUnit'),
 end
 
 opt_scalpPattern= opt_substruct(opt, props_scalpPattern(:,1));
+ if opt.GlobalCLim,
+    commonCL=visutil_getCommonRange(erp,ival,'CLim',opt_scalpPattern.CLim);
+    opt_scalpPattern.CLim=commonCL;
+ end
+
 opt_channel= opt_substruct(opt, props_channel(:,1));
 
 if isfield(opt, 'ColorOrder'),
@@ -181,6 +186,8 @@ if opt.PlotChannel && ~isempty(clab),
     end
   end
 end
+       
+
 
 %if ~isempty(opt.Subplot),
 %  opt.Subplot= reshape(opt.Subplot, [nClasses, nIvals]);
@@ -204,6 +211,9 @@ for cc= 1:nClasses,
     end
     opt_scalpPattern= setfield(opt_scalpPattern, 'ScalePos','none');
     opt_scalpPattern= setfield(opt_scalpPattern, 'Class',cc);
+     if ~opt.GlobalCLim,
+        end
+
 %     opt_scalpPattern.Linespec= {'linewidth',2, 'Color',opt.IvalColor(mod(ii-1,nColors)+1,:)};
     H.scalp(cc,ii)= plot_scalpPattern(erp, mnt, ival(ii,:), opt_scalpPattern);
     if cc==nClasses 
@@ -221,10 +231,6 @@ for cc= 1:nClasses,
       end
       if cb_per_ival,
         H.cb(ii)= plotutil_colorbarAside('horiz');
-        if ~opt.GlobalCLim,
-%          visutil_unifyCLim([H.scalp(:,ii).ax], [zeros(1,nClasses-1) H.cb(ii)]);
-%           visutil_unifyCLim([H.scalp(:,ii).ax]);
-        end
       end
     end
   end
@@ -257,11 +263,7 @@ for cc= 1:nClasses,
     set(H.text(cc), 'Color',opt.ColorOrder(ccc,:));
   end
 end
-if opt.GlobalCLim,
-%  ucb= [zeros(nClasses, nIvals-1) ones(nClasses,1)];
-%  visutil_unifyCLim([H.scalp.ax], isfield(H, 'cb'));
-  visutil_unifyCLim([H.scalp.ax]);
-end
+
 
 if nargout<1,
   clear H
