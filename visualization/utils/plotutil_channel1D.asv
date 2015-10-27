@@ -138,7 +138,7 @@ opt_checkProplist(opt, props, props_gridOverPatches);
                           'XUnitDispPolicy',opt.UnitDispPolicy,...
                           'YUnitDispPolicy',opt.UnitDispPolicy);
                                        
-if max(sum(epo.y,2))>1,
+if max(sum(epo.y,2))>1,    
   epo= proc_average(epo, 'std',opt.PlotStd);
 else
   % epo contains already averages (or single trials)

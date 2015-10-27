@@ -64,7 +64,7 @@ if nargin==0,
 end
 
 misc_checkType(epo, 'STRUCT(x clab y)'); 
-if nargin==2&&iscellstr(varargin{1})
+if nargin==2&&(iscellstr(varargin{1})||ischar(varargin{1}))
   opt.Classes = varargin{:};
 else
   opt= opt_proplistToStruct(varargin{:});
