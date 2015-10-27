@@ -1,6 +1,6 @@
 
 eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
-    'demo_Pavel_01_11_23', 'selfpaced2sPavel');
+    'VPai_01_11_23', 'selfpaced2sVPai');
 
 %% Load data
 [cnt, mrk, mnt] = file_loadMatlab(eeg_file);

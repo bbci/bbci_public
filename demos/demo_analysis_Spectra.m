@@ -38,7 +38,7 @@ spec_lar_r= proc_rSquareSigned(spec_lar);
 spec_lar_r= proc_selectChannels(spec_lar_r, 'not','E*');
 
 fig_set(1);
-H= grid_plot(spec, mnt, opt_grid_spec)
+H= grid_plot(spec, mnt, opt_grid_spec);
 %grid_markIval(band_erd);     % to shade a certain frequency band
 grid_addBars(spec_r, 'HScale',H.scale);
 
