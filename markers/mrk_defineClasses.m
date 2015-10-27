@@ -53,7 +53,12 @@ misc_checkType(mk.event, 'STRUCT(desc)', 'mk.event');
 misc_checkType(classDef, 'CELL');
 
 nClasses= size(classDef,2);
-mrk= struct('time', mk.time, 'event',struct('desc',mk.event.desc));
+if iscell(mk.event.desc),
+  mrk= struct('time', mk.time, 'event',struct('desc',{mk.event.desc}));
+else
+  mrk= struct('time', mk.time, 'event',struct('desc',mk.event.desc));
+end
+
 mrk.y= zeros(nClasses, numel(mrk.time));
 for cc= 1:nClasses,
   if isnumeric(classDef{1,cc}),
