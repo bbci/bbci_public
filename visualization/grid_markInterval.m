@@ -19,7 +19,7 @@ if length(markCol)==1,
   markCol= markCol*[1 1 1];
 end
 
-if size(ival,1)>1 & size(ival,2)==2,
+if size(ival,1)>1 && size(ival,2)==2,
   for ib= 1:size(ival,1),
     H(ib)= grid_markInterval(ival(ib,:), chans, markCol);
   end
@@ -52,7 +52,7 @@ end
 set(H.line, 'UserData','ival line');
 set(H.patch, 'EdgeColor','none', 'UserData','ival patch');
 axis_getQuietly(old_ax);
-if isfield(get(old_ax,'UserData'),'hleg') & ...
+if isfield(get(old_ax,'UserData'),'hleg') && ...
       ~isnan(getfield(get(old_ax,'UserData'), 'hleg')),
   legend;
 end
