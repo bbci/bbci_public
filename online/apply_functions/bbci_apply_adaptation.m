@@ -19,7 +19,7 @@ if length(BA)==1 && ...
     fields= {'signal','feature','classifier','control'};
     save(fullfile(BA.folder, BA.file), '-STRUCT', 'bbci', fields{:});
     str= sprintf('# %s final adapted classifier saved as <%s>.', ...
-                 data.adaptation{k}.opt.tag, BA.file);
+                 data.adaptation{1}.opt.tag, BA.file);
     bbci_log_write(data.adaptation{1}.log.fid, str);
   elseif nargin>2 && strcmp(cmd, 'init'),
     % Init case
