@@ -85,14 +85,6 @@ if isfield(erp, 'yUnit'),
                                          'YUnit', erp.yUnit);
 end
 
-opt_scalpPattern= opt_substruct(opt, props_scalpPattern(:,1));
- if opt.GlobalCLim,
-    commonCL=visutil_getCommonRange(erp,ival,'CLim',opt_scalpPattern.CLim);
-    opt_scalpPattern.CLim=commonCL;
- end
-
-opt_channel= opt_substruct(opt, props_channel(:,1));
-
 if isfield(opt, 'ColorOrder'),
   if isequal(opt.ColorOrder,'rainbow'),
     nChans= size(erp.y,1);
@@ -106,11 +98,14 @@ else
   opt.ColorOrder= get(gca, 'ColorOrder');
 end
 
+opt_scalpPattern= opt_substruct(opt, props_scalpPattern(:,1));
+opt_channel= opt_substruct(opt, props_channel(:,1));
+
+[AxesStyle, dmy]= opt_extractPlotStyles(opt);
+
 if max(sum(erp.y,2))>1,
   erp= proc_average(erp);
 end
-
-[AxesStyle, lineStyle]= opt_extractPlotStyles(opt);
 
 if size(ival,1)==1,
   ival= [ival(1:end-1)', ival(2:end)'];
@@ -127,6 +122,34 @@ end
 nIvals= size(ival,1);
 nColors= size(opt.IvalColor,1);
 nClasses= length(erp.className);
+
+mapCLim= zeros(2, nClasses, nIvals);
+if opt.GlobalCLim,
+  % determine common color range for all scalp maps
+  commonCL= visutil_getCommonRange(erp, ival, 'CLim',opt_scalpPattern.CLim);
+  mapCLim(1,:,:)= commonCL(1);
+  mapCLim(2,:,:)= commonCL(2);
+else
+  if strcmp(opt.ScalePos, 'horiz'),
+    % determine common color range for each interval
+    for ii= 1:nIvals,
+      commonCL= visutil_getCommonRange(erp, ival(ii,:), ...
+                                       'CLim',opt_scalpPattern.CLim);
+      mapCLim(1,:,ii)= commonCL(1);
+      mapCLim(2,:,ii)= commonCL(2);
+    end
+  else
+    % determine common color range for each class
+    for cc= 1:nClasses,
+      erp_cc= proc_selectClasses(erp, cc);
+      commonCL= visutil_getCommonRange(erp_cc, ival, ...
+                                       'CLim',opt_scalpPattern.CLim);
+      mapCLim(1,cc,:)= commonCL(1);
+      mapCLim(2,cc,:)= commonCL(2);
+    end
+  end
+end
+
 
 if isempty(opt.Subplot),
   clf;
@@ -211,11 +234,8 @@ for cc= 1:nClasses,
     end
     opt_scalpPattern= setfield(opt_scalpPattern, 'ScalePos','none');
     opt_scalpPattern= setfield(opt_scalpPattern, 'Class',cc);
-     if ~opt.GlobalCLim,
-        end
-
-%     opt_scalpPattern.Linespec= {'linewidth',2, 'Color',opt.IvalColor(mod(ii-1,nColors)+1,:)};
-    H.scalp(cc,ii)= plot_scalpPattern(erp, mnt, ival(ii,:), opt_scalpPattern);
+    H.scalp(cc,ii)= plot_scalpPattern(erp, mnt, ival(ii,:), ...
+                           opt_scalpPattern, 'CLim',mapCLim(:,cc,ii));
     if cc==nClasses 
       if opt.PrintIval,
         yLim= get(gca, 'yLim');
@@ -236,16 +256,12 @@ for cc= 1:nClasses,
   end
   if strcmp(opt.ScalePos, 'vert'),
     H.cb(cc)= plotutil_colorbarAside;
-    ylabel(H.cb(cc), opt.YUnit);
+    ylabel(H.cb(cc), ['[' opt.YUnit ']']);
     if opt.ShrinkColorbar>0,
       cbpos= get(H.cb(cc), 'Position');
       cbpos(2)= cbpos(2) + cbpos(4)*opt.ShrinkColorbar/2;
       cbpos(4)= cbpos(4) - cbpos(4)*opt.ShrinkColorbar;
       set(H.cb(cc), 'Position',cbpos);
-    end
-    if ~opt.GlobalCLim,
-%      visutil_unifyCLim([H.scalp(cc,:).ax], [zeros(1,nIvals-1) H.cb(cc)]);
-%       visutil_unifyCLim([H.scalp(cc,:).ax]);
     end
   end
   pos= get(H.scalp(cc,end).ax, 'position');
