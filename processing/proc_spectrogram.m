@@ -10,8 +10,9 @@ function dat = proc_spectrogram(dat, freq, varargin)
 %Arguments:
 % DAT          - data structure of continuous or epoched data
 % FREQ         - vector with desired frequency bins (eg 1:100). If a single 
-%                integer is given, it specifies the number of frequency 
-%                bins whcih are then automatically chosen (this is usally faster).
+%                integer is given, it specifies the FFT length from which 
+%                the frequency bins are then automatically chosen (this is 
+%                usally faster).
 % OPT - struct or property/value list of optional properties:
 % 'Window' -   if a vector, divides the data  into segments of length equal 
 %              to the length of WINDOW, and then windows each
@@ -29,8 +30,7 @@ function dat = proc_spectrogram(dat, freq, varargin)
 %              'complex' preserves the complex output (with both phase and
 %              amplitude information), 'amplitude' returns the absolute
 %              value, 'power' the squared absolute value, 'db' log power, 
-%              and 'phase' the phase in radians. Default 'complex'.
-% 'DbScaled' -  
+%              and 'phase' the phase in radians. Default 'complex'. 
 %Returns:
 % DAT    -    updated data structure with a higher dimension.
 %             For continuous data, the dimensions correspond to 
@@ -41,11 +41,11 @@ function dat = proc_spectrogram(dat, freq, varargin)
 %             phase(dat.x);
 %
 % Note: Requires signal processing toolbox.
-% ** TODO ** : DBSCALED is not implemented yet! 
 %
 % See also proc_wavelets, proc_spectrum
 
-% Steven Lemm, Stefan Haufe, Matthias Treder, Berlin 2004, 2010
+% Steven Lemm, Stefan Haufe, Matthias Treder, Daniel Miklody, Berlin 2004,
+% 2010, 2015
 
 props = {'Window',              []                          'DOUBLE';
          'DbScaled'             1                           '!BOOL';
@@ -88,10 +88,6 @@ end
 
 dat = misc_history(dat);
 
-if ~isdefault.DbScaled
-  warning('Optional parameter DbScaled not implemented yet!')
-end
-
 if numel(freq)==1
   nfreq = freq;
 else
@@ -101,40 +97,28 @@ end
 %% Spectrogram
 dat = proc_selectChannels(dat,opt.CLab);
 
-% Strech out data matrix to single vector (spectrogram does not operate on
-% matrices). Interleave zero padding to prevent smearing between
-% successive channels/epochs.
 sz =size(dat.x);
-zero = zeros([winlen-1, sz(2:end)]);
-dat.x = cat(1,dat.x,zero);
-% if ndims(dat.x) == 2      % cnt
-  % Append also zeros at beginning and end
-  X = zeros(2*(winlen-1)+numel(dat.x),1);
-  X(winlen:end-winlen+1) = dat.x(:);
-% elseif ndims(dat.x)==3    % epoched
-% end
 
-[S,F,T] = spectrogram(X,opt.Window,opt.NOverlap,freq,dat.fs);
-
-clear X
-
-S = S(:,floor(winlen/2):end-ceil(winlen/2)); % cut off padded values at beginning and end
-
-% Reshape vector to matrix
+% Process spectrogram channel- and epoch-wise
+X=dat.x;
+dat.x=[];
 if ndims(dat.x) == 2      % cnt
-  dat.x = reshape(S',[sz(1)+winlen-1  sz(2) nfreq]);
-  dat.x = dat.x(1:end-(winlen-1),:,:);
-  dat.x = permute(dat.x,[1 3 2]);
-
+    for chan=1:sz(2)
+        [S,F,T] = spectrogram(X(:,chan),opt.Window,opt.NOverlap,freq,dat.fs);
+        dat.x(:,:,chan)=S;
+    end
 elseif ndims(dat.x)==3    % epoched
-  dat.x = reshape(S',[sz(1)+winlen-1  sz(2:end) nfreq]);
-  dat.x = dat.x(1:end-(winlen-1),:,:,:);
-  dat.x = permute(dat.x,[1 4 2 3]);
-  
+    for chan=1:sz(3)
+        for seg=1:sz(2)
+            [S,F,T] = spectrogram(X(:,seg,chan),opt.Window,opt.NOverlap,freq,dat.fs);
+            dat.x(:,:,seg,chan)=S;
+        end
+    end
 end
 
-% dat.t = (T-winlen/2/dat.fs)*1000 + dat.t(1);
-dat.f = freq;
+dat.t = T;
+dat.T = [];
+dat.f = F';
 dat.zUnit = 'Hz';
 
 switch(opt.Output)
@@ -153,27 +137,4 @@ switch(opt.Output)
     dat.x = angle(dat.x);
     dat.yUnit= 'phase';
 end
-
-
-% DBSCALED implementation fehlt noch
-
-% if opt.DbScaled,
-%   for chIdx = 1: length(chan),
-%     ch = chan(chIdx) ;
-%     for evt = 1: nEvt,
-%       [B,F,T] = spectrogram([mean(epo.x(1:min(end,opt.Window),ch,evt))*ones(opt.Window/2,1); epo.x(:,ch,evt);mean(epo.x(max(1,end-opt.Window):end,ch,evt))*ones(opt.Window/2-1,1)], opt.Window, opt.Noverlap, opt.Nfft, epo.fs);     
-%       dat.x(:,:,chIdx, evt) = abs(B(bandIdx, :)).^2;
-%     end ;
-%     dat.x(:,:,chIdx, :) = 10*log10( dat.x(:,:,chIdx, :)+eps ) ;
-%   end ;
-%   dat.yUnit= 'dB';
-% else
-%   for ch = chan,
-%     for evt = 1: nEvt,
-%       [B,F,T] = spectrogram([zeros(opt.Window/2,1);epo.x(:,ch,evt);zeros(opt.Window/2-1,1)], opt.Window, opt.Noverlap, opt.Nfft, epo.fs);      
-%       dat.x(:,:,chIdx, evt) = abs(B(bandIdx, :)).^2;
-%     end ;
-%   end ;
-%   dat.yUnit= 'power';
-% end
 
