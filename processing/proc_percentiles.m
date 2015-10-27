@@ -1,4 +1,4 @@
-function out= proc_average(epo, varargin)
+function out= proc_percentiles(epo, p, varargin)
 %PROC_AVERAGE - Classwise calculated averages
 %
 %Synopsis:
@@ -9,6 +9,11 @@ function out= proc_average(epo, varargin)
 % EPO -      data structure of epoched data
 %            (can handle more than 3-dimensional data, the average is
 %            calculated across the last dimension)
+%  p: [1 m] vector, with entries in the range 0..100. Produce
+%      percentile values for the values given here. For scalar p, y is a row
+%      vector containing Pth percentile of each column of X. For vector p,
+%      the ith row of y is the p(i) percentile of each column of X.
+%
 % OPT struct or property/value list of optional arguments:
 %  .Policy - 'mean' (default), 'nanmean', or 'median'
 %  .Std    - if true, standard deviation is calculated also 
@@ -64,7 +69,7 @@ if nargin==0,
 end
 
 misc_checkType(epo, 'STRUCT(x clab y)'); 
-if nargin==2&&iscellstr(varargin{1})
+if nargin==3
   opt.Classes = varargin{:};
 else
   opt= opt_proplistToStruct(varargin{:});
@@ -75,7 +80,7 @@ epo = misc_history(epo);
 
 %% delegate a special case:
 if isfield(epo, 'yUnit') && isequal(epo.yUnit, 'dB'),
-  out= proc_dBAverage(epo, varargin{:});
+  out= proc_dBPercentiles(epo, varargin{:});
   return;
 end
 
@@ -116,74 +121,65 @@ end
 
 sz= size(epo.x);
 out.x= zeros(prod(sz(1:end-1)), nClasses);
-if opt.Std,
-  out.std= zeros(prod(sz(1:end-1)), nClasses);
-end
-if opt.Stats,
-  out.se = zeros(prod(sz(1:end-1)), nClasses);
-  out.p = zeros(prod(sz(1:end-1)), nClasses);
-  out.tstat = zeros(prod(sz(1:end-1)), nClasses);
-  out.sgnlogp = zeros(prod(sz(1:end-1)), nClasses);
-end
+% if opt.Std,
+%   out.std= zeros(prod(sz(1:end-1)), nClasses);
+% end
+% if opt.Stats,
+%   out.se = zeros(prod(sz(1:end-1)), nClasses);
+%   out.p = zeros(prod(sz(1:end-1)), nClasses);
+%   out.tstat = zeros(prod(sz(1:end-1)), nClasses);
+%   out.sgnlogp = zeros(prod(sz(1:end-1)), nClasses);
+% end
 out.y= eye(nClasses);
 out.className= classes;
 out.N= zeros(1, nClasses);
 epo.x= reshape(epo.x, [prod(sz(1:end-1)) sz(end)]);
 for ic= 1:nClasses,
-  switch(lower(opt.Policy)),  %% alt: feval(opt.Policy, ...)
-   case 'mean',
-    out.x(:,ic)= mean(epo.x(:,evInd{ic}), 2);
-   case 'nanmean',
-    out.x(:,ic)= nanmean(epo.x(:,evInd{ic}), 2);
-   case 'median',
-    warning('median computation will be handled by proc_percentiles in the future');
-    out.x(:,ic)= median(epo.x(:,evInd{ic}), 2);
-   otherwise,
-    error('unknown policy');
-  end
-  if opt.Std,
-    if strcmpi(opt.Policy,'nanmean'),
-      out.std(:,ic)= nanstd(epo.x(:,evInd{ic}), 0, 2);
-    else
-      out.std(:,ic)= std(epo.x(:,evInd{ic}), 0, 2);
-    end
-  end
-  out.N(ic)= length(evInd{ic});
-  if opt.Stats,
-    if strcmpi(opt.Policy,'nanmean'),
-      [H out.p(:, ic) ci stats] = ttest(epo.x(:,evInd{ic}), [], [], [], 2);
-      out.se(:,ic)= stats.sd/sqrt(out.N(ic));
-    else
-      [H out.p(:, ic) ci stats] = ttest(epo.x(:,evInd{ic}), [], [], [], 2);
-      out.se(:,ic)= stats.sd/sqrt(out.N(ic));
-    end
-    out.tstat(:, ic) = stats.tstat;
-    out.df(ic) = stats.df(1);
-    if ~isempty(opt.Alphalevel)
-      out.crit(ic) = stat_calcTCrit(opt.Alphalevel, stats.df(1));
-    end
-  end
+    out.x(:,ic)= stat_percentiles(epo.x(:,evInd{ic}),p);
+% 
+%   if opt.Std,
+%     if strcmpi(opt.Policy,'nanmean'),
+%       out.std(:,ic)= nanstd(epo.x(:,evInd{ic}), 0, 2);
+%     else
+%       out.std(:,ic)= std(epo.x(:,evInd{ic}), 0, 2);
+%     end
+%   end
+%   out.N(ic)= length(evInd{ic});
+%   if opt.Stats,
+%     if strcmpi(opt.Policy,'nanmean'),
+%       [H out.p(:, ic) ci stats] = ttest(epo.x(:,evInd{ic}), [], [], [], 2);
+%       out.se(:,ic)= stats.sd/sqrt(out.N(ic));
+%     else
+%       [H out.p(:, ic) ci stats] = ttest(epo.x(:,evInd{ic}), [], [], [], 2);
+%       out.se(:,ic)= stats.sd/sqrt(out.N(ic));
+%     end
+%     out.tstat(:, ic) = stats.tstat;
+%     out.df(ic) = stats.df(1);
+%     if ~isempty(opt.Alphalevel)
+%       out.crit(ic) = stat_calcTCrit(opt.Alphalevel, stats.df(1));
+%     end
+%   end
 end
 
 out.x= reshape(out.x, [sz(1:end-1) nClasses]);
-if opt.Std,
-  out.std= reshape(out.std, [sz(1:end-1) nClasses]);
-end
-
-if opt.Stats,
-  out.tstat= reshape(out.tstat, [sz(1:end-1) nClasses]);
-  out.se = reshape(out.se, [sz(1:end-1) nClasses]);
-  out.p = reshape(out.p, [sz(1:end-1) nClasses]);
-  if opt.Bonferroni
-    out.corrfac = prod(sz(1:end-1));
-    out.p = min(out.p*out.corrfac, 1);
-  end  
-  out.sgnlogp = -log10(out.p).*sign(out.x);
-  if ~isempty(opt.Alphalevel)
-    out.alphalevel = opt.Alphalevel;
-    out.sigmask = out.p < opt.Alphalevel;
-  end
-end
+% if opt.Std,
+%   out.std= reshape(out.std, [sz(1:end-1) nClasses]);
+% end
+% 
+% if opt.Stats,
+%   out.tstat= reshape(out.tstat, [sz(1:end-1) nClasses]);
+%   out.se = reshape(out.se, [sz(1:end-1) nClasses]);
+%   out.p = reshape(out.p, [sz(1:end-1) nClasses]);
+%   if opt.Bonferroni
+%     out.corrfac = prod(sz(1:end-1));
+%     out.p = min(out.p*out.corrfac, 1);
+%   end  
+%   out.sgnlogp = -log10(out.p).*sign(out.x);
+%   if ~isempty(opt.Alphalevel)
+%     out.alphalevel = opt.Alphalevel;
+%     out.sigmask = out.p < opt.Alphalevel;
+%   end
+% end
 
 out.indexedByEpochs = {}; 
 
