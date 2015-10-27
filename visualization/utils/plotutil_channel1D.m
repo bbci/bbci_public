@@ -103,8 +103,8 @@ props = {'AxisType',                        'box',                '!CHAR';
          'YDir',                            'normal',               'CHAR';
          'XGrid',                           'on',                   'CHAR';
          'YGrid',                           'on',                   'CHAR';
-         'XUnit',                           '[ms]',                 'CHAR';
-         'YUnit',                           '[a.u.]',                 'CHAR';
+         'XUnit',                           'ms',                   'CHAR';
+         'YUnit',                           'a.u.',                 'CHAR';
          'UnitDispPolicy',                  'label',                'CHAR';
          'XUnitDispPolicy',                 'label',                'CHAR';
          'YUnitDispPolicy',                 'label',                'CHAR';
@@ -115,6 +115,8 @@ props = {'AxisType',                        'box',                '!CHAR';
          'ZeroLineTickLength',              3,                      'DOUBLE';
          };
 
+% If the new plotutil_gridOverPatches proved to work well, we can remove
+% the following stuff here (BB)
 props_gridOverPatches = plotutil_gridOverPatches;
 
 if nargin==0,
@@ -226,13 +228,13 @@ if opt.SmallSetup,
   end
 end
 if isdefault.XUnit && isfield(epo, 'xUnit'),
-  opt.XUnit= ['[' epo.xUnit ']'];
+  opt.XUnit= epo.xUnit;
 end
 if isdefault.YUnit && isfield(epo, 'yUnit'),
-  opt.YUnit= ['[' epo.yUnit ']'];
+  opt.YUnit= epo.yUnit;
 elseif isdefault.YUnit && isfield(epo, 'cnt_info') && ...
         isfield(epo.cnt_info, 'yUnit');
-  opt.YUnit= ['[' epo.cnt_info.yUnit ']'];
+  opt.YUnit= epo.cnt_info.yUnit;
 end
 if strcmpi(opt.YUnitDispPolicy, 'lasttick'),
   opt.YUnit= strrep(opt.YUnit, '\mu','u');
@@ -254,11 +256,12 @@ elseif opt.Butterfly && isdefault.ColorOrder
   cm = get(gcf,'colormap');
   cm = repmat(cm,[ceil(numel(epo.clab)/size(cm,1)) 1]); % in case we have more channels than colors
   opt.ColorOrder= cm(1:numel(epo.clab),:);
-elseif isdefault.ColorOrder
+else
   opt.ColorOrder= opt.ColorOrder(1:min([nClasses size(opt.ColorOrder,1)]),:);
 end
 
-[axesStyle, lineStyle]= opt_extractPlotStyles(rmfield(opt,{'YLim','LineStyleOrder'}));
+[axesStyle, lineStyle]= ...
+            opt_extractPlotStyles(rmfield(opt,{'YLim','LineStyleOrder'}));
 [opt, isdefault]= opt_setDefaults(opt, {'LineStyleOrder', {};
                   'LineWidthOrder', [];
                   'LineSpecOrder', {}} );
@@ -397,9 +400,9 @@ end
 
 switch(lower(opt.XUnitDispPolicy)),
  case 'label',
-  H.XLabel= xlabel(opt.XUnit);
+  H.XLabel= xlabel(['[' opt.XUnit ']']);
 %  case 'lasttick',
-%   setLastXTickLabel(opt.XUnit);
+%   setLastXTickLabel(['[' opt.XUnit ']']);
  case 'none',
   % Not a lot to do here ...
  otherwise,
@@ -407,9 +410,9 @@ switch(lower(opt.XUnitDispPolicy)),
 end
 switch(lower(opt.YUnitDispPolicy)),
  case 'label',
-  H.YLabel= ylabel(opt.YUnit);
+  H.YLabel= ylabel(['[' opt.YUnit ']']);
 %  case 'lasttick',
-%   setLastYTickLabel(opt.YUnit);
+%   setLastYTickLabel(['[' opt.YUnit ']']);
  case 'none',
   % Not a lot to do here ...
  otherwise,
