@@ -333,7 +333,7 @@ for ia= 1:nDisps,
     opt_plot{2}= 0;
     H.leg= H.chan(ia).leg;
     leg_pos= gridutil_getAxisPos(mnt, 0);
-    if ~any(isnan(leg_pos)) && ~isnan(H.leg),
+    if ~any(util_isnan(leg_pos)) && ~util_isnan(H.leg),
       leg_pos_orig= get(H.leg, 'position');
       if leg_pos(4)>leg_pos_orig(4),
         switch(lower(opt.LegendVerticalAlignment)), 

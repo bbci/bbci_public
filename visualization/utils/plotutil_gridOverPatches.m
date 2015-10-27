@@ -3,6 +3,7 @@ function h=plotutil_gridOverPatches(varargin)
 %
 % replots x- and y-grid such that it is shown on top of patches
 
+
 props = {'Axes',          	gca         '!GRAPHICS';
          'XGrid'            []          'CHAR(on off)';
          'YGrid'            []          'CHAR(on off)';
@@ -13,6 +14,15 @@ if nargin==0,
 else
   h=[];
 end
+
+% This solves all the issues
+set(gca, 'Layer','top');
+
+return
+
+
+%% ---- old code - NOT USED
+
 
 opt= opt_proplistToStruct(varargin{:});
 [opt, isdefault]= opt_setDefaults(opt, props);

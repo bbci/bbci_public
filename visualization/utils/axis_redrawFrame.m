@@ -1,22 +1,31 @@
 function H= axis_redrawFrame(ax, lw)
-%AXIS_REDRAWFRAME - Redraws the frames of axes. Can be useful when patch
-% objects have been drawn, which sometimes overlay the original frame.
+%AXIS_REDRAWFRAME - Redraws the frames of axes.
+%
+%Description:
+% Obsolete: Just use set(AX, 'Layer','top').
 %
 %Synposis:
-% H= axis_redrawFrame(AX, LW)
+% H= axis_redrawFrame(AX)
 %
 %Input:
 % AX: vector of axis handles
-% LW: line width of frame to be redrawn
 %
 %Output:
 % H: handle to redrawn frame
 
-if nargin==1
-  lw = 1;
-end
 
 misc_checkTypeIfExists('ax','!GRAPHICS');
+
+if nargin<1,
+  ax= gca;
+end
+
+set(ax, 'Layer','top');
+return;
+
+
+%% ----- old UNUSED code:
+
 
 old_ax= gca;
 

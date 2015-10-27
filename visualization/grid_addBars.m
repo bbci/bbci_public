@@ -215,12 +215,8 @@ for ii= 1:length(ax),
   set(H.ax(jj), 'userData',ud);
   hold off;
   if strcmp(get(H.ax(jj), 'box'), 'on'),
-    h= axis_redrawFrame(H.ax(jj), 0.3);
-    if jj==1,
-      H.frame= h;
-    else
-      H.frame(:,jj)= h;
-    end
+    set(H.ax(jj), 'LineWidth',0.3);
+    axis_redrawFrame(H.ax(jj));
   end
 end
 if diff(opt.CLim)==0, opt.CLim(2)= opt.CLim(2)+eps; end
