@@ -4,7 +4,28 @@ function [dat, W, A, lambda]= proc_spoc(dat, varargin)
 % Optimizes spatial filters such that the power of the filtered
 % signal maximally covaries with the univariate target function, as
 % described in Dahne et al., 2014a.
+% Note that the data should be bandpassed filtered before. 
 %
+%Synopsis:
+% [DAT, SPOC_W, SPOC_A, LAMBDA]= proc_spoc(DAT, <OPT>);
+%
+%Arguments:
+% DAT    - data structure of epoched data, where for each epoch there is
+%           single target function value in DAT.y. 
+%
+% OPT - struct or property/value list of optional properties:
+%  .N_components - either the string 'all' or an integer, determines the
+%                   number of components to be returned. The components
+%                   will be sorted according to the absolute value of
+%                   LAMBDA, i.e. the first N components are the ones with
+%                   the highest absolute covariance between their power and
+%                   the target function. Default is 'all'.
+%
+%Returns:
+% DAT    - updated data structure
+% SPOC_W  - SPOC projection matrix (spatial filters, in the columns)
+% SPOC_A  - estimated mixing matrix (activation patterns, in the columns)
+% LAMBDA - eigenvalue score of SPOC projections 
 %
 % References:
 %
