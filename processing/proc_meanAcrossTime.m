@@ -1,5 +1,5 @@
-function epo= proc_averageOverTime(epo, ival, clab)
-%PROC_MEANACROSSTIME - Calculate average
+function epo= proc_meanAcrossTime(epo, ival, clab)
+%PROC_MEANACROSSTIME - Average signals across a specified time interval
 %
 %Synopsis:
 %  EPO= proc_meanAcrossTime(EPO, <IVAL>, <CLAB>)
@@ -13,6 +13,10 @@ function epo= proc_averageOverTime(epo, ival, clab)
 %Returns:
 %  DAT  - updated data structure
 
+
+misc_checkType(epo, 'STRUCT(x)');
+misc_checkTypeIfExists('ival', 'DOUBLE[2]');
+misc_checkTypeIfExists('clab', 'CHAR|CELL{CHAR}');
 
 if nargin<2,
   ival= [];
