@@ -29,9 +29,9 @@ function out= proc_percentiles(epo, p, varargin)
 %  .x           - classwise percentiles
 %  .N           - vector of epochs per class across which average was calculated
 %  .percentiles - vector containing the percentiles
-%
+
 % Benjamin Blankertz
-% 10-2015 miklody@tu-berlin.de
+% 10-2015 Daniel Miklody
 
 props= {  'Policy'   'mean' '!CHAR(mean nanmean median)';
           'Classes' 'ALL'   '!CHAR';
@@ -80,7 +80,7 @@ end
 nClasses= length(classes);
 
 if max(sum(epo.y,2))==1,
-  warning('only one epoch per class - nothing to average');
+  warning('only one epoch per class - nothing to calculate percentiles on');
   out= proc_selectClasses(epo, classes);
   out.N= ones(1, nClasses);
   return;
@@ -96,17 +96,20 @@ for ic= 1:nClasses,
 end
 
 sz= size(epo.x);
-out.x= zeros(prod(sz(1:end-1)), nClasses, numel(p));
+out.x= zeros(prod(sz(1:end-1)), nClasses);
+out.percentiles.x= zeros(prod(sz(1:end-1)), nClasses, numel(p));
 out.y= eye(nClasses);
 out.className= classes;
 out.N= zeros(1, nClasses);
 epo.x= reshape(epo.x, [prod(sz(1:end-1)) sz(end)]);
 for ic= 1:nClasses,
-    out.x(:,ic,:)= stat_percentiles(epo.x(:,evInd{ic}),p);
+    out.x(:,ic)= stat_percentiles(epo.x(:,evInd{ic}),50);
+    out.percentiles.x(:,ic,:)= stat_percentiles(epo.x(:,evInd{ic}),p);
 end
-out.percentiles=p;
+out.percentiles.p=p;
 
-out.x= reshape(out.x, [sz(1:end-1) nClasses numel(p)]);
+out.x= reshape(out.x, [sz(1:end-1) nClasses]);
+out.percentiles.x= reshape(out.percentiles.x, [sz(1:end-1) nClasses numel(p)]);
 
 out.indexedByEpochs = {}; 
 

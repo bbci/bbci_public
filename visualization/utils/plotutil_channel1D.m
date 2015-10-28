@@ -65,6 +65,7 @@ function H= plotutil_channel1D(epo, clab, varargin)
 %See also grid_plot.
 
 % 02-2005 Benjamin Blankertz
+% 10-2015 Daniel Miklody
 
 
 props = {'AxisType',                        'box',                '!CHAR';
@@ -117,11 +118,7 @@ props = {'AxisType',                        'box',                '!CHAR';
          'ZeroLineTickLength',              3,                      'DOUBLE';
          };
 
-if isfield(opt,'PlotStd')
-    opt.PlotStat='std';
-    opt.PlotStd=[];
-    warning('The use of the .PlotStd option is obsolete and will be removed in a future release')
-end
+
 
 props_gridOverPatches = plotutil_gridOverPatches;
 
@@ -135,20 +132,46 @@ opt_checkProplist(opt, props, props_gridOverPatches);
 
 [opt, isdefault]= ...
     opt_overrideIfDefault(opt, isdefault, ...
-                          'XUnitDispPolicy',opt.UnitDispPolicy,...
-                          'YUnitDispPolicy',opt.UnitDispPolicy);
-                                       
+    'XUnitDispPolicy',opt.UnitDispPolicy,...
+    'YUnitDispPolicy',opt.UnitDispPolicy);
+
 if max(sum(epo.y,2))>1,
-  epo= proc_average(epo, 'std',opt.PlotStd);
+    if strcmpi(opt.PlotStat,'std'),
+        epo= proc_average(epo, 'std',1);
+    elseif strcmpi(opt.PlotStat,'sem')
+        epo= proc_average(epo, 'Stats',1);
+    elseif strcmpi(opt.PlotStat,'perc')
+        epo= proc_percentiles(epo, [25 75]);
+    else
+        epo= proc_average(epo);        
+    end    
 else
-  % epo contains already averages (or single trials)
-  % sort Classes
-  [tmp,si]= sort([1:size(epo.y,1)]*epo.y);
-  epo.y= epo.y(:,si);  % should be an identity matrix now
-  epo.x= epo.x(:,:,si);
-  if isfield(epo, 'std');
-    epo.std= epo.std(:,:,si);
-  end
+    % epo contains already averages (or single trials)
+    % sort Classes
+    [tmp,si]= sort([1:size(epo.y,1)]*epo.y);
+    epo.y= epo.y(:,si);  % should be an identity matrix now
+    epo.x= epo.x(:,:,si);
+    if strcmpi(opt.PlotStat,'std')
+        if isfield(epo, 'std');
+            epo.std= epo.std(:,:,si);
+        else
+            error('When using opt.PlotStat==std the standard deviation needs to be calculated using proc_average or the unaveraged data has to be given.')
+        end
+    end
+    if strcmpi(opt.PlotStat,'sem')
+        if isfield(epo, 'se');
+            epo.se= epo.se(:,:,si);
+        else
+            error('When using opt.PlotStat==sem the se needs to be calculated using proc_average or the unaveraged data has to be given.')
+        end
+    end
+    if strcmpi(opt.PlotStat,'perc')
+        if isfield(epo, 'percentiles');
+            epo.percentiles.x= epo.percentiles.x(:,:,si,:);
+        else
+            error('When using opt.PlotStat==proc the percentiles need to be calculated using proc_percentiles.')
+        end
+    end
 end
 
 chan= util_chanind(epo, clab);
@@ -317,6 +340,48 @@ end
 for ii= 1:length(opt.LineSpecOrder),
   set(H.plot(ii), opt.LineSpecOrder{ii}{:});
 end
+
+if ~strcmpi(opt.PlotStat,'none')
+    %prepare data vectors for plotting
+    if strcmpi(opt.PlotStat,'std'),
+        epo.stats=[squeeze(epo.x(:,chan,:)-epo.std(:,chan,:)); ...
+            flipud(squeeze(epo.x(:,chan,:)+epo.std(:,chan,:)))];
+    elseif strcmpi(opt.PlotStat,'sem')
+        epo.stats=[squeeze(epo.x(:,chan,:)-epo.se(:,chan,:)); ...
+            flipud(squeeze(epo.x(:,chan,:)+epo.se(:,chan,:)))] ;
+    elseif strcmpi(opt.PlotStat,'perc')
+        %exclude median, becaus this is the basis of the line
+        epo.percentiles.x(:,:,:,epo.percentiles.p==50)=[];
+        epo.percentiles.p(epo.percentiles.p==50)=[];
+        %resort percentiles to have pairs from far to close
+        epo.percentiles.p=sort(epo.percentiles.p);
+        neworder=[];
+        for ii=1:floor(numel(epo.percentiles.p)/2)
+            neworder= [neworder ii numel(epo.percentiles.p)+1-ii];
+        end
+        epo.percentiles.x=epo.percentiles.x(:,:,:,neworder);
+        %prepare data vector
+        for ii=1:floor(numel(neworder)/2)
+            epo.stats(:,:,ii)=[squeeze(epo.percentiles.x(:,chan,:,2*(ii-1)+1));...
+                flipud(squeeze(epo.percentiles.x(:,chan,:,2*(ii-1)+2)))] ;
+        end        
+    end
+    %plot every tube individually: for percentiles, more then one tube per
+    %class is possible.
+    for ii=1:size(epo.stats,2)
+        for jj=1:size(epo.stats,3)
+            H.plot_stats(jj)=patch([epo.t fliplr(epo.t)], epo.stats(:,ii,jj), ...
+                ones(size(epo.stats(:,ii,jj))),...
+            'FaceColor',get(H.plot(ii),'Color') ,'FaceAlpha',0.1,'EdgeColor','none');
+        end        
+    end
+    %get grid and plots back on top
+    set(gca,'Layer','top')
+    for ii=1:size(H.plot,1)
+        uistack(H.plot(ii),'top')
+    end
+end
+
 if ~isempty(opt.YLim),
   yLim= opt.YLim;
 else
@@ -332,20 +397,6 @@ else
     opt_selYLim= {};
   end
   yLim= visutil_selectYLim(H.ax, 'policy',opt.YLimPolicy, opt_selYLim{:});
-end
-
-if opt.PlotStd,
-  if iscell(opt.StdLineSpec{1}),
-    H.plot_std= plot(epo.t, [squeeze(epo.x(:,chan,:)-epo.std(:,chan,:)) ...
-                             squeeze(epo.x(:,chan,:)+epo.std(:,chan,:))]);
-    for cc= 1:length(H.plot_std),
-      set(H.plot_std(cc), opt.StdLineSpec{cc}{:});
-    end
-  else
-    H.plot_std= plot(epo.t, [squeeze(epo.x(:,chan,:)-epo.std(:,chan,:)) ...
-                             squeeze(epo.x(:,chan,:)+epo.std(:,chan,:))], ...
-                     opt.StdLineSpec{:});
-  end
 end
 
 set(H.ax, axesStyle{:});

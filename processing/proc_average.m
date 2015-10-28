@@ -51,6 +51,7 @@ function out= proc_average(epo, varargin)
 %
 % Benjamin Blankertz
 % 09-2012 stefan.haufe@tu-berlin.de
+% 10-2015 Daniel Miklody
 
 props= {  'Policy'   'mean' '!CHAR(mean nanmean median)';
           'Classes' 'ALL'   '!CHAR';
