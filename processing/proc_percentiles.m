@@ -19,15 +19,15 @@ function out= proc_percentiles(epo, p, varargin)
 %  .Classes - classes of which the average is to be calculated,
 %            names of classes (strings in a cell array), or 'ALL' (default)
 %
-% For compatibility PROC_AVERAGE can be called in the old format with CLASSES
+% For compatibility PROC_PERCENTILES can be called in the old format with CLASSES
 % as second argument (which is now set via opt.Classes):
-% CLASSES - classes of which the average is to be calculated,
+% CLASSES - classes of which the percentiles are to be calculated,
 %           names of classes (strings in a cell array), or 'ALL' (default)
 %
 %Returns:
 % EPO           - updated data structure with fields
 %  .x           - classwise percentiles
-%  .N           - vector of epochs per class across which average was calculated
+%  .N           - vector of epochs per class across which the percentiles were calculated
 %  .percentiles - vector containing the percentiles
 
 % Benjamin Blankertz
@@ -64,7 +64,7 @@ end
 classes = opt.Classes;
 
 if ~isfield(epo, 'y'),
-  warning('no classes label found: calculating average across all epochs');
+  warning('no classes label found: calculating percentiles across all epochs');
   nEpochs= size(epo.x, ndims(epo.x));
   epo.y= ones(1, nEpochs);
   epo.className= {'all'};
