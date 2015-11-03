@@ -9,7 +9,7 @@ function loss= loss_0_1(label, out)
 %                   
 % OUT LOSS  - vector of 0-1 loss values
 %
-% SEE crossvalidation, loss_byMatrix
+% SEE crossvalidation
 
 % Benjamin Blankertz
 
