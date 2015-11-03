@@ -34,6 +34,8 @@ procFunc = method{1};
 misc_checkType(procFunc,'!FUNC');
 if length(method)>1
     procPar = method(2:end);
+else
+    procPar = {};
 end
 
 % get number of frequency bands
