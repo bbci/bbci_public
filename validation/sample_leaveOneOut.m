@@ -18,7 +18,7 @@ function [divTr, divTe]= sample_leaveOneOut(label, trainSize)
 % Benjamin Blankertz
 
 misc_checkType(label, 'DOUBLE[- -]');
-misc_checkTypeIfExists(trainSize, 'DOUBLE');
+misc_checkTypeIfExists('trainSize', 'DOUBLE');
 
 nSamples= size(label,2);
 if nargin<2,
