@@ -78,7 +78,7 @@ else
     end
     for ic= 1:ni,
       ep= proc_combineClasses(fv, combs(ic,:));
-      fv_tmp= feval(['proc_' fcn], ep, params{:});
+      fv_tmp= feval(fcn, ep, params{:});
       fv_out = proc_appendEpochs(fv_out, fv_tmp);
     end
     return; 
