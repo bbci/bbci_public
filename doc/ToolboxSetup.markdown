@@ -118,7 +118,7 @@ this (to define `/tmp/` as temporary folder:
 
 ```matlab
 >> cd(MyToolboxDir);
->> startup_public_bbci('DataDir', MyDataDir, 'TmpDir','/tmp/');
+>> startup_bbci_toolbox('DataDir', MyDataDir, 'TmpDir','/tmp/');
 ```
 
 There are more options in `startup_public_bbci`, that should described here.

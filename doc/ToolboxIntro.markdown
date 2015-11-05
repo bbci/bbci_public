@@ -32,7 +32,7 @@ A first look at the data structure `cnt` which holds the continuous
 (un-segmented) EEG signals.
 
 ```matlab
-file= 'VPibv_10_11_02/calibration_CenterSpellerMVEP_VPibv';
+file= 'VPiac_10_10_13/calibration_CenterSpellerMVEP_VPiac';
 [cnt, vmrk]= file_readBV(file, 'Fs',100);
 % -> information in help shows how to define a filter
 
@@ -69,9 +69,9 @@ text(mnt.x, mnt.y, mnt.clab);
 axis([-1 1 -1 1])
 plot_scalp(mnt, cnt.x(200,:));
 % The function plot_scalp is kind of a low level function. There is no
-% mechanisms that can guarranty the correct association of the channels
+% mechanisms that can guarrantee the correct association of the channels
 % from the map with the channels in the electrode montage. The user has
-% to take care of this (of use another function).
+% to take care of this (or use another function).
 % The following lines demonstrate the issue:
 plot_scalp(mnt, cnt.x(200,1:63))
 % -> throws an error
@@ -104,7 +104,7 @@ it(1:10)
 ```matlab
 epo= proc_segmentation(cnt, mrk, [-200 800])
 epo
-iCz= util_chanind(epo, 'Cz') %fint the index of channel Cz
+iCz= util_chanind(epo, 'Cz') % find the index of channel Cz
 plot(epo.t, epo.x(:,iCz,1))
 xlabel('time  [ms]');
 ylabel('potential @Cz  [\muV]');
