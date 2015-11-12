@@ -344,6 +344,7 @@ end
 
 if ~strcmpi(opt.PlotStat,'none')
     %prepare data vectors for plotting
+    epo.stats=[];
     if strcmpi(opt.PlotStat,'std'),
         epo.stats=[squeeze(epo.x(:,chan,:)-epo.std(:,chan,:)); ...
             flipud(squeeze(epo.x(:,chan,:)+epo.std(:,chan,:)))];
