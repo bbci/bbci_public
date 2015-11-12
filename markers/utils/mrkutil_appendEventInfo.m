@@ -30,4 +30,6 @@ elseif isfield(mrk1,'event'),
     % in the variable of mrk.event, the first dimension must index events
     mrk.event= setfield(mrk.event, fld, cat(1, tmp1, tmp2));
   end
+else
+    mrk = mrk1;
 end
