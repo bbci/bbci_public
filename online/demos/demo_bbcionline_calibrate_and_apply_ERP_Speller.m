@@ -50,7 +50,7 @@ epo= proc_segmentation(calib.cnt, calib.mrk, bbci.feature.ival, ...
                        'clab', bbci.signal.clab);
 fv= proc_baseline(epo, ref_ival);
 fv= proc_jumpingMeans(fv, cfy_ival);
-out= applyClassifier(fv, 'LDA', bbci.classifier.C);
+out= applyClassifier(fv, bbci.classifier.C);
 
 % validate classifier outputs of simulated online and offline processing
 max(out(:)- cfy)
