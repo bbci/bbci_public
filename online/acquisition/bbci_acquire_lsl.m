@@ -37,7 +37,7 @@ if isequal(varargin{1}, 'init'),
      'PO5' 'PO3' 'PO1' 'POz' 'PO2' 'PO4' 'PO6' ...
      'O5' 'O3' 'O1' 'Oz' 'O2' 'O4' 'O6' ...
     };
-  props= {'fs'            250            '!DOUBLE[1]'
+  props= {'fs'            100            '!DOUBLE[1]'
           'clab'          default_clab   'CELL{CHAR}'
           'blocksize'     40             '!DOUBLE[1]'
           'port'          'COM11'        '!CHAR'
@@ -46,9 +46,6 @@ if isequal(varargin{1}, 'init'),
           'verbose'       true           '!BOOL'
          };
   [state, isdefault]= opt_setDefaults(state, props, 1);
-  if state.fs~=250,
-    error('Only fs=250 allowed');
-  end
   if isdefault.filtHd,
     % Fs/4
     filt1.b= [0.85 0 0.85];
@@ -120,15 +117,13 @@ else
   state.running = check_lsl_connection(state.inlet); 
 
   % get data chunk from the inlet
-  [cntx,stamps_eeg] = state.inlet.x.pull_sample();
+  [cntx,~] = state.inlet.x.pull_sample();
   % get markers
   [mrkDesc,mrkTime] = state.inlet.mrk.pull_sample();
-  % reshape cntx to time x channels
-  cntx = cntx';
   % save last marker
   state.lastMrkDesc= mrkDesc(end);
   % save last sample
-  state.lastx= cntx(end,:);
+  state.lastx= cntx(:,end);
   
   % Apply filter if requested (dfilt.filter automatically saves the state)
   if ~isempty(state.filtHd),
