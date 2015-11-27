@@ -27,8 +27,11 @@ function varargout= bbci_acquire_lsl(varargin)
 
 % 11-2015 Jan Boelts
 % --- --- --- ---
+
+% initialization of state structure and LSL streams
 if isequal(varargin{1}, 'init'),
-    display('Entering Init block')
+    
+    % use default electrode setting
     state= opt_proplistToStruct(varargin{2:end});
     default_clab= ...
         {'AF5' 'AF3' 'AF1' 'AFz' 'AF2' 'AF4' 'AF6' ...
@@ -40,6 +43,7 @@ if isequal(varargin{1}, 'init'),
         'PO5' 'PO3' 'PO1' 'POz' 'PO2' 'PO4' 'PO6' ...
         'O5' 'O3' 'O1' 'Oz' 'O2' 'O4' 'O6' ...
         };
+    % set default parameters that may adapted from the stream later on
     props= {'fs'            100            '!DOUBLE[1]'
         'clab'          default_clab   'CELL{CHAR}'
         'blocksize'     40             '!DOUBLE[1]'
@@ -49,6 +53,8 @@ if isequal(varargin{1}, 'init'),
         'verbose'       true           '!BOOL'
         };
     [state, isdefault]= opt_setDefaults(state, props, 1);
+    
+    % set default filter coeffs
     if isdefault.filtHd,
         % Fs/4
         filt1.b= [0.85 0 0.85];
@@ -59,39 +65,44 @@ if isequal(varargin{1}, 'init'),
         state.filtHd= procutil_catFilters(filt1, filt2);
         state.filtHd.PersistentMemory= true;
     end
+    % set number of channels and corresponding values
     state.nChans= length(state.clab);
     state.nBytesPerPacket= 2+3*state.nChans+4;
     nPacketsPerPoll= ceil(state.blocksize/1000*state.fs);
     state.nBytesPerPoll= nPacketsPerPoll*state.nBytesPerPacket;
     
-    % resolve eeg stream:
+    %%%%%  resolve eeg stream from LSL %%%%%
     eeg = {};
+    % load a lsl library
     state.lib = lsl_loadlib();
-    for i=1:5
+    % look for the stream several times
+    for i=1:3
+        % look for stream on the network
         eeg = lsl_resolve_byprop(state.lib,'type','EEG');
         if ~isempty(eeg)
             break
         end
-        pause(0.01)
+        pause(0.1)
     end
     if isempty(eeg)
         error('No LSL EEG stream on the network')
     end
     mrks = {};
     % resolve marker stream, try several times
-    for i=1:5
+    for i=1:3
         mrks = lsl_resolve_byprop(state.lib,'type','Markers');
         if ~isempty(mrks)
             break
         end
-        pause(0.05)
+        pause(0.1)
     end
     if isempty(mrks)
         error('No LSL marker stream on the network')
     end
     
     % create a new inlet
-    disp('Opening an inlet...');
+    disp('Found EEG and mrk stream...');
+    % save lsl structures to state structure
     state.inlet.x = lsl_inlet(eeg{1});
     state.inlet.mrk = lsl_inlet(mrks{1});
     state.running = 1;
@@ -100,8 +111,15 @@ if isequal(varargin{1}, 'init'),
     eeg_info = state.inlet.x.info();
     
     % set sampling rate of current stream
-    state.fs = eeg_info.nominal_srate;
-    
+    if not(state.fs==eeg_info.nominal_srate)
+        state.fs = eeg_info.nominal_srate;
+        warning('EEG sampling rate is different from default')
+    end
+    % check number of channels
+    if not(state.nChans==eeg_info.channel_count())
+        state.nChans = eeg_info.channel_count(); 
+        warning('EEG nChans is different from default')
+    end
     state.packetNo=[];
     state.buffer= [];
     state.lastx= zeros(1, state.nChans);
@@ -116,18 +134,21 @@ elseif isequal(varargin{1}, 'close'),
     
 elseif length(varargin)~=1,
     error('Except for INIT/CLOSE case, only one input argument expected');
-else
+else % this is the running condition that receives and returns the samples
     if ~isstruct(varargin{1}),
         error('First input argument must be ''init'', ''close'', or a struct');
     end
     state= varargin{1};
     
     % get data sample from the inlet
-    [cntx,~] = state.inlet.x.pull_sample(1);
+    % set timeout to reduce waiting when streams broke off
+    timeout = 1;
+    [cntx,~] = state.inlet.x.pull_sample(timeout);
     % get marker
-    [mrkDesc,mrkTime] = state.inlet.mrk.pull_sample(1);
+    [mrkDesc,mrkTime] = state.inlet.mrk.pull_sample(timeout);
     
     % check whether streams are still on
+    % if the timeout was exceeded mrkTime will be empty
     state.running = not(isempty(mrkTime));
     
     % save most recent marker
