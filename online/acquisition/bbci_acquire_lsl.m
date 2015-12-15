@@ -86,45 +86,46 @@ if isequal(varargin{1}, 'init'),
     end
     if isempty(eeg)
         error('No LSL EEG stream on the network')
+    else
+        % create a new inlet
+        % save lsl structures to state structure
+        state.inlet.x = lsl_inlet(eeg{1});
+        state.running = 1;
+        % get the stream info object for eeg stream
+        eeg_info = state.inlet.x.info();
+        
+        % set sampling rate of current stream
+        if not(state.fs==eeg_info.nominal_srate)
+            state.fs = eeg_info.nominal_srate;
+            warning('EEG sampling rate is different from default')
+        end
+        % check number of channels
+        if not(state.nChans==eeg_info.channel_count())
+            state.nChans = eeg_info.channel_count();
+            warning('EEG nChans is different from default')
+        end
+        state.packetNo=[];
+        state.buffer= [];
+        state.lastx= zeros(1, state.nChans);
+        state.scale= 1000000/2^24;
     end
-    mrks = {};
+    
     % resolve marker stream, try several times
+    mrks = {};
     for i=1:3
-        mrks = lsl_resolve_byprop(state.lib,'type','Markers');
+        mrks = lsl_resolve_byprop(state.lib,'type','Markers', 1, 1);
         if ~isempty(mrks)
             break
         end
         pause(0.1)
     end
     if isempty(mrks)
-        error('No LSL marker stream on the network')
+        warning('No LSL marker stream on the network')
+    else 
+        state.inlet.mrk = lsl_inlet(mrks{1});
+        state.lastMrkDesc= 256;
     end
-    
-    % create a new inlet
-    disp('Found EEG and mrk stream...');
-    % save lsl structures to state structure
-    state.inlet.x = lsl_inlet(eeg{1});
-    state.inlet.mrk = lsl_inlet(mrks{1});
-    state.running = 1;
-    
-    % get the stream info object for eeg stream
-    eeg_info = state.inlet.x.info();
-    
-    % set sampling rate of current stream
-    if not(state.fs==eeg_info.nominal_srate)
-        state.fs = eeg_info.nominal_srate;
-        warning('EEG sampling rate is different from default')
-    end
-    % check number of channels
-    if not(state.nChans==eeg_info.channel_count())
-        state.nChans = eeg_info.channel_count(); 
-        warning('EEG nChans is different from default')
-    end
-    state.packetNo=[];
-    state.buffer= [];
-    state.lastx= zeros(1, state.nChans);
-    state.lastMrkDesc= 256;
-    state.scale= 1000000/2^24;
+   
     if isempty(state.filtHd),
         reset(state.filtHd);
     end
@@ -142,17 +143,25 @@ else % this is the running condition that receives and returns the samples
     
     % get data sample from the inlet
     % set timeout to reduce waiting when streams broke off
-    timeout = 1;
-    [cntx,~] = state.inlet.x.pull_sample(timeout);
-    % get marker
-    [mrkDesc,mrkTime] = state.inlet.mrk.pull_sample(timeout);
+    timeout = 1; % in seconds
+    [cntx, cntTime] = state.inlet.x.pull_sample(timeout);
+    
+    % if there is a marker stream
+    if isfield(state.inlet, 'mrk')
+        % get marker
+        [mrkDesc, mrkTime] = state.inlet.mrk.pull_sample(timeout);
+        % save most recent marker
+        state.lastMrkDesc= mrkDesc;
+    else
+        % set default values
+        mrkTime = -1; 
+        mrkDesc = [];      
+    end
     
     % check whether streams are still on
     % if the timeout was exceeded mrkTime will be empty
-    state.running = not(isempty(mrkTime));
-    
-    % save most recent marker
-    state.lastMrkDesc= mrkDesc;
+    state.running = not(isempty(cntx));
+
     % save most recent sample
     state.lastx= cntx;
     
@@ -161,6 +170,6 @@ else % this is the running condition that receives and returns the samples
         cntx= filter(state.filtHd, cntx, 1);
     end
     
-    output = {cntx, mrkTime, mrkDesc, state};
+    output = {cntx, cntTime, mrkTime, mrkDesc, state};
 end
 varargout= output(1:nargout);
