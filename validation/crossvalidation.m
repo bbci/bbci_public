@@ -133,7 +133,7 @@ end
 if nOutDim==1,
   cfy_out= reshape(cfy_out, [length(divTe), size(fv.y,2)]);
 end
-loss= mean(xv_loss,1);%this might lead to an error in another case?!?!
+loss= mean(xv_loss,1);
 lossSem= std(xv_loss,0,1)/sqrt(size(xv_loss,1));
 lossTr= mean(xv_lossTr,1);
 lossTrSem= std(xv_lossTr,0,1)/sqrt(size(xv_lossTr,1));
