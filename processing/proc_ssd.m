@@ -86,7 +86,7 @@ end
 
 % make sure to put the data in the correct format 
 if is_epoched
-    X_ssd = permute(reshape(X_ssd, [Te, Ne, Nc]), [1,3,2]);
+    X_ssd = permute(reshape(X_ssd, [Te, Ne, size(X_ssd,2)]), [1,3,2]);
 end
 % store the transformed data
 dat.x = X_ssd;
