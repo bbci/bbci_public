@@ -57,19 +57,15 @@ if opt.ExcludeInfs,
   yTr(:,ind) = [];
 end
 
+
 % compute the regularized covariance matrix 
 opt_shrinkage = opt_substruct(opt, props_shrinkage(:,1));
 [C_cov, C.gamma] = clsutil_shrinkage(xTr, opt_shrinkage);
 
 % compute the weight vector(s)
-C.w = C_cov \ xTr * yTr';
-
-% normalize the length of the weight vector(s) such that the estimated y
-% have the same scaling (standard deviation) as the target y
-y_est = C.w' * xTr;
-for k=1:size(C.w,2)
-    C.w(:,k) = std(yTr(k,:)) * C.w(:,k) / std(y_est(k,:));
-end
+C_cov = C_cov * size(xTr,2);
+Xn = xTr - repmat(mean(xTr,2), [1 size(xTr,2)]);
+C.w = C_cov \ Xn * yTr';
 
 % compute the bias term(s)
 mu_x = mean(xTr,2);
