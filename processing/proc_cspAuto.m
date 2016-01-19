@@ -89,6 +89,9 @@ end
 %% EDIT: use pre-whitening and apply dim-reduction before CSP calculation
 C = squeeze(R(:,:,1)+R(:,:,2));
 M = my_rank_check(C);
+if size(M,2) < size(M,1)
+    warning('Rank-deficiency detected. Only %d CSP components can be computed.', size(M,2))
+end
 
 % do actual CSP calculation as eigenvalue problem in whitened space
 [W,D]= eig(M'*R(:,:,2)*M);
