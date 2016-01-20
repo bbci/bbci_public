@@ -142,11 +142,12 @@ else % this is the running condition that receives and returns the samples
     state= varargin{1};
     
     % get data sample from the inlet
-    % set timeout to reduce waiting when streams broke off
-    timeout = 1; % in seconds
-    [cntx, cntTime] = state.inlet.x.pull_sample(timeout);
+    [cntx, cntTime] = state.inlet.x.pull_sample();
     
     % if there is a marker stream
+    % set timeout to zero to reduce waiting when current sample does not
+    % hold markers
+    timeout = 0; 
     if isfield(state.inlet, 'mrk')
         % get marker
         [mrkDesc, mrkTime] = state.inlet.mrk.pull_sample(timeout);
