@@ -90,18 +90,20 @@ if isequal(varargin{1}, 'init'),
         % create a new inlet
         % save lsl structures to state structure
         state.inlet.x = lsl_inlet(eeg{1});
+        [~, state.starttime] = state.inlet.x.pull_sample();
         state.running = 1;
         % get the stream info object for eeg stream
         eeg_info = state.inlet.x.info();
         
         % set sampling rate of current stream
         if not(state.fs==eeg_info.nominal_srate)
-            state.fs = eeg_info.nominal_srate;
+%             state.fs = eeg_info.nominal_srate;
             warning('EEG sampling rate is different from default')
         end
         % check number of channels
         if not(state.nChans==eeg_info.channel_count())
             state.nChans = eeg_info.channel_count();
+            state.clab = state.clab(1:state.nChans);   %% BUG
             warning('EEG nChans is different from default')
         end
         state.packetNo=[];
@@ -121,11 +123,11 @@ if isequal(varargin{1}, 'init'),
     end
     if isempty(mrks)
         warning('No LSL marker stream on the network')
-    else 
+    else
         state.inlet.mrk = lsl_inlet(mrks{1});
         state.lastMrkDesc= 256;
     end
-   
+    
     if isempty(state.filtHd),
         reset(state.filtHd);
     end
@@ -142,26 +144,39 @@ else % this is the running condition that receives and returns the samples
     state= varargin{1};
     
     % get data sample from the inlet
-    % set timeout to reduce waiting when streams broke off
-    timeout = .01; % in seconds
-    [cntx, cntTime] = state.inlet.x.pull_sample();
+    % set timeout to zero to prevent blocking if there is no marker in the
+    % current sample. 
+    timeout = 0; % in seconds
+    [cntx, ~] = state.inlet.x.pull_sample();
     
     % if there is a marker stream
     if isfield(state.inlet, 'mrk')
-        % get marker
-        [mrkDesc, mrkTime] = state.inlet.mrk.pull_sample(0);
-        % save most recent marker
+        % get marker and time 
+        [mrkDesc, mrkTime] = state.inlet.mrk.pull_sample(timeout);
+        mrkTime = mrkTime-state.starttime;
+        % ITS A TIMING/CHUNKING PROBLEM
+        % PROBLEM: lsl pull sample returns a cell array which causes
+        % problems in the processing by bbci_apply. Therefore
+        % if it is empty, replace by empty str
+%         if isempty(char(mrkDesc))
+%             mrkDesc = [];
+%         % if not, extract the integer of the marker (like in 
+%         % bbci_acquire_bv.m) might be buggy. 
+% %         else
+% %             str = char(mrkDesc);
+% %             mrkDesc = str2double(str(2:end));
+%         end
         state.lastMrkDesc= mrkDesc;
     else
         % set default values
-        mrkTime = -1; 
-        mrkDesc = [];      
+        mrkTime = -1;
+        mrkDesc = [];
     end
     
     % check whether streams are still on
     % if the timeout was exceeded mrkTime will be empty
     state.running = not(isempty(cntx));
-
+    
     % save most recent sample
     state.lastx= cntx;
     
@@ -170,6 +185,6 @@ else % this is the running condition that receives and returns the samples
         cntx= filter(state.filtHd, cntx, 1);
     end
     
-    output = {cntx, cntTime, mrkTime, mrkDesc, state};
+    output = {cntx, mrkTime, mrkDesc, state};
 end
 varargout= output(1:nargout);
