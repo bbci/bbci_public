@@ -94,7 +94,7 @@ dat.x = X_ssd;
 
 %% rename channel labels and save old channel labels
 dat.origClab= dat.clab;
-dat.clab={};
+dat.clab=cell(1,size(dat.x,2));
 for k=1:size(dat.x,2)
     dat.clab{k} = sprintf('ssd %d',k);
 end
