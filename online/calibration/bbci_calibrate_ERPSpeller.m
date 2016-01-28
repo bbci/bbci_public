@@ -265,19 +265,19 @@ bbci.signal.clab= BC_result.cfy_clab;
 
 cnt_processed = proc_selectChannels(data.cnt,bbci.signal.clab);
 
-if ~isempty(opt.clab_rereference),	
-	cnt_processed = proc_linearDerivation(cnt_processed, A_reref);	 
-	bbci.signal.proc=  {{@online_linearDerivation, A_reref}};
-	else
-	bbci.signal.proc= {};
+if ~isempty(opt.clab_rereference),
+  cnt_processed = proc_linearDerivation(cnt_processed, A_reref);	 
+  bbci.signal.proc=  {{@online_linearDerivation, A_reref}};
+else
+  bbci.signal.proc= {};
 end
 
 if opt.whitening
-	C= cov(cnt_processed.x);
-	[V,D]= eig(C);
-	A_whitening= V*diag(1./sqrt(diag(D)))*V;
+  C= cov(cnt_processed.x);
+  [V,D]= eig(C);
+  A_whitening= V*diag(1./sqrt(diag(D)))*V';
   cnt_processed= proc_linearDerivation(cnt_processed, A_whitening);	 
-	bbci.signal.proc= cat(2, bbci.signal.proc, {{@online_linearDerivation, A_whitening}});
+  bbci.signal.proc= cat(2, bbci.signal.proc, {{@online_linearDerivation, A_whitening}});
 end
 
 
