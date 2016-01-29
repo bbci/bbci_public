@@ -90,6 +90,7 @@ if isequal(varargin{1}, 'init'),
         % create a new inlet
         % save lsl structures to state structure
         state.inlet.x = lsl_inlet(eeg{1});
+        [~, state.starttime] = state.inlet.x.pull_sample();
         state.running = 1;
         % get the stream info object for eeg stream
         eeg_info = state.inlet.x.info();
@@ -97,7 +98,7 @@ if isequal(varargin{1}, 'init'),
         % set sampling rate of current stream
         if not(state.fs==eeg_info.nominal_srate)
             state.fs = eeg_info.nominal_srate;
-            warning('EEG sampling rate is different from default')
+            warning('EEG sampling rate is different from default: was adapted from 100 to %i', state.fs)
         end
         % check number of channels
         if not(state.nChans==eeg_info.channel_count())
@@ -113,19 +114,19 @@ if isequal(varargin{1}, 'init'),
     % resolve marker stream, try several times
     mrks = {};
     for i=1:3
-        mrks = lsl_resolve_byprop(state.lib,'type','Markers', 1, 1);
+        mrks = lsl_resolve_byprop(state.lib,'name',state.markerstreamname, 1, 1);
         if ~isempty(mrks)
             break
         end
         pause(0.1)
     end
     if isempty(mrks)
-        warning('No LSL marker stream on the network')
-    else 
+        error('No LSL marker stream with name ''%s'' on the network', state.markerstreamname)
+    else
         state.inlet.mrk = lsl_inlet(mrks{1});
         state.lastMrkDesc= 256;
     end
-   
+    
     if isempty(state.filtHd),
         reset(state.filtHd);
     end
@@ -142,35 +143,32 @@ else % this is the running condition that receives and returns the samples
     state= varargin{1};
     
     % get data sample from the inlet
-    [cntx, cntTime] = state.inlet.x.pull_sample();
+    % set timeout to zero to prevent blocking if there is no marker in the
+    % current sample.
+    timeout = 0; % in seconds
+    [cntx, ~] = state.inlet.x.pull_sample();
     
-    % if there is a marker stream
-    % set timeout to zero to reduce waiting when current sample does not
-    % hold markers
-    timeout = 0; 
-    if isfield(state.inlet, 'mrk')
-        % get marker
-        [mrkDesc, mrkTime] = state.inlet.mrk.pull_sample(timeout);
-        % save most recent marker
-        state.lastMrkDesc= mrkDesc;
-    else
-        % set default values
-        mrkTime = -1; 
-        mrkDesc = [];      
-    end
+    % get marker and time
+    [mrkDesc, mrkTime] = state.inlet.mrk.pull_sample(timeout);
+    % lsl gives mrkTime in relation to the total time of the stream, not
+    % the recording. therefore we reset the time to the beginning of the
+    % recording. Maybe unneccessary and might be removed? 
+    mrkTime = mrkTime-state.starttime;
+    
+    state.lastMrkDesc= mrkDesc;
     
     % check whether streams are still on
     % if the timeout was exceeded mrkTime will be empty
     state.running = not(isempty(cntx));
-
+    
     % save most recent sample
     state.lastx= cntx;
     
-    % Apply filter if requested (dfilt.filter automatically saves the state)
-    if ~isempty(state.filtHd),
-        cntx= filter(state.filtHd, cntx, 1);
-    end
+    %     % Apply filter if requested (dfilt.filter automatically saves the state)
+    %     if ~isempty(state.filtHd),
+    %         cntx= filter(state.filtHd, cntx, 1);
+    %     end
     
-    output = {cntx, cntTime, mrkTime, mrkDesc, state};
+    output = {cntx, mrkTime, mrkDesc, state};
 end
 varargout= output(1:nargout);
