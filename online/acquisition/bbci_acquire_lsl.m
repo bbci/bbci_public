@@ -114,14 +114,14 @@ if isequal(varargin{1}, 'init'),
     % resolve marker stream, try several times
     mrks = {};
     for i=1:3
-        mrks = lsl_resolve_byprop(state.lib,'name',state.markerstreamname, 1, 1);
+        mrks = lsl_resolve_byprop(state.lib,'name', 'MyMarkerStream', 1, 1);
         if ~isempty(mrks)
             break
         end
         pause(0.1)
     end
     if isempty(mrks)
-        error('No LSL marker stream with name ''%s'' on the network', state.markerstreamname)
+        error('No LSL marker stream with name ''MyMarkerStream'' on the network, did set up the marker stream?')
     else
         state.inlet.mrk = lsl_inlet(mrks{1});
         state.lastMrkDesc= 256;
