@@ -27,6 +27,11 @@ function marker_out= bbci_apply_queryMarker(marker, ival, mrkDesc)
 
 % 02-2011 Benjamin Blankertz
 
+% return if there is no quit marker
+if isempty(mrkDesc), 
+    marker_out= []; 
+    return 
+end
 
 TIME_EPS= 0.001;
 
@@ -37,14 +42,14 @@ end
 %idx= find(marker.time > ival(1) & marker.time<= ival(2));
 idx= find(marker.time > ival(1)+TIME_EPS & marker.time<= ival(2)+TIME_EPS);
 
-% checks whether current set of markers contains quit marker
-if nargin > 2 && ~isempty(idx) && ~isempty(mrkDesc),
+% we need the 'isempty' checks for the case that the marker format
+% is nonnummeric. In that case marker.desc may be a cell and mrkDesc [].
+if nargin > 2 && ~isempty(idx),
   idx2= find(ismember(marker.desc(idx), mrkDesc,'legacy'));
   idx= idx(idx2);
 end
 
-% if current markers dont contain quit marker or there is no quit marker
-if isempty(idx) || isempty(mrkDesc),
+if isempty(idx),
   marker_out= [];
 else
   if iscell(marker.desc),
