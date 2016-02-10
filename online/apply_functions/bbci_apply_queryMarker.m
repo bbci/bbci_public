@@ -37,12 +37,14 @@ end
 %idx= find(marker.time > ival(1) & marker.time<= ival(2));
 idx= find(marker.time > ival(1)+TIME_EPS & marker.time<= ival(2)+TIME_EPS);
 
-if nargin > 2 && ~isempty(idx),
+% checks whether current set of markers contains quit marker
+if nargin > 2 && ~isempty(idx) && ~isempty(mrkDesc),
   idx2= find(ismember(marker.desc(idx), mrkDesc,'legacy'));
   idx= idx(idx2);
 end
 
-if isempty(idx),
+% if current markers dont contain quit marker or there is no quit marker
+if isempty(idx) || isempty(mrkDesc),
   marker_out= [];
 else
   if iscell(marker.desc),
