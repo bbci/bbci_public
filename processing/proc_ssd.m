@@ -86,7 +86,7 @@ end
 
 % make sure to put the data in the correct format 
 if is_epoched
-    X_ssd = permute(reshape(X_ssd, [Te, Ne, Nc]), [1,3,2]);
+    X_ssd = permute(reshape(X_ssd, [Te, Ne, size(X_ssd,2)]), [1,3,2]);
 end
 % store the transformed data
 dat.x = X_ssd;
@@ -94,6 +94,7 @@ dat.x = X_ssd;
 
 %% rename channel labels and save old channel labels
 dat.origClab= dat.clab;
-for k=1:length(dat.clab)
+dat.clab=cell(1,size(dat.x,2));
+for k=1:size(dat.x,2)
     dat.clab{k} = sprintf('ssd %d',k);
 end

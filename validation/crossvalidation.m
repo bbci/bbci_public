@@ -57,7 +57,7 @@ end
 
 opt= opt_proplistToStruct(varargin{:});
 
-[opt,isdefault] = opt_setDefaults(opt, props, 1);
+opt = opt_setDefaults(opt, props, 1);
 misc_checkType(fv, 'STRUCT(x y)');
 misc_checkType(fv.x, 'DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]', 'fv.x');
 misc_checkType(classy, 'FUNC|CELL');
@@ -96,8 +96,7 @@ for rr= 1:length(divTr),
     if ~isempty(opt.Proc),
       fvTe= xvalutil_proc(fvTe, opt.Proc.apply, memo);
     end
-    xsz= size(fvTe.x);
-    out= applyFcn(C, reshape(fvTe.x, [prod(xsz(1:end-1)) xsz(end)]));
+    out= applyFcn(C, reshape(fvTe.x, fvsz(1), []));
     cfy_out(:,rr,idxTe)= out;
     fold_loss(ff)= mean(lossFcn(fvTe.y, out, lossPar{:}));
     outTr= applyFcn(C, reshape(fvTr.x, fvsz));

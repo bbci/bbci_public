@@ -30,7 +30,7 @@ function obj = misc_history(obj)
 % 08-2012 Matthias Treder
 global BTB
 
-if ~isempty(BTB.History) && BTB.History==0
+if ~isempty(BTB.History) && BTB.History==0 ||isempty(obj)
   return
 end
 

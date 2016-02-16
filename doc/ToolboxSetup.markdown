@@ -110,7 +110,7 @@ you can startup the BBCI Toolbox like this:
 
 ```matlab
 >> cd(MyToolboxDir);
->> startup_public_bbci('DataDir', MyDataDir);
+>> startup_bbci_toolbox('DataDir', MyDataDir);
 ```
 
 If you want to define a different folder for temporary files, you can do it like
@@ -118,10 +118,10 @@ this (to define `/tmp/` as temporary folder:
 
 ```matlab
 >> cd(MyToolboxDir);
->> startup_public_bbci('DataDir', MyDataDir, 'TmpDir','/tmp/');
+>> startup_bbci_toolbox('DataDir', MyDataDir, 'TmpDir','/tmp/');
 ```
 
-There are more options in `startup_public_bbci`, that should described here.
+There are more options in `startup_public_bbci`, that should be described here.
 Until then, you have to inspect to code to learn about the other possibilities.
 
 To enable all the demos of the toolbox (which are in the folders `demos` and

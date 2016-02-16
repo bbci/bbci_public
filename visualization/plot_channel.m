@@ -15,7 +15,9 @@ function H= plot_channel(epo, clab, varargin)
 %  .Butterfly    - Butterfly plot. Recommended when CLAB =  '*'. Only
 %                  first class is considered for plotting. If ColorOrder is
 %                  default, the current colormap is used.
-%  .PlotStd      - if true, the standard deviation 
+%  .PlotStat     - plot additional statistic: 'std' for standard deviation,
+%                  'sem' for standard error of the mean, 'perc' for percentiles
+%                  or 'none' for nothing.
 %  .Legend       - show Class legend (1, default), or not (0).
 %  .LegendPos    - position of the legend, see help of function 'legend'.
 %  .XUnit        - unit of x axis, default 'ms'
