@@ -19,7 +19,7 @@ inp= 2.^[0:7];
 trigger_ok= 1;
 for k= 1:length(inp),
   fprintf('sending trigger: %3d -> received: ', inp(k));
-  outp{k}= acq_checkTrigger(bbci, data, inp(k), 20);
+  outp{k}= acq_checkTrigger(bbci, data, inp(k), 500);
   if isempty(outp{k}),
     fprintf('nothing.\n');
   else
