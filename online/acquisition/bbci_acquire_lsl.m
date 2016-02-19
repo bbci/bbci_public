@@ -28,8 +28,15 @@ function varargout= bbci_acquire_lsl(varargin)
 % 11-2015 Jan Boelts
 % --- --- --- ---
 
+global BTB
+
 % initialization of state structure and LSL streams
 if isequal(varargin{1}, 'init'),
+    
+    % check whether lsl toolbox is on the path
+    if ~isdir('liblsl-Matlab')
+        error('LSL Toolbox is not on the path. add it via addpath(genpath(''path_to_LSL/liblsl-Matlab''))')
+    end
     
     % use default electrode setting
     state= opt_proplistToStruct(varargin{2:end});
@@ -114,13 +121,13 @@ if isequal(varargin{1}, 'init'),
     % resolve marker stream, try several times
     mrks = {};
     for i=1:3
-        mrks = lsl_resolve_byprop(state.lib,'name', 'MyMarkerStream', 1, 1);
+        mrks = lsl_resolve_byprop(state.lib, 'name', 'MyMarkerStream', 1, 1);
         if ~isempty(mrks)
             break
         end
         pause(0.1)
     end
-    if isempty(mrks)
+    if isempty(mrks)        
         error('No LSL marker stream with name ''MyMarkerStream'' on the network, did set up the marker stream?')
     else
         state.inlet.mrk = lsl_inlet(mrks{1});
@@ -131,7 +138,17 @@ if isequal(varargin{1}, 'init'),
         reset(state.filtHd);
     end
     output= {state};
+% close condition needs the 'state' structure.
 elseif isequal(varargin{1}, 'close'),
+    if length(varargin)==1,
+        error('Please use ''close'' option with ''state'' variable as second argument: bbci_lsl_acquire(close, state)');
+    end
+elseif isequal(varargin{1}, 'close') && istruct(varargin{2}),
+    % close inlets and libraries
+    state = varargin{2};
+    state.inlet.x.delete(); 
+    state.inlet.mrk.delete();
+    state.lib.delete();
     output= {};
     
 elseif length(varargin)~=1,
@@ -163,11 +180,6 @@ else % this is the running condition that receives and returns the samples
     
     % save most recent sample
     state.lastx= cntx;
-    
-    %     % Apply filter if requested (dfilt.filter automatically saves the state)
-    %     if ~isempty(state.filtHd),
-    %         cntx= filter(state.filtHd, cntx, 1);
-    %     end
     
     output = {cntx, mrkTime, mrkDesc, state};
 end
