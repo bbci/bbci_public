@@ -40,9 +40,9 @@ function [dat, varargout]= proc_csp(dat, varargin)
 %
 %See also demos/demo_validate_csp
 
-props= {'CovFcn'      {@cov}                         '!FUNC|CELL'
-        'ScoreFcn'    {@procutil_scoreEigenvalues}   '!FUNC|CELL'
-        'SelectFcn'   {@procutil_selectMinMax, 3}    '!FUNC|CELL'
+props= {'CovFcn'      {@cov}                                        '!FUNC|CELL'
+        'ScoreFcn'    {@score_eigenvalues}                          '!FUNC|CELL'
+        'SelectFcn'   {@select_fixedNumber, 3, 'equalperclass'}     '!FUNC|CELL'
        };
 
 if nargin==0,
