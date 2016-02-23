@@ -96,6 +96,29 @@ switch lower(lib)
         else
             warning(['Could not import ' lib ', because the folder external/' lower(lib) 'already existed! Please delete this folder to refresh the import.'])
         end
+
+    case 'plot2svg'
+        this_folder = fullfile(ext_folder, lower(lib));
+           if ~exist(this_folder, 'dir') 
+            %download only if folder is not existing yet
+            try %download and unzip
+                download_success = 0;
+                this_zipfile = 'https://github.com/jschwizer99/plot2svg/archive/master.zip';
+                disp(sprintf(['\n\n\n...Downloading ' lower(lib) ' from https://github.com/jschwizer99/']))
+                download_success = try_download_unzip(this_zipfile, ext_folder);
+                movefile(fullfile(ext_folder, 'plot2svg-master'), this_folder)
+            catch
+                if download_success
+                    error(['renaming did not work, please rename ''plot2svg-master'' to ''' lower(lib) ''' manually.']);
+                else
+                    warning(['automatic download and unzip unsuccessful for ' lower(lib) '.'])
+                    fprintf(['Likely reason: \n(A) Matlab does not have the permission to write files into the folder. \n(B) no online access.\n\n Possible solution is to start Matlab as root. \n\nFor manual download:\n\n (1) download the zip-file: \n' this_zipfile '\n\n (2) unzip to ''' this_folder '''\n']);                    
+                end
+            end
+        else
+            warning(['Could not import ' lib ', because the folder external/' lower(lib) 'already existed! Please delete this folder to refresh the import.'])
+        end
+
     otherwise
         error('dependency not specified')
 end

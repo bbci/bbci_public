@@ -2,7 +2,7 @@ function [dat, varargout]= proc_csp(dat, varargin)
 %PROC_CSP - Common Spatial Pattern (CSP) Analysis
 %
 %Synopsis:
-% [DAT, CSP_W, CSP_A, SCORE]= proc_cspAuto(DAT, <OPT>);
+% [DAT, CSP_W, CSP_A, SCORE]= proc_csp(DAT, <OPT>);
 %
 %Arguments:
 % DAT - data structure of epoched data
@@ -22,6 +22,7 @@ function [dat, varargout]= proc_csp(dat, varargin)
 %                Can also be a CELL {@FCN, PARAM1, PARAM2, ...}.
 %                Default: {@procutil_selectMinMax, 3}
 %                Other options, e.g., {@procutil_selectMaxAbs, 6}
+%  'Verbose' - Print warnings and other output if larger than 0. Default 1
 % 
 %Returns:
 % DAT   - updated data structure
@@ -43,6 +44,7 @@ function [dat, varargout]= proc_csp(dat, varargin)
 props= {'CovFcn'      {@cov}                                        '!FUNC|CELL'
         'ScoreFcn'    {@score_eigenvalues}                          '!FUNC|CELL'
         'SelectFcn'   {@select_fixedNumber, 3, 'equalperclass'}     '!FUNC|CELL'
+        'Verbose'     1                                             'INT'
        };
 
 if nargin==0,
@@ -68,8 +70,23 @@ for k= 1:2,
   C(:,:,k)= covFcn(X, covPar{:});
 end
 
-% Do actual CSP computation as generalized eigenvalue decomposition
-[W, D]= eig( C(:,:,2), C(:,:,1)+C(:,:,2) );
+% get the whitening matrix
+M = procutil_whiteningMatrix([], 'C', mean(C,3));
+if (opt.Verbose > 0) && (size(M,2) < nChans)
+    warning('Due to dimensionality reduction a maximum of only %d CSP components can be computed', size(M,2))
+end
+
+% Do actual CSP computation as generalized eigenvalue decomposition in
+% whitened space
+[W, D]= eig(M'*(C(:,:,1)-C(:,:,2))*M);
+W = M*W; % project filters from whitened space back into original channel space
+[ev, sort_idx] = sort(diag(D), 'ascend');
+D = diag(ev);
+W = W(:,sort_idx);
+
+% ORIGINAL CODE FOR COMPUTING CSP IN CHANNEL SPACE
+% % Do actual CSP computation as generalized eigenvalue decomposition
+% [W, D]= eig( C(:,:,1)-C(:,:,2), C(:,:,1)+C(:,:,2) );
 
 % Calculate score for each CSP channel
 [scoreFcn, scorePar]= misc_getFuncParam(opt.ScoreFcn);
@@ -89,16 +106,9 @@ end
 % Apply CSP filters to time series
 dat= proc_linearDerivation(dat, W, 'prependix','csp');
 
-% Prepare output and return it
-varargout= {dat};
-if nargout>1,
-  varargout{2}= W;
-end
-if nargout>2,
-  % do the inversion only if requested
-  A= pinv(W)';
-  varargout{3}= A;
-end
-if nargout>3,
-  varargout{4}= score;
-end
+% Determine patterns according to [Haufe et al, Neuroimage, 87:96-110, 2014]
+% http://dx.doi.org/10.1016/j.neuroimage.2013.10.067
+C_avg = mean(C,3);
+A= C_avg * W / (W'*C_avg*W);
+
+varargout= {W, A, score};
