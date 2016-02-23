@@ -63,7 +63,7 @@
 #include <ctype.h>
 
 #ifdef _MSC_VER
-#include "../../../toolbox/fileio/msvc_stdint.h"
+#include "../../../fileio/private/msvc_stdint.h"
 #else
 #include <stdint.h>
 #endif
@@ -74,7 +74,7 @@ extern "C" {
   #include "brainserver.h"
 }
 
-#include "../../../online/winunix/winthreads.h"
+#include "winthreads.h"
 
 /* All the handling for the filtering of the data */ 
 #include "filter.h"
