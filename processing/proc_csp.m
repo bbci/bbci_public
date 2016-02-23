@@ -98,16 +98,8 @@ end
 % Apply CSP filters to time series
 dat= proc_linearDerivation(dat, W, 'prependix','csp');
 
-% Prepare output and return it
-varargout= {dat};
-if nargout>1,
-  varargout{2}= W;
-end
-if nargout>2,
-  % do the inversion only if requested
-  A= pinv(W)';
-  varargout{3}= A;
-end
-if nargout>3,
-  varargout{4}= score;
-end
+% Determine patterns according to [Haufe et al, Neuroimage, 87:96-110, 2014]
+% http://dx.doi.org/10.1016/j.neuroimage.2013.10.067
+A= (mean(C,3) * W)';
+
+varargout= {W, A, score};
