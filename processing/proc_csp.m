@@ -68,8 +68,20 @@ for k= 1:2,
   C(:,:,k)= covFcn(X, covPar{:});
 end
 
-% Do actual CSP computation as generalized eigenvalue decomposition
-[W, D]= eig( C(:,:,1)-C(:,:,2), C(:,:,1)+C(:,:,2) );
+% get the whitening matrix
+M = procutil_whiteningMatrix([], 'C', mean(C,3));
+
+% Do actual CSP computation as generalized eigenvalue decomposition in
+% whitened space
+[W, D]= eig(M'*(C(:,:,1)-C(:,:,2))*M);
+W = M*W; % project filters from whitened space back into original channel space
+[ev, sort_idx] = sort(diag(D), 'ascend');
+D = diag(ev);
+W = W(:,sort_idx);
+
+% ORIGINAL CODE FOR COMPUTING CSP IN CHANNEL SPACE
+% % Do actual CSP computation as generalized eigenvalue decomposition
+% [W, D]= eig( C(:,:,1)-C(:,:,2), C(:,:,1)+C(:,:,2) );
 
 % Calculate score for each CSP channel
 [scoreFcn, scorePar]= misc_getFuncParam(opt.ScoreFcn);
@@ -91,6 +103,7 @@ dat= proc_linearDerivation(dat, W, 'prependix','csp');
 
 % Determine patterns according to [Haufe et al, Neuroimage, 87:96-110, 2014]
 % http://dx.doi.org/10.1016/j.neuroimage.2013.10.067
-A= (mean(C,3) * W)';
+C_avg = mean(C,3);
+A= C_avg * W / (W'*C_avg*W);
 
 varargout= {W, A, score};
