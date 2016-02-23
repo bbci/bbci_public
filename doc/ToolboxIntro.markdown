@@ -32,7 +32,7 @@ A first look at the data structure `cnt` which holds the continuous
 (un-segmented) EEG signals.
 
 ```matlab
-file= 'demoRaw/VPiac_10_10_13/calibration_CenterSpellerMVEP_VPiac';
+file= fullfile(BTB.DataDir, 'demoRaw', 'VPiac_10_10_13/calibration_CenterSpellerMVEP_VPiac');
 [cnt, vmrk]= file_readBV(file, 'Fs',100);
 % -> information in help shows how to define a filter
 
