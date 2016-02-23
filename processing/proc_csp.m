@@ -68,8 +68,17 @@ for k= 1:2,
   C(:,:,k)= covFcn(X, covPar{:});
 end
 
-% Do actual CSP computation as generalized eigenvalue decomposition
-[W, D]= eig( C(:,:,2), C(:,:,1)+C(:,:,2) );
+% get the whitening matrix
+M = procutil_whiteningMatrix([], mean(C,3));
+
+% Do actual CSP computation as generalized eigenvalue decomposition in
+% whitened space
+% [W, D]= eig( M'*diff(C, 1, 3)*M , M'*mean(C,3)*M );
+[W, D]= eig(M'*diff(C, 1, 3)*M);
+W = M*W; % project filters from whitened space back into original channel space
+
+% % Do actual CSP computation as generalized eigenvalue decomposition
+% [W, D]= eig( C(:,:,2), C(:,:,1)+C(:,:,2) );
 
 % Calculate score for each CSP channel
 [scoreFcn, scorePar]= misc_getFuncParam(opt.ScoreFcn);
