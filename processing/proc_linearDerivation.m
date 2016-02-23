@@ -97,4 +97,6 @@ else
   end
 end
 
-out.origClab= dat.clab;
+if ~isfield(dat, 'origClab')
+    out.origClab= dat.clab;
+end
