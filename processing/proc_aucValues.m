@@ -84,7 +84,7 @@ end
 
 for ii = 1:prod(sz(1:end-1))
     [p, h, stats] = ranksum(fv.x(ii, find(fv.y(1, :)))', fv.x(ii, find(fv.y(2, :)))');
-    fv_aucval.x(ii) = (stats.ranksum-(min(sum(fv.y'))*(min(sum(fv.y'))+1)/2))/prod(sum(fv.y'));
+    fv_aucval.x(ii) = (stats.ranksum-(sum(fv.y(1,:))*(sum(fv.y(1,:))+1)/2))/prod(sum(fv.y'));
     if opt.Stats
       fv_aucval.p(ii) = p;
       if opt.Bonferroni
