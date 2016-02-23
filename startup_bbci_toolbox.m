@@ -1,3 +1,17 @@
+%*******************************************************************
+%Initialize the BBCI Toolbox:
+%Hand over the directory for your (raw) data, which is in 
+%the Matlab variable 'MyDataDir' (e.g. 'D:\data' under Windows). 
+
+%If you have a tmp subfolder in the same directory,
+%Start up the Toolbox as follows:
+%"startup_bbci_toolbox('DataDir', MyDataDir);"
+
+%If you want to choose a different folder for temporary files (e.g. 'D:\tmp\')
+%Start up the Toolbox as follows:
+%"startup_bbci_toolbox('DataDir', MyDataDir, 'TmpDir','/tmp/');"
+%*******************************************************************
+
 function startup_bbci_toolbox(varargin)
 
 global BTB
