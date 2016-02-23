@@ -2,7 +2,7 @@ function [dat, varargout]= proc_csp(dat, varargin)
 %PROC_CSP - Common Spatial Pattern (CSP) Analysis
 %
 %Synopsis:
-% [DAT, CSP_W, CSP_A, SCORE]= proc_cspAuto(DAT, <OPT>);
+% [DAT, CSP_W, CSP_A, SCORE]= proc_csp(DAT, <OPT>);
 %
 %Arguments:
 % DAT - data structure of epoched data
@@ -22,6 +22,7 @@ function [dat, varargout]= proc_csp(dat, varargin)
 %                Can also be a CELL {@FCN, PARAM1, PARAM2, ...}.
 %                Default: {@procutil_selectMinMax, 3}
 %                Other options, e.g., {@procutil_selectMaxAbs, 6}
+%  'Verbose' - Print warnings and other output if larger than 0. Default 1
 % 
 %Returns:
 % DAT   - updated data structure
@@ -43,6 +44,7 @@ function [dat, varargout]= proc_csp(dat, varargin)
 props= {'CovFcn'      {@cov}                         '!FUNC|CELL'
         'ScoreFcn'    {@procutil_scoreEigenvalues}   '!FUNC|CELL'
         'SelectFcn'   {@procutil_selectMinMax, 3}    '!FUNC|CELL'
+        'Verbose'     1                              'INT'
        };
 
 if nargin==0,
@@ -70,6 +72,9 @@ end
 
 % get the whitening matrix
 M = procutil_whiteningMatrix([], 'C', mean(C,3));
+if (opt.Verbose > 0) && (size(M,2) < nChans)
+    warning('Due to dimensionality reduction a maximum of only %d CSP components can be computed', size(M,2))
+end
 
 % Do actual CSP computation as generalized eigenvalue decomposition in
 % whitened space
