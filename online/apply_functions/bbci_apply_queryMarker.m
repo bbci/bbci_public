@@ -37,12 +37,14 @@ end
 %idx= find(marker.time > ival(1) & marker.time<= ival(2));
 idx= find(marker.time > ival(1)+TIME_EPS & marker.time<= ival(2)+TIME_EPS);
 
-if nargin > 2,
+% we need the 'isempty' checks for the case that the marker format
+% is nonnummeric. In that case marker.desc may be a cell and mrkDesc [].
+if nargin > 2 && ~isempty(idx) && ~isempty(mrkDesc),
   idx2= find(ismember(marker.desc(idx), mrkDesc,'legacy'));
   idx= idx(idx2);
 end
 
-if isempty(idx),
+if isempty(idx) || isempty(mrkDesc),
   marker_out= [];
 else
   if iscell(marker.desc),
