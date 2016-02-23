@@ -16,10 +16,12 @@ function startup_bbci_toolbox(varargin)
 
 global BTB
 
-% Find directory of the BBCI Toolbox and path it to the path
+% Find directory of the BBCI Toolbox and add it to the path
 BBCI_DIR= fileparts(which(mfilename));
 addpath(genpath(BBCI_DIR));
 rmpath(genpath(fullfile(BBCI_DIR, '.git')));
+% The subfolder 'external' is move to the end of the path, see below.
+
 BBCI_PRIVATE_DIR= fullfile(fileparts(BBCI_DIR), 'bbci_private');
 
 BTB= opt_proplistToStruct(varargin{:});
@@ -70,17 +72,19 @@ if ~exist(fullfile(BTB.Dir, 'external', 'auto_import_performed'), 'file')
         'possible with ""bbci_import_dependencies()"" at any time.\n\n',...
         'Type <yes> to download all dependencies (approx 10MB): ']), 's');
     if strcmp(inp, 'yes') || strcmp(inp, 'y')
-        bbci_import_dependencies()
-       
+        bbci_import_dependencies();
     end
      % write into file
     fileID = fopen(fullfile(BTB.Dir, 'external', 'auto_import_performed'),'w');
-    fprintf(fileID,datestr(now()) );
+    fprintf(fileID, datestr(now()));
     fclose(fileID);
 end
 
-addpath(genpath(BBCI_DIR));
-rmpath(genpath(fullfile(BBCI_DIR, '.git')));
+% Put external folders to the end of the path, such that they cannot
+% overload functions of the BBCI Toolbox:
+IMPORT_PATH= genpath(fullfile(BBCI_DIR, 'external'));
+rmpath(IMPORT_PATH);
+path(path, IMPORT_PATH);
 
 if exist(BTB.PrivateDir, 'dir'),
   private_folders_to_add= {'utils', 'startup'};
