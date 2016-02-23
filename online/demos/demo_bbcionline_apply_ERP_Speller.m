@@ -68,7 +68,7 @@ isequal(marker_desc, mrk.event.desc(1:length(marker_desc)))
 epo= proc_segmentation(cnt, mrk, [ref_ival(1) cfy_ival(end)], 'clab', bbci.signal.clab);
 fv= proc_baseline(epo, ref_ival);
 fv= proc_jumpingMeans(fv, cfy_ival);
-out= applyClassifier(fv, 'LDA', bbci.classifier.C);
+out= applyClassifier(fv, bbci.classifier.C);
 
 % validate classifier outputs of simulated online and offline processing
 max(abs( out(1:length(cfy))' - cfy))
