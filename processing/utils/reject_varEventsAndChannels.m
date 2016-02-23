@@ -31,12 +31,10 @@ function [mrk, rClab, rTrials, nfo]= ...
 % (2) build epoching for each markers (see also mrk & ival)
 % (3) compute variance for each trial
 % (4) remove channels with too small variance (see opt.DoSilentChans)
-% (5) remove extreme outlier trials
-% (6) remove trails with a var > threshold, while (for opt.Whiskerperc = 10)
+% (5) remove extreme outlier trials, i.e. trials with a var > threshold,
+%     while (for opt.Whiskerperc = 10)
 %       threshold = percentile(allVar, 90) + opt.Whiskerlength * diff(percentile(allVar, 10), percentile(allVar, 90))      
-% (7) combined trials/channels rejection, optionally as multi-pass
-% 
-%
+% (6) combined trials/channels rejection, optionally as multi-pass
 
 % 08-06 Benjamin Blankertz
 % 07-12 Johannes Hoehne - updated documentation and parametarization
@@ -153,7 +151,7 @@ while goon,
   isout= (V > thresh);
   
   rC= [];
-  if sum(isout(:))>0.05*nEvents,
+  if sum(isout(:))>0.05*nEvents,  % Should this be nRemainingEvents?
     qu= sum(isout,2)/sum(isout(:));
     rC= find( qu>0.1 & mean(isout,2)>0.05 );
     V(rC,:)= [];
