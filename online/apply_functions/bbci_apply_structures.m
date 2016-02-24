@@ -114,7 +114,7 @@
 %  .log           see bbci.log. This field specifies, whether information about
 %                 adaptation should be logged
 %
-%bbci.quit_condition - Defines the condition when bbcu_apply should quit
+%bbci.quit_condition - Defines the condition when bbci_apply should quit
 %  * struct with fields
 %  .running_time  [DOUBLE in sec, default inf]
 %  .marker        [CHAR or CELL ARRAY of CHAR, default '']
@@ -192,7 +192,7 @@
 %  .state        Field that can be used by control functions to store
 %                'persistent' variables.
 %  .packet       Cell specifying a variable/value list;
-5
+%
 %data.log - Information needed for logging
 %  .fid          file ID of log file (or 1 is bbci.log.output=='screen'),
 %                if bbci.log.output=='screen&file', this is a vector
