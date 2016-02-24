@@ -45,7 +45,7 @@ function [dat, varargout]= proc_cspAuto(dat, varargin)
 %See also demos/demo_validate_csp
 
 % Author(s): Benjamin Blankertz
-props= { 'patterns'     3           'INT'
+props= { 'patterns'     3           'INT|CHAR'
          'score'        'medianvar' '!CHAR(eigenvalues medianvar auc)'
          'covPolicy'    'average'   'CHAR|DOUBLE[- - 2]'
          'scaling'      'none'      'CHAR'
@@ -86,8 +86,21 @@ else
   R= procutil_covClasswise(dat, opt);
 end
 
-%% do actual CSP calculation as generalized eigenvalues
-[W,D]= eig(R(:,:,2),R(:,:,1)+R(:,:,2));
+%% EDIT: use pre-whitening and apply dim-reduction before CSP calculation
+C = squeeze(R(:,:,1)+R(:,:,2));
+M = my_rank_check(C);
+if size(M,2) < size(M,1)
+    warning('Rank-deficiency detected. Only %d CSP components can be computed.', size(M,2))
+end
+
+% do actual CSP calculation as eigenvalue problem in whitened space
+[W,D]= eig(M'*R(:,:,2)*M);
+% project filters back to original (un-whitened) input space
+W = M * W;
+
+% OLD CODE
+% %% do actual CSP calculation as generalized eigenvalues
+% [W,D]= eig(R(:,:,2),R(:,:,1)+R(:,:,2));
 
 %% calculate score for each CSP channel
 switch(lower(opt.score)),
@@ -222,7 +235,8 @@ dat= proc_linearDerivation(dat, Wp, 'prependix','csp');
 if nargout>1,
     varargout{1}= Wp;
     if nargout>2,
-        A= pinv(W)'; % return patterns in the columns of A
+%         A= pinv(W)'; % return patterns in the columns of A
+        A = (C * W) / (W' * C * W); % return patterns in the columns of A
         varargout{2}= A(:,fi);
         if nargout>3,
             varargout{3}= la;
@@ -232,3 +246,19 @@ if nargout>1,
         end
     end
 end
+
+
+function M = my_rank_check(C)
+
+% perform PCA and compute whitening/dim-reduction matrix
+[V, D] = eig(C);
+[ev_sorted, sort_idx] = sort(diag(D), 'descend');
+V = V(:,sort_idx);
+D = diag(ev_sorted);
+% compute an estimate of the rank of the data
+tol = ev_sorted(1) * 10^-6;
+r = sum(ev_sorted > tol);
+% construct the whitening matrix
+M = V * diag(diag(D).^-0.5); 
+% dim-reduction
+M = M(:, 1:r);
