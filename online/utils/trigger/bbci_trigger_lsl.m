@@ -30,7 +30,6 @@ if ischar(value) && strcmp(value, 'init'),
         % get the lsl stream outlet and save it as well as the lsl info object in BTB struct
         BTB.Acq.TriggerParam = {lsl_outlet(mrk_info), mrk_info};
         BTB.Acq.TriggerFcn = @bbci_trigger_lsl; 
-        BTB.Acq.LSLsourceID = source_id; 
         fprintf(['Started LSL marker stream with source id ' source_id '\n']);
     else
         % if there is a stream it has to be closed because otherwise the
