@@ -36,3 +36,5 @@
 % offline: Simulate online acquisition by returning small chunks of signals
 %          from an initially given data file.
 % randomSignals: Generate random signals
+% lsl:     Acquire data from Lab Streaming Layer(LSL). LSL itself can hold
+%           data from most common EEG and other recording devices. 
