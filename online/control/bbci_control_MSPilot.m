@@ -23,7 +23,7 @@ function [packet, state]= bbci_control_MSPilot(cfy_out, state, event, opt)
 
 % check whether there is eyetracker data
 if isfield(opt, 'fixx') && isfield(opt, 'fixy')
-    packet = {'x', opt.fixx, 'y', opt.fixy, 'cfy_out', cfy_out}; 
+    packet = {['x ' num2str(opt.fixx) ' y ' num2str(opt.fixy) ' cfy_out ' num2str(cfy_out)]}; 
 else
     packet = {'cfy_out', cfy_out}; 
 end
