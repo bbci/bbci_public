@@ -2,7 +2,7 @@
 
 The toolbox runs with Matlab Version 2007 or later. It works in general with
 Linux, Mac OS and Windows. Some functions or functionality are not available in
-all OS. Savnig figures as PDF works only in Linux, and sending triggers via the
+all OS. Saving figures as PDF works only in Linux, and sending triggers via the
 parallel port and the most signal acquisition functions (for online use) are
 only available for Windows.
 
