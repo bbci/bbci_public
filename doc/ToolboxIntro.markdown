@@ -4,16 +4,16 @@ To follow this tutorial, you need to have the BBCI Matlab toolbox installed
 [ToolboxSetup](ToolboxSetup.markdown) and know about its data structures
 [ToolboxData](ToolboxData.markdown).
 
-Here, you will be animated, to explore the data structures, do some initial
+Here, you will explore some data structures, do some initial
 analysis (e.g. plotting ERPs) manually (i.e., without using the toolbox
-functions), and then see how it can be done with the toolbox. Some the manual
-analysis serves the following purpose: Many of the toolbox function are in
-principle simple, but the code sometimes gets quite complicated, because it
+functions), and then you will see how it can be done with the toolbox. The manual
+analysis serves the following purpose: Many of the toolbox functions are (in
+principle) simple, but the code sometimes gets quite complicated, because the code
 should be very general. The manual analysis demonstrates this simplicity. So
 don't be afraid of the toolbox
-- it's no magic.
+- it's not magic!
 
-This is a hands-on tutorial. It only makes sense, if you have it side-by-side
+This is a hands-on tutorial. It only makes sense, if you do it side-by-side
 with a running matlab where you execute all the code.
 
 ### Table of Contents
@@ -100,7 +100,7 @@ plot_scalp(mnt, cnt.x(200,[1:30 35:64]), 'WClab',cnt.clab([1:60]))
 ```
 
 ## The Marker structure `mrk`   <a id="Mrk"></a>
-To make sense of the data, we need to know what happened when. This is stored in the marker data structure `mrk`. Markers (triggers) are stored into the EEG signals by the program that controls the stimulus presentation (or BCI feedback). Furthermore, markers can triggered by a response of the participant (like button presses), or by other sensors (visual sensors that register the flashing of an object on a display).
+To make sense of the data, we need to know what happened when. This is stored in the marker data structure `mrk`. Markers (triggers) are stored into the EEG signals by the program that controls the stimulus presentation (or BCI feedback). Furthermore, markers can be triggered by a response of the participant (like button presses), or by other sensors (visual sensors that register the flashing of an object on a display).
 
 ```matlab
 % data structure defining the markers (trigger events in the signals)

@@ -45,7 +45,7 @@ function [dat, varargout]= proc_cspAuto(dat, varargin)
 %See also demos/demo_validate_csp
 
 % Author(s): Benjamin Blankertz
-props= { 'patterns'     3           'INT'
+props= { 'patterns'     3           'INT|CHAR'
          'score'        'medianvar' '!CHAR(eigenvalues medianvar auc)'
          'covPolicy'    'average'   'CHAR|DOUBLE[- - 2]'
          'scaling'      'none'      'CHAR'
@@ -67,8 +67,6 @@ else
 end
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
-
-
 
 [T, nChans, nEpochs]= size(dat.x);
 
