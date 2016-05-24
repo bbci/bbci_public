@@ -124,3 +124,4 @@ if status==1,
 end
 
 blk= struct('ival',blk);
+blk.y= ones(1, size(blk.ival,1));
