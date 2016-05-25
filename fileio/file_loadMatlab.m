@@ -242,6 +242,13 @@ if ~isempty(iData),
   end
 end
 
+%% convert markers if old
+if isfield(S,'mrk')
+  if isfield(S.mrk,'pos')
+      S.mrk = convert_markers(S.mrk);
+  end
+end
+
 %% cut back mrk structure to the requested interval
 if isfield(S,'mrk') && ~isempty(opt.Ival),
   inival= find(S.mrk.time>=opt.Ival(1) & S.mrk.time<=opt.Ival(2));

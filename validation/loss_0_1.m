@@ -4,12 +4,14 @@ function loss= loss_0_1(label, out)
 %Synopsis:
 % LOSS= loss_0_1(LABEL, OUT)
 %
-% IN  LABEL - matrix of true class labels, size [nClasses nSamples]
-%     OUT   - matrix (or vector for 2-class problems) of classifier outputs
-%                   
-% OUT LOSS  - vector of 0-1 loss values
+%Arguments:
+% LABEL - matrix of true class labels, size [nClasses nSamples]
+% OUT   - matrix (or vector for 2-class problems) of classifier outputs
 %
-% SEE crossvalidation, loss_byMatrix
+%Returns:
+% LOSS  - vector of 0-1 loss values
+%
+% SEE crossvalidation
 
 % Benjamin Blankertz
 

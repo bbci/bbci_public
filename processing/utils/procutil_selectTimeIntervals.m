@@ -133,7 +133,7 @@ if ~isempty(opt.IvalMax),
   epo_r.x(idx_rm,:)= 0;
 end
 
-if ~isempty(opt.Constraint),
+if (~isempty(opt.Constraint))&&iscell(opt.Constraint{1}),%another recursive iteration?
   constraint= opt.Constraint;
   opt.Constraint= [];
   if opt.NIvals<length(constraint),
@@ -145,24 +145,11 @@ if ~isempty(opt.Constraint),
     else
       this_constraint= {opt.Sign, opt.IvalPickPeak, opt.ClabPickPeak};
     end
-    if length(this_constraint)<3,
-      opt.Clab= '*';
-    else
-      opt.Clab= this_constraint{3};
-    end
-    tmp_r= epo_r;
-    if length(this_constraint)>=4,
-      % TODO: use new option ivalMax!
-      idx_keep= procutil_getIvalIndices(this_constraint{4}, epo_r);
-      idx_rm= setdiff(1:size(tmp_r.x,1), idx_keep,'legacy');
-      tmp_r.x(idx_rm,:)= 0;
-    end
     [tmp_ival, tmp_nfo, X_rem]= ...
-        procutil_selectTimeIntervals(tmp_r, opt, ...
-                              'Sign', this_constraint{1}, ...
-                              'IvalPickPeak', this_constraint{2}, ...
+        procutil_selectTimeIntervals(epo_r, opt, ...
                               'Visualize', 0, ...
-                              'NIvals', 1);
+                              'NIvals', 1, ...
+                              'Constraint',this_constraint );
     if isnan(tmp_ival(1)),
       continue;   %% there is nothing more to select
     else

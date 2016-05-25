@@ -46,7 +46,14 @@ if nargin==0,
   cnt = props; return
 end
 
-cnt = misc_history(cnt);
+%The following would work, but a history doesn't make sense in this context
+%anyway.
+% if iscell(cnt)
+%     cnt=cellfun(@misc_history,cnt,'UniformOutput',0);
+% else 
+%     cnt = misc_history(cnt);
+% end
+
 misc_checkType(cnt, 'STRUCT(title x clab fs)|CELL{STRUCT}'); 
 misc_checkType(cnt2, 'STRUCT(title x clab fs)|CELL{STRUCT}');
 misc_checkTypeIfExists('mrk','STRUCT(time y)|CELL{STRUCT}');

@@ -2,29 +2,38 @@ function [divTr, divTe]= sample_KFold(label, folds, varargin)
 %SAMPLE_KFOLD - Sampling function: random divisions (by default stratified)
 %
 %Synopsis:
-%  [PARTR, PARTE]= sample_KFold(LABEL, FOLDS, [STRATIFIED])
+%  [PARTR, PARTE]= sample_KFold(LABEL, FOLDS, <OPT>)
 %
-% IN  LABEL   - class label of size [nClasses x nSamples].
-%     FOLDS   - DOUBLE nFolds: number of folds into which the samples are
-%               divided. Or FOLDS can be [nShifts nFolds] in which case
-%               all partitions will also be generated in shifted versions.
-%     STRATIFIED - BOOLEAN stratified: stratified sampling (true, default)
-%               or completely random sampling (false).
-% 
-% OUT PARTR   - Partitions of the training set
-%               PARTR{n}: cell array holding the training sets
-%               folds for shuffle #n, more specificially
-%               PARTR{n}{m} holds the indices of the training set of
-%               the m-th fold of shuffle #n.
-%     PARTE   - analogue to PARTR, for the test sets
+%Arguments:
+% LABEL  - class label of size [nClasses x nSamples].
+% FOLDS  - DOUBLE nFolds: number of folds into which the samples are
+%          divided. Or FOLDS can be [nShifts nFolds] in which case
+%          all partitions will also be generated in shifted versions.
+% OPT    - property/value list of optinal parameters:
+%   'stratified' [BOOL] stratified sampling (true, default)
+%          or completely random sampling (false).
+%
+%Returns:
+% DIVTR   - Partitions of the training set
+%           DIVTR{n}: cell array holding the training sets folds for
+%           shuffle #n, more specificially
+%           DIVTR{n}{m} holds the indices of the training set of the m-th
+%           fold of shuffle #n
+% DIVTE   - analogue to DIVTR, for the test sets
 
 % 2014-02 Martijn Schreuder
+
 
 props = {'Stratified'      true          'BOOL|DOUBLE[1]'
         };
 
+if nargin==0,
+  divTr= props;
+  return;
+end
+
 opt= opt_proplistToStruct(varargin{:});
-[opt,isdefault] = opt_setDefaults(opt, props, 1);
+[opt,~] = opt_setDefaults(opt, props, 1);
 
 misc_checkType(label, 'DOUBLE[- -]');
 misc_checkType(folds, 'DOUBLE|DOUBLE[2]');
@@ -37,8 +46,7 @@ end
 
 % check that the number of folds is smaller than the smallest class
 if any(folds(2) > nSamples),
-    error('The number of folds is larger than the number of samples in', ...
-        'the smallest class');
+    error('The number of folds is larger than the number of samples in the smallest class');
 end
 
 %divTr= {cell(1,folds(2))};

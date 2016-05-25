@@ -100,10 +100,6 @@ else
   previous= struct;
 end
 
-if ~isempty(opt.clab_rereference),
-	[data.cnt, A_reref]= proc_commonAverageReference(data.cnt, opt.clab_rereference, '*');
-	A_reref(:,	sum(A_reref==0,1) == size(A_reref,1)) = []; %removes the zero-channels		
-end
 if ~isempty(opt.band),
   [filt_b,filt_a]= cheby2(5, 20, opt.band/data.cnt.fs*2);
   data.cnt = proc_filt(data.cnt, filt_b, filt_a);
@@ -125,6 +121,16 @@ if opt.target_dist,
       mrk_selectTargetDist(BC_result.mrk, opt.target_dist);
 else
   BC_result.selected_trials= NaN;
+end
+
+if ~isempty(opt.clab_rereference),
+  [data.cnt, dmy]= proc_commonAverageReference(data.cnt, ...
+                                               opt.clab_rereference, '*');
+  data_tmp= proc_selectChannels(data.cnt, BC_result.cfy_clab);
+  [dmy, A_reref]= ...
+        proc_commonAverageReference(data_tmp, opt.clab_rereference, '*');
+  % remove 'zero channels'
+  A_reref(:, sum(A_reref==0,1)==size(A_reref,1)) = []; 
 end
 
 
@@ -197,8 +203,8 @@ epo= proc_baseline(epo, opt.ref_ival, 'channelwise', 1);
 
 %% --- Plot r^2 matrix and select intervals if requested ---
 %
-%epo_r= proc_rSquareSigned(proc_selectChannels(epo,BC_result.cfy_clab));
-epo_r= proc_rSquareSigned(epo);
+epo_r= proc_rSquareSigned(proc_selectChannels(epo,BC_result.cfy_clab));
+%epo_r= proc_rSquareSigned(epo);
 epo_r.className= {'sgn r^2 ( T , NT )'};  %% just make it shorter
 if opt.create_figs, 
   fig_state= fig_set(6, 'Hide',1, 'Name','r^2 Matrix');
@@ -265,19 +271,19 @@ bbci.signal.clab= BC_result.cfy_clab;
 
 cnt_processed = proc_selectChannels(data.cnt,bbci.signal.clab);
 
-if ~isempty(opt.clab_rereference),	
-	cnt_processed = proc_linearDerivation(cnt_processed, A_reref);	 
-	bbci.signal.proc=  {{@online_linearDerivation, A_reref}};
-	else
-	bbci.signal.proc= {};
+if ~isempty(opt.clab_rereference),
+  cnt_processed = proc_linearDerivation(cnt_processed, A_reref);	 
+  bbci.signal.proc=  {{@online_linearDerivation, A_reref}};
+else
+  bbci.signal.proc= {};
 end
 
 if opt.whitening
-	C= cov(cnt_processed.x);
-	[V,D]= eig(C);
-	A_whitening= V*diag(1./sqrt(diag(D)))*V;
+  C= cov(cnt_processed.x);
+  [V,D]= eig(C);
+  A_whitening= V*diag(1./sqrt(diag(D)))*V';
   cnt_processed= proc_linearDerivation(cnt_processed, A_whitening);	 
-	bbci.signal.proc= cat(2, bbci.signal.proc, {{@online_linearDerivation, A_whitening}});
+  bbci.signal.proc= cat(2, bbci.signal.proc, {{@online_linearDerivation, A_whitening}});
 end
 
 

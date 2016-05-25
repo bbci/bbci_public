@@ -10,7 +10,7 @@ if isfield(mrk_old, 'toe'),
 end
 
 if isfield(mrk, 'indexedByEpochs'),
-  mrk= rmfield(mrk, mrk.indexedByEpochs);
+  mrk= rmfield(mrk, setdiff(mrk.indexedByEpochs, 'time'));
   mrk= rmfield(mrk, 'indexedByEpochs');
   nEvents= length(mrk.time);
   for Fld= mrk_old.indexedByEpochs,

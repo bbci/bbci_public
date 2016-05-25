@@ -211,7 +211,7 @@ end
 
 
 %% save old channel labels
-if isfield(dat, 'clab'),
+if isfield(dat, 'clab')  && ~isfield(dat, 'origClab'),
   dat.origClab= dat.clab;
 end
 
