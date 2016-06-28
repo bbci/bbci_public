@@ -46,12 +46,6 @@ end
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-if not(ndims(dat.x) == 4)
-  error('dat.x must be 4-dimensional (time x frequency x channel x trials)');
-end
-
-
-% [T,~,nC,~]= size(dat.x);
 nC = size(dat,3);  
 switch(lower(opt.Pos)),
     case 'beginning_exact', % [-150 0] = 15 samples not 16 (at fs= 100 Hz)
