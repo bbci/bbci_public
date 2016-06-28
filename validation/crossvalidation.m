@@ -66,7 +66,7 @@ if isa(varargin{1}, 'function_handle'),
   opt= opt_proplistToStruct(varargin{2:end});
   opt.ClassifierFcn= varargin{1};
 else
-  opt= opt_proplistToStruct(varargin{:});
+  opt= opt_proplistToStruct('ClassifierFcn', varargin{:});
 end
 
 [opt,isdefault] = opt_setDefaults(opt, props, 1);
