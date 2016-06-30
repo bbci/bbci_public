@@ -62,11 +62,11 @@ if nargin==0;
   loss= props; return
 end
 
-if isa(varargin{1}, 'function_handle'),
+if misc_isproplist(varargin{1}),
+  opt= opt_proplistToStruct(varargin{:});
+else
   opt= opt_proplistToStruct(varargin{2:end});
   opt.ClassifierFcn= varargin{1};
-else
-  opt= opt_proplistToStruct('ClassifierFcn', varargin{:});
 end
 
 [opt,isdefault] = opt_setDefaults(opt, props, 1);
