@@ -28,8 +28,15 @@ function varargout= bbci_acquire_lsl(varargin)
 % 11-2015 Jan Boelts
 % --- --- --- ---
 
+global BTB
+
 % initialization of state structure and LSL streams
 if isequal(varargin{1}, 'init'),
+    
+    % check whether lsl toolbox is on the path
+    if ~isdir('liblsl-Matlab')
+        error('LSL Toolbox is not on the path. add it via addpath(genpath(''path_to_LSL/liblsl-Matlab''))')
+    end
     
     % use default electrode setting
     state= opt_proplistToStruct(varargin{2:end});
@@ -97,13 +104,12 @@ if isequal(varargin{1}, 'init'),
         
         % set sampling rate of current stream
         if not(state.fs==eeg_info.nominal_srate)
-%             state.fs = eeg_info.nominal_srate;
-            warning('EEG sampling rate is different from default')
+            state.fs = eeg_info.nominal_srate;
+            warning('EEG sampling rate is different from default: was adapted from 100 to %i', state.fs)
         end
         % check number of channels
         if not(state.nChans==eeg_info.channel_count())
             state.nChans = eeg_info.channel_count();
-            state.clab = state.clab(1:state.nChans);   %% BUG
             warning('EEG nChans is different from default')
         end
         state.packetNo=[];
@@ -115,14 +121,14 @@ if isequal(varargin{1}, 'init'),
     % resolve marker stream, try several times
     mrks = {};
     for i=1:3
-        mrks = lsl_resolve_byprop(state.lib,'type','Markers', 1, 1);
+        mrks = lsl_resolve_byprop(state.lib, 'name', 'MyMarkerStream', 1, 1);
         if ~isempty(mrks)
             break
         end
         pause(0.1)
     end
-    if isempty(mrks)
-        warning('No LSL marker stream on the network')
+    if isempty(mrks)        
+        error('No LSL marker stream with name ''MyMarkerStream'' on the network, did set up the marker stream?')
     else
         state.inlet.mrk = lsl_inlet(mrks{1});
         state.lastMrkDesc= 256;
@@ -132,8 +138,15 @@ if isequal(varargin{1}, 'init'),
         reset(state.filtHd);
     end
     output= {state};
-elseif isequal(varargin{1}, 'close'),
-    output= {};
+% close condition needs the 'state' structure.
+elseif isequal(varargin{1}, 'close') && length(varargin)==1
+    error('Please use ''close'' option with ''state'' variable as second argument: bbci_lsl_acquire(close, state)');
+elseif isequal(varargin{1}, 'close') && isstruct(varargin{2}),
+    % close inlets and libraries
+    state = varargin{2};
+    state.inlet.x.delete(); 
+    state.inlet.mrk.delete();
+    output= {state};
     
 elseif length(varargin)~=1,
     error('Except for INIT/CLOSE case, only one input argument expected');
@@ -145,33 +158,18 @@ else % this is the running condition that receives and returns the samples
     
     % get data sample from the inlet
     % set timeout to zero to prevent blocking if there is no marker in the
-    % current sample. 
+    % current sample.
     timeout = 0; % in seconds
     [cntx, ~] = state.inlet.x.pull_sample();
     
-    % if there is a marker stream
-    if isfield(state.inlet, 'mrk')
-        % get marker and time 
-        [mrkDesc, mrkTime] = state.inlet.mrk.pull_sample(timeout);
-        mrkTime = mrkTime-state.starttime;
-        % ITS A TIMING/CHUNKING PROBLEM
-        % PROBLEM: lsl pull sample returns a cell array which causes
-        % problems in the processing by bbci_apply. Therefore
-        % if it is empty, replace by empty str
-%         if isempty(char(mrkDesc))
-%             mrkDesc = [];
-%         % if not, extract the integer of the marker (like in 
-%         % bbci_acquire_bv.m) might be buggy. 
-% %         else
-% %             str = char(mrkDesc);
-% %             mrkDesc = str2double(str(2:end));
-%         end
-        state.lastMrkDesc= mrkDesc;
-    else
-        % set default values
-        mrkTime = -1;
-        mrkDesc = [];
-    end
+    % get marker and time
+    [mrkDesc, mrkTime] = state.inlet.mrk.pull_sample(timeout);
+    % lsl gives mrkTime in relation to the total time of the stream, not
+    % the recording. therefore we reset the time to the beginning of the
+    % recording. Maybe unneccessary and might be removed? 
+    mrkTime = mrkTime-state.starttime;
+    
+    state.lastMrkDesc= mrkDesc;
     
     % check whether streams are still on
     % if the timeout was exceeded mrkTime will be empty
@@ -179,11 +177,6 @@ else % this is the running condition that receives and returns the samples
     
     % save most recent sample
     state.lastx= cntx;
-    
-    % Apply filter if requested (dfilt.filter automatically saves the state)
-    if ~isempty(state.filtHd),
-        cntx= filter(state.filtHd, cntx, 1);
-    end
     
     output = {cntx, mrkTime, mrkDesc, state};
 end
