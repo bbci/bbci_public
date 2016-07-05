@@ -31,12 +31,10 @@ function [mrk, rClab, rTrials, nfo]= ...
 % (2) build epoching for each markers (see also mrk & ival)
 % (3) compute variance for each trial
 % (4) remove channels with too small variance (see opt.DoSilentChans)
-% (5) remove extreme outlier trials
-% (6) remove trails with a var > threshold, while (for opt.Whiskerperc = 10)
+% (5) remove extreme outlier trials, i.e. trials with a var > threshold,
+%     while (for opt.Whiskerperc = 10)
 %       threshold = percentile(allVar, 90) + opt.Whiskerlength * diff(percentile(allVar, 10), percentile(allVar, 90))      
-% (7) combined trials/channels rejection, optionally as multi-pass
-% 
-%
+% (6) combined trials/channels rejection, optionally as multi-pass
 
 % 08-06 Benjamin Blankertz
 % 07-12 Johannes Hoehne - updated documentation and parametarization
@@ -44,7 +42,9 @@ function [mrk, rClab, rTrials, nfo]= ...
 
 props= { 'Whiskerperc'     10           'DOUBLE[1]'
          'Whiskerlength'   3            'DOUBLE[1]'
+         'TrialThresholdPercChannels'   0.2   'DOUBLE[1]'
          'DoMultipass'     0            'BOOL'
+         'DoChannelMultipass'   0       'BOOL'
          'DoRelVar'        0            'BOOL'
          'DoUnstabChans'   1            'BOOL'
          'DoSilentChans'   1            'BOOL'
@@ -108,11 +108,11 @@ end
 
 
 %% first-pass trials: remove really bad trials
-%%  criterium: >= 20% of the channels have excessive variance
+%%  criterium: >= opt.TrialThresholdPercChannels (default 20%) of the channels have excessive variance
 perc= stat_percentiles(V(:), [0 100] + [1 -1]*opt.Whiskerperc);
 thresh= perc(2) + opt.Whiskerlength*diff(perc);
 EX= ( V > thresh );
-rTrials= find( mean(EX,1)>0.2 );
+rTrials= find( mean(EX,1)>opt.TrialThresholdPercChannels );
 
 V(:,rTrials)= [];
 evGood(rTrials)= [];
@@ -139,7 +139,7 @@ if opt.RemoveChannelsFirst,
     if isempty(rC),
       goon= 0;
     end
-    goon= goon && opt.DoMultipass;
+    goon= goon && opt.DoChannelMultipass;
   end
 end
 
@@ -153,7 +153,7 @@ while goon,
   isout= (V > thresh);
   
   rC= [];
-  if sum(isout(:))>0.05*nEvents,
+  if sum(isout(:))>0.05*nEvents,  % Should this be nRemainingEvents?
     qu= sum(isout,2)/sum(isout(:));
     rC= find( qu>0.1 & mean(isout,2)>0.05 );
     V(rC,:)= [];
@@ -214,7 +214,7 @@ rClab= fv.clab(rClab);
 mrk= mrk_selectEvents(mrk, 'not', rTrials);
 
 if opt.Verbose && ~isempty(rTrials),
-  fprintf('%d artifact trials removed due to variance criterion.\n', ...
+  fprintf('%d artifact trials detected due to variance criterion.\n', ...
           numel(rTrials));
 end
 
