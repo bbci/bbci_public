@@ -54,7 +54,7 @@ if ischar(varargin{1}),
     end
     switch(DS_record.fcn),
      case 'bv',
-      if DS_record.opt.checkimpedances,
+      if DS_record.opt.CheckImpedances,
         bvr_sendcommand('startimprecording', [filename '.eeg']);
       else
         bvr_sendcommand('startrecording', [filename '.eeg']);
