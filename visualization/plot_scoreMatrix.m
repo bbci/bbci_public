@@ -83,7 +83,7 @@ if isfield(epo_r, 'yUnit'),
   ylabel(H.cb, sprintf('[%s]', epo_r.yUnit));
 end
 cidx= find(ismember(epo_r.clab,opt.MarkClab,'legacy'));
-set(H.ax, 'YTick',cidx, 'YTickLabel',opt.MarkClab, ...
+set(H.ax, 'YTick',cidx, 'YTickLabel',epo_r.clab(cidx), ...
           'TickLength',[0.005 0]);
 if isdefault.XUnit && isfield(epo_r, 'XUnit'),
   opt.XUnit= epo_r.XUnit;
@@ -107,10 +107,18 @@ if opt.VisuScalps,
     ival= ival(si,:);
     
     for ii= 1:size(ival,1),
-        xx= ival(ii,:) + [-1 0]*1000/epo_r.fs/2;
-        H.box(:,ii)= line(xx([1 2; 2 2; 2 1; 1 1]), ...
-            ylimits([1 1; 1 2; 2 2; 2 1]), ...
-            'Color',[0 0.5 0], 'LineWidth',0.5);
+      xx= ival(ii,:);
+      [dmy, ti]= min(abs(ival(ii,1) - epo_r.t));
+      ti= max(2, ti);
+      dist= diff(epo_r.t(ti+[-1 0]));
+      xx(1)= xx(1) - 0.33*dist;
+      [dmy, ti]= min(abs(ival(ii,2) - epo_r.t));
+      ti= min(length(epo_r.t)-1, ti);
+      dist= diff(epo_r.t(ti+[0 1]));
+      xx(2)= xx(2) + 0.33*dist;
+      H.box(:,ii)= line(xx([1 2; 2 2; 2 1; 1 1]), ...
+                        ylimits([1 1; 1 2; 2 2; 2 1]), ...
+                        'Color',[0 0.5 0], 'LineWidth',0.5);
     end
     if ~isempty(opt.Title),
         H.title= axis_title(opt.Title, 'VPos',0, 'VerticalAlignment','bottom', ...
