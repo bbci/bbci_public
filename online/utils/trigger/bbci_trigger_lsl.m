@@ -12,6 +12,8 @@ function bbci_trigger_lsl(value, varargin)
 %           stream is not enough because we dont have access to bbci struct
 %           in this function in order to close the connection. 
 
+% 11-2015 Jan Boelts
+
 
 global BTB
 
@@ -30,11 +32,12 @@ if ischar(value) && strcmp(value, 'init'),
         % get the lsl stream outlet and save it as well as the lsl info object in BTB struct
         BTB.Acq.TriggerParam = {lsl_outlet(mrk_info), mrk_info};
         BTB.Acq.TriggerFcn = @bbci_trigger_lsl; 
+        BTB.Acq.LSLsourceID = source_id; 
         fprintf(['Started LSL marker stream with source id ' source_id '\n']);
     else
         % if there is a stream it has to be closed because otherwise the
         % acquire function might connect to the wrong stream.
-        error(['There is a markerstream with ID ' BTB.Acq.LSLsourceID ' on the network, use bbci_trigger_lsl(''close'') first!']);
+        error(['There is a markerstream with ID ' BTB.Acq.LSLsourceID ' on the network, use bbci_trigger(''close'') first!']);
     end
 elseif ischar(value) && strcmp(value, 'close'),
     % try to close LSL marker stream
@@ -65,3 +68,4 @@ else
 end
 end
 
+>>>>>>> b9ee3e0cb00b9a0abbd586a100c6a90147bdac3f
