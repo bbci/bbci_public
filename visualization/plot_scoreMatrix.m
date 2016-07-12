@@ -50,7 +50,11 @@ opt= opt_proplistToStruct(varargin{:});
 if isempty(ival),
   opt.VisuScalps = 0;
 else
-  opt.VisuScalps = 1;
+  [opt, isdefault]= ...
+      opt_overrideIfDefault(opt, isdefault, 'VisuScalps', 1);
+  % sort intervals chronilogically
+    [~, si]= sort(ival(:,1));
+  ival= ival(si,:);
 end
 
 epo_r= proc_selectChannels(epo_r, opt.CLab);
@@ -95,46 +99,46 @@ set(H.ax, 'YLim',ylimits+[-2 2], 'NextPlot','add');
 ylimits= ylimits+[-1 1];
 
 if opt.VisuScalps,
-    if isstruct(ival)
-        ival_struct= ival;
-        ival= zeros(length(ival_struct),2);
-        for ii= 1:length(ival_struct)
-            ival(ii,:)= ival_struct(ii).ival;
-        end
+  if isstruct(ival)
+    ival_struct= ival;
+    ival= zeros(length(ival_struct),2);
+    for ii= 1:length(ival_struct)
+      ival(ii,:)= ival_struct(ii).ival;
     end
-    % Sort intervals
-    [dummy,si]= sort(ival(:,1));
-    ival= ival(si,:);
-    
-    for ii= 1:size(ival,1),
-      xx= ival(ii,:);
-      [dmy, ti]= min(abs(ival(ii,1) - epo_r.t));
-      ti= max(2, ti);
-      dist= diff(epo_r.t(ti+[-1 0]));
-      xx(1)= xx(1) - 0.33*dist;
-      [dmy, ti]= min(abs(ival(ii,2) - epo_r.t));
-      ti= min(length(epo_r.t)-1, ti);
-      dist= diff(epo_r.t(ti+[0 1]));
-      xx(2)= xx(2) + 0.33*dist;
-      H.box(:,ii)= line(xx([1 2; 2 2; 2 1; 1 1]), ...
-                        ylimits([1 1; 1 2; 2 2; 2 1]), ...
-                        'Color',[0 0.5 0], 'LineWidth',0.5);
-    end
-    if ~isempty(opt.Title),
-        H.title= axis_title(opt.Title, 'VPos',0, 'VerticalAlignment','bottom', ...
-            'FontWeight','bold', 'FontSize',16, ...
-            'Color',0.3*[1 1 1], ...
-            opt.TitleSpec{:});
-    end
-    
-    nIvals= size(ival,1);
-    for ii= 1:nIvals,
-        H.ax_scalp(ii)= subplotxl(2, nIvals, nIvals + ii);
-    end
-    H.h_scalp= plot_scalpEvolution(epo_r, opt.Mnt, ival, defopt_scalp_r, ...
-        'Subplot', H.ax_scalp, ...
-        'IvalColor', [0 0 0], ...
-        'GlobalCLim', 1, ...
-        'ScalePos','none');
-    delete(H.h_scalp.text);
+  end
+  % Sort intervals
+  [dummy,si]= sort(ival(:,1));
+  ival= ival(si,:);
+  
+  for ii= 1:size(ival,1),
+    xx= ival(ii,:);
+    [dmy, ti]= min(abs(ival(ii,1) - epo_r.t));
+    ti= max(2, ti);
+    dist= diff(epo_r.t(ti+[-1 0]));
+    xx(1)= xx(1) - 0.33*dist;
+    [dmy, ti]= min(abs(ival(ii,2) - epo_r.t));
+    ti= min(length(epo_r.t)-1, ti);
+    dist= diff(epo_r.t(ti+[0 1]));
+    xx(2)= xx(2) + 0.33*dist;
+    H.box(:,ii)= line(xx([1 2; 2 2; 2 1; 1 1]), ...
+                      ylimits([1 1; 1 2; 2 2; 2 1]), ...
+                      'Color',[0 0.5 0], 'LineWidth',0.5);
+  end
+  if ~isempty(opt.Title),
+    H.title= axis_title(opt.Title, 'VPos',0, 'VerticalAlignment','bottom', ...
+                        'FontWeight','bold', 'FontSize',16, ...
+                        'Color',0.3*[1 1 1], ...
+                        opt.TitleSpec{:});
+  end
+  
+  nIvals= size(ival,1);
+  for ii= 1:nIvals,
+    H.ax_scalp(ii)= subplotxl(2, nIvals, nIvals + ii);
+  end
+  H.h_scalp= plot_scalpEvolution(epo_r, opt.Mnt, ival, defopt_scalp_r, ...
+                                 'Subplot', H.ax_scalp, ...
+                                 'IvalColor', [0 0 0], ...
+                                 'GlobalCLim', 1, ...
+                                 'ScalePos','none');
+  delete(H.h_scalp.text);
 end
