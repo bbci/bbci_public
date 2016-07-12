@@ -45,9 +45,9 @@ for ih= hsp,
   H.patch(k)= patch(ival([1 2 2 1]), yPatch([1 1 2 2]), markCol);
   obj_moveBack(H.patch(k));
   plotutil_gridOverPatches('Axes', gca, 'XGrid', [], 'YGrid', []);
-  if ~isnan(getfield(get(ih,'UserData'), 'hleg')), %% restore legend
-    legend;
-  end
+  %if ~isnan(getfield(get(ih,'UserData'), 'hleg')), %% restore legend
+  %  legend;
+  %end
 end
 set(H.line, 'UserData','ival line');
 set(H.patch, 'EdgeColor','none', 'UserData','ival patch');
