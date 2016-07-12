@@ -115,13 +115,21 @@ end
 print(param{:}, fullName);
 
 if strcmpi(opt.Format, 'PDF') || strcmpi(opt.Format, 'EPSPDF'),
-  if ~strncmp('eps', opt.Device, 3),
-    error('For output in PDF format, OPT.Device must be eps*');
-  end
-  cmd= sprintf('cd %s; epstopdf --embed %s.eps', filepath, filename);
-  util_unixCmd(cmd, 'could not convert EPS to PDF');
-  if strcmpi(opt.Format, 'PDF'),
-    cmd= sprintf('cd %s; rm %s.eps', filepath, filename);
-    util_unixCmd(cmd, 'could not remove EPS');
-  end
+    if isunix
+        if ~strncmp('eps', opt.Device, 3),
+            error('For output in PDF format, OPT.Device must be eps*');
+        end
+        cmd= sprintf('cd %s; epstopdf --embed %s.eps', filepath, filename);
+        util_unixCmd(cmd, 'could not convert EPS to PDF');
+        if strcmpi(opt.Format, 'PDF'),
+            cmd= sprintf('cd %s; rm %s.eps', filepath, filename);
+            util_unixCmd(cmd, 'could not remove EPS');
+        end
+    else
+        if numel(opt.PaperSize)>2
+            opt.PaperSize=opt.PaperSize([3 4]);
+        end        
+        set(gcf, 'paperSize',opt.PaperSize);
+        print('-dpdf',gcf,fullName)
+    end
 end
