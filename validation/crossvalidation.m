@@ -71,7 +71,7 @@ end
 
 [opt,isdefault] = opt_setDefaults(opt, props, 1);
 misc_checkType(fv, 'STRUCT(x y)');
-misc_checkType(fv.x, 'DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]', 'fv.x');
+misc_checkType(fv.x, 'DOUBLE[2- 1]|DOUBLE[1- 2-]|DOUBLE[- - -]', 'fv.x');
 
 opt.Proc= xvalutil_procSetDefault(opt.Proc);
 [trainFcn, trainPar]= misc_getFuncParam(opt.ClassifierFcn);
