@@ -139,17 +139,15 @@ if isequal(varargin{1}, 'init'),
     end
     output= {state};
 % close condition needs the 'state' structure.
-elseif isequal(varargin{1}, 'close'),
-    if length(varargin)==1,
-        error('Please use ''close'' option with ''state'' variable as second argument: bbci_lsl_acquire(close, state)');
-    end
-elseif isequal(varargin{1}, 'close') && istruct(varargin{2}),
+elseif isequal(varargin{1}, 'close') && length(varargin)==1
+    error('Please use ''close'' option with ''state'' variable as second argument: bbci_lsl_acquire(close, state)');
+elseif isequal(varargin{1}, 'close') && isstruct(varargin{2}),
     % close inlets and libraries
     state = varargin{2};
     state.inlet.x.delete(); 
     state.inlet.mrk.delete();
-    state.lib.delete();
-    output= {};
+    %state.lib.delete();
+    output= {state};
     
 elseif length(varargin)~=1,
     error('Except for INIT/CLOSE case, only one input argument expected');

@@ -9,7 +9,7 @@ bbci= bbci_calibrate_setDefaults(bbci);
 BC= bbci.calibrate;
 
 % fullfile does not work for CELL, so we use strcat here:
-if ~isempty(BC.folder), % if empty, assume absolute paths
+if ~isempty(BC.folder) && ~fileutil_isAbsolutePath(BC.file),
     data.filename= strcat(BC.folder, filesep, BC.file);
 else
     data.filename = BC.file;
