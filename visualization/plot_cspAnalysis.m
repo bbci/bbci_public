@@ -114,7 +114,7 @@ for rr= 1:nClasses,
           subplotxl(nComps, 2*nClasses, [cc rr*2], AxesLayout{:});
     end
     if ~isempty(A),
-      H.scalp(cc,rr)= plot_scalp(mnt, A(k,:), sc_opt);
+      H.scalp(cc,rr)= plot_scalp(mnt, A(:,k), sc_opt);
     else
       H.scalp(cc,rr).head= [];
       H.scalp(cc,rr).nose= [];
