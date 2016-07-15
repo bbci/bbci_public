@@ -52,9 +52,6 @@ if isempty(ival),
 else
   [opt, isdefault]= ...
       opt_overrideIfDefault(opt, isdefault, 'VisuScalps', 1);
-  % sort intervals chronilogically
-    [~, si]= sort(ival(:,1));
-  ival= ival(si,:);
 end
 
 epo_r= proc_selectChannels(epo_r, opt.CLab);
