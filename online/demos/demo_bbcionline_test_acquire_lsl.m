@@ -15,9 +15,13 @@ clab = {'AF5' 'AF3' 'AF1' 'AFz' 'AF2' 'AF4' 'AF6' ...
         'F5' 'F3', 'F1' 'Fz' 'F2' 'F4' 'F6' ...
         'FC7' 'FC5'};
 
+
+
 bbci.signal.clab = clab;
 % provide clab and markerstreamname to lsl acquire function
 bbci.source.acquire_param = {'clab', clab, 'markerstreamname', 'MyMarkerStream'};
+% removed the last 2 paramters
+% bbci.source.acquire_param = {'clab', clab};
 
 bbci.feature.proc= {@proc_variance, @proc_logarithm};
 bbci.feature.ival= [-500 0];
