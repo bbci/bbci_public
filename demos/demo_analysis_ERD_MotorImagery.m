@@ -1,3 +1,4 @@
+startup_bbci_toolbox('DataDir','D:\kach programmation wela walou\khadmation\matchlab\bbciDir')
 eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
                    'VPkg_08_08_07', 'calibration_motorimageryVPkg');
 

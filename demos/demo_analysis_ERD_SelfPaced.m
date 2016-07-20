@@ -1,4 +1,4 @@
-
+%%
 eeg_file= fullfile(BTB.DataDir, 'demoMat', ...
     'VPai_01_11_23', 'selfpaced2sVPai');
 
