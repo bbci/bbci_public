@@ -41,10 +41,10 @@ function [dat, varargout]= proc_csp(dat, varargin)
 %
 %See also demos/demo_validate_csp
 
-props= {'CovFcn'      {@cov}                                        '!FUNC|CELL'
-        'ScoreFcn'    {@score_eigenvalues}                          '!FUNC|CELL'
-        'SelectFcn'   {@select_fixedNumber, 3, 'equalperclass'}     '!FUNC|CELL'
-        'Verbose'     1                                             'INT'
+props= {'CovFcn'      {@cov}                            '!FUNC|CELL'
+        'ScoreFcn'    {@score_eigenvalues}              '!FUNC|CELL'
+        'SelectFcn'   {@cspselect_equalPerClass, 3}     '!FUNC|CELL'
+        'Verbose'     1                                 'INT'
        };
 
 if nargin==0,

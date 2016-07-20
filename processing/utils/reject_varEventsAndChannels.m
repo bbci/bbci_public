@@ -42,7 +42,9 @@ function [mrk, rClab, rTrials, nfo]= ...
 
 props= { 'Whiskerperc'     10           'DOUBLE[1]'
          'Whiskerlength'   3            'DOUBLE[1]'
+         'TrialThresholdPercChannels'   0.2   'DOUBLE[1]'
          'DoMultipass'     0            'BOOL'
+         'DoChannelMultipass'   0       'BOOL'
          'DoRelVar'        0            'BOOL'
          'DoUnstabChans'   1            'BOOL'
          'DoSilentChans'   1            'BOOL'
@@ -106,11 +108,11 @@ end
 
 
 %% first-pass trials: remove really bad trials
-%%  criterium: >= 20% of the channels have excessive variance
+%%  criterium: >= opt.TrialThresholdPercChannels (default 20%) of the channels have excessive variance
 perc= stat_percentiles(V(:), [0 100] + [1 -1]*opt.Whiskerperc);
 thresh= perc(2) + opt.Whiskerlength*diff(perc);
 EX= ( V > thresh );
-rTrials= find( mean(EX,1)>0.2 );
+rTrials= find( mean(EX,1)>opt.TrialThresholdPercChannels );
 
 V(:,rTrials)= [];
 evGood(rTrials)= [];
@@ -137,7 +139,7 @@ if opt.RemoveChannelsFirst,
     if isempty(rC),
       goon= 0;
     end
-    goon= goon && opt.DoMultipass;
+    goon= goon && opt.DoChannelMultipass;
   end
 end
 
@@ -212,7 +214,7 @@ rClab= fv.clab(rClab);
 mrk= mrk_selectEvents(mrk, 'not', rTrials);
 
 if opt.Verbose && ~isempty(rTrials),
-  fprintf('%d artifact trials removed due to variance criterion.\n', ...
+  fprintf('%d artifact trials detected due to variance criterion.\n', ...
           numel(rTrials));
 end
 

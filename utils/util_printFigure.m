@@ -7,13 +7,13 @@ function util_printFigure(file, varargin)
 %
 %Arguments:
 % FILE:     CHAR        Name of the output file (without extension).
-%                       If the filename is relative, BTB_FIG_DIR 
+%                       If the filename is relative, BTB.FigDir
 %                       (global var) is prepended.
 % PAPERSIZE: see OPT.PaperSize
 % OPT: struct or propertyvalue list of optional properties
 %  .PaperSize: [X Y] size of the output in centimeters, or 'maxAspect' or 'auto'.
 %  .Device:  Matlab driver used for printing, e.g.
-%     ps, eps, epsc, epsc2 (default), jpeg, tiff, png
+%     ps, eps, epsc, epsc2 (default), jpeg, tiff, png, pdf, svg
 %  .Format: eps or pdf. If OPT.Format is 'pdf', then 'epstopdf' is used
 %     to convert the output file to PDF format
 %     NEW FEATURE: 'format' may be 'svg'. This ignores 'device' and 'paperSize'
@@ -26,7 +26,7 @@ BTB= opt_setDefaults(BTB, {'FigDir',  ''  'CHAR'});
 
 props = {   
         'PaperSize'       'auto'        '!CHAR(auto maxAspect)|!DOUBLE[- -]';
-        'Format'          'eps'         '!CHAR(eps pdf svg epspdf png)';
+        'Format'          'eps'         'CHAR(eps pdf svg epspdf png)';
         'Device'          'epsc2'       '!CHAR';
         'Folder'          ''            'CHAR';
         'Prefix'          ''            'CHAR';
@@ -98,36 +98,38 @@ if ~exist(filepath, 'dir'),
 end
 
 if strcmpi(opt.Format, 'SVG'),
-  if ~exist('', 'file'),
-    addpath([BTB.Dir 'import/plot2svg']);
+  if ~exist('plot2svg', 'file'),
+    addpath(fullfile(BTB.Dir, 'externals', 'plot2svg-master','src'));
   end
   plot2svg([fullName '.svg']);
   return;
 end
 
-if isempty(opt.Append)
-    if isempty(opt.Resolution),
-      print(['-d' opt.Device], fullName);
-    else
-      print(['-d' opt.Device], ['-r' int2str(opt.Resolution)], fullName);
-    end
-else
-    % Append figure to existing file
-    if isempty(opt.Resolution),
-      print(['-d' opt.Device],'-append', fullName);
-    else
-      print(['-d' opt.Device],'-append', ['-r' int2str(opt.Resolution)], fullName);
-    end
+param= {['-d' opt.Device]};
+if opt.Append,
+  param= cat(2, param, {'-append'});
 end
+if ~isempty(opt.Resolution),
+  param= cat(2, param, {['-r' int2str(opt.Resolution)]});
+end
+print(param{:}, fullName);
 
 if strcmpi(opt.Format, 'PDF') || strcmpi(opt.Format, 'EPSPDF'),
-  if ~strncmp('eps', opt.Device, 3),
-    error('For output in PDF format, OPT.Device must be eps*');
-  end
-  cmd= sprintf('cd %s; epstopdf --embed %s.eps', filepath, filename);
-  util_unixCmd(cmd, 'could not convert EPS to PDF');
-  if strcmpi(opt.Format, 'PDF'),
-    cmd= sprintf('cd %s; rm %s.eps', filepath, filename);
-    util_unixCmd(cmd, 'could not remove EPS');
-  end
+    if isunix
+        if ~strncmp('eps', opt.Device, 3),
+            error('For output in PDF format, OPT.Device must be eps*');
+        end
+        cmd= sprintf('cd %s; epstopdf --embed %s.eps', filepath, filename);
+        util_unixCmd(cmd, 'could not convert EPS to PDF');
+        if strcmpi(opt.Format, 'PDF'),
+            cmd= sprintf('cd %s; rm %s.eps', filepath, filename);
+            util_unixCmd(cmd, 'could not remove EPS');
+        end
+    else
+        if numel(opt.PaperSize)>2
+            opt.PaperSize=opt.PaperSize([3 4]);
+        end        
+        set(gcf, 'paperSize',opt.PaperSize);
+        print('-dpdf',gcf,fullName)
+    end
 end

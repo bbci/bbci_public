@@ -167,6 +167,7 @@ if data.isnew || ~isfield(data, 'previous_settings') || ...
       if iscell(BC_result.rejected_clab),   %% that means rejected_clab is not NaN
           cidx= find(ismember(BC_result.clab, BC_result.rejected_clab));
           BC_result.clab(cidx)= [];
+          BC_result.cfy_clab(cidx)= [];
       end
     end
   else

@@ -117,6 +117,7 @@ if opt.Classwise,
     error('you cannot use both, classwise and trialwise');
   end
   if dim<=3
+      
     for classIdx= 1:size(dat.y,1),
       idx= find(dat.y(classIdx,:));
       baseline= mean(mean(dat.x(Ti, :, idx), 1), 3);
@@ -139,6 +140,7 @@ if opt.Classwise,
 elseif opt.Trialwise,
   if opt.Channelwise,
     if dim==3
+        
       for ic= 1:nCE,
         dat.x(:,ic)= dat.x(:,ic) - mean(dat.x(Ti,ic));
       end
@@ -148,16 +150,19 @@ elseif opt.Trialwise,
       end
     end
   else
+      
     baseline= mean(dat.x(Ti,:, :, :), 1);
     dat.x= dat.x - repmat(baseline, [T 1 1 1]);
   end
 else
+  
   baseline= mean(mean(dat.x(Ti, :, :), 1), 3);
+  
   if opt.Channelwise,
     for ic= 1:nC,
       dat.x(:,ic,:)= dat.x(:,ic,:) - repmat(baseline(:, ic), [T 1 nE]);
     end
-  else
+  else      
     dat.x= dat.x - repmat(baseline, [T 1 nE]);
   end
 end

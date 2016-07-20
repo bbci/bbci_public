@@ -350,10 +350,13 @@ fv= proc_segmentation(cnt_flt, mrk2, BC_result.ival, 'CLab',bbci.signal.clab);
 clear cnt_flt
 
 if isequal(opt.patterns,'auto'),
-  [fv2, csp_w, la, A]= proc_cspAuto(fv, 'Patterns',opt.nPatterns);
+  % we should get rid of the proc_cspAuto function. Implement the heuristic
+  % as a procutil_selectSmartCsps and use that here:
+  [fv2, csp_w, A, la]= proc_csp(fv, 'SelectFcn',...
+                                {@cspselect_directorsCut, opt.nPatterns});
 else
-  error('currently only ''patterns''=''auto'' is implemented');
-    % [fv2, csp_w, la, A]= proc_csp3(fv, 'Patterns',opt.nPatterns);
+  [fv2, csp_w, A, la]= proc_csp(fv, 'SelectFcn',...
+                                {@cspselect_equalPerClass, opt.nPatterns});
 end
 
 csp_dat.dat = fv2;
@@ -363,6 +366,7 @@ csp_dat.eigv = A;
 
 fig_state= fig_set(figno_offset+4, 'Hide',1, ...
                    'Name', sprintf('CSP %s vs %s', classes{:}));
+<<<<<<< HEAD
 %if isequal(opt.patterns,'auto'),
   
 
@@ -372,6 +376,15 @@ fig_state= fig_set(figno_offset+4, 'Hide',1, ...
   %  plot_cspAnalysis(fv, mnt, csp_w, A, la, opt_scalp_csp, ...
   %                  'MarkPatterns', opt.patterns);
 %end
+=======
+if isequal(opt.patterns,'auto'),
+  plot_cspAnalysis(fv, mnt, csp_w, A, la, ...
+                  'RowLayout',1, 'Title','');
+else
+  plot_cspAnalysis(fv, mnt, csp_w, A, la, opt_scalp_csp, ...
+                   'MarkPatterns', opt.patterns);
+end
+>>>>>>> 05f7c2114a699d36a00b5ca8927e07a41f1b6c41
 fig_publish(fig_state);
 
 bbci.feature.ival= [-750 0];

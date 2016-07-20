@@ -1,8 +1,9 @@
-function [loss, lossSem, cfy_out]= crossvalidation(fv, classy, varargin)
+function [loss, lossSem, cfy_out]= crossvalidation(fv, varargin)
 %CROSSVALIDATION - Perform cross-validation
 %
 %Synopsis:
 %  [LOSS, LOSSSEM]= crossvalidation(FV, CLASSY, <OPT>)
+%  [LOSS, LOSSSEM]= crossvalidation(FV, <OPT>)
 %
 %Arguments:
 %  FV -     Struct of feature vectors with data in field '.x' and labels in
@@ -19,6 +20,8 @@ function [loss, lossSem, cfy_out]= crossvalidation(fv, classy, varargin)
 %           {@FCN, PARAM1, PARAM2, ...}, or CELL array of function 
 %           handles for multiple loss statistics (e.g. {@loss_0_1,
 %           @loss_rocArea} ) - no parameters possible.
+%   'ClassifierFcn': as direct input argument CLASSY, see above;
+%           default @train_RLDAshrink
 %   'Proc': Struct with fields 'train' and 'apply'. Each of those is a CELL
 %           specifying a processing chain. See the example
 %           demo_validation_csp to learn about this feature.
@@ -49,25 +52,30 @@ function [loss, lossSem, cfy_out]= crossvalidation(fv, classy, varargin)
  
 % 2014-02 Benjamin Blankertz
 
-props = {'SampleFcn'   {@sample_KFold, [10 10]}   '!FUNC|CELL'
-         'LossFcn'     @loss_0_1                  '!FUNC|CELL'
-         'Proc'        []                         'STRUCT'
+props = {'SampleFcn'       {@sample_KFold, [10 10]}   '!FUNC|CELL'
+         'LossFcn'         @loss_0_1                  '!FUNC|CELL'
+         'ClassifierFcn'   @train_RLDAshrink          '!FUNC|CELL'
+         'Proc'            []                         'STRUCT'
         };
 
 if nargin==0;
   loss= props; return
 end
 
-opt= opt_proplistToStruct(varargin{:});
+if misc_isproplist(varargin{1}),
+  opt= opt_proplistToStruct(varargin{:});
+else
+  opt= opt_proplistToStruct(varargin{2:end});
+  opt.ClassifierFcn= varargin{1};
+end
 
 [opt,isdefault] = opt_setDefaults(opt, props, 1);
 misc_checkType(fv, 'STRUCT(x y)');
-misc_checkType(fv.x, 'DOUBLE[2- 1]|DOUBLE[2- 2-]|DOUBLE[- - -]', 'fv.x');
-misc_checkType(classy, 'FUNC|CELL');
+misc_checkType(fv.x, 'DOUBLE[2- 1]|DOUBLE[1- 2-]|DOUBLE[- - -]', 'fv.x');
 
 opt.Proc= xvalutil_procSetDefault(opt.Proc);
-[trainFcn, trainPar]= misc_getFuncParam(classy);
-applyFcn= misc_getApplyFunc(classy);
+[trainFcn, trainPar]= misc_getFuncParam(opt.ClassifierFcn);
+applyFcn= misc_getApplyFunc(opt.ClassifierFcn);
 [sampleFcn, samplePar]= misc_getFuncParam(opt.SampleFcn);
 [divTr, divTe]= sampleFcn(fv.y, samplePar{:});
 [lossFcn, lossPar]= misc_getFuncParam(opt.LossFcn);

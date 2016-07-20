@@ -155,7 +155,7 @@ if ~iscell(opt.ScalePolicy),
   opt.ScalePolicy= {opt.ScalePolicy};
 end
 if isempty(opt.ScaleGroup),
-  grd_clab= gridutil_getClabOfGrid(mnt);
+  [grd_clab, grd_clab_idx]= gridutil_getClabOfGrid(mnt);
   if strncmp(opt.ScalePolicy, 'individual', length('individual')),
     opt.ScaleGroup= grd_clab;
     pol= opt.ScalePolicy(length('individual')+1:end);
@@ -168,11 +168,11 @@ if isempty(opt.ScaleGroup),
   else
     scalp_idx= util_scalpChannels(epo);
     if isempty(scalp_idx),
-      opt.ScaleGroup= {intersect(grd_clab, epo.clab,'legacy')};
+      opt.ScaleGroup= {intersect(grd_clab, epo.clab)};
     else
-      scalp_idx= intersect(scalp_idx, util_chanind(epo, grd_clab),'legacy');
+      scalp_idx= intersect(scalp_idx, util_chanind(epo, grd_clab));
       emgeog_idx= util_chanind(epo, 'EOGh','EOGv','EMG*');
-      others_idx= setdiff(1:length(epo.clab), [scalp_idx emgeog_idx],'legacy');
+      others_idx= setdiff(1:length(epo.clab), [scalp_idx emgeog_idx]);
       opt.ScaleGroup= {epo.clab(scalp_idx), {'EMG*'}, {'EOGh'}, {'EOGv'}, ...
                        epo.clab(others_idx)};
       def_ScalePolicy= {'auto', [-5 50], 'sym', 'auto', 'auto'};
@@ -232,7 +232,7 @@ set(gcf, 'Color',opt.FigureColor);
 
 DisplayChannels= find(ismember(strtok(mnt.clab), strtok(epo.clab),'legacy'));
 if isfield(mnt, 'box'),
-  DisplayChannels= intersect(DisplayChannels, find(~isnan(mnt.box(1,1:end-1))),'legacy');
+  DisplayChannels= intersect(DisplayChannels, grd_clab_idx);
 end
 nDisps= length(DisplayChannels);
 % may be 'C3' while the latter is 'C3 lap'

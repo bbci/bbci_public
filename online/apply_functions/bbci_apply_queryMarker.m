@@ -28,7 +28,8 @@ function marker_out= bbci_apply_queryMarker(marker, ival, mrkDesc)
 % 02-2011 Benjamin Blankertz
 
 % return if there is no quit marker
-if isempty(mrkDesc), 
+
+if nargin<3 || isempty(mrkDesc)
   marker_out= []; 
   return 
 end

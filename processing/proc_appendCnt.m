@@ -117,7 +117,7 @@ if ~isequal(cnt.clab, cnt2.clab),
 end
 
 T= size(cnt.x, 1);  % Length in samples
-C= size(cnt.x,2);
+C= size(cnt.x, 2);
 if opt.Channelwise
   T2= size(cnt2.x, 1);
   for ic= 1:C
@@ -126,7 +126,8 @@ if opt.Channelwise
 else
   cnt.x= cat(1, cnt.x, cnt2.x);
 end
-if ~strcmp(cnt.title, cnt2.title),
+if ~strcmp(cnt.title, cnt2.title) && ...
+    isempty( str_patternMatch('* et al', cnt.title) ),
   cnt.title= [cnt.title ' et al'];
 end
 if isfield(cnt, 'file') && isfield(cnt2, 'file'),
@@ -136,17 +137,5 @@ if isfield(cnt, 'file') && isfield(cnt2, 'file'),
 end
 
 if exist('mrk','var') && ~isempty(mrk),
-  Tt = T/cnt.fs*1000; % Length in ms
-  if isfield(mrk(1),'time') && ~isfield(mrk2(1),'time')
-    error('appending dissimilar structs for mrk');
-  elseif length(mrk2)>1 % || ~iscell(mrk2.type),   % @Benjamin: ist OK das iscell auszukommentieren? [mrk hat das Feld nicht mehr?]
-    %% mrk2 has format 'StructArray' (see file_readBVmarkers)
-    for ii = 1:length(mrk2)
-      mrk2(ii).time = mrk2(ii).time + Tt;
-    end
-    mrk = cat(1,mrk,mrk2);
-  else
-    mrk2.time= mrk2.time + Tt;
-    mrk= mrk_mergeMarkers(mrk, mrk2);
-  end
+  mrk= mrk_appendMarkers(mrk, mrk2, T*1000/cnt.fs);
 end

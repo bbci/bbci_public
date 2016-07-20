@@ -51,7 +51,8 @@ cnt_flt= proc_filt(data.cnt, filt_b, filt_a);
 bbci.signal.clab= data.cnt.clab(util_chanind(data.cnt, opt.clab));
 
 fv= proc_segmentation(cnt_flt, data.mrk, opt.ival, 'clab',bbci.signal.clab);
-[fv_csp, csp_w, la, A]= proc_cspAuto(fv, 'patterns',opt.nPatterns);
+[fv_csp, csp_w, A, la]= proc_csp(fv, 'SelectFcn',...
+                                 {@cspselect_equalPerClass, opt.nPatterns});
 
 bbci.signal.proc= {{@online_linearDerivation, csp_w}, ...
                    {@online_filt, filt_b, filt_a}};

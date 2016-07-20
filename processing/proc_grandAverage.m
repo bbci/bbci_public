@@ -105,7 +105,7 @@ else
 end
 
 
-[opt, isdefault]= opt_setDefaults(opt, props);
+[opt, ~]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
 misc_checkType(erps,'CELL{STRUCT}');
@@ -157,7 +157,7 @@ if datadim==1
   F = 1;
 else
   % Timefrequency data
-  if ndims(erps{1}.x)==3   % no classes, erps are averages over single class
+  if ndims(erps{1}.x)==3  
     F= size(erps{1}.x, 1);
     T= size(erps{1}.x, 2);
     E = 1;
@@ -207,13 +207,11 @@ for vp= 1:K,
   if isfield(ga, 'yUnit') 
     switch ga.yUnit
       case 'dB'
-        erps{vp}.x = 10.^(erps{vp}.x/10); % actually, staying on dB scale would not be that bad
+        erps{vp}.x = 10.^(erps{vp}.x/10);
       case 'r',
         erps{vp}.x = atanh(erps{vp}.x);
       case 'r^2',
         erps{vp}.x = atanh(sqrt(erps{vp}.x));
-      case 'sgn r^2',
-        erps{vp}.x = atanh(sqrt(abs(erps{vp}.x)).*sign(erps{vp}.x));
       case 'sgn r^2',
         erps{vp}.x = atanh(sqrt(abs(erps{vp}.x)).*sign(erps{vp}.x));
     end
@@ -231,7 +229,6 @@ for cc= 1:E,  %% for each class
   swV = 0;
   tdata = zeros([F*T*C K]);
   for vp= 1:K,  %% average across subjects
-    % TODO: sort out NaNs
     switch opt.Average
       case 'Nweighted',
         W = erps{vp}.N(cc);
@@ -255,7 +252,7 @@ for cc= 1:E,  %% for each class
     ga.se(:, cc) = sqrt(swV)./sW;
   else
     if simpleStats
-      [H ga.p(:, cc) ci stats] = ttest(tdata, [], [], [], 2);
+      [~, ga.p(:, cc), ~, stats] = ttest(tdata, [], [], [], 2);
       ga.tstat(:, cc) = stats.tstat;
       ga.se(:,cc)= stats.sd/sqrt(K);
       ga.df = stats.df(1);
@@ -291,7 +288,7 @@ if opt.Stats || simpleStats
   else
     ga.sgnlogp = -reshape(((log(2)+normcdfln(-abs(ga.x(:)./ga.se(:))))./log(10)), size(ga.x)).*sign(ga.x);
   end  
-%   ga.sgnlogp = -log10(ga.p).*sign(ga.x);
+
   if ~isempty(opt.Alphalevel)
     ga.alphalevel = opt.Alphalevel;
     ga.sigmask = ga.p < opt.Alphalevel;

@@ -146,7 +146,7 @@ end
 for ei= 1:nChans,
   [ci,ri]= getIndices(clab{ei}, grid);
   if length(ci)>1,
-    warning('channel %s appDrawEars multiple times in the grid layout', clab{ei});
+    warning('channel %s multiple times in the grid layout', clab{ei});
   end
   if isnan(ri),
     mnt.box(:,ei)= [NaN; NaN];
