@@ -200,7 +200,10 @@ end
 
 if opt.AddChannels,
   %% update the nfo structure
-  save(fullname, '-APPEND', 'nfo', opt.SaveParam{:});
+  saveParam= opt.SaveParam;
+  iVer= strmatch('-v', saveParam);
+  savePara(iVer)= [];
+  save(fullname, '-APPEND', 'nfo', saveParam{:});
   chan_offset= length(nfo_old.clab);
 else
   save(fullname, 'mrk', 'mnt', 'nfo', opt.SaveParam{:});
