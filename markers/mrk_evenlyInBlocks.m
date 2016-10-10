@@ -46,12 +46,29 @@ if isfield(blk, 'y'),
   mrk.className= blk.className;
 end
 
+% fields from blk.event will be adapted and added to mrk.event. Let's prepare:
+if isfield(blk, 'event'),
+  eventFields= fieldnames(blk.event);
+else
+  eventFields= {};
+end
+for Fld= eventFields,
+  fld= Fld{1};
+  mrk.event.(fld)= [];
+end
+
 nBlocks= size(blk.ival,1);
 for bb= 1:nBlocks,
   new_time= blk.ival(bb,1)+opt.OffsetStart:msec:blk.ival(bb,2)-opt.OffsetEnd;
   nMrk= length(new_time);
   mrk.time= cat(2, mrk.time, new_time);
-  mrk.event.blkno= cat(1, mrk.event.blkno, bb*ones(length(new_time),1)); % blkno has to be column vector for later functions
+  mrk.event.blkno= cat(1, mrk.event.blkno, bb*ones(nMrk,1)); % blkno has to be column vector for later functions
+  % adapt fields from blk.event and add to mrk.event
+  for Fld= eventFields,
+    fld= Fld{1};
+    val= blk.event.(fld)(bb);
+    mrk.event.(fld)= cat(1, mrk.event.(fld), repmat(val, [nMrk 1])); 
+  end
   if isfield(blk, 'y'),
     new_y= zeros(nClasses, nMrk);
     iClass= find(blk.y(:,bb));
