@@ -29,6 +29,7 @@ if iscell(epo1),
   for ii= 2:length(Cepo),
     epo1= proc_appendEpochs(epo1, Cepo{ii});
   end
+  epo=epo1;
   return
 end
   
