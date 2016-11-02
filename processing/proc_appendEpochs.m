@@ -70,6 +70,14 @@ if ~struct_areFieldsEqual(epo1, epo2, {'fs','clab', 't'})
 end
 epo= struct_copyFields(epo, epo1, {'fs','clab','t'});
 
+further_fields= {'xUnit', 'yUnit'};
+for Fld= further_fields,
+  if ~struct_areFieldsEqual(epo1, epo2, Fld)
+    warning(sprintf('epochs are inconsistent wrt ''%s''.', Fld{1}));
+  end
+  epo= struct_copyFields(epo, epo1, Fld);
+end
+
 if isfield(epo1, 'mrk_info') && isfield(epo2, 'mrk_info'),
   epo.mrk_info= mrkutil_appendEventInfo(epo1.mrk_info, epo2.mrk_info);
 end

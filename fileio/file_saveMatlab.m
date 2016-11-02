@@ -198,9 +198,13 @@ if ~exist(filepath, 'dir'),
   end
 end
 
+saveParamNoVer= opt.SaveParam;
+iVer= strmatch('-v', saveParamNoVer);
+saveParamNoVer(iVer)= [];
+
 if opt.AddChannels,
   %% update the nfo structure
-  save(fullname, '-APPEND', 'nfo', opt.SaveParam{:});
+  save(fullname, '-APPEND', 'nfo', saveParamNoVer{:});
   chan_offset= length(nfo_old.clab);
 else
   save(fullname, 'mrk', 'mnt', 'nfo', opt.SaveParam{:});
@@ -222,7 +226,7 @@ if opt.Channelwise,
   for cc= 1:nChans,
     varname= ['ch' int2str(chan_offset+cc)];
     eval([varname '= ' evalstr]);
-    save(fullname, '-APPEND', varname, opt.SaveParam{:});
+    save(fullname, '-APPEND', varname, saveParamNoVer{:});
     clear(varname);
   end
   dat= rmfield(dat, 'x');
@@ -231,7 +235,7 @@ if opt.Channelwise,
   if ~ismember(upper(opt.Format), {'FLOAT','DOUBLE'},'legacy'),
     dat.resolution= nfo.resolution;
   end
-  save(fullname, '-APPEND', 'dat', opt.SaveParam{:});
+  save(fullname, '-APPEND', 'dat', saveParamNoVer{:});
 else
   switch(upper(opt.Format)), 
    case 'INT16',
@@ -245,7 +249,7 @@ else
    case 'DOUBLE',
     %% nothing to do
   end
-  save(fullname, '-APPEND', 'dat', opt.SaveParam{:});
+  save(fullname, '-APPEND', 'dat', saveParamNoVer{:});
 end
 
 %% Save additional variables, as requested.
@@ -254,5 +258,5 @@ if ~isempty(opt.Vars),
   for vv= 1:length(opt.Vars),
     vars.(opt.Vars{vv})= evalin('caller', opt.Vars{vv});
   end
-  save(fullname, '-APPEND', '-STRUCT', 'vars', opt.SaveParam{:});
+  save(fullname, '-APPEND', '-STRUCT', 'vars', saveParamNoVer{:});
 end
