@@ -126,10 +126,12 @@ if strcmpi(opt.Format, 'PDF') || strcmpi(opt.Format, 'EPSPDF'),
             util_unixCmd(cmd, 'could not remove EPS');
         end
     else
-        if numel(opt.PaperSize)>2
-            opt.PaperSize=opt.PaperSize([3 4]);
-        end        
-        set(gcf, 'paperSize',opt.PaperSize);
+        if ~(ischar(opt.PaperSize) && (strcmp(opt.PaperSize,'maxAspect')||(strcmp(opt.PaperSize,'auto'))))
+            if numel(opt.PaperSize)>2
+                opt.PaperSize=opt.PaperSize([3 4]);
+            end
+            set(gcf, 'paperSize',opt.PaperSize);
+        end
         print('-dpdf',gcf,fullName)
     end
 end
