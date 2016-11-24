@@ -86,8 +86,8 @@ end
 cidx= find(ismember(epo_r.clab,opt.MarkClab,'legacy'));
 set(H.ax, 'YTick',cidx, 'YTickLabel',epo_r.clab(cidx), ...
           'TickLength',[0.005 0]);
-if isdefault.XUnit && isfield(epo_r, 'XUnit'),
-  opt.XUnit= epo_r.XUnit;
+if isdefault.XUnit && isfield(epo_r, 'xUnit'),
+  opt.XUnit= epo_r.xUnit;
 end
 xlabel(['[' opt.XUnit ']']);
 ylabel('channels');
