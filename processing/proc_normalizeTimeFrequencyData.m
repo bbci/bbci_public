@@ -46,7 +46,7 @@ end
 [opt, isdefault]= opt_setDefaults(opt, props);
 opt_checkProplist(opt, props);
 
-nC = size(dat,3);  
+nC = size(dat.x,3);  
 switch(lower(opt.Pos)),
     case 'beginning_exact', % [-150 0] = 15 samples not 16 (at fs= 100 Hz)
         %      len= round(diff(ival)/1000*dat.fs);
