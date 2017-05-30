@@ -81,13 +81,14 @@ switch lower(lib)
             %download only if folder is not existing yet
             try %download and unzip
                 download_success = 0;
-                this_zipfile = 'http://www.user.tu-berlin.de/irene.winkler/artifacts/MARAtrdata.zip';
-                disp(sprintf(['\n\n\n...Downloading ' lower(lib) ' from http://www.user.tu-berlin.de/irene.winkler/']))
+                this_zipfile = 'https://github.com/irenne/MARA/archive/master.zip';
+                zip_folder_name = 'MARA-master';
+                disp(sprintf(['\n\n\n...Downloading ' lower(lib) ' from ' this_zipfile]))
                 download_success = try_download_unzip(this_zipfile, ext_folder);
-                movefile(fullfile(ext_folder, 'MARAtrdata'), this_folder)
+                movefile(fullfile(ext_folder, zip_folder_name), this_folder)
             catch
                 if download_success
-                    error(['renaming did not work, please rename ''MARAtrdata'' to ''' lower(lib) ''' manually.']);
+                    error(['renaming did not work, please rename ' zip_folder_name ' to ''' lower(lib) ''' manually.']);
                 else
                     warning(['automatic download and unzip unsuccessful for ' lower(lib) '.'])
                     fprintf(['Likely reason: \n(A) Matlab does not have the permission to write files into the folder. \n(B) no online access.\n\n Possible solution is to start Matlab as root. \n\nFor manual download:\n\n (1) download the zip-file: \n' this_zipfile '\n\n (2) unzip to ''' this_folder '''\n']);                    
