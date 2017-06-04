@@ -6,7 +6,7 @@
 %   modifies certain points of 'bbci' (e.g., depending on the used hardware
 %   a specific acquire function has to be specified) and starts the fun.
 
-
+tic
 BC= [];
 BC.fcn= @bbci_calibrate_csp;
 BC.folder= fullfile(BTB.DataDir, 'demoRaw');
@@ -23,8 +23,10 @@ BC.log.output= 'screen';
 bbci= struct('calibrate', BC);
 
 [bbci, calib]= bbci_calibrate(bbci);
+plot_features_bbci
 %bbci_save(bbci, calib);
-
+toc
+%%
 
 % test consistency of classifier outputs in simulated online mode
 % you could also load a different data set

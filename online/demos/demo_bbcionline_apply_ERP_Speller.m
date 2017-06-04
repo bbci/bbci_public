@@ -1,4 +1,4 @@
-% DEMO_BBCIONLINE_APPLY_ERP_SPELLER
+    % DEMO_BBCIONLINE_APPLY_ERP_SPELLER
 %  This script demonstrates how to perform simulated online processing
 %  for an ERP speller. To that end, a realistic feature extraction is
 %  set up. Note, that in the normal use case this is done

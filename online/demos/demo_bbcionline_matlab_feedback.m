@@ -21,10 +21,11 @@ bbci.quit_condition.marker= 255;
 
 bbci.feedback.receiver= 'matlab';
 bbci.feedback.fcn= @bbci_feedback_cursor;
+%Added the geometry values
 bbci.feedback.opt= ...
     struct('trigger_classes_list', {{'left','right'}}, ...
            'countdown', 3000, ...
-           'trials_per_run', 6);
+           'trials_per_run', 6,'geometry',[0 0 800 600]);
 bbci.feedback.log.output= 'file';
 bbci.feedback.log.folder= BTB.TmpDir;
 

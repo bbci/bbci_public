@@ -1,4 +1,4 @@
-function [bbci, data]= bbci_calibrate_csp(bbci, data)
+function [bbci, data,csp_dat]= bbci_calibrate_csp(bbci, data)
 %BBCI_CALIBRATE_CSP - Calibrate CSP-based detection of SMR Modulations
 %
 %This function is called by bbci_calibrate 
@@ -248,6 +248,8 @@ end
 clear cnt_flt
 cnt_flt= proc_filt(data.cnt, filt_b, filt_a);
 
+
+
 if isequal(opt.ival, 'auto') || isempty(opt.ival),
   bbci_log_write(data, 'No ival specified, automatic selection:');
   opt.ival= select_timeival(cnt_flt, mrk2, ...
@@ -294,6 +296,7 @@ else
     error('opt.enlarge_ival_append option unknown.')
   end
 end
+
 spec= proc_segmentation(data.cnt, mrk_all, tmp_ival, 'CLab',requ_clab);
 
 if opt.visu_laplace,
@@ -355,8 +358,25 @@ else
   [fv2, csp_w, A, la]= proc_csp(fv, 'SelectFcn',...
                                 {@cspselect_equalPerClass, opt.nPatterns});
 end
+
+csp_dat.dat = fv2;
+csp_dat.filters = csp_w;
+csp_dat.patterns = la;
+csp_dat.eigv = A;
+
 fig_state= fig_set(figno_offset+4, 'Hide',1, ...
                    'Name', sprintf('CSP %s vs %s', classes{:}));
+<<<<<<< HEAD
+%if isequal(opt.patterns,'auto'),
+  
+
+% plot_cspAnalysis(fv, mnt, csp_w, A, la, ...
+%                   'RowLayout',1, 'Title','');
+  %else
+  %  plot_cspAnalysis(fv, mnt, csp_w, A, la, opt_scalp_csp, ...
+  %                  'MarkPatterns', opt.patterns);
+%end
+=======
 if isequal(opt.patterns,'auto'),
   plot_cspAnalysis(fv, mnt, csp_w, A, la, ...
                   'RowLayout',1, 'Title','');
@@ -364,6 +384,7 @@ else
   plot_cspAnalysis(fv, mnt, csp_w, A, la, opt_scalp_csp, ...
                    'MarkPatterns', opt.patterns);
 end
+>>>>>>> 05f7c2114a699d36a00b5ca8927e07a41f1b6c41
 fig_publish(fig_state);
 
 bbci.feature.ival= [-750 0];

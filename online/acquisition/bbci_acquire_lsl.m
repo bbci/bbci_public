@@ -85,7 +85,9 @@ if isequal(varargin{1}, 'init'),
     % look for the stream several times
     for i=1:3
         % look for stream on the network
-        eeg = lsl_resolve_byprop(state.lib,'type','EEG');
+%         eeg = lsl_resolve_byprop(state.lib,'type','EEG');
+%edited the lsl stream name 
+ eeg = lsl_resolve_byprop(state.lib,'name','openvibeSignal');
         if ~isempty(eeg)
             break
         end
@@ -121,7 +123,9 @@ if isequal(varargin{1}, 'init'),
     % resolve marker stream, try several times
     mrks = {};
     for i=1:3
-        mrks = lsl_resolve_byprop(state.lib, 'name', 'MyMarkerStream', 1, 1);
+%         mrks = lsl_resolve_byprop(state.lib, 'name', 'MyMarkerStream', 1, 1);
+%edited the lsl name
+mrks = lsl_resolve_byprop(state.lib, 'name', 'openvibeMarkers', 1, 1);
         if ~isempty(mrks)
             break
         end
