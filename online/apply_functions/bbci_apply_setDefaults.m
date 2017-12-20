@@ -116,6 +116,7 @@ props= {'classifier'     1      '!INT'
         'proc'           {}     'CELL'
         'fcn'            ''     'FUNC'
         'param'          {}     'CELL'
+        'source_list'    [1]    'INT'
         'condition'      []     'STRUCT(marker)|STRUCT(interval)'};
 bbci.control= opt_overwriteVoids(bbci.control, 'classifier', props);
 bbci.control= opt_setDefaults('bbci.control', props);

@@ -239,7 +239,7 @@ if isequal(opt.band, 'auto') || isempty(opt.band);
     ival_for_bandsel= opt.default_ival;
   end
   opt.band= select_bandnarrow(data.cnt, mrk2, ival_for_bandsel, ...
-                              opt.selband_opt, 'DoLaplace',opt.do_laplace);
+                              opt.selband_opt{:}, 'DoLaplace',opt.do_laplace);
   bbci_log_write(data, ' -> [%g %g] Hz', opt.band);
   band_fresh_selected= 1;
 end
@@ -259,7 +259,7 @@ if band_fresh_selected && ~isequal(opt.ival, ival_for_bandsel),
   bbci_log_write(data, 'Redoing selection of freq. band for new interval:');
   first_selection= opt.band;
   opt.band= select_bandnarrow(data.cnt, mrk2, opt.ival, ...
-                              opt.selband_opt, 'DoLaplace',opt.do_laplace);
+                              opt.selband_opt{:}, 'DoLaplace',opt.do_laplace);
   bbci_log_write(data, ' -> [%g %g] Hz', opt.band);
   if ~isequal(opt.band, first_selection),
     clear cnt_flt
