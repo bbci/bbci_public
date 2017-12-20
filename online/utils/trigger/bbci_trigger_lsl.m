@@ -67,5 +67,3 @@ else
     warning('The trigger has to be numeric or ''init'' or ''close'' : no trigger was sent')
 end
 end
-
->>>>>>> b9ee3e0cb00b9a0abbd586a100c6a90147bdac3f
