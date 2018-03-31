@@ -99,7 +99,7 @@ end
 
 if strcmpi(opt.Format, 'SVG'),
   if ~exist('plot2svg', 'file'),
-    addpath(fullfile(BTB.Dir, 'externals', 'plot2svg-master','src'));
+    addpath(fullfile(BTB.Dir, 'external', 'plot2svg-master','src'));
   end
   plot2svg([fullName '.svg']);
   return;
