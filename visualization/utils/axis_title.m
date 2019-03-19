@@ -25,7 +25,7 @@ props = {   'VPos'                  1.02                   '!DOUBLE';
             'HorizontalAlignment'   'center'               '!CHAR(left center right)';
             'VerticalAlignment'     'bottom'               '!CHAR(bottom center baseline top)';
             'FontWeight'            get(gca, 'FontWeight') '!CHAR(normal bold light demi)';
-            'FontSize'              get(gca, 'FontSize')   '!INT'
+            'FontSize'              get(gca, 'FontSize')   '!DOUBLE'
             };
 
 if nargin==0,

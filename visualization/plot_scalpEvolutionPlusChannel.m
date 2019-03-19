@@ -185,6 +185,8 @@ if opt.PlotChannel && ~isempty(clab),
     else
       hhh= H.channel;
     end
+    % The following part can be removed. We do not allow numeric values
+    % for LegendPos anymore.
     % Check matlab version for downward compatability
     if str2double(strtok(version,'.'))<7
       H.leg= legend(hhh.plot, erp.className, opt.LegendPos);

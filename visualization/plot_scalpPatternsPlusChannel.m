@@ -15,7 +15,7 @@ function H= plot_scalpPatternsPlusChannel(erp, mnt, clab, ival, varargin)
 %       defines the interval for the k-th Class.
 % OPTS: struct or property/value list of optional fields/properties:
 %  .LegendPos - specifies the position of the legend in the ERP plot,
-%               default 0 (see help of legend for choices).
+%               default 'best' (see man page of legend for choices).
 %  .MarkIval  - When true, the time interval is marked in the channel plot.
 %
 %The opts struct is passed to plot_scalpPattern
@@ -36,7 +36,7 @@ props = {'LineWidth',           3,                  'DOUBLE';
          'XUnit',               '[ms]',             'CHAR';
          'PlotChannel',         1,                  'BOOL';
          'ScalePos',            'vert',             'CHAR';
-         'LegendPos',           0,                  'CHAR|DOUBLE[1]|DOUBLE[4]';
+         'LegendPos',           'best',             'CHAR';
          'NewColormap',         0,                  'BOOL';
          'MarkPatterns',        [],                 'DOUBLE|CHAR';
          'MarkStyle',           {'LineWidth',3},    'CELL';
@@ -188,7 +188,7 @@ if opt.PlotChannel,
   end
   set(get(h.ax_erp, 'title'), 'FontSize',12, 'fontWeight','bold');
   if ~isequal(opt.LegendPos, 'none'),
-    h.leg= legend(erp.className, opt.LegendPos);
+    h.leg= legend(erp.className, 'Location',opt.LegendPos);
   end
 end
 

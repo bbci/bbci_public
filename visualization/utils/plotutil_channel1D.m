@@ -81,7 +81,7 @@ props = {'AxisType',                        'box',                '!CHAR';
          'ColorOrder',                      get(gca,'ColorOrder'),  'DOUBLE[- 3]';
          'GridOverPatches',                 1,                      'BOOL';
          'Legend',                          1,                      'BOOL';
-         'LegendPos',                       0,                      'CHAR|DOUBLE[1]|DOUBLE[4]';
+         'LegendPos',                       'best',                 'CHAR';
          'LineWidth',                       2,                      'DOUBLE';
          'LineStyle',                       '-',                    'CHAR';
          'LineStyleOrder',                  {},                     'CELL{CHAR}'
@@ -478,7 +478,7 @@ switch(lower(opt.YUnitDispPolicy)),
 end
 
 if opt.Legend && opt.Butterfly==0
-  H.leg= legend(H.plot, epo.className, opt.LegendPos);
+  H.leg= legend(H.plot, epo.className, 'Location',opt.LegendPos);
 else
   H.leg= NaN;
 end
