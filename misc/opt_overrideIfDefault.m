@@ -49,7 +49,7 @@ if length(varargin)==1 && iscell(varargin{1}),
   misc_checkType(varargin{1}, 'PROPSPEC', 'varargin{1}');
   newopt= opt_propspecToStruct(varargin{1});
 else
-  misc_checkType(varargin, 'PROPLIST');
+  misc_checkType(varargin, 'PROPLIST', 'varargin');
   newopt= opt_proplistToStruct(varargin{:});
 end
 Fld= fieldnames(newopt);
