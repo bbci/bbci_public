@@ -29,7 +29,7 @@ function marker_out= bbci_apply_queryMarker(marker, ival, mrkDesc)
 
 % return if there is no quit marker
 
-if nargin<3 || isempty(mrkDesc)
+if nargin > 2 && isempty(mrkDesc)
   marker_out= []; 
   return 
 end
@@ -50,7 +50,7 @@ if nargin > 2 && ~isempty(idx),
   idx= idx(idx2);
 end
 
-if isempty(idx) || isempty(mrkDesc),
+if isempty(idx), % || isempty(mrkDesc),
   marker_out= [];
 else
   if iscell(marker.desc),
