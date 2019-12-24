@@ -89,7 +89,7 @@ end
 
 %% make sure to put the data in the correct format in case it was epoched
 if is_epoched
-    X_ica = permute(reshape(icasig', [Te, Ne, Nc]), [1,3,2]);
+    X_ica = permute(reshape(icasig', [Te, Ne, size(icasig,1)]), [1,3,2]);
 else
     X_ica = icasig';
 end
