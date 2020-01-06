@@ -160,7 +160,7 @@ bbci.control= bbciutil_transformProc2FcnParam(bbci.control);
 
 
 props= {'control'     1             '!INT'
-        'receiver'    ''            'CHAR(pyff matlab tobi_c udp osc)'
+        'receiver'    ''            'CHAR(pyff matlab tobi_c udp osc lsl)'
         'fcn'         []            'FUNC'
         'opt'         []            'STRUCT'
         'log'         struct        'STRUCT'
