@@ -13,6 +13,9 @@ function [Cstar, gamma, T] = clsutil_shrinkage(X, varargin)
 %      'C' (common covariance)
 %      'D' (diagonal, unequal variance)
 %    'Gamma': DOUBLE - Shrinkage parameter. May be used to set the shrinkage parameter explicitly.
+%    'Standardize': BOOL (default 0) - If set, standardizes dimensions before calculating optimal
+%                   Shrinkage gamma. The obtained covariance matrix is scaled back into the
+%                   original feature range.
 %    'Verbose': BOOL (default 0) - If set, verbose mode is activated
 %
 %Returns:
@@ -44,9 +47,10 @@ function [Cstar, gamma, T] = clsutil_shrinkage(X, varargin)
 % opt-type checking (Michael Tangermann)
 
 
-props= {'Target'     'B'     'CHAR(A B C D)'
-        'Gamma'      'auto'  'CHAR(auto)|!DOUBLE'
-        'Verbose'    0       'BOOL'};
+props= {'Target'      'B'     'CHAR(A B C D)'
+        'Gamma'       'auto'  'CHAR(auto)|!DOUBLE'
+        'Standardize' 0       'BOOL'
+        'Verbose'     0       'BOOL'};
 
 if nargin==0,
   Cstar= props;
@@ -66,6 +70,9 @@ end
   
 %%% Empirical covariance
 [p, n] = size(X);
+if opt.Standardize
+    [X, ~, z_sigma] = zscore(X, 0, 2);
+end
 Xn     = X - repmat(mean(X,2), [1 n]);
 S      = Xn*Xn';
 Xn2    = Xn.^2;
@@ -112,3 +119,6 @@ end
 
 %%% Estimate covariance matrix
 Cstar = (gamma*T + (1-gamma)*S ) / (n-1);
+if opt.Standardize
+     Cstar = (z_sigma * z_sigma') .* Cstar;
+end
